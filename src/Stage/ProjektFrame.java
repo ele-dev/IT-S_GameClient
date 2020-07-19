@@ -25,6 +25,8 @@ public class ProjektFrame extends JFrame {
 		addKeyListener(stagePanel.kl);
 	}
 	
+	// ------------------- MAIN Application Entry Point -------------------------- //
+	
 	public static void main(String[] args) {
 		ProjektFrame f = new ProjektFrame();
 	}
