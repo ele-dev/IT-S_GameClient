@@ -4,8 +4,14 @@ import java.awt.Container;
 import javax.swing.JFrame;
 
 import Stage.StagePanel.KL;
+import clientPackage.Connection;
 
 public class ProjektFrame extends JFrame {
+	
+	// Network related
+	static Connection conn;
+	
+	// Windows related
 	int width = Commons.wf;
 	int height = Commons.hf;
 	
@@ -29,6 +35,15 @@ public class ProjektFrame extends JFrame {
 	// ------------------- MAIN Application Entry Point -------------------------- //
 	
 	public static void main(String[] args) {
+		
+		// First create a connection instance
+		try {
+			conn = new Connection();
+		} catch (Exception e) {
+			
+		}
+		
+		// Second create the main window and start the actual game
 		ProjektFrame f = new ProjektFrame();
 	}
 
