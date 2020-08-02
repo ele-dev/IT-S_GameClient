@@ -48,20 +48,20 @@ public class Connection {
 			success = false;
 		}
 		
-		if(success) 
+		if(success)  {
 			JOptionPane.showMessageDialog(null, "Connected to the game server");
-		else
+		} else {
 			JOptionPane.showMessageDialog(null,  "Failed to connect to the game server!");
-		
+			return;
+		}
+			
 		objOut = new ObjectOutputStream(this.clientSocket.getOutputStream());
 		objOut.flush();
 		objIn = new ObjectInputStream(this.clientSocket.getInputStream());
 		
-		// Test communication
+		// Test communication by sending login message
 		MsgLogin loginMsg = new MsgLogin(this.username, this.password);
 		this.sendMessageToServer(loginMsg);
-		
-		this.clientSocket.close();
 	}
 	
 	public void sendMessageToServer(GenericMessage msg) {
@@ -69,6 +69,22 @@ public class Connection {
 			this.objOut.writeObject(msg);
 		} catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	// Public method for closing the connection to the game server
+	public void closeConnection() {
+		if(this.clientSocket != null && this.clientSocket.isConnected()) 
+		{
+			try {
+				this.clientSocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.err.println("Failed to close connection and socket properly!"); 
+				return;
+			}
+			
+			System.out.println("Closed connection");
 		}
 	}
 }

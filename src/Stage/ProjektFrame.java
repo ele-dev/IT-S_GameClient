@@ -56,8 +56,8 @@ public class ProjektFrame extends JFrame {
 			public void windowClosing(WindowEvent windowEvent) {
 				System.out.println("window was closed --> cleanup routine");
 				
-				// Do cleanup operations
-				// ...
+				// close the network connection to the game server
+				conn.closeConnection();
 				
 				// Finally exit the application 
 				System.out.println("Application close up");
