@@ -8,12 +8,18 @@ import java.net.UnknownHostException;
 
 import javax.swing.JOptionPane;
 
+import networking.GenericMessage;
+import networking.*;
+
 public class Connection {
 	
 	// class members //
 	private Socket clientSocket;
 	private String username;
 	private String password;
+	
+	ObjectOutputStream objOut = null;
+	ObjectInputStream objIn = null;
 	
 	boolean playAsGuest;
 	
@@ -47,10 +53,22 @@ public class Connection {
 		else
 			JOptionPane.showMessageDialog(null,  "Failed to connect to the game server!");
 		
-		ObjectOutputStream objOut = new ObjectOutputStream(this.clientSocket.getOutputStream());
+		objOut = new ObjectOutputStream(this.clientSocket.getOutputStream());
 		objOut.flush();
-		ObjectInputStream objIn = new ObjectInputStream(this.clientSocket.getInputStream());
+		objIn = new ObjectInputStream(this.clientSocket.getInputStream());
 		
+		// Test communication
+		MsgLogin loginMsg = new MsgLogin(this.username, this.password);
+		this.sendMessageToServer(loginMsg);
 		
+		this.clientSocket.close();
+	}
+	
+	public void sendMessageToServer(GenericMessage msg) {
+		try {
+			this.objOut.writeObject(msg);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

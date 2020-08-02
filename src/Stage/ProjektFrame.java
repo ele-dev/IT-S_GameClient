@@ -39,9 +39,7 @@ public class ProjektFrame extends JFrame {
 		// First create a connection instance
 		try {
 			conn = new Connection();
-		} catch (Exception e) {
-			
-		}
+		} catch (Exception e) {}
 		
 		// Second create the main window and start the actual game
 		ProjektFrame f = new ProjektFrame();
