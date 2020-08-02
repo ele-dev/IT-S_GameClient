@@ -48,13 +48,17 @@ public class Connection {
 			success = false;
 		}
 		
+		// Display connection status
 		if(success)  {
 			JOptionPane.showMessageDialog(null, "Connected to the game server");
+			System.out.println("Socket is now connected to server");
 		} else {
 			JOptionPane.showMessageDialog(null,  "Failed to connect to the game server!");
+			System.err.println("Failed establish connection to server!");
 			return;
 		}
 			
+		// Prepare I/O streams for Object (de)serialization
 		objOut = new ObjectOutputStream(this.clientSocket.getOutputStream());
 		objOut.flush();
 		objIn = new ObjectInputStream(this.clientSocket.getInputStream());
@@ -62,13 +66,21 @@ public class Connection {
 		// Test communication by sending login message
 		MsgLogin loginMsg = new MsgLogin(this.username, this.password);
 		this.sendMessageToServer(loginMsg);
+		System.out.println("Sent login message to the server");
 	}
 	
+	// Method for sending Message objects to the server
 	public void sendMessageToServer(GenericMessage msg) {
-		try {
-			this.objOut.writeObject(msg);
-		} catch(Exception e) {
-			e.printStackTrace();
+		
+		// Only try if the client is connected
+		if(this.clientSocket != null && this.clientSocket.isConnected()) 
+		{
+			// Serialize and write the message object to the socket output stream
+			try {
+				this.objOut.writeObject(msg);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
