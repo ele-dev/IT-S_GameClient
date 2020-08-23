@@ -67,13 +67,18 @@ public class Connection {
 			System.err.println("Failed to generate SHA-512 Hash of the password");
 		}
 		
+		// Show the login status to the user
 		if(!this.loggedIn) {
 			System.err.println("Could not login to the game network!");
 			JOptionPane.showMessageDialog(null, "Login Failed");
+			return;
 		} else {
-			System.out.println();
+			System.out.println("Logged in successfully");
 			JOptionPane.showMessageDialog(null, "Login Successfull");
 		}
+		
+		// If everything went well then launch the thread for continous message processing
+		// ...
 	}
 	
 	// Method for connecting to the game server
@@ -106,17 +111,17 @@ public class Connection {
 	// Method that handles the login procedure
 	private boolean login(String user, String pwd) throws NoSuchAlgorithmException {
 		
-		// Gnenerate a random salt
+		// Generate a random salt to harden hash reverse engineering 
 		SecureRandom random = new SecureRandom();
 		byte[] salt = new byte[16];
 		random.nextBytes(salt);
 		
-		// Generate a SHA-512 hash with salt 
+		// Run the SHA-512 hash function with salt on the plain text password
 		MessageDigest md = MessageDigest.getInstance("SHA-512");
 		md.update(salt);
 		byte[] hash = md.digest(pwd.getBytes(StandardCharsets.UTF_8));
 		
-		// Start communication by sending login message
+		// Start communication by sending login reuqest message
 		MsgLogin loginMsg = new MsgLogin(user, hash);
 		this.sendMessageToServer(loginMsg);
 		System.out.println("Sent login message to the server");
@@ -132,7 +137,7 @@ public class Connection {
 			return false;
 		}
 		
-		// Wait for answer to the login request
+		// Wait for a response to the login request
 		try {
 			recvBuffer = (GenericMessage) this.objIn.readObject();
 		} catch(ClassNotFoundException e) {
