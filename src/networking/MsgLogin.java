@@ -5,7 +5,7 @@ public class MsgLogin extends GenericMessage {
 	private static final long serialVersionUID = -8509387207270110867L;
 	
 	private String username;
-	private String passwordHash;
+	private byte[] passwordHash;
 
 	public MsgLogin()
 	{
@@ -13,7 +13,7 @@ public class MsgLogin extends GenericMessage {
 		this.msgID = MSG_LOGIN;
 	}
 	
-	public MsgLogin(String user, String passHash)
+	public MsgLogin(String user, byte[] passHash)
 	{
 		this();
 		this.username = user;
@@ -27,7 +27,7 @@ public class MsgLogin extends GenericMessage {
 		return;
 	}
 	
-	public void setPasswordHash(String passHash)
+	public void setPasswordHash(byte[] passHash)
 	{
 		this.passwordHash = passHash;
 		return;
@@ -39,7 +39,7 @@ public class MsgLogin extends GenericMessage {
 		return this.username;
 	}
 	
-	public String getPasswordHash()
+	public byte[] getPasswordHash()
 	{
 		return this.passwordHash;
 	}
