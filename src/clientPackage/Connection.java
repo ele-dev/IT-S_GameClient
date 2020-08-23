@@ -8,6 +8,10 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import javax.swing.JOptionPane;
 
@@ -19,42 +23,25 @@ public class Connection {
 	// class members //
 	private Socket clientSocket;
 	private String username;
-	private String password;
 	
 	ObjectOutputStream objOut = null;
 	ObjectInputStream objIn = null;
 	
 	boolean playAsGuest;
+	boolean isConnected;
 	boolean loggedIn;
 	
-	public Connection() throws IOException {
+	// Constructor
+	public Connection() {
 		
 		this.playAsGuest = false;
+		this.isConnected = false;
 		this.loggedIn = false;
 		
-		// Ask the user for login credentials
-		this.username = JOptionPane.showInputDialog("Type in your username (leave empty for guest)", null);
-		if(username.length() < 1) {
-			this.password = "";
-			this.playAsGuest = true;
-		} else {
-			this.password = JOptionPane.showInputDialog("Type in your password");
-		}
-		
-		// Now attempt to connect to the game server
-		boolean success = true;
-		try {
-			this.clientSocket = new Socket(NetworkConfig.serverAddress, NetworkConfig.serverPort);
-		} catch (UnknownHostException e) {
-			System.err.println("DNS lookup failed!");
-			success = false;
-		} catch (IOException e) {
-			System.err.println("The server seems to be offline");
-			success = false;
-		}
+		this.isConnected = this.connectToServer();
 		
 		// Display connection status
-		if(success)  {
+		if(this.isConnected)  {
 			// JOptionPane.showMessageDialog(null, "Connected to the game server");
 			System.out.println("Socket is now connected to server");
 		} else {
@@ -62,21 +49,74 @@ public class Connection {
 			System.err.println("Failed establish connection to server!");
 			return;
 		}
-			
-		// Prepare I/O streams for Object (de)serialization
-		objOut = new ObjectOutputStream(this.clientSocket.getOutputStream());
-		objOut.flush();
-		objIn = new ObjectInputStream(this.clientSocket.getInputStream());
+		
+		// Ask the user for login credentials
+		this.username = JOptionPane.showInputDialog("Type in your username (leave empty for guest)", null);
+		String password = "";
+		if(username.length() < 1) {
+			this.playAsGuest = true;
+		} else {
+			password = JOptionPane.showInputDialog("Type in your password");
+		}
 		
 		// Before the player can enter the main menue he must identify himself
-		this.loggedIn = this.login();
+		try {
+			this.loggedIn = this.login(username, password);
+		} catch(NoSuchAlgorithmException e) {
+			System.err.println("Failed to generate SHA-512 Hash of the password");
+		}
+		
+		if(!this.loggedIn) {
+			System.err.println("Could not login to the game network!");
+			JOptionPane.showMessageDialog(null, "Login Failed");
+		} else {
+			System.out.println();
+			JOptionPane.showMessageDialog(null, "Login Successfull");
+		}
+	}
+	
+	// Method for connecting to the game server
+	private boolean connectToServer() {
+		
+		// Now attempt to connect to the game server
+		try {
+			this.clientSocket = new Socket(NetworkConfig.serverAddress, NetworkConfig.serverPort);
+		} catch (UnknownHostException e) {
+			System.err.println("DNS lookup failed!");
+			return false;
+		} catch (IOException e) {
+			System.err.println("The server seems to be offline");
+			return false;
+		}
+			
+		// Prepare I/O streams for Object (de)serialization
+		try {
+			objOut = new ObjectOutputStream(this.clientSocket.getOutputStream());
+			objOut.flush();
+			objIn = new ObjectInputStream(this.clientSocket.getInputStream());
+		} catch (IOException e) {
+			System.err.println("IO Exception thrown while initializing I/O streams");
+			return false;
+		}
+		
+		return true;
 	}
 	
 	// Method that handles the login procedure
-	private boolean login() {
+	private boolean login(String user, String pwd) throws NoSuchAlgorithmException {
+		
+		// Gnenerate a random salt
+		SecureRandom random = new SecureRandom();
+		byte[] salt = new byte[16];
+		random.nextBytes(salt);
+		
+		// Generate a SHA-512 hash with salt 
+		MessageDigest md = MessageDigest.getInstance("SHA-512");
+		md.update(salt);
+		byte[] hash = md.digest(pwd.getBytes(StandardCharsets.UTF_8));
 		
 		// Start communication by sending login message
-		MsgLogin loginMsg = new MsgLogin(this.username, this.password);
+		MsgLogin loginMsg = new MsgLogin(user, hash);
 		this.sendMessageToServer(loginMsg);
 		System.out.println("Sent login message to the server");
 		
@@ -125,8 +165,6 @@ public class Connection {
 			JOptionPane.showMessageDialog(null, "Login Data was incorrect");
 			return false;
 		}
-			
-		JOptionPane.showMessageDialog(null, "Login Successfull");
 		
 		return true;
 	}
