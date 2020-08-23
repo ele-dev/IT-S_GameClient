@@ -38,7 +38,8 @@ public class Connection {
 		this.isConnected = false;
 		this.loggedIn = false;
 		
-		this.isConnected = this.connectToServer();
+		// Pass global configuration vars
+		this.isConnected = this.connectToServer(NetworkConfig.serverAddress, NetworkConfig.serverPort);
 		
 		// Display connection status
 		if(this.isConnected)  {
@@ -76,11 +77,11 @@ public class Connection {
 	}
 	
 	// Method for connecting to the game server
-	private boolean connectToServer() {
+	private boolean connectToServer(String addr, int port) {
 		
 		// Now attempt to connect to the game server
 		try {
-			this.clientSocket = new Socket(NetworkConfig.serverAddress, NetworkConfig.serverPort);
+			this.clientSocket = new Socket(addr, port);
 		} catch (UnknownHostException e) {
 			System.err.println("DNS lookup failed!");
 			return false;
