@@ -5,14 +5,12 @@ import java.awt.event.WindowAdapter;
 
 import javax.swing.JFrame;
 
-import Stage.StagePanel.KL;
 import clientPackage.Connection;
 
 public class ProjektFrame extends JFrame {
 	
-	// Network related
-	static Connection conn;
 	
+	static Connection conn;
 	// Windows related
 	int width = Commons.wf;
 	int height = Commons.hf;
@@ -41,7 +39,7 @@ public class ProjektFrame extends JFrame {
 		
 		// First create a connection instance
 		try {
-			conn = new Connection();
+//			conn = new Connection();
 		} catch (Exception e) {}
 		
 		// Second create the main window and start the actual game
@@ -57,7 +55,10 @@ public class ProjektFrame extends JFrame {
 				System.out.println("window was closed --> cleanup routine");
 				
 				// close the network connection to the game server
-				conn.closeConnection();
+				
+//				conn.closeConnection();
+				
+				
 				
 				// Finally exit the application 
 				System.out.println("Application close up");

@@ -15,9 +15,6 @@ import javax.swing.ImageIcon;
 import GamePieces.GamePiece;
 
 public class BoardRectangle {
-	public int x,y;
-	public int centeredX,centeredY;
-	public int size;
 	public int posRow,posColumn;
 	Color c;
 	public Rectangle rect;
@@ -39,9 +36,6 @@ public class BoardRectangle {
 	Sprite groundSprite;
 	
 	public BoardRectangle(int x, int y, int size, int posRow, int posColumn,boolean isTile1,int index) {
-		this.x = x;
-		this.y = y;
-		this.size = size;
 		this.posRow = posRow;
 		this.posColumn = posColumn;
 		this.rect = new Rectangle(x,y,size,size);
@@ -51,8 +45,6 @@ public class BoardRectangle {
 		this.cPossibleAttack = new Color(Commons.cAttack.getRed(),Commons.cAttack.getGreen(),Commons.cAttack.getBlue(),80);
 		
 		this.isTile1 = isTile1;
-		this.centeredX = this.x + size/2;
-		this.centeredY = this.y + size/2;
 		
 		this.index = index;
 		
@@ -65,6 +57,24 @@ public class BoardRectangle {
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		spriteLinks.add(Commons.pathToSpriteSource+"Tiles/GrassTile.png");
 		groundSprite = new Sprite(spriteLinks, size,size, 0);
+	}
+	
+	public int getSize() {
+		return (int) rect.getWidth();
+	}
+	
+	public int getX() {
+		return (int) rect.getX();
+	}
+	public int getY() {
+		return (int) rect.getY();
+	}
+	
+	public int getCenterX(){
+		return (int) rect.getCenterX();
+	}
+	public int getCenterY(){
+		return (int) rect.getCenterY();
 	}
 	
 	// initalizes what Sprite is needed depending on neighboring walls
@@ -90,6 +100,7 @@ public class BoardRectangle {
 			}
 		}
 		
+		int size = getSize();
 		if(rightConnected) {
 			ArrayList<String> spriteLinks = new ArrayList<String>();
 			spriteLinks.add(Commons.pathToSpriteSource+"Tiles/DarkWall_R.png");
@@ -172,7 +183,7 @@ public class BoardRectangle {
 	public void initDestructibleWallSprite() {
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		spriteLinks.add(Commons.pathToSpriteSource+"Tiles/WoodWall_LR.png");
-		destructibleWallsprite = new Sprite(spriteLinks, size,size, 0);
+		destructibleWallsprite = new Sprite(spriteLinks, getSize(),getSize(), 0);
 	}
 	// draws The Rectangle depending on if it is a Possible move/attack (draws another rectangle with another color over it)
 	public void drawBoardRectangle(Graphics2D g2d,ArrayList<BoardRectangle> boardRectangles) {
@@ -182,7 +193,7 @@ public class BoardRectangle {
 		g2d.setStroke(new BasicStroke(5));
 		
 		if(!isTile1) {
-			groundSprite.drawSprite(g2d, centeredX, centeredY, 0, 1);
+			groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
 		}else {
 
 		}
@@ -231,7 +242,9 @@ public class BoardRectangle {
 				g2d.setColor(c);
 				g2d.setColor(new Color(240,230,100,alpha));
 			}
-			int s = size;
+			int x = getX();
+			int y = getY();
+			int s = getSize();
 			int soI = (int)so;
 			g2d.drawLine(x-soI/2, y-soI/2, x+s/4-soI/2, y-soI/2);
 			g2d.drawLine(x+s+soI/2, y-soI/2, x+s*3/4+soI/2, y-soI/2);
@@ -280,12 +293,12 @@ public class BoardRectangle {
 		g2d.setColor(new Color(20,20,20));
 		g2d.fill(rect);
 		if(wallSprite != null) {
-			wallSprite.drawSprite(g2d, centeredX, centeredY, 0, 1);
+			wallSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
 		}
 	}
 	// draws destructible wall but makes it transparent if it would overdraw a GamePiece
 	public void drawDestructibleWall(Graphics2D g2d,ArrayList<GamePiece> gamePieces) {
-		destructibleWallsprite.drawSprite(g2d, centeredX, centeredY, 0, 1);
+		destructibleWallsprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
 	}
 	// draws the BoardGaps
 	public void drawGapWall(Graphics2D g2d) {
@@ -309,22 +322,15 @@ public class BoardRectangle {
 		if(isGap) {
 			g2d.setColor(Color.WHITE);
 		}
-		g2d.drawString(index+"", centeredX, centeredY);
+		g2d.drawString(index+"", getCenterX(), getCenterY());
 	}
 	// returns the resized image
 	public Image resizeImage(String imageString) {
 		ImageIcon imageIcon = new ImageIcon(imageString);
 		Image image = imageIcon.getImage();
-		Image modImage = image.getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH);
+		Image modImage = image.getScaledInstance(getSize(), getSize(), java.awt.Image.SCALE_SMOOTH);
 		imageIcon = new ImageIcon(modImage);
 		return imageIcon.getImage();
-	}
-	
-	public int getCenterX(){
-		return x+size/2;
-	}
-	public int getCenterY(){
-		return y+size/2;
 	}
 	
 }

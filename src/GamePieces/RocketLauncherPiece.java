@@ -220,7 +220,7 @@ public class RocketLauncherPiece extends GamePiece{
 	public void startAttackDestructibleWall(BoardRectangle targetBoardRectangle) {
 		currentTargetBoardRectangle = targetBoardRectangle;
 		isAttacking = true;
-		updateAngleDestructibleWall();
+		updateAngle(true);
 		attackDelayTimer.start();
 		hasExecutedAttack = true;
 		hasExecutedMove = true;

@@ -83,12 +83,12 @@ public class Rocket {
 		double ak = 0;
 		double gk = 0;
 		if(currentTarget != null && currentTargetBoardRectangle == null) {
-			ak = currentTarget.boardRect.centeredX - x;
-			gk = currentTarget.boardRect.centeredY - y;
+			ak = currentTarget.boardRect.getCenterX() - x;
+			gk = currentTarget.boardRect.getCenterY() - y;
 		}
 		if(currentTarget == null && currentTargetBoardRectangle != null) {
-			ak = currentTargetBoardRectangle.centeredX - x;
-			gk = currentTargetBoardRectangle.centeredY - y;
+			ak = currentTargetBoardRectangle.getCenterX() - x;
+			gk = currentTargetBoardRectangle.getCenterY() - y;
 		}
 		double angleDesired = Math.toDegrees(Math.atan2(ak, gk)) *-1;
 		

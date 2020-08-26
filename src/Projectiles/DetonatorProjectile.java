@@ -127,14 +127,14 @@ public class DetonatorProjectile {
 			isStuckToTarget = true;
 			currentTarget.resetDmgFlashCountDown();
 			
-			xRelTarget = x - currentTarget.boardRect.centeredX;
-			yRelTarget = y - currentTarget.boardRect.centeredY;
+			xRelTarget = x - currentTarget.boardRect.getCenterX();
+			yRelTarget = y - currentTarget.boardRect.getCenterY();
 		}
 	}
 	
 	public void stayStuck() {
-		x = currentTarget.boardRect.centeredX + xRelTarget;
-		y = currentTarget.boardRect.centeredY + yRelTarget;
+		x = currentTarget.boardRect.getCenterX() + xRelTarget;
+		y = currentTarget.boardRect.getCenterY() + yRelTarget;
 	}
 	// will set the projectile to be destroyed if its explosion has faded
 	public void checkIfExplosionFaded() {
