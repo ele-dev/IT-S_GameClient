@@ -15,7 +15,6 @@ import java.security.SecureRandom;
 
 import javax.swing.JOptionPane;
 
-import networking.GenericMessage;
 import networking.*;
 
 public class Connection {
@@ -43,7 +42,6 @@ public class Connection {
 		
 		// Display connection status
 		if(this.isConnected)  {
-			// JOptionPane.showMessageDialog(null, "Connected to the game server");
 			System.out.println("Socket is now connected to server");
 		} else {
 			JOptionPane.showMessageDialog(null,  "Failed to connect to the game server!");
@@ -111,18 +109,8 @@ public class Connection {
 	// Method that handles the login procedure
 	private boolean login(String user, String pwd) throws NoSuchAlgorithmException {
 		
-		// Generate a random salt to harden hash reverse engineering 
-		SecureRandom random = new SecureRandom();
-		byte[] salt = new byte[16];
-		random.nextBytes(salt);
-		
-		// Run the SHA-512 hash function with salt on the plain text password
-		MessageDigest md = MessageDigest.getInstance("SHA-512");
-		md.update(salt);
-		byte[] hash = md.digest(pwd.getBytes(StandardCharsets.UTF_8));
-		
 		// Start communication by sending login reuqest message
-		MsgLogin loginMsg = new MsgLogin(user, hash);
+		MsgLogin loginMsg = new MsgLogin(user, pwd);
 		this.sendMessageToServer(loginMsg);
 		System.out.println("Sent login message to the server");
 		
