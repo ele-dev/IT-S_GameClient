@@ -5,7 +5,6 @@ import java.awt.event.WindowAdapter;
 
 import javax.swing.JFrame;
 
-import Stage.StagePanel.KL;
 import clientPackage.Connection;
 
 public class ProjektFrame extends JFrame {
