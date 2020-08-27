@@ -8,11 +8,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-
 import javax.swing.JOptionPane;
 
 import networking.*;
@@ -52,18 +47,17 @@ public class Connection {
 		// Ask the user for login credentials
 		this.username = JOptionPane.showInputDialog("Type in your username (leave empty for guest)", null);
 		String password = "";
-		if(username.length() < 1) {
+		if(username == null || username.length() < 1) {
 			this.playAsGuest = true;
 		} else {
 			password = JOptionPane.showInputDialog("Type in your password");
+			if(password == null) {
+				password = "";
+			}
 		}
 		
 		// Before the player can enter the main menue he must identify himself
-		try {
-			this.loggedIn = this.login(username, password);
-		} catch(NoSuchAlgorithmException e) {
-			System.err.println("Failed to generate SHA-512 Hash of the password");
-		}
+		this.loggedIn = this.login(username, password);
 		
 		// Show the login status to the user
 		if(!this.loggedIn) {
@@ -107,7 +101,7 @@ public class Connection {
 	}
 	
 	// Method that handles the login procedure
-	private boolean login(String user, String pwd) throws NoSuchAlgorithmException {
+	private boolean login(String user, String pwd) {
 		
 		// Start communication by sending login reuqest message
 		MsgLogin loginMsg = new MsgLogin(user, pwd);

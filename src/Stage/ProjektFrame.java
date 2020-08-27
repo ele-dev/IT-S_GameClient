@@ -2,11 +2,11 @@ package Stage;
 import java.awt.Container;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
-
 import javax.swing.JFrame;
 
 import clientPackage.Connection;
 
+@SuppressWarnings("serial")
 public class ProjektFrame extends JFrame {
 	
 	// Network related
