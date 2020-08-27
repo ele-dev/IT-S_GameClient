@@ -8,13 +8,15 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 public class Sprite {
-	ArrayList<Image> sprites = new ArrayList<Image>();
-	public int w;
-	public int h;
-	int animationIndex = 0;
+	// Array of Sprites used in an animation
+	private ArrayList<Image> sprites = new ArrayList<Image>();
+	private int w,h;
+	// index of the animation (which sprite it's at)
+	private int animationIndex = 0;
+	// frames of delay the animation takes to slide to next index
+	private int animationDelay;
+	private int animationCounter = 0;
 	
-	int animationDelay;
-	int animationCounter = 0;
 	
 	public Sprite(ArrayList<String> spriteLinks,int w,int h,int animationDelay) {
 		this.w = w;
@@ -26,7 +28,7 @@ public class Sprite {
 	}
 	
 	// returns the resized image
-	public Image resizeImage(String imageString) {
+	private Image resizeImage(String imageString) {
 		ImageIcon imageIcon = new ImageIcon(imageString);
 		Image image = imageIcon.getImage();
 		Image modImage = image.getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);

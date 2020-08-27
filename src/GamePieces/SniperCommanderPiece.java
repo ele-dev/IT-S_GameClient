@@ -143,7 +143,7 @@ public class SniperCommanderPiece extends CommanderGamePiece{
 				Commons.boardRectSize,Commons.boardRectSize,0,-angle-90,Arc2D.PIE);
 		if(sniperBullet != null) {
 			for(int i = 0;i<1000;i++) {
-				StagePanel.particles.add(new SniperTrailParticle((int)(sniperBullet.x + (Math.random()-0.5)*10), (int)(sniperBullet.y + (Math.random()-0.5)*10)));
+				StagePanel.particles.add(new SniperTrailParticle((int)(sniperBullet.getX() + (Math.random()-0.5)*10), (int)(sniperBullet.getY() + (Math.random()-0.5)*10)));
 				sniperBullet.move();
 				sniperBullet.checkHitEnemy();
 				if(sniperBullet.getHasHitEnemy()) {

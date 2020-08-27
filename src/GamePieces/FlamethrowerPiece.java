@@ -203,7 +203,7 @@ public class FlamethrowerPiece extends GamePiece {
 	public void startAttackDestructibleWall(BoardRectangle targetBoardRectangle) {
 		currentTargetBoardRectangle = targetBoardRectangle;
 		isAttacking = true;
-		updateAngleDestructibleWall();
+		updateAngle(true);
 		attackDelayTimer.start();
 		hasExecutedAttack = true;
 		hasExecutedMove = true;
@@ -217,7 +217,7 @@ public class FlamethrowerPiece extends GamePiece {
 			curFTF.move();
 			curFTF.checkHitEnemy();
 			curFTF.updateFade();
-			if(curFTF.c.getAlpha()<10) {
+			if(curFTF.getColor().getAlpha()<10) {
 			flames.remove(i);
 			}
 		}

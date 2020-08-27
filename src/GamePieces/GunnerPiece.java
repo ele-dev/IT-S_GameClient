@@ -179,14 +179,14 @@ public class GunnerPiece extends GamePiece {
 		startedAttack = true;
 		
 		if(isWallAttack) {
-			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c,16, angle + (Math.random()-0.5)*spreadAngle, null, currentTargetBoardRectangle));	
+			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c,16, (float) (angle + (Math.random()-0.5)*spreadAngle), null, currentTargetBoardRectangle));	
 		}else {
-			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c,16, angle + (Math.random()-0.5)*spreadAngle, getCurrentTargetGamePiece(),null));	
+			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c,16, (float) (angle + (Math.random()-0.5)*spreadAngle), getCurrentTargetGamePiece(),null));	
 		}
 		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),8,12, (float)angle -90, c,(float)(Math.random()*2+3)));
 		
 		burstCounter++;
-		if(burstCounter <burstBulletAmount) {
+		if(burstCounter < burstBulletAmount) {
 			burstTimer.start();
 		}else {
 			burstCounter = 0;

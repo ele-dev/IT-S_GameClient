@@ -26,16 +26,12 @@ public abstract class GamePiece {
 	public BoardRectangle boardRect;
 	protected Rectangle rectHitbox;
 	private Rectangle rectShowTurret;
-	protected Color c;
-	private Color cTurret;
-	private Color cExecutedAttack;
+	protected Color c,cTurret;
 	private String name;
-	protected double angle,angleDesired;
+	protected float angle,angleDesired;
 	private boolean isDead = false;
-	private double health;
-	private double maxHealth;
-	private double dmg;
-	private Font fPieces;
+	private float health,maxHealth;
+	private float dmg;
 	
 	public boolean isSelected = false;
 	private boolean isEnemy;
@@ -60,16 +56,16 @@ public abstract class GamePiece {
 	private static double speV = 0.3;
 	private Sprite spritePointer,spritePointerDarkened;
 	
-	private double rectSizeInc = 0;
+	private float rectSizeInc = 0;
 	private int dmgFlashCountDown = 0;
 	private CommanderGamePiece commanderGamePiece;
 	
-	public GamePiece(boolean isEnemy,String name,BoardRectangle boardRect,int maxHealth,double dmg,CommanderGamePiece commanderGamePiece) {
+	public GamePiece(boolean isEnemy,String name,BoardRectangle boardRect,int maxHealth,float dmg,CommanderGamePiece commanderGamePiece) {
 		this.isEnemy = isEnemy;
 		this.boardRect = boardRect;
-		rectHitbox = new Rectangle((int)(boardRect.getCenterX()-boardRect.size*0.3),(int)(boardRect.getCenterY()-boardRect.size*0.3),
-				(int)(boardRect.size*0.6),(int)(boardRect.size*0.6));
-		rectShowTurret = new Rectangle((int)(-boardRect.size*0.2),(int)(-boardRect.size*0.2),(int)(boardRect.size*0.4),(int)(boardRect.size*0.4));
+		rectHitbox = new Rectangle((int)(boardRect.getCenterX()-boardRect.getSize()*0.3),(int)(boardRect.getCenterY()-boardRect.getSize()*0.3),
+				(int)(boardRect.getSize()*0.6),(int)(boardRect.getSize()*0.6));
+		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
 		if(isEnemy) {
 			this.c = Commons.enemyColor;
 			this.cTurret = Commons.enemyColorTurret;
@@ -81,12 +77,10 @@ public abstract class GamePiece {
 		this.maxHealth = maxHealth;
 		this.health = maxHealth;
 		this.dmg = dmg;
-		this.cExecutedAttack =new Color(c.getRed()/4,c.getGreen()/4,c.getBlue()/4);
-		this.fPieces = new Font("Arial",Font.BOLD,30);
 
 		this.movesPanel = new GPMovesSelection(this);
-		spritePointerX = boardRect.centeredX;
-		spritePointerY = boardRect.centeredY-60;
+		spritePointerX = boardRect.getCenterX();
+		spritePointerY = boardRect.getCenterY()-60;
 		if(commanderGamePiece != null) {
 			this.commanderGamePiece = commanderGamePiece;
 		}else {
@@ -137,15 +131,15 @@ public abstract class GamePiece {
 	public GamePiece getCurrentTargetGamePiece() {
 		return currentTargetGamePiece;
 	}
-	public double getHealth() {
+	public float getHealth() {
 		return health;
 	}
 
-	public double getMaxHealth() {
+	public float getMaxHealth() {
 		return maxHealth;
 	}
 
-	public double getDmg() {
+	public float getDmg() {
 		return dmg;
 	}
 	
@@ -169,18 +163,19 @@ public abstract class GamePiece {
 		if(health<=0) {
 			isDead = true;
 		}
+		int size = curHBR.getSize();
 		if(isSelected && movesPanel.getMoveButtonIsActive() && curHBR.isPossibleMove) {
-			rectShowTurret.setBounds((int)(-curHBR.size*0.2),(int)(-curHBR.size*0.2),(int)(curHBR.size*0.4),(int)(curHBR.size*0.4));
-			rectHitbox = new Rectangle((int)(curHBR.getCenterX()-curHBR.size*0.3-rectSizeInc/2),(int)(curHBR.getCenterY()-curHBR.size*0.3-rectSizeInc/2)-(int)(curHBR.size*1.5),
-					(int)(curHBR.size*0.6+rectSizeInc),(int)(curHBR.size*0.6+rectSizeInc));
-			spritePointerX = curHBR.centeredX;
-			spritePointerY = curHBR.centeredY-60-(int)(curHBR.size*1.5);
+			rectShowTurret.setBounds((int)(-size*0.2),(int)(-size*0.2),(int)(size*0.4),(int)(size*0.4));
+			rectHitbox = new Rectangle((int)(curHBR.getCenterX()-size*0.3-rectSizeInc/2),(int)(curHBR.getCenterY()-size*0.3-rectSizeInc/2)-(int)(size*1.5),
+					(int)(size*0.6+rectSizeInc),(int)(size*0.6+rectSizeInc));
+			spritePointerX = curHBR.getCenterX();
+			spritePointerY = curHBR.getCenterY()-60-(int)(size*1.5);
 		}else {
-			rectShowTurret.setBounds((int)(-boardRect.size*0.2),(int)(-boardRect.size*0.2),(int)(boardRect.size*0.4),(int)(curHBR.size*0.4));
-			rectHitbox = new Rectangle((int)(boardRect.getCenterX()-boardRect.size*0.3-rectSizeInc/2),(int)(boardRect.getCenterY()-boardRect.size*0.3-rectSizeInc/2),
-				(int)(boardRect.size*0.6+rectSizeInc),(int)(boardRect.size*0.6+rectSizeInc));
-			spritePointerX = boardRect.centeredX;
-			spritePointerY = boardRect.centeredY-60;
+			rectShowTurret.setBounds((int)(-size*0.2),(int)(-size*0.2),(int)(size*0.4),(int)(size*0.4));
+			rectHitbox = new Rectangle((int)(boardRect.getCenterX()-size*0.3-rectSizeInc/2),(int)(boardRect.getCenterY()-size*0.3-rectSizeInc/2),
+				(int)(size*0.6+rectSizeInc),(int)(size*0.6+rectSizeInc));
+			spritePointerX = boardRect.getCenterX();
+			spritePointerY = boardRect.getCenterY()-60;
 		}
 		
 	}
@@ -214,7 +209,7 @@ public abstract class GamePiece {
 	
 	// returns true if the BoardRectangle is in sight of the GamePiece and return false if it is for example behind a wall
 	public boolean checkIfBoardRectangleInSight(BoardRectangle targetBoardRectangle) {
-		Line2D lineOfSight = new Line2D.Double(this.boardRect.centeredX,this.boardRect.centeredY,targetBoardRectangle.centeredX,targetBoardRectangle.centeredY);	
+		Line2D lineOfSight = new Line2D.Double(boardRect.getCenterX(),boardRect.getCenterY(),targetBoardRectangle.getCenterX(),targetBoardRectangle.getCenterY());	
 		sightLines.add(lineOfSight);
 				
 		for(BoardRectangle curBR : StagePanel.boardRectangles) {
@@ -290,7 +285,7 @@ public abstract class GamePiece {
 			g2d.setColor(c);
 			// draws different when it already attacked
 			if(hasExecutedAttack) {
-				g2d.setColor(cExecutedAttack);
+				g2d.setColor(new Color(c.getRed()/4,c.getGreen()/4,c.getBlue()/4));
 			}
 			if(dmgFlashCountDown > 0) {
 				g2d.setColor(Color.WHITE);
@@ -313,7 +308,7 @@ public abstract class GamePiece {
 				g2d.translate(-cx, -cy);
 				
 				g2d.setColor(Color.BLACK);
-				g2d.setFont(fPieces);
+				g2d.setFont(new Font("Arial",Font.BOLD,30));
 				FontMetrics metrics = g2d.getFontMetrics();
 				String text = name;
 				int textHeight = metrics.getHeight();
@@ -322,7 +317,7 @@ public abstract class GamePiece {
 			}
 			if(isSelected && movesPanel.getMoveButtonIsActive() && curHBR != null && curHBR.isPossibleMove) {
 				g2d.setColor(new Color(20,20,20,150));
-				g2d.fillRect((int)rectHitbox.getCenterX() - rectHitbox.width/2, (int)(rectHitbox.getCenterY()- rectHitbox.height/2 +boardRect.size*1.5) , rectHitbox.width, rectHitbox.height);
+				g2d.fillRect((int)rectHitbox.getCenterX() - rectHitbox.width/2, (int)(rectHitbox.getCenterY()- rectHitbox.height/2 +boardRect.getSize()*1.5) , rectHitbox.width, rectHitbox.height);
 			}
 		}
 	}
@@ -349,10 +344,10 @@ public abstract class GamePiece {
 		updatePos(curHoverBoardRectangle);
 		
 		if(currentTargetGamePiece != null) {
-			updateAngle();
+			updateAngle(false);
 		}
 		if(currentTargetBoardRectangle != null) {
-			updateAngleDestructibleWall();
+			updateAngle(true);
 		}
 		if(rectSizeInc > 0) {
 			rectSizeInc -= 1;
@@ -370,50 +365,26 @@ public abstract class GamePiece {
 	}
 	
 	// updates the shot angle towards the TargetEnemy/TargetGamepice
-	public void updateAngle() {
+	public void updateAngle(boolean targetIsWall) {
 		int cx = getCenterX();
 		int cy = getCenterY();
-		double ak = currentTargetGamePiece.getCenterX() - cx;
-		double gk = currentTargetGamePiece.getCenterY() - cy;
+		float ak = 0;
+		float gk = 0;
+		if(targetIsWall) {
+			ak = currentTargetBoardRectangle.getCenterX() - cx;
+			gk = currentTargetBoardRectangle.getCenterY() - cy;
+		}else {
+			ak = currentTargetGamePiece.getCenterX() - cx;
+			gk = currentTargetGamePiece.getCenterY() - cy;
+		}
 		
-		angleDesired = Math.toDegrees(Math.atan2(ak*-1, gk));
+		
+		angleDesired = (float) Math.toDegrees(Math.atan2(ak*-1, gk));
 		if(angleDesired +180 == angle) {
 			angleDesired+= 10;
 		}
 		
-		double ak1 = Math.cos(Math.toRadians(angleDesired+90));
-		double gk1 = Math.sin(Math.toRadians(angleDesired+90));
-		
-		double ak2 = Math.cos(Math.toRadians(angle+90)) * rotationDelay;
-		double gk2 = Math.sin(Math.toRadians(angle+90)) * rotationDelay;
-
-		double ak3 = (ak1+ak2*rotationDelay)/(rotationDelay+1);
-		double gk3 = (gk1+gk2*rotationDelay)/(rotationDelay+1);
-		
-		angle = Math.toDegrees(Math.atan2(ak3*-1, gk3));
-	}
-	// updates the shot angle towards the TargetBoardRectangle
-	public void updateAngleDestructibleWall() {
-		int cx = getCenterX();
-		int cy = getCenterY();
-		double ak = currentTargetBoardRectangle.getCenterX() - cx;
-		double gk = currentTargetBoardRectangle.getCenterY() - cy;
-	
-		angleDesired = Math.toDegrees(Math.atan2(ak*-1, gk));
-		if(angleDesired +180 == angle) {
-			angleDesired++;
-		}
-		
-		double ak1 = Math.cos(Math.toRadians(angleDesired+90));
-		double gk1 = Math.sin(Math.toRadians(angleDesired+90));
-	
-		double ak2 = Math.cos(Math.toRadians(angle+90)) * rotationDelay;
-		double gk2 = Math.sin(Math.toRadians(angle+90)) * rotationDelay;
-
-		double ak3 = (ak1+ak2*rotationDelay)/(rotationDelay+1);
-		double gk3 = (gk1+gk2*rotationDelay)/(rotationDelay+1);
-	
-		angle = Math.toDegrees(Math.atan2(ak3*-1, gk3));
+		angle = Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
 	}
 	// draws a HealthBar and a String with The HealthAmount
 	public void drawHealth(Graphics2D g2d) {
@@ -425,10 +396,10 @@ public abstract class GamePiece {
 			int textWidth = metrics.stringWidth(s);
 	
 			g2d.setColor(new Color(0,0,0,200));
-			Rectangle maxHealthRect = new Rectangle((int)rectHitbox.getCenterX() - (int)(rectHitbox.width*0.75), (int)rectHitbox.getCenterY() - (int)(boardRect.size), (int)(boardRect.size), 15);
+			Rectangle maxHealthRect = new Rectangle((int)rectHitbox.getCenterX() - (int)(rectHitbox.width*0.75), (int)rectHitbox.getCenterY() - boardRect.getSize(), boardRect.getSize(), 15);
 			g2d.fill(maxHealthRect);
 			g2d.setColor(Commons.cHealth);
-			g2d.fillRect((int)rectHitbox.getCenterX() - (int)(rectHitbox.width*0.75),(int)rectHitbox.getCenterY() - (int)(boardRect.size), (int)((boardRect.size)*(health/maxHealth)), 15);
+			g2d.fillRect((int)rectHitbox.getCenterX() - (int)(rectHitbox.width*0.75),(int)rectHitbox.getCenterY() - boardRect.getSize(), (int)(boardRect.getSize()*(health/maxHealth)), 15);
 			g2d.setStroke(new BasicStroke(3));
 			g2d.setColor(Color.BLACK);
 			g2d.draw(maxHealthRect);
@@ -456,11 +427,11 @@ public abstract class GamePiece {
 		if(health -dmg > 0) {
 			health -= dmg;
 			for(int i = 0;i<(int)dmg;i++) {
-			StagePanel.particles.add(new UltChargeOrb(getCenterX()+(int)((Math.random()-0.5)*boardRect.size), getCenterY()+(int)((Math.random()-0.5)*boardRect.size), otherCommander));
+			StagePanel.particles.add(new UltChargeOrb(getCenterX()+(int)((Math.random()-0.5)*boardRect.getSize()), getCenterY()+(int)((Math.random()-0.5)*boardRect.getSize()), otherCommander));
 			}
 		}else {
 			for(int i = 0;i<(int)health;i++) {
-				StagePanel.particles.add(new UltChargeOrb(getCenterX()+(int)((Math.random()-0.5)*boardRect.size), getCenterY()+(int)((Math.random()-0.5)*boardRect.size), otherCommander));
+				StagePanel.particles.add(new UltChargeOrb(getCenterX()+(int)((Math.random()-0.5)*boardRect.getSize()), getCenterY()+(int)((Math.random()-0.5)*boardRect.getSize()), otherCommander));
 			}
 			health = 0;
 		}
@@ -472,8 +443,8 @@ public abstract class GamePiece {
 	
 	public void addDmgLabel(GamePiece targetGP,double dmg) {
 		if(!targetGP.isDead) {
-			Point targetP = new Point(targetGP.boardRect.x + targetGP.boardRect.size/2,targetGP.boardRect.y + targetGP.boardRect.size/2);
-			StagePanel.dmgLabels.add(new DmgLabel(targetP.getX()+((Math.random()-0.5)*60),targetP.getY()+((Math.random()-0.5)*60),dmg,2,Color.WHITE));
+			Point targetP = new Point(targetGP.boardRect.getX() + targetGP.boardRect.getSize()/2,targetGP.boardRect.getY() + targetGP.boardRect.getSize()/2);
+			StagePanel.dmgLabels.add(new DmgLabel((float)(targetP.getX()+((Math.random()-0.5)*60)),(float)(targetP.getY()+((Math.random()-0.5)*60)),dmg,2,Color.WHITE));
 		}	
 	}
 	

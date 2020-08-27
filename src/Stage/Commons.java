@@ -3,49 +3,63 @@ package Stage;
 import java.awt.Color;
 
 public interface Commons {
-	int boardRectSize = 80;
+	final int boardRectSize = 80;
 	// width of frame
-	int wf = 1800;
+	final int wf = 1800;
 	// height of frame
-	int hf = 1000;
+	final int hf = 1000;
 	
-	Color cUltCharge = new Color(234,255,70);
+	final Color cUltCharge = new Color(234,255,70);
 	
-	Color cMove = new Color(255,220,90);
-	Color cMoveActive = new Color(84,75,35);
-	Color cAttack = new Color(255,0,20);
-	Color cAttackActive = new Color(87,0,10);
+	final Color cMove = new Color(255,220,90);
+	final Color cMoveActive = new Color(84,75,35);
+	final Color cAttack = new Color(255,0,20);
+	final Color cAttackActive = new Color(87,0,10);
 	
-	Color cGPMovesPanel = new Color(10,10,10,230);
+	final Color cGPMovesPanel = new Color(10,10,10,230);
 	
 	
-	Color enemyColor = new Color(255,0,43);
-	Color notEnemyColor = new Color(16,68,255);
-	Color enemyColorTurret = new Color(230,0,33);
-	Color notEnemyColorTurret = new Color(10,48,230);
+	final Color enemyColor = new Color(255,0,43);
+	final Color notEnemyColor = new Color(16,68,255);
+	final Color enemyColorTurret = new Color(230,0,33);
+	final Color notEnemyColorTurret = new Color(10,48,230);
 	
-	Color cHealth = new Color(85,255,80);
+	final Color cHealth = new Color(85,255,80);
 	
-	String pathToSpriteSource = "sprites/";
+	final String pathToSpriteSource = "sprites/";
 	
 	// GamePieces 
-	int dmgFlashCountDown = 5;
+	final int dmgFlashCountDown = 5;
 	// GunnerPiece
-	double dmgGunner = 3;
-	String nameGunner = "G";
-	int maxHealthGunner = 10;
+	final float dmgGunner = 3;
+	final String nameGunner = "G";
+	final int maxHealthGunner = 10;
 	// FlameThrowerPiece
-	double dmgFlameThrower = 4;
-	String nameFlameThrower = "F";
-	int maxHealthFlameThrower = 10;
+	final float dmgFlameThrower = 4;
+	final String nameFlameThrower = "F";
+	final int maxHealthFlameThrower = 10;
 	// DetonatorPiece
-	double dmgDetonator = 4;
-	String nameDetonator = "D";
-	int maxHealthDetonator = 10;
+	final float dmgDetonator = 4;
+	final String nameDetonator = "D";
+	final int maxHealthDetonator = 10;
 	// RocketLauncherPiece
-	double dmgRocketLauncher = 3;
-	String nameRocketLauncher = "R";
-	int maxHealthRocketLauncher = 10;
+	final float dmgRocketLauncher = 3;
+	final String nameRocketLauncher = "R";
+	final int maxHealthRocketLauncher = 10;
 	
+	// creates two vectors. One Vector(Vector with Angle angle) gets scaled with the scalar(rotationDelay)
+	// the two Vectors get added together and the angle of the resulting Vector is the return-product
+	public static float calculateAngleAfterRotation(float angle, float angleDesired, float rotationDelay) {
+		double ak1 = Math.cos(Math.toRadians(angleDesired+90));
+		double gk1 = Math.sin(Math.toRadians(angleDesired+90));
+		
+		double ak2 = Math.cos(Math.toRadians(angle+90)) * rotationDelay;
+		double gk2 = Math.sin(Math.toRadians(angle+90)) * rotationDelay;
+
+		double ak3 = (ak1+ak2*rotationDelay)/(rotationDelay+1);
+		double gk3 = (gk1+gk2*rotationDelay)/(rotationDelay+1);
+		
+		return (float) Math.toDegrees(Math.atan2(ak3*-1, gk3));
+	}
 	
 }

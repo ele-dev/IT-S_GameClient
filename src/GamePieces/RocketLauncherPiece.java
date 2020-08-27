@@ -61,7 +61,6 @@ public class RocketLauncherPiece extends GamePiece{
 		for(int i = 0;i<rockets.size();i++) {		
 			Rocket curR = rockets.get(i);
 			curR.drawRocket(g2d);
-			curR.drawTrail(g2d);
 		}
 	}
 	
@@ -189,9 +188,9 @@ public class RocketLauncherPiece extends GamePiece{
 			arcAngleOffset = 0;
 		}
 		if(isWallAttack) {
-			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, angle + (Math.random()-0.5)*spreadAngle + arcAngleOffset, null, currentTargetBoardRectangle));
+			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, (float) (angle + (Math.random()-0.5)*spreadAngle + arcAngleOffset), null, currentTargetBoardRectangle));
 		}else {
-			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, angle + (Math.random()-0.5)*spreadAngle + arcAngleOffset, getCurrentTargetGamePiece(), null));
+			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, (float) (angle + (Math.random()-0.5)*spreadAngle + arcAngleOffset), getCurrentTargetGamePiece(), null));
 		}
 		
 	}
@@ -220,7 +219,7 @@ public class RocketLauncherPiece extends GamePiece{
 	public void startAttackDestructibleWall(BoardRectangle targetBoardRectangle) {
 		currentTargetBoardRectangle = targetBoardRectangle;
 		isAttacking = true;
-		updateAngleDestructibleWall();
+		updateAngle(true);
 		attackDelayTimer.start();
 		hasExecutedAttack = true;
 		hasExecutedMove = true;
@@ -234,12 +233,11 @@ public class RocketLauncherPiece extends GamePiece{
 		
 		for(int i = 0;i<rockets.size();i++) {
 			Rocket curR = rockets.get(i);
-			curR.updateTrail();
 			curR.addTrailParticle();
 			curR.checkHitEnemy();
 			curR.updateAngle();
 			curR.move();
-			if(curR.isDestroyed) {
+			if(curR.isDestroyed()) {
 				rockets.remove(i);
 			}
 		}

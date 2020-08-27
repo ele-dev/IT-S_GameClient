@@ -8,8 +8,7 @@ import GamePieces.GamePiece;
 import Stage.BoardRectangle;
 
 public class Bullet {
-	public double x;
-	public double y;
+	private float x,y;
 	private Color c;
 	private Rectangle rect;
 	private Rectangle rectHitbox;
@@ -20,7 +19,7 @@ public class Bullet {
 	private GamePiece currentTarget;
 	private BoardRectangle currentTargetBoardRectangle;
 
-	public Bullet(int x, int y, int w, int h, Color c,double v,double angle,GamePiece currentTarget,BoardRectangle currentTargetBoardRectangle) {
+	public Bullet(int x, int y, int w, int h, Color c,float v,float angle,GamePiece currentTarget,BoardRectangle currentTargetBoardRectangle) {
 		this.x = x;
 		this.y = y;
 		this.c = c;
@@ -30,6 +29,14 @@ public class Bullet {
 		this.v = v;
 		this.currentTarget = currentTarget;
 		this.currentTargetBoardRectangle = currentTargetBoardRectangle;
+	}
+	
+	public float getX() {
+		return x;
+	}
+	
+	public float getY() {
+		return y;
 	}
 	
 	public boolean getIsDestroyed() {

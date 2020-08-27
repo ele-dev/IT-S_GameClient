@@ -33,10 +33,10 @@ public class DetonatorPiece extends GamePiece{
 		for(int i = 0;i<detProjectiles.size();i++) {
 			DetonatorProjectile curDP = detProjectiles.get(i);
 			
-			if(curDP.isDetonated) {
+			if(curDP.isDetonated()) {
 				curDP.detExplosion.drawParticle(g2d);
 			}
-			if(!curDP.isDetonated) {
+			if(!curDP.isDetonated()) {
 				curDP.drawDetonatorProjectile(g2d);	
 			}
 		}
@@ -139,7 +139,7 @@ public class DetonatorPiece extends GamePiece{
 	}
 	// creates/shoots the DetonatorProjectile
 	public void shootDetonator() {
-		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), 10, 20, c, getDmg(), angle + (Math.random()-0.5)*10, getCurrentTargetGamePiece(),this));
+		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), 10, 20, c, getDmg(), (float)(angle + (Math.random()-0.5)*10), getCurrentTargetGamePiece(),this));
 	}
 	// decreases the detonation counter and lets it explode if the timer <= 0
 	public void decDetonaterTimers() {
@@ -150,7 +150,7 @@ public class DetonatorPiece extends GamePiece{
 			
 			if(curDP.turnsTillDetonation<=0) {
 				curDP.detonationTimer.start();
-				curDP.blinkeIntervall = 5;
+				curDP.setBlinkeIntervall(5);
 			}
 		}
 		
@@ -167,7 +167,7 @@ public class DetonatorPiece extends GamePiece{
 			}
 		}
 		for(DetonatorProjectile curDP : detProjectiles) {
-			if(!curDP.isStuckToTarget) {
+			if(!curDP.isStuckToTarget()) {
 				isAttacking = true;
 			}
 		}
@@ -181,20 +181,20 @@ public class DetonatorPiece extends GamePiece{
 	public void updateAttack() {
 		for(int i = 0;i<detProjectiles.size();i++) {
 			DetonatorProjectile curDP = detProjectiles.get(i);
-			if(!curDP.isStuckToTarget) {
+			if(!curDP.isStuckToTarget()) {
 				curDP.move();
 				curDP.checkHitEnemy();
 			}else {
 				curDP.stayStuck();
 				curDP.updateBlink();
 			}
-			if(curDP.isDetonated) {
+			if(curDP.isDetonated()) {
 				curDP.detExplosion.updateExplosion();
 				curDP.detExplosion.moveAllFrags();
 				curDP.checkIfExplosionFaded();
 			}
 			
-			if(curDP.isDestroyed) {
+			if(curDP.isDestroyed()) {
 				detProjectiles.remove(i);
 			}
 		}

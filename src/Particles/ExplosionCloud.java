@@ -6,22 +6,24 @@ import java.awt.geom.Ellipse2D;
 
 public class ExplosionCloud {
 	private float x,y;
-	private int size;
-	Color c;
+	private Color c;
 	private Ellipse2D oval;
 	private float v;
 	private float angle;
 	private float airResistance = 0.2f;
-	int fadeSpeed = 1;
+	private int fadeSpeed = 1;
 	
 	ExplosionCloud(float x, float y, int size, float v,float angle) {
 		this.x = x;
 		this.y = y;
-		this.size = size;
 		this.c = new Color(255,20,20);
 		this.oval = new Ellipse2D.Double(x-size/2,y-size/2,size,size);
 		this.v = v;
 		this.angle = angle;
+	}
+	
+	public Color  getColor() {
+		return c;
 	}
 	// moves the clouds in the direction it points (they also float upwards because of buoyancy and also are stopped by air resistance)
 	public void move() {
@@ -37,7 +39,7 @@ public class ExplosionCloud {
 	}
 	// draws the ExplosionCloud
 	public void drawExplosionCloud(Graphics2D g2d) {
-		this.oval = new Ellipse2D.Double(x-size/2,y-size/2,size,size);
+		oval = new Ellipse2D.Double(x-oval.getWidth()/2,y-oval.getHeight()/2,oval.getWidth(),oval.getHeight());
 		g2d.setColor(c);
 		g2d.fill(oval);
 	}

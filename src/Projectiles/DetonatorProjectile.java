@@ -16,36 +16,32 @@ import Particles.Explosion;
 
 
 public class DetonatorProjectile {
-	double x,y;
-	double xRelTarget,yRelTarget;
-	int w,h;
-	Color c;
-	Rectangle rect;
-	Rectangle rectHitbox;
-	double dmg;
-	double angle;
-	double v;
-	public boolean isStuckToTarget = false;
-	public boolean isDestroyed = false;
-	GamePiece currentTarget;
-	GamePiece parentGP;
+	private float x,y;
+	private float xRelTarget,yRelTarget;
+	private Color c;
+	private Rectangle rect;
+	private Rectangle rectHitbox;
+	private float dmg;
+	private float angle;
+	private float v;
+	private boolean isStuckToTarget = false;
+	private boolean isDestroyed = false;
+	private GamePiece currentTarget;
+	private GamePiece parentGP;
 	
 	public Timer detonationTimer;
 	public Explosion detExplosion;
-	public boolean isDetonated = false;
+	private boolean isDetonated = false;
 	public int turnsTillDetonation = 2;
 	
-	Color cBlink;
-	int blinkCounter = 0;
-	public int blinkeIntervall = 30;
-	boolean isColorBlink = false;
+	private Color cBlink;
+	private int blinkCounter = 0;
+	private int blinkeIntervall = 30;
+	private boolean isColorBlink = false;
 	
-	boolean trailFaded = false;
-	public DetonatorProjectile(int x, int y, int w, int h, Color c,double dmg,double angle,GamePiece currentTarget,GamePiece parentGP) {
+	public DetonatorProjectile(int x, int y, int w, int h, Color c,float dmg,float angle,GamePiece currentTarget,GamePiece parentGP) {
 		this.x = x;
 		this.y = y;
-		this.w = w;
-		this.h = h;
 		this.c = c;
 		this.cBlink = Color.BLACK;
 		this.rect = new Rectangle(-w/2,-h/2,w,h);
@@ -66,13 +62,27 @@ public class DetonatorProjectile {
 		detonationTimer.setRepeats(false);
 	}
 	
+	public boolean isDestroyed() {
+		return isDestroyed;
+	}
+	public boolean isStuckToTarget() {
+		return isStuckToTarget;
+	}
+	public boolean isDetonated() {
+		return isDetonated;
+	}
+	
+	public void setBlinkeIntervall(int blinkeIntervall) {
+		this.blinkeIntervall = blinkeIntervall;
+	}
+	
 	public void move() {
 		double vX = Math.cos(Math.toRadians(this.angle + 90)) * v;
 		double vY = Math.sin(Math.toRadians(this.angle + 90)) * v;
 		
 		this.x += vX;
 		this.y += vY;	
-		this.rectHitbox = new Rectangle((int)(x-w/2),(int)(y-h/2),w,h);
+		rectHitbox = new Rectangle((int)(x-rectHitbox.getWidth()/2),(int)(y-rectHitbox.getHeight()/2),(int)rectHitbox.getWidth(),(int)rectHitbox.getHeight());
 		
 	}
 	// draws the projectile
@@ -83,7 +93,7 @@ public class DetonatorProjectile {
 			g2d.setColor(c);
 		}
 		
-		this.rectHitbox.setBounds((int)(x-w/2),(int)(y-h/2),w,h);
+		rectHitbox.setBounds((int)(x-rectHitbox.getWidth()/2),(int)(y-rectHitbox.getHeight()/2),(int)rectHitbox.getWidth(),(int)rectHitbox.getHeight());
 		g2d.translate(this.x, this.y);
 		g2d.rotate(Math.toRadians(this.angle));
 		g2d.fill(rect);
@@ -127,14 +137,14 @@ public class DetonatorProjectile {
 			isStuckToTarget = true;
 			currentTarget.resetDmgFlashCountDown();
 			
-			xRelTarget = x - currentTarget.boardRect.centeredX;
-			yRelTarget = y - currentTarget.boardRect.centeredY;
+			xRelTarget = x - currentTarget.boardRect.getCenterX();
+			yRelTarget = y - currentTarget.boardRect.getCenterY();
 		}
 	}
 	
 	public void stayStuck() {
-		x = currentTarget.boardRect.centeredX + xRelTarget;
-		y = currentTarget.boardRect.centeredY + yRelTarget;
+		x = currentTarget.boardRect.getCenterX() + xRelTarget;
+		y = currentTarget.boardRect.getCenterY() + yRelTarget;
 	}
 	// will set the projectile to be destroyed if its explosion has faded
 	public void checkIfExplosionFaded() {

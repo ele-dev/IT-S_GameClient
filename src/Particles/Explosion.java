@@ -28,7 +28,7 @@ public class Explosion extends Particle{
 	public void drawParticle(Graphics2D g2d) {
 		for(int i = 0;i<explosionClouds.size();i++) {
 			ExplosionCloud curEC = explosionClouds.get(i);
-			if(curEC.c.getAlpha()>10) {
+			if(curEC.getColor().getAlpha()>10) {
 				curEC.drawExplosionCloud(g2d);
 			}else {
 				explosionClouds.remove(i);
@@ -37,7 +37,7 @@ public class Explosion extends Particle{
 		
 		for(int i = 0;i<explosionFragments.size();i++) {
 			ExplosionFragment curEF = explosionFragments.get(i);
-			if(curEF.c.getAlpha()>10) {
+			if(curEF.getColor().getAlpha()>10) {
 				curEF.drawExplosionFragments(g2d);
 			}else {
 				explosionFragments.remove(i);
@@ -73,13 +73,13 @@ public class Explosion extends Particle{
 	// updates each piece of the explosion (all fragments and all clouds)
 	public void updateExplosion() {
 		for(ExplosionFragment curEF : explosionFragments) {
-			if(curEF.c.getAlpha()>10) {
+			if(curEF.getColor().getAlpha()>10) {
 				curEF.updateFade();
 				curEF.updateTrail();
 			}
 		}	
 		for(ExplosionCloud curEC : explosionClouds) {
-			if(curEC.c.getAlpha()>10) {
+			if(curEC.getColor().getAlpha()>10) {
 				curEC.updateFade();
 			}
 		}
