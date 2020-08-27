@@ -57,7 +57,15 @@ public class Connection {
 		}
 		
 		// Before the player can enter the main menue he must identify himself
-		this.loggedIn = this.login(username, password);
+		if(this.playAsGuest)
+		{
+			this.loggedIn = this.loginAsGuest();
+		}
+		else
+		{
+			this.loggedIn = this.loginWithAccount(username, password);
+		}
+		
 		
 		// Show the login status to the user
 		if(!this.loggedIn) {
@@ -100,8 +108,8 @@ public class Connection {
 		return true;
 	}
 	
-	// Method that handles the login procedure
-	private boolean login(String user, String pwd) {
+	// Method that handles the login procedure for accounts
+	public boolean loginWithAccount(String user, String pwd) {
 		
 		// Start communication by sending login reuqest message
 		MsgLogin loginMsg = new MsgLogin(user, pwd);
@@ -143,7 +151,6 @@ public class Connection {
 		// Now checkout if the message is from the right type
 		if(recvBuffer.getMessageID() != GenericMessage.MSG_LOGIN_STATUS) 
 		{
-			JOptionPane.showMessageDialog(null, "Login Failed");
 			return false;
 		}
 		
@@ -153,6 +160,64 @@ public class Connection {
 			JOptionPane.showMessageDialog(null, "Login Data was incorrect");
 			return false;
 		}
+		
+		return true;
+	}
+	
+	// Method that handles the login procedure for guest players
+	public boolean loginAsGuest() {
+		
+		// Start communication by sending login reuqest message
+		MsgLogin loginMsg = new MsgLogin();
+		this.sendMessageToServer(loginMsg);
+		System.out.println("Sent login message to the server");
+		
+		// Create message buffer to store a received message
+		GenericMessage recvBuffer = null;
+		
+		// Define how long to wait for a response (socket timeout)
+		try {
+			this.clientSocket.setSoTimeout(3000);
+		} catch (SocketException e) {
+			System.err.println("Failed to set socket timeout!");
+			return false;
+		}
+		
+		// Wait for a response to the login request
+		try {
+			recvBuffer = (GenericMessage) this.objIn.readObject();
+		} catch(ClassNotFoundException e) {
+			System.err.println("Class Not Found Exception thrown!");
+			System.out.println("Failed to parse incoming message");
+			return false;
+		} catch(SocketTimeoutException e) {
+			JOptionPane.showMessageDialog(null, "Server did not answer the login request");
+			return false;
+		} catch(StreamCorruptedException e1) {
+			System.err.println("Stream corrupted Excption throw while reading message!");
+			return false;
+		} catch(IOException e2) {
+			System.err.println("IO Exception thrown while reading message!");
+			return false;
+		} catch(Exception e3) {
+			System.err.println("Unknown exception thrown while parsing incoming message!");
+			return false;
+		}
+		
+		// Now checkout if the message is from the right type
+		if(recvBuffer.getMessageID() != GenericMessage.MSG_LOGIN_STATUS) 
+		{
+			return false;
+		}
+		
+		// Then parse message into desired format and check the content 
+		MsgLoginStatus statusMsg = (MsgLoginStatus) recvBuffer;
+		if(statusMsg.success() == false) {
+			return false;
+		}
+		
+		// Get the assigned playername 
+		this.username = statusMsg.getAssignedName();
 		
 		return true;
 	}
