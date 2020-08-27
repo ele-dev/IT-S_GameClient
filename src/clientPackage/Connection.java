@@ -46,8 +46,17 @@ public class Connection {
 		
 		// Ask the user for login credentials
 		this.username = JOptionPane.showInputDialog("Type in your username (leave empty for guest)", null);
+		
+		// Check if the the login dialog was canceled by the user 
+		if(username == null) {
+			// close connection and continue offline
+			this.closeConnection();
+			return;
+		}
+		
+		// For registered players we also need the password for authetification
 		String password = "";
-		if(username == null || username.length() < 1) {
+		if(username.length() < 1) {
 			this.playAsGuest = true;
 		} else {
 			password = JOptionPane.showInputDialog("Type in your password");
