@@ -176,6 +176,13 @@ public class Connection {
 	public void closeConnection() {
 		if(this.clientSocket != null && this.clientSocket.isConnected()) 
 		{
+			// Send Logout message if the player was logged in
+			if(this.loggedIn) {
+				MsgLogout msg = new MsgLogout();
+				this.sendMessageToServer(msg);
+			}
+			
+			// Close the connection at last
 			try {
 				this.clientSocket.close();
 			} catch (IOException e) {
