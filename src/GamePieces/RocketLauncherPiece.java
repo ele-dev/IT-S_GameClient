@@ -27,7 +27,7 @@ public class RocketLauncherPiece extends GamePiece{
 	boolean startedAttack = false;
 	
 	public RocketLauncherPiece(boolean isEnemy, BoardRectangle boardRect,CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, Commons.nameRocketLauncher, boardRect, Commons.maxHealthRocketLauncher, Commons.dmgRocketLauncher, commanderGamePiece);
+		super(isEnemy, Commons.nameRocketLauncher, boardRect, Commons.maxHealthRocketLauncher, Commons.dmgRocketLauncher,Commons.MovementRangeRocketLauncher, commanderGamePiece);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -65,8 +65,8 @@ public class RocketLauncherPiece extends GamePiece{
 	}
 	
 	public boolean checkMoveRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.posRow;
-		int column = this.boardRect.posColumn;
+		int row = this.boardRect.row;
+		int column = this.boardRect.column;
 		if(row == selectedRow && column == selectedColumn) {
 			return false;
 		}
@@ -84,7 +84,7 @@ public class RocketLauncherPiece extends GamePiece{
 
 
 	public boolean checkMoveColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.posColumn;
+		int column = this.boardRect.column;
 		if(column+1==selectedColumn) {
 			return true;
 		}
@@ -107,8 +107,8 @@ public class RocketLauncherPiece extends GamePiece{
 
 
 	public boolean checkAttackRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.posRow;
-		int column = this.boardRect.posColumn;
+		int row = this.boardRect.row;
+		int column = this.boardRect.column;
 		
 		if(row == selectedRow && column == selectedColumn) {
 			return false;
@@ -133,8 +133,8 @@ public class RocketLauncherPiece extends GamePiece{
 
 
 	public boolean checkAttackColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.posColumn;
-		int row = this.boardRect.posRow;
+		int column = this.boardRect.column;
+		int row = this.boardRect.row;
 		if(column+3==selectedColumn) {
 			for(int i = -3;i<4;i++) {
 				if(row + i == selectedRow) {

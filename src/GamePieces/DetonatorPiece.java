@@ -17,7 +17,7 @@ public class DetonatorPiece extends GamePiece{
 	ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
 	
 	public DetonatorPiece(boolean isEnemy,BoardRectangle boardRect, CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, Commons.nameDetonator, boardRect, Commons.maxHealthDetonator, Commons.dmgDetonator, commanderGamePiece);
+		super(isEnemy, Commons.nameDetonator, boardRect, Commons.maxHealthDetonator, Commons.dmgDetonator,Commons.MovementRangeDetonator, commanderGamePiece);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -43,8 +43,8 @@ public class DetonatorPiece extends GamePiece{
 	}
 
 	public boolean checkMoveRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.posRow;
-		int column = this.boardRect.posColumn;
+		int row = this.boardRect.row;
+		int column = this.boardRect.column;
 		if(row == selectedRow && column == selectedColumn) {
 			return false;
 		}
@@ -62,7 +62,7 @@ public class DetonatorPiece extends GamePiece{
 
 
 	public boolean checkMoveColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.posColumn;
+		int column = this.boardRect.column;
 		if(column+1==selectedColumn) {
 			return true;
 		}
@@ -79,7 +79,7 @@ public class DetonatorPiece extends GamePiece{
 	public boolean checkAttacks(int selectedRow, int selectedColumn) {
 		if(checkAttackRows(selectedRow,selectedColumn) || checkAttackColumns(selectedRow,selectedColumn)) {
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.posRow == selectedRow && curBR.posColumn == selectedColumn && !curBR.isGap && !curBR.isWall) {
+				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isGap && !curBR.isWall) {
 					if(curBR.isDestructibleWall) {
 						return false;
 					}
@@ -94,8 +94,8 @@ public class DetonatorPiece extends GamePiece{
 
 
 	public boolean checkAttackRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.posRow;
-		int column = this.boardRect.posColumn;
+		int row = this.boardRect.row;
+		int column = this.boardRect.column;
 		if(row == selectedRow && column == selectedColumn) {
 			return false;
 		}
@@ -119,8 +119,8 @@ public class DetonatorPiece extends GamePiece{
 
 
 	public boolean checkAttackColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.posColumn;
-		int row = this.boardRect.posRow;
+		int column = this.boardRect.column;
+		int row = this.boardRect.row;
 		if(column+2==selectedColumn) {
 			for(int i = -2;i<3;i++) {
 				if(row + i == selectedRow) {

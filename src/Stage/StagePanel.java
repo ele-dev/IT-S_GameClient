@@ -203,6 +203,10 @@ public class StagePanel extends JPanel{
 		detEnemy = new DetonatorPiece(true, boardRectangles.get(69), enemyCommanderPiece);
 		gamePieces.add(detNotEnemy);
 		gamePieces.add(detEnemy);
+		
+		for(GamePiece curGP : gamePieces) {
+			curGP.initPathFinder();
+		}
 
 	}
 	
@@ -244,6 +248,7 @@ public class StagePanel extends JPanel{
 	private void updateStage() {
 		GamePiece.updateSpritePointerElevation();
 		updateParticles();
+		BoardRectangle pHBR = curHoverBoardRectangle;
 		curHoverBoardRectangle = null;
 		for(BoardRectangle curBR : boardRectangles) {
 			if(mousePos != null) {
@@ -252,6 +257,9 @@ public class StagePanel extends JPanel{
 			if(curBR.isHover) {
 				curBR.tryAnimate(gamePieces);
 				curHoverBoardRectangle = curBR;
+				if(pHBR != curHoverBoardRectangle) {
+					changedHoverBR();
+				}
 			}
 		}
 		camera.move();
@@ -264,9 +272,13 @@ public class StagePanel extends JPanel{
 		boolean noOneAttacking = true;
 		for(int i = 0;i<gamePieces.size();i++) {
 			GamePiece curGP = gamePieces.get(i);
-			if(curHoverBoardRectangle != null) {
-				curGP.updateGamePiece(curHoverBoardRectangle);
+			if(curGP.isMoving) {
+				curGP.updateMove();
 			}
+			
+			curGP.updateGamePiece();
+			
+			
 			
 			curGP.updateMovesPanelPos(camera.getPos(), mousePos);
 			if(curGP.getIsAttacking()) {
@@ -282,6 +294,7 @@ public class StagePanel extends JPanel{
 	}
 	// draws all GamePieces
 	private void drawAllGamePieces(Graphics2D g2d) {
+		
 		for(GamePiece curGP : gamePieces) {
 			curGP.drawGamePiece(g2d,curHoverBoardRectangle);
 			// for devs
@@ -470,6 +483,7 @@ public class StagePanel extends JPanel{
 			curBR.isPossibleMove = false;
 		}
 	}
+	
 	// restores the Attack and Move ability of each GamePiece
 	private void restoreMovesAndAttacks() {
 		for(GamePiece curGP : gamePieces) {
@@ -508,9 +522,10 @@ public class StagePanel extends JPanel{
 		for(GamePiece curGP : gamePieces) {
 			if(!curGP.getIsDead() && curGP.isSelected) {
 				for(BoardRectangle curBR : boardRectangles) {
-					if(curBR.isPossibleMove && curBR.rect.contains(mousePos)) {
-						curGP.move(curBR);
+					if(curBR.isPossibleMove && curBR == curHoverBoardRectangle) {
+						curGP.startMove();
 						curGP.isSelected = false;
+						return;
 					}
 				}
 			}
@@ -528,6 +543,7 @@ public class StagePanel extends JPanel{
 						}else {
 							curGP.startAttack(curBR,gamePieces);
 							curGP.isSelected = false;
+							return;
 						}
 						
 					}
@@ -553,6 +569,14 @@ public class StagePanel extends JPanel{
 			return true;
 		}
 		return false;
+	}
+	
+	private void changedHoverBR() {
+		for(GamePiece curGp : gamePieces) {
+			if(curGp.movesPanel.getMoveButtonIsActive() && curGp.isSelected) {
+				curGp.resetPathFinder(curGp.boardRect, curHoverBoardRectangle);
+			}
+		}
 	}
 	
 	class ML implements MouseListener{

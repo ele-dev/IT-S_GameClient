@@ -24,7 +24,7 @@ public class FlamethrowerPiece extends GamePiece {
 	
 	public FlamethrowerPiece(boolean isEnemy, BoardRectangle boardRect,
 			CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, Commons.nameFlameThrower, boardRect, Commons.maxHealthFlameThrower, Commons.dmgFlameThrower, commanderGamePiece);
+		super(isEnemy, Commons.nameFlameThrower, boardRect, Commons.maxHealthFlameThrower, Commons.dmgFlameThrower,Commons.MovementRangeFlameThrower, commanderGamePiece);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -52,8 +52,8 @@ public class FlamethrowerPiece extends GamePiece {
 	}
 
 	public boolean checkMoveRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.posRow;
-		int column = this.boardRect.posColumn;
+		int row = this.boardRect.row;
+		int column = this.boardRect.column;
 		
 		if(row == selectedRow && column == selectedColumn) {
 			return false;
@@ -72,7 +72,7 @@ public class FlamethrowerPiece extends GamePiece {
 
 
 	public boolean checkMoveColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.posColumn;
+		int column = this.boardRect.column;
 		if(column+1==selectedColumn) {
 			return true;
 		}
@@ -89,7 +89,7 @@ public class FlamethrowerPiece extends GamePiece {
 	public boolean checkAttacks(int selectedRow, int selectedColumn) {
 		if(checkAttackRows(selectedRow,selectedColumn) && checkAttackColumns(selectedRow,selectedColumn)) {
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.posRow == selectedRow && curBR.posColumn == selectedColumn && !curBR.isGap && !curBR.isWall) {
+				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isGap && !curBR.isWall) {
 					
 					if(checkIfBoardRectangleInSight(curBR)) {
 						return true;
@@ -102,8 +102,8 @@ public class FlamethrowerPiece extends GamePiece {
 
 
 	public boolean checkAttackRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.posRow;
-		int column = this.boardRect.posColumn;
+		int row = this.boardRect.row;
+		int column = this.boardRect.column;
 		if(row == selectedRow && column == selectedColumn) {
 			return false;
 		}
@@ -126,8 +126,8 @@ public class FlamethrowerPiece extends GamePiece {
 
 
 	public boolean checkAttackColumns(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.posRow;
-		int column = this.boardRect.posColumn;
+		int row = this.boardRect.row;
+		int column = this.boardRect.column;
 		for(int i = 0;i<2;i++) {
 			if(column+i==selectedColumn) {
 				return true;
