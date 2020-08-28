@@ -294,7 +294,6 @@ public class StagePanel extends JPanel{
 	}
 	// draws all GamePieces
 	private void drawAllGamePieces(Graphics2D g2d) {
-		
 		for(GamePiece curGP : gamePieces) {
 			curGP.drawGamePiece(g2d,curHoverBoardRectangle);
 			// for devs

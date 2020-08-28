@@ -34,4 +34,9 @@ public abstract class GenericMessage implements Serializable {
 		this.msgID = 0;
 	}
 	
+	public int getMessageID()
+	{
+		return this.msgID;
+	}
+	
 }

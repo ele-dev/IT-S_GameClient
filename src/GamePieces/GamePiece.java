@@ -33,6 +33,7 @@ public abstract class GamePiece {
 	private boolean isDead = false;
 	private float health,maxHealth;
 	private float dmg;
+
 	private int movementRange;
 	
 	public boolean isSelected = false;
@@ -69,6 +70,8 @@ public abstract class GamePiece {
 	public GamePiece(boolean isEnemy,String name,BoardRectangle boardRect,int maxHealth,float dmg,int movementRange,CommanderGamePiece commanderGamePiece) {
 		this.isEnemy = isEnemy;
 		this.boardRect = boardRect;
+
+    
 		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
 		if(isEnemy) {
 			this.c = Commons.enemyColor;
@@ -88,7 +91,7 @@ public abstract class GamePiece {
 		this.movesPanel = new GPMovesSelection(this);
 		spritePointerX = boardRect.getCenterX();
 		spritePointerY = boardRect.getCenterY()-60;
-				
+
 		if(commanderGamePiece != null) {
 			this.commanderGamePiece = commanderGamePiece;
 		}else {
@@ -223,6 +226,7 @@ public abstract class GamePiece {
 	}
 	
 	// checks if the piece is dead and sets it as dead if it is ,also updates the Position of the Hitbox
+
 	public void updatePosPointer(int x, int y) {
 		int size = Commons.boardRectSize;
 		if(isMoving) {
@@ -336,7 +340,7 @@ public abstract class GamePiece {
 				int textHeight = metrics.getHeight();
 				int textWidth = metrics.stringWidth(text);
 				g2d.drawString(name, cx - textWidth/2, cy + textHeight/3);
-			}
+      }
 		}
 	}
 	
@@ -394,12 +398,14 @@ public abstract class GamePiece {
 		}
 		
 		
+
 		angleDesired = (float) Math.toDegrees(Math.atan2(ak*-1, gk));
 		if(angleDesired +180 == angle) {
 			angleDesired+= 10;
 		}
 		
 		angle = Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
+
 	}
 	// draws a HealthBar and a String with The HealthAmount
 	public void drawHealth(Graphics2D g2d) {
@@ -411,10 +417,12 @@ public abstract class GamePiece {
 			int textWidth = metrics.stringWidth(s);
 	
 			g2d.setColor(new Color(0,0,0,200));
+
 			Rectangle maxHealthRect = new Rectangle((int)getRectHitbox().getCenterX() - (int)(getRectHitbox().width*0.75), (int)getRectHitbox().getCenterY() - boardRect.getSize(), boardRect.getSize(), 15);
 			g2d.fill(maxHealthRect);
 			g2d.setColor(Commons.cHealth);
 			g2d.fillRect((int)getRectHitbox().getCenterX() - (int)(getRectHitbox().width*0.75),(int)getRectHitbox().getCenterY() - boardRect.getSize(), (int)(boardRect.getSize()*(health/maxHealth)), 15);
+
 			g2d.setStroke(new BasicStroke(3));
 			g2d.setColor(Color.BLACK);
 			g2d.draw(maxHealthRect);

@@ -17,6 +17,7 @@ public abstract class CommanderGamePiece extends GamePiece {
 	public CommanderGamePiece(boolean isEnemy, String name, BoardRectangle boardRect,
 			 int maxHealth, float dmg,int movementRange, CommanderGamePiece commanderGamePiece) {
 		super(isEnemy, name, boardRect, maxHealth, dmg, movementRange, commanderGamePiece);
+
 	}
 	
 	public void updateUltCharge(float value) {
@@ -28,7 +29,6 @@ public abstract class CommanderGamePiece extends GamePiece {
 	}
 	
 	public void drawUltCharge(Graphics2D g2d) {
-		
 		Rectangle rectUltChargeBar = new Rectangle((int)getRectHitbox().getCenterX() - (int)(getRectHitbox().width*0.75),
 				(int)getRectHitbox().getCenterY() + boardRect.getSize()/4, boardRect.getSize(), 15);
 		g2d.setColor(new Color(0,0,0,200));
