@@ -66,9 +66,6 @@ public class GPMovesSelection {
 		if(attackButton.isActive) {
 			parentGamepiece.showPossibleAttacks();
 		}
-		if(moveButton.isActive) {
-			parentGamepiece.showPossibleMoves();
-		}
 	}
 	
 	public void tryPressButton() {

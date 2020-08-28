@@ -10,7 +10,6 @@ import GamePieces.CommanderGamePiece;
 import Stage.Commons;
 
 public class UltChargeOrb extends Particle{
-	private int size;
 	private Rectangle rectHitbox;
 	private double rotationDelay = 3;
 	private double acc = 0.1;
@@ -24,7 +23,7 @@ public class UltChargeOrb extends Particle{
 		super(x, y, (float)(Math.random()*360), 0, Commons.cUltCharge, 0.5f);
 		this.x = x;
 		this.y = y;
-		this.size = (int)(Math.random()*3+6);
+		int size = (int)(Math.random()*3+6);
 		this.rectHitbox = new Rectangle((int)x-size/2,(int)y-size/2,size,size);
 		this.commanderGamePiece = commanderGamePiece;
 	}
@@ -77,7 +76,7 @@ public class UltChargeOrb extends Particle{
 		
 		fadeRectangles.add(rectHitbox);
 		fadeRectangleAlphas.add(255);
-		rectHitbox = new Rectangle((int)x-size/2,(int)y-size/2,size,size);
+		rectHitbox = new Rectangle((int)(x-rectHitbox.getWidth()/2),(int)(y-rectHitbox.getHeight()/2),(int)rectHitbox.getWidth(),(int)rectHitbox.getHeight());
 	}
 	
 	public void updateAngle() {

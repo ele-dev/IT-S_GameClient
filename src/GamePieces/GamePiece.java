@@ -15,6 +15,8 @@ import javax.swing.Timer;
 
 import Buttons.GPMovesSelection;
 import Particles.UltChargeOrb;
+import PathFinder.AStarPathFinder;
+import PathFinder.PathCell;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.DmgLabel;
@@ -24,17 +26,15 @@ import Stage.StagePanel;
 
 public abstract class GamePiece {
 	public BoardRectangle boardRect;
-	protected Rectangle rectHitbox;
 	private Rectangle rectShowTurret;
-	protected Color c;
-	private Color cTurret;
-	private Color cExecutedAttack;
+	protected Color c,cTurret;
 	private String name;
 	protected float angle,angleDesired;
 	private boolean isDead = false;
 	private float health,maxHealth;
 	private float dmg;
-	private Font fPieces;
+
+	private int movementRange;
 	
 	public boolean isSelected = false;
 	private boolean isEnemy;
@@ -48,7 +48,7 @@ public abstract class GamePiece {
 	protected Arc2D aimArc;
 	
 	protected boolean isAttacking = false;
-	
+	public boolean isMoving = false;
 	public GPMovesSelection movesPanel;
 	private ArrayList<Line2D> sightLines = new ArrayList<Line2D>();
 	
@@ -59,15 +59,19 @@ public abstract class GamePiece {
 	private static double speV = 0.3;
 	private Sprite spritePointer,spritePointerDarkened;
 	
-	private float rectSizeInc = 0;
 	private int dmgFlashCountDown = 0;
 	private CommanderGamePiece commanderGamePiece;
 	
-	public GamePiece(boolean isEnemy,String name,BoardRectangle boardRect,int maxHealth,float dmg,CommanderGamePiece commanderGamePiece) {
+	
+	// pathfinding
+	AStarPathFinder pathFinder;
+	GamePieceBase gamePieceBase;
+	
+	public GamePiece(boolean isEnemy,String name,BoardRectangle boardRect,int maxHealth,float dmg,int movementRange,CommanderGamePiece commanderGamePiece) {
 		this.isEnemy = isEnemy;
 		this.boardRect = boardRect;
-		rectHitbox = new Rectangle((int)(boardRect.getCenterX()-boardRect.getSize()*0.3),(int)(boardRect.getCenterY()-boardRect.getSize()*0.3),
-				(int)(boardRect.getSize()*0.6),(int)(boardRect.getSize()*0.6));
+
+    
 		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
 		if(isEnemy) {
 			this.c = Commons.enemyColor;
@@ -76,22 +80,23 @@ public abstract class GamePiece {
 			this.c = Commons.notEnemyColor;
 			this.cTurret = Commons.notEnemyColorTurret;
 		} 
+		gamePieceBase = new GamePieceBase(boardRect.getCenterX(), boardRect.getCenterY(), rectShowTurret.width+10, rectShowTurret.width+10, c);
+
 		this.name = name;
 		this.maxHealth = maxHealth;
 		this.health = maxHealth;
 		this.dmg = dmg;
-		this.cExecutedAttack =new Color(c.getRed()/4,c.getGreen()/4,c.getBlue()/4);
-		this.fPieces = new Font("Arial",Font.BOLD,30);
+		this.movementRange = movementRange;
 
 		this.movesPanel = new GPMovesSelection(this);
 		spritePointerX = boardRect.getCenterX();
 		spritePointerY = boardRect.getCenterY()-60;
+
 		if(commanderGamePiece != null) {
 			this.commanderGamePiece = commanderGamePiece;
 		}else {
 			this.commanderGamePiece = (CommanderGamePiece) this;
 		}
-		
 		if(isEnemy) {
 			ArrayList<String> spriteLinks = new ArrayList<String>();
 			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/EnemyPointer.png");
@@ -108,6 +113,63 @@ public abstract class GamePiece {
 			spritePointerDarkened = new Sprite(spriteLinks1, Commons.boardRectSize/2,Commons.boardRectSize/2, 0);
 		}
 	}	
+	
+	public void initPathFinder() {
+		ArrayList<PathCell> pathCells = new ArrayList<PathCell>();
+		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+			BoardRectangle curBR  = StagePanel.boardRectangles.get(i);
+			pathCells.add(new PathCell(curBR.getX(), curBR.getY(), Commons.boardRectSize, curBR.row, curBR.column,i));
+				
+			if(curBR.isGap || curBR.isDestructibleWall || curBR.isWall) {
+				pathCells.get(i).setIsWall(true);
+			}
+			for(GamePiece curGP : StagePanel.gamePieces) {
+				if(curGP.boardRect == StagePanel.boardRectangles.get(i) && !curGP.isDead && curGP != this) {
+					pathCells.get(i).setIsWall(true);
+					break;
+				}
+			}
+		}
+		pathFinder = new AStarPathFinder(pathCells);
+	}
+	
+	public void resetPathFinder(BoardRectangle startBR, BoardRectangle endBR) {
+		if(endBR.isWall || endBR.isDestructibleWall || startBR.isWall || startBR.isDestructibleWall){
+			return;
+		}
+		initPathFinder();
+		
+		PathCell startPathCell = null, endPathCell =  null;
+		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+			if(startBR == StagePanel.boardRectangles.get(i)) {
+				startPathCell = pathFinder.pathCells.get(i);
+			}
+			if(endBR == StagePanel.boardRectangles.get(i)){
+				endPathCell = pathFinder.pathCells.get(i);
+			}
+		}
+		if(startPathCell != endPathCell) {
+			pathFinder.setPathEnds(startPathCell, endPathCell);
+		}
+		if(pathFinder.getPathPathCells().size() == 0) {
+			return;
+		}
+		gamePieceBase.pathBoardRectangles.clear();
+		for(int j = pathFinder.getPathPathCells().size()-1;j>=pathFinder.getPathPathCells().size()-(movementRange+1) && j>= 0;j--) {
+			for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+				if(pathFinder.getPathPathCells().get(j).getIndex() == i) {
+					gamePieceBase.pathBoardRectangles.add(StagePanel.boardRectangles.get(i));
+					break;
+				}
+			}
+		}
+		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+			StagePanel.boardRectangles.get(i).isPossibleMove = false;
+		}
+		for(BoardRectangle curBr : gamePieceBase.pathBoardRectangles) {
+			curBr.isPossibleMove = true;
+		}
+	}
 	
 	public String getName() {
 		return name;
@@ -126,7 +188,7 @@ public abstract class GamePiece {
 	}
 	
 	public Rectangle getRectHitbox() {
-		return rectHitbox;
+		return gamePieceBase.getRectHitbox();
 	}
 	
 	public CommanderGamePiece getCommanderGamePiece() {
@@ -136,15 +198,15 @@ public abstract class GamePiece {
 	public GamePiece getCurrentTargetGamePiece() {
 		return currentTargetGamePiece;
 	}
-	public double getHealth() {
+	public float getHealth() {
 		return health;
 	}
 
-	public double getMaxHealth() {
+	public float getMaxHealth() {
 		return maxHealth;
 	}
 
-	public double getDmg() {
+	public float getDmg() {
 		return dmg;
 	}
 	
@@ -157,55 +219,32 @@ public abstract class GamePiece {
 	}
 
 	public int getCenterX() {
-		return (int) rectHitbox.getCenterX();
+		return (int) getRectHitbox().getCenterX();
 	}
 	public int getCenterY() {
-		return (int) rectHitbox.getCenterY();
+		return (int) getRectHitbox().getCenterY();
 	}
 	
 	// checks if the piece is dead and sets it as dead if it is ,also updates the Position of the Hitbox
-	public void updatePos(BoardRectangle curHBR) {
-		if(health<=0) {
-			isDead = true;
-		}
-		int size = curHBR.getSize();
-		if(isSelected && movesPanel.getMoveButtonIsActive() && curHBR.isPossibleMove) {
-			rectShowTurret.setBounds((int)(-size*0.2),(int)(-size*0.2),(int)(size*0.4),(int)(size*0.4));
-			rectHitbox = new Rectangle((int)(curHBR.getCenterX()-size*0.3-rectSizeInc/2),(int)(curHBR.getCenterY()-size*0.3-rectSizeInc/2)-(int)(size*1.5),
-					(int)(size*0.6+rectSizeInc),(int)(size*0.6+rectSizeInc));
-			spritePointerX = curHBR.getCenterX();
-			spritePointerY = curHBR.getCenterY()-60-(int)(size*1.5);
+
+	public void updatePosPointer(int x, int y) {
+		int size = Commons.boardRectSize;
+		if(isMoving) {
+			spritePointerX = x;
+			spritePointerY = y-60-(int)(size*1.5);
 		}else {
-			rectShowTurret.setBounds((int)(-size*0.2),(int)(-size*0.2),(int)(size*0.4),(int)(size*0.4));
-			rectHitbox = new Rectangle((int)(boardRect.getCenterX()-size*0.3-rectSizeInc/2),(int)(boardRect.getCenterY()-size*0.3-rectSizeInc/2),
-				(int)(size*0.6+rectSizeInc),(int)(size*0.6+rectSizeInc));
 			spritePointerX = boardRect.getCenterX();
 			spritePointerY = boardRect.getCenterY()-60;
 		}
 		
 	}
-	// sets each BoardRectangle to being a possible movePosition if it is(changes color accordingly)
-	public void showPossibleMoves() {
-		if(isSelected) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				boolean nobodyThere = true;
-				for(GamePiece curGP : StagePanel.gamePieces) {
-					if(curGP.boardRect.posRow == curBR.posRow && curGP.boardRect.posColumn == curBR.posColumn && !curGP.isDead) {
-						nobodyThere = false;
-					}
-				}
-				if(this.checkMoves(curBR.posRow, curBR.posColumn) && nobodyThere) {
-					curBR.isPossibleMove = true;
-				}
-			}
-		}
-	}
+	
 	// sets each BoardRectangle to being a possible attackPosition if it is(changes color accordingly)
 	public void showPossibleAttacks() {
 		if(isSelected) {
 			sightLines.clear();
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(checkAttacks(curBR.posRow, curBR.posColumn) && !curBR.isWall) {
+				if(checkAttacks(curBR.row, curBR.column) && !curBR.isWall) {
 					curBR.isPossibleAttack = true;
 				}
 			}
@@ -237,24 +276,6 @@ public abstract class GamePiece {
 		}
 	}
 	
-	// checks if the PositionParameter is a valid position to move to and returns true if it is
-	// abstract because every GamePiece has different move pattern
-	public boolean checkMoves(int selectedRow,int selectedColumn) {
-		if(checkMoveRows(selectedRow,selectedColumn) && checkMoveColumns(selectedRow,selectedColumn)) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.posRow == selectedRow && curBR.posColumn == selectedColumn && (curBR.isGap || curBR.isWall || curBR.isDestructibleWall)) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-	
-	public abstract boolean checkMoveRows(int selectedRow, int selectedColumn);
-	
-	public abstract boolean checkMoveColumns(int selectedRow, int selectedColumn);
-	
 	// checks if the PositionParameter is a valid position to attack and returns true if it is
 	// is abstract because every GamePiece has a different attack pattern
 	public abstract boolean checkAttacks(int selectedRow, int selectedColumn);
@@ -285,17 +306,17 @@ public abstract class GamePiece {
 	// draws the GamePiece	
 	public void drawGamePiece(Graphics2D g2d,BoardRectangle curHBR) {
 		if(!isDead) {
+			gamePieceBase.drawGamePieceBase(g2d);
 			int cx = getCenterX();
 			int cy = getCenterY();
 			g2d.setColor(c);
 			// draws different when it already attacked
 			if(hasExecutedAttack) {
-				g2d.setColor(cExecutedAttack);
+				g2d.setColor(new Color(c.getRed()/4,c.getGreen()/4,c.getBlue()/4));
 			}
 			if(dmgFlashCountDown > 0) {
 				g2d.setColor(Color.WHITE);
 			}
-			g2d.fill(rectHitbox);
 			if(isSelected) {
 				drawSelect(g2d);
 			}
@@ -313,17 +334,13 @@ public abstract class GamePiece {
 				g2d.translate(-cx, -cy);
 				
 				g2d.setColor(Color.BLACK);
-				g2d.setFont(fPieces);
+				g2d.setFont(new Font("Arial",Font.BOLD,30));
 				FontMetrics metrics = g2d.getFontMetrics();
 				String text = name;
 				int textHeight = metrics.getHeight();
 				int textWidth = metrics.stringWidth(text);
 				g2d.drawString(name, cx - textWidth/2, cy + textHeight/3);
-			}
-			if(isSelected && movesPanel.getMoveButtonIsActive() && curHBR != null && curHBR.isPossibleMove) {
-				g2d.setColor(new Color(20,20,20,150));
-				g2d.fillRect((int)rectHitbox.getCenterX() - rectHitbox.width/2, (int)(rectHitbox.getCenterY()- rectHitbox.height/2 +boardRect.getSize()*1.5) , rectHitbox.width, rectHitbox.height);
-			}
+      }
 		}
 	}
 	
@@ -345,17 +362,14 @@ public abstract class GamePiece {
 		}
 	}
 	// updates the GamePiece (does things like updating the attack or moves rockets)
-	public void updateGamePiece(BoardRectangle curHoverBoardRectangle) {
-		updatePos(curHoverBoardRectangle);
+	public void updateGamePiece() {
+		updatePosPointer(0,0);
 		
 		if(currentTargetGamePiece != null) {
 			updateAngle(false);
 		}
 		if(currentTargetBoardRectangle != null) {
 			updateAngle(true);
-		}
-		if(rectSizeInc > 0) {
-			rectSizeInc -= 1;
 		}
 		if(dmgFlashCountDown > 0) {
 			dmgFlashCountDown--;
@@ -384,21 +398,14 @@ public abstract class GamePiece {
 		}
 		
 		
+
 		angleDesired = (float) Math.toDegrees(Math.atan2(ak*-1, gk));
 		if(angleDesired +180 == angle) {
 			angleDesired+= 10;
 		}
 		
-		double ak1 = Math.cos(Math.toRadians(angleDesired+90));
-		double gk1 = Math.sin(Math.toRadians(angleDesired+90));
-		
-		double ak2 = Math.cos(Math.toRadians(angle+90)) * rotationDelay;
-		double gk2 = Math.sin(Math.toRadians(angle+90)) * rotationDelay;
+		angle = Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
 
-		double ak3 = (ak1+ak2*rotationDelay)/(rotationDelay+1);
-		double gk3 = (gk1+gk2*rotationDelay)/(rotationDelay+1);
-		
-		angle = (float) Math.toDegrees(Math.atan2(ak3*-1, gk3));
 	}
 	// draws a HealthBar and a String with The HealthAmount
 	public void drawHealth(Graphics2D g2d) {
@@ -410,10 +417,12 @@ public abstract class GamePiece {
 			int textWidth = metrics.stringWidth(s);
 	
 			g2d.setColor(new Color(0,0,0,200));
-			Rectangle maxHealthRect = new Rectangle((int)rectHitbox.getCenterX() - (int)(rectHitbox.width*0.75), (int)rectHitbox.getCenterY() - boardRect.getSize(), boardRect.getSize(), 15);
+
+			Rectangle maxHealthRect = new Rectangle((int)getRectHitbox().getCenterX() - (int)(getRectHitbox().width*0.75), (int)getRectHitbox().getCenterY() - boardRect.getSize(), boardRect.getSize(), 15);
 			g2d.fill(maxHealthRect);
 			g2d.setColor(Commons.cHealth);
-			g2d.fillRect((int)rectHitbox.getCenterX() - (int)(rectHitbox.width*0.75),(int)rectHitbox.getCenterY() - boardRect.getSize(), (int)(boardRect.getSize()*(health/maxHealth)), 15);
+			g2d.fillRect((int)getRectHitbox().getCenterX() - (int)(getRectHitbox().width*0.75),(int)getRectHitbox().getCenterY() - boardRect.getSize(), (int)(boardRect.getSize()*(health/maxHealth)), 15);
+
 			g2d.setStroke(new BasicStroke(3));
 			g2d.setColor(Color.BLACK);
 			g2d.draw(maxHealthRect);
@@ -432,7 +441,7 @@ public abstract class GamePiece {
 	public void drawSelect(Graphics2D g2d) {
 		g2d.setStroke(new BasicStroke(4));
 		g2d.setColor(Color.GREEN);
-		g2d.draw(rectHitbox);
+		g2d.draw(getRectHitbox());
 	}
 	// damages the Piece (health--)
 	public void getDamaged(double dmg,CommanderGamePiece otherCommander) {
@@ -477,12 +486,19 @@ public abstract class GamePiece {
 		return false;
 	}
 	// moves the GamePiece to the parameter BoardRectangle and exhausts its moving ability
-	public void move(BoardRectangle boardRectangle) {
-		this.boardRect = boardRectangle;
+	public void startMove() {
 		movesPanel.setMoveButtonActive(false);
 		hasExecutedMove = true;
-		rectSizeInc = 5;
 		currentTargetGamePiece = null;
 		currentTargetBoardRectangle = null;
+		isMoving = true;
+		
+		gamePieceBase.curTargetPathCellIndex = 0;	
+	}
+	
+	public void updateMove() {
+		gamePieceBase.updateAngle();
+		gamePieceBase.move(this);
+		updatePosPointer((int)gamePieceBase.getX(), (int)gamePieceBase.getY());
 	}
 }

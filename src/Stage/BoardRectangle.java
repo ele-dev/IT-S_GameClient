@@ -15,7 +15,9 @@ import javax.swing.ImageIcon;
 import GamePieces.GamePiece;
 
 public class BoardRectangle {
-	public int posRow,posColumn;
+
+	public int row,column;
+
 	Color c;
 	public Rectangle rect;
 	public Color cPossibleMove;
@@ -35,9 +37,11 @@ public class BoardRectangle {
 	Sprite wallSprite,destructibleWallsprite;
 	Sprite groundSprite;
 	
-	public BoardRectangle(int x, int y, int size, int posRow, int posColumn,boolean isTile1,int index) {
-		this.posRow = posRow;
-		this.posColumn = posColumn;
+	public BoardRectangle(int x, int y, int size, int row, int column,boolean isTile1,int index) {
+		this.row = row;
+		this.column = column;
+
+
 		this.rect = new Rectangle(x,y,size,size);
 		
 		this.cPossibleMove = new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),80);
@@ -85,16 +89,16 @@ public class BoardRectangle {
 		boolean downConnected = false;
 		for(BoardRectangle curBR : stagePanel.boardRectangles) {
 			if(curBR.isWall) {
-				if(curBR.posRow == posRow+1 && curBR.posColumn == posColumn) {
+				if(curBR.row == row+1 && curBR.column == column) {
 					downConnected = true;
 				}
-				if(curBR.posRow == posRow-1 && curBR.posColumn == posColumn) {
+				if(curBR.row == row-1 && curBR.column == column) {
 					upConnected = true;
 				}
-				if(curBR.posRow == posRow && curBR.posColumn == posColumn+1) {
+				if(curBR.row == row && curBR.column == column+1) {
 					rightConnected = true;
 				}
-				if(curBR.posRow == posRow && curBR.posColumn == posColumn-1) {
+				if(curBR.row == row && curBR.column == column-1) {
 					leftConnected = true;
 				}
 			}

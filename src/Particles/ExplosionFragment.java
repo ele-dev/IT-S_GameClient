@@ -9,7 +9,7 @@ import java.awt.geom.Ellipse2D;
 public class ExplosionFragment {
 	private float x,y;
 	private float size;
-	Color c;
+	private Color c;
 	private Ellipse2D oval;
 	private float v;
 	private float angle;
@@ -30,14 +30,19 @@ public class ExplosionFragment {
 			trail[i] = new Point((int)x,(int)y);
 		}
 	}
+	
+	public Color  getColor() {
+		return c;
+	}
+	
 	// moves the explosionFragment in the direction of the angle and at the speed of v (velocity)
 	public void move() {
 		if(v>0.1) {
 			v -= airResistance;
 		}
 		
-		double vX = Math.cos(Math.toRadians(this.angle + 90)) * v;
-		double vY = Math.sin(Math.toRadians(this.angle + 90)) * v;
+		double vX = Math.cos(Math.toRadians(angle + 90)) * v;
+		double vY = Math.sin(Math.toRadians(angle + 90)) * v;
 		
 		this.x += vX;
 		this.y += vY + 0.2;

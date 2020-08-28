@@ -10,7 +10,7 @@ public abstract class Particle {
 	protected float v;
 	protected boolean isDestroyed = false;
 	
-	public Particle(float x, float y, float angle, float rotation, Color c, float v) {
+	protected Particle(float x, float y, float angle, float rotation, Color c, float v) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
@@ -19,7 +19,7 @@ public abstract class Particle {
 		this.c = c;
 		this.v = v;
 	}
-	public Particle(float x, float y) {
+	protected Particle(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}

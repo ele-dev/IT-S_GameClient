@@ -68,7 +68,6 @@ class MoveButton {
 	public void press() {
 		if(!parentGamepiece.getHasExecutedMove() && !parentGamepiece.getHasExecutedAttack()) {
 			isActive = true;
-			parentGamepiece.showPossibleMoves();
 		}else {
 			isActive = false;
 		}

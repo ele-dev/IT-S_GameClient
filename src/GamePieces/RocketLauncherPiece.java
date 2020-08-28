@@ -27,7 +27,7 @@ public class RocketLauncherPiece extends GamePiece{
 	boolean startedAttack = false;
 	
 	public RocketLauncherPiece(boolean isEnemy, BoardRectangle boardRect,CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, Commons.nameRocketLauncher, boardRect, Commons.maxHealthRocketLauncher, Commons.dmgRocketLauncher, commanderGamePiece);
+		super(isEnemy, Commons.nameRocketLauncher, boardRect, Commons.maxHealthRocketLauncher, Commons.dmgRocketLauncher,Commons.MovementRangeRocketLauncher, commanderGamePiece);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -61,13 +61,12 @@ public class RocketLauncherPiece extends GamePiece{
 		for(int i = 0;i<rockets.size();i++) {		
 			Rocket curR = rockets.get(i);
 			curR.drawRocket(g2d);
-			curR.drawTrail(g2d);
 		}
 	}
 	
 	public boolean checkMoveRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.posRow;
-		int column = this.boardRect.posColumn;
+		int row = this.boardRect.row;
+		int column = this.boardRect.column;
 		if(row == selectedRow && column == selectedColumn) {
 			return false;
 		}
@@ -85,7 +84,7 @@ public class RocketLauncherPiece extends GamePiece{
 
 
 	public boolean checkMoveColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.posColumn;
+		int column = this.boardRect.column;
 		if(column+1==selectedColumn) {
 			return true;
 		}
@@ -108,8 +107,8 @@ public class RocketLauncherPiece extends GamePiece{
 
 
 	public boolean checkAttackRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.posRow;
-		int column = this.boardRect.posColumn;
+		int row = this.boardRect.row;
+		int column = this.boardRect.column;
 		
 		if(row == selectedRow && column == selectedColumn) {
 			return false;
@@ -134,8 +133,8 @@ public class RocketLauncherPiece extends GamePiece{
 
 
 	public boolean checkAttackColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.posColumn;
-		int row = this.boardRect.posRow;
+		int column = this.boardRect.column;
+		int row = this.boardRect.row;
 		if(column+3==selectedColumn) {
 			for(int i = -3;i<4;i++) {
 				if(row + i == selectedRow) {
@@ -170,28 +169,12 @@ public class RocketLauncherPiece extends GamePiece{
 		
 	}
 
-	// adds rocket to fly in an arc adds specific angle if its target is in a specific area from it 
+	
 	public void addRocketInArcFlight() {
-		double arcAngleOffset = 0;
-		if(angle<=0 && angle>=-180) {
-			arcAngleOffset = -90;
-		}
-		if(angle>=0 && angle<=180) {
-			arcAngleOffset = 90;
-		}
-		if(angle>=135 && angle<=180) {
-			arcAngleOffset = 0;
-		}
-		if(angle<=-135 && angle>= -180) {
-			arcAngleOffset = 0;
-		}
-		if(angle>=-45 && angle<=45) {
-			arcAngleOffset = 0;
-		}
 		if(isWallAttack) {
-			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, angle + (Math.random()-0.5)*spreadAngle + arcAngleOffset, null, currentTargetBoardRectangle));
+			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, (float) (angle + (Math.random()-0.5)*spreadAngle), null, currentTargetBoardRectangle));
 		}else {
-			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, angle + (Math.random()-0.5)*spreadAngle + arcAngleOffset, getCurrentTargetGamePiece(), null));
+			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, (float) (angle + (Math.random()-0.5)*spreadAngle), getCurrentTargetGamePiece(), null));
 		}
 		
 	}
@@ -234,12 +217,11 @@ public class RocketLauncherPiece extends GamePiece{
 		
 		for(int i = 0;i<rockets.size();i++) {
 			Rocket curR = rockets.get(i);
-			curR.updateTrail();
 			curR.addTrailParticle();
 			curR.checkHitEnemy();
 			curR.updateAngle();
 			curR.move();
-			if(curR.isDestroyed) {
+			if(curR.isDestroyed()) {
 				rockets.remove(i);
 			}
 		}
