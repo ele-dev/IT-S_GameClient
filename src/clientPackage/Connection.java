@@ -18,21 +18,24 @@ public class Connection {
 	private Socket clientSocket;
 	private String username;
 	
+	// Data I/O streams for class (de)serialization
 	ObjectOutputStream objOut = null;
 	ObjectInputStream objIn = null;
 	
-	boolean playAsGuest;
-	boolean isConnected;
-	boolean loggedIn;
+	// State indicator variables
+	private boolean playAsGuest;
+	private boolean isConnected;
+	private boolean loggedIn;
 	
-	// Constructor
+	// Constructor attempts to connect to server
 	public Connection() {
 		
+		// Initialize state indicators assuming worst case 
 		this.playAsGuest = false;
 		this.isConnected = false;
 		this.loggedIn = false;
 		
-		// Pass global configuration vars
+		// Use global configuration vars
 		this.isConnected = this.connectToServer(NetworkConfig.serverAddress, NetworkConfig.serverPort);
 		
 		// Display connection status
@@ -45,23 +48,26 @@ public class Connection {
 		}
 		
 		// Ask the user for login credentials
-		this.username = JOptionPane.showInputDialog("Type in your username (leave empty for guest)", null);
+		String inUser = JOptionPane.showInputDialog("Type in your username (leave empty for guest)");
 		
 		// Check if the the login dialog was canceled by the user 
-		if(username == null) {
+		if(inUser == null) {
 			// close connection and continue offline
 			this.closeConnection();
 			return;
 		}
 		
-		// For registered players we also need the password for authetification
-		String password = "";
-		if(username.length() < 1) {
+		// For registered players we also need the password for authentification
+		String inPassword = "";
+		if(inUser.length() < 1) {
 			this.playAsGuest = true;
 		} else {
-			password = JOptionPane.showInputDialog("Type in your password");
-			if(password == null) {
-				password = "";
+			inPassword = JOptionPane.showInputDialog("Type in your password");
+			// Don't accept empty password or dialog abortion
+			if(inPassword == null || inPassword.length() < 1) {
+				// close connection and continue offline
+				this.closeConnection();
+				return;
 			}
 		}
 		
@@ -72,7 +78,7 @@ public class Connection {
 		}
 		else
 		{
-			this.loggedIn = this.loginWithAccount(username, password);
+			this.loggedIn = this.loginWithAccount(inUser, inPassword);
 		}
 		
 		
@@ -85,9 +91,6 @@ public class Connection {
 			System.out.println("Logged in successfully");
 			JOptionPane.showMessageDialog(null, "Login Successfull");
 		}
-		
-		// If everything went well then launch the thread for continous message processing
-		// ...
 	}
 	
 	// Method for connecting to the game server
@@ -168,7 +171,13 @@ public class Connection {
 		if(statusMsg.success() == false) {
 			JOptionPane.showMessageDialog(null, "Login Data was incorrect");
 			return false;
+		} else {
+			// When login was sucessfull then store the username in the class
+			this.username = user;
 		}
+		
+		// If everything went well then launch the thread for continous message processing
+		// ...
 		
 		return true;
 	}
@@ -228,6 +237,9 @@ public class Connection {
 		// Get the assigned playername 
 		this.username = statusMsg.getAssignedName();
 		
+		// If everything went well then launch the thread for continous message processing
+		// ...
+		
 		return true;
 	}
 	
@@ -255,6 +267,9 @@ public class Connection {
 				MsgLogout msg = new MsgLogout();
 				this.sendMessageToServer(msg);
 			}
+			
+			// Tell the listener thread to stop and wait until it has finished
+			// ...
 			
 			// Close the connection at last
 			try {
