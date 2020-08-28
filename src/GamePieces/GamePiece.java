@@ -414,6 +414,7 @@ public abstract class GamePiece {
 			FontMetrics metrics = g2d.getFontMetrics(fHealthBar);
 			double healthRound = Math.round(this.health*100.0)/100.0;
 			String s = healthRound +"";
+			@SuppressWarnings("unused")
 			int textWidth = metrics.stringWidth(s);
 	
 			g2d.setColor(new Color(0,0,0,200));

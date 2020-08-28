@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Arc2D;
-import java.util.ArrayList;
 
 import javax.swing.Timer;
 

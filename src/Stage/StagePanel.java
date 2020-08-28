@@ -35,7 +35,8 @@ import GamePieces.SniperCommanderPiece;
 import Particles.EmptyShell;
 import Particles.Particle;
 
-public class StagePanel extends JPanel{
+@SuppressWarnings("serial")
+public class StagePanel extends JPanel {
 	int x,y;
 	int w,h;
 	KL kl;

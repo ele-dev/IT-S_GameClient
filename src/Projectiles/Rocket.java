@@ -6,8 +6,6 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Commons;
-
 import GamePieces.GamePiece;
 import Particles.Explosion;
 import Stage.BoardRectangle;
@@ -27,6 +25,7 @@ public class Rocket {
 	private BoardRectangle currentTargetBoardRectangle;
 	private float rotationDelay = 4;
 	
+	@SuppressWarnings("unused")
 	private ArrayList<RocketTrailParticle> trailParticles = new ArrayList<RocketTrailParticle>();
 	
 	public Rocket(int x, int y, int w, int h, Color c,float angle,GamePiece currentTarget,BoardRectangle currentTargetBoardRectangle) {

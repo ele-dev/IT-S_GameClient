@@ -3,11 +3,7 @@ package Particles;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
-import javax.swing.Timer;
 import Stage.BoardRectangle;
 import Stage.StagePanel;
 

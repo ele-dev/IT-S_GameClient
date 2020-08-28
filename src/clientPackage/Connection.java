@@ -70,6 +70,7 @@ public class Connection extends Thread {
 	}
 	
 	// Thread function that receives server messages in the background
+	@SuppressWarnings("unused")
 	@Override
 	public void run() 
 	{
