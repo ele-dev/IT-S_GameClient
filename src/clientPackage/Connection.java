@@ -77,7 +77,7 @@ public class Connection extends Thread {
 		
 		// Set the socket timeout before entering the loop
 		try {
-			this.clientSocket.setSoTimeout(3000);
+			this.clientSocket.setSoTimeout(2000);
 		} catch (SocketException e5) {
 			System.err.println("Failed to set the socket timeout");
 			return;
