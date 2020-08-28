@@ -58,7 +58,6 @@ public abstract class GamePiece {
 	private static double speV = 0.3;
 	private Sprite spritePointer,spritePointerDarkened;
 	
-	private float rectSizeInc = 0;
 	private int dmgFlashCountDown = 0;
 	private CommanderGamePiece commanderGamePiece;
 	
@@ -167,7 +166,6 @@ public abstract class GamePiece {
 		for(BoardRectangle curBr : gamePieceBase.pathBoardRectangles) {
 			curBr.isPossibleMove = true;
 		}
-		System.out.println("resetPathFinder");
 	}
 	
 	public String getName() {
@@ -369,9 +367,6 @@ public abstract class GamePiece {
 		if(currentTargetBoardRectangle != null) {
 			updateAngle(true);
 		}
-		if(rectSizeInc > 0) {
-			rectSizeInc -= 1;
-		}
 		if(dmgFlashCountDown > 0) {
 			dmgFlashCountDown--;
 		}
@@ -486,7 +481,6 @@ public abstract class GamePiece {
 	public void startMove() {
 		movesPanel.setMoveButtonActive(false);
 		hasExecutedMove = true;
-		rectSizeInc = 5;
 		currentTargetGamePiece = null;
 		currentTargetBoardRectangle = null;
 		isMoving = true;

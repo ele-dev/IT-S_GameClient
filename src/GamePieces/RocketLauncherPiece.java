@@ -169,28 +169,12 @@ public class RocketLauncherPiece extends GamePiece{
 		
 	}
 
-	// adds rocket to fly in an arc adds specific angle if its target is in a specific area from it 
+	
 	public void addRocketInArcFlight() {
-		double arcAngleOffset = 0;
-		if(angle<=0 && angle>=-180) {
-			arcAngleOffset = -90;
-		}
-		if(angle>=0 && angle<=180) {
-			arcAngleOffset = 90;
-		}
-		if(angle>=135 && angle<=180) {
-			arcAngleOffset = 0;
-		}
-		if(angle<=-135 && angle>= -180) {
-			arcAngleOffset = 0;
-		}
-		if(angle>=-45 && angle<=45) {
-			arcAngleOffset = 0;
-		}
 		if(isWallAttack) {
-			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, (float) (angle + (Math.random()-0.5)*spreadAngle + arcAngleOffset), null, currentTargetBoardRectangle));
+			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, (float) (angle + (Math.random()-0.5)*spreadAngle), null, currentTargetBoardRectangle));
 		}else {
-			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, (float) (angle + (Math.random()-0.5)*spreadAngle + arcAngleOffset), getCurrentTargetGamePiece(), null));
+			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, (float) (angle + (Math.random()-0.5)*spreadAngle), getCurrentTargetGamePiece(), null));
 		}
 		
 	}

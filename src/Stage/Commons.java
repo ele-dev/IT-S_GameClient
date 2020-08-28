@@ -32,22 +32,22 @@ public interface Commons {
 	final int dmgFlashCountDown = 5;
 	// GunnerPiece
 	final float dmgGunner = 3;
-	final int MovementRangeGunner = 3;
+	final int MovementRangeGunner = 5;
 	final String nameGunner = "G";
 	final int maxHealthGunner = 10;
 	// FlameThrowerPiece
 	final float dmgFlameThrower = 4;
-	final int MovementRangeFlameThrower = 3;
+	final int MovementRangeFlameThrower = 5;
 	final String nameFlameThrower = "F";
 	final int maxHealthFlameThrower = 10;
 	// DetonatorPiece
 	final float dmgDetonator = 4;
-	final int MovementRangeDetonator = 3;
+	final int MovementRangeDetonator = 5;
 	final String nameDetonator = "D";
 	final int maxHealthDetonator = 10;
 	// RocketLauncherPiece
 	final float dmgRocketLauncher = 3;
-	final int MovementRangeRocketLauncher = 3;
+	final int MovementRangeRocketLauncher = 5;
 	final String nameRocketLauncher = "R";
 	final int maxHealthRocketLauncher = 10;
 	
