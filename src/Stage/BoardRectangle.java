@@ -15,7 +15,9 @@ import javax.swing.ImageIcon;
 import GamePieces.GamePiece;
 
 public class BoardRectangle {
+
 	public int row,column;
+
 	Color c;
 	public Rectangle rect;
 	public Color cPossibleMove;
@@ -38,6 +40,8 @@ public class BoardRectangle {
 	public BoardRectangle(int x, int y, int size, int row, int column,boolean isTile1,int index) {
 		this.row = row;
 		this.column = column;
+
+
 		this.rect = new Rectangle(x,y,size,size);
 		
 		this.cPossibleMove = new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),80);
