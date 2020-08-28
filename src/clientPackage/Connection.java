@@ -46,51 +46,6 @@ public class Connection {
 			System.err.println("Failed establish connection to server!");
 			return;
 		}
-		
-		// Ask the user for login credentials
-		String inUser = JOptionPane.showInputDialog("Type in your username (leave empty for guest)");
-		
-		// Check if the the login dialog was canceled by the user 
-		if(inUser == null) {
-			// close connection and continue offline
-			this.closeConnection();
-			return;
-		}
-		
-		// For registered players we also need the password for authentification
-		String inPassword = "";
-		if(inUser.length() < 1) {
-			this.playAsGuest = true;
-		} else {
-			inPassword = JOptionPane.showInputDialog("Type in your password");
-			// Don't accept empty password or dialog abortion
-			if(inPassword == null || inPassword.length() < 1) {
-				// close connection and continue offline
-				this.closeConnection();
-				return;
-			}
-		}
-		
-		// Before the player can enter the main menue he must identify himself
-		if(this.playAsGuest)
-		{
-			this.loggedIn = this.loginAsGuest();
-		}
-		else
-		{
-			this.loggedIn = this.loginWithAccount(inUser, inPassword);
-		}
-		
-		
-		// Show the login status to the user
-		if(!this.loggedIn) {
-			System.err.println("Could not login to the game network!");
-			JOptionPane.showMessageDialog(null, "Login Failed");
-			return;
-		} else {
-			System.out.println("Logged in successfully");
-			JOptionPane.showMessageDialog(null, "Login Successfull");
-		}
 	}
 	
 	// Method for connecting to the game server
@@ -174,6 +129,7 @@ public class Connection {
 		} else {
 			// When login was sucessfull then store the username in the class
 			this.username = user;
+			this.loggedIn = true;
 		}
 		
 		// If everything went well then launch the thread for continous message processing
@@ -234,8 +190,10 @@ public class Connection {
 			return false;
 		}
 		
-		// Get the assigned playername 
+		// Get the assigned playername and update the login state indicator
 		this.username = statusMsg.getAssignedName();
+		this.playAsGuest = true;
+		this.loggedIn = true;
 		
 		// If everything went well then launch the thread for continous message processing
 		// ...
@@ -282,5 +240,23 @@ public class Connection {
 			
 			System.out.println("Closed connection");
 		}
+	}
+	
+	// Getters //
+	
+	public boolean isConnected() {
+		return this.isConnected;
+	}
+	
+	public boolean isLoggedIn() {
+		return this.loggedIn;
+	}
+	
+	public boolean isGuestPlayer() {
+		return this.playAsGuest;
+	}
+	
+	public String getUsername() {
+		return this.username;
 	}
 }
