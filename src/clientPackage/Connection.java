@@ -12,20 +12,21 @@ import javax.swing.JOptionPane;
 
 import networking.*;
 
-public class Connection {
+public class Connection extends Thread {
 	
 	// class members //
 	private Socket clientSocket;
 	private String username;
 	
 	// Data I/O streams for class (de)serialization
-	ObjectOutputStream objOut = null;
-	ObjectInputStream objIn = null;
+	private ObjectOutputStream objOut = null;
+	private ObjectInputStream objIn = null;
 	
 	// State indicator variables
 	private boolean playAsGuest;
 	private boolean isConnected;
 	private boolean loggedIn;
+	private boolean stopOrder;
 	
 	// Constructor attempts to connect to server
 	public Connection() {
@@ -34,8 +35,9 @@ public class Connection {
 		this.playAsGuest = false;
 		this.isConnected = false;
 		this.loggedIn = false;
+		this.stopOrder = false;
 		
-		// Use global configuration vars
+		// Use global configuration vars and store result in the class
 		this.isConnected = this.connectToServer(NetworkConfig.serverAddress, NetworkConfig.serverPort);
 		
 		// Display connection status
@@ -44,11 +46,76 @@ public class Connection {
 		} else {
 			JOptionPane.showMessageDialog(null,  "Failed to connect to the game server!");
 			System.err.println("Failed establish connection to server!");
-			return;
 		}
 	}
 	
+	// Finalizer that handles close up of the network connection
+	@Override
+	public void finalize() {
+		if(this.clientSocket != null && this.clientSocket.isConnected()) 
+		{
+			// Send Logout message if the player was logged in
+			if(this.loggedIn) {
+				MsgLogout msg = new MsgLogout();
+				this.sendMessageToServer(msg);
+			}
+			
+			// Tell the listener thread to stop and wait until it has finished
+			this.stopOrder = true;
+			while(this.isAlive()) {}
+			
+			// Close the connection at last
+			this.closeConnection();
+		}
+	}
+	
+	// Thread function that receives server messages in the background
+	@Override
+	public void run() 
+	{
+		System.out.println("Client listener thread launched");
+		
+		// Set the socket timeout before entering the loop
+		try {
+			this.clientSocket.setSoTimeout(3000);
+		} catch (SocketException e5) {
+			System.err.println("Failed to set the socket timeout");
+			return;
+		}
+		
+		while(!this.stopOrder)
+		{
+			GenericMessage recvBuffer = null;
+			
+			// Check the input stream of the client socket for incoming messages
+			try {
+				recvBuffer = (GenericMessage) this.objIn.readObject();
+			} catch (ClassNotFoundException e) {
+				System.err.println("Class Not Found Exception thrown");
+				System.err.println("Failed to parse incoming message");
+				continue;
+			} catch(SocketTimeoutException e1) {
+				continue;
+			} catch (StreamCorruptedException e2) {
+				System.err.println("Stream corrupted exception thrown while reading");
+				break;
+			} catch(IOException e3) {
+				System.err.println("IOException thrown while reading");
+				break;
+			} catch (Exception e4) {
+				System.err.println("Unhandled Exception thrown while parsing incoming message!");
+				break;
+			}
+			
+			// Now handle and process the message from the server
+			// ...
+		}
+		
+		System.out.println("Client listener thread closed");
+	}
+	
 	// Method for connecting to the game server
+
 	private boolean connectToServer(String addr, int port) {
 		
 		// Now attempt to connect to the game server
@@ -73,6 +140,19 @@ public class Connection {
 		}
 		
 		return true;
+	}
+	
+	// Public method for closing the connection to the game server
+	private void closeConnection() {
+		try {
+			this.clientSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Failed to close connection and socket properly!"); 
+			return;
+		}
+		
+		System.out.println("Closed connection");
 	}
 	
 	// Method that handles the login procedure for accounts
@@ -133,7 +213,7 @@ public class Connection {
 		}
 		
 		// If everything went well then launch the thread for continous message processing
-		// ...
+		this.start();
 		
 		return true;
 	}
@@ -196,7 +276,7 @@ public class Connection {
 		this.loggedIn = true;
 		
 		// If everything went well then launch the thread for continous message processing
-		// ...
+		this.start();
 		
 		return true;
 	}
@@ -213,32 +293,6 @@ public class Connection {
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
-		}
-	}
-	
-	// Public method for closing the connection to the game server
-	public void closeConnection() {
-		if(this.clientSocket != null && this.clientSocket.isConnected()) 
-		{
-			// Send Logout message if the player was logged in
-			if(this.loggedIn) {
-				MsgLogout msg = new MsgLogout();
-				this.sendMessageToServer(msg);
-			}
-			
-			// Tell the listener thread to stop and wait until it has finished
-			// ...
-			
-			// Close the connection at last
-			try {
-				this.clientSocket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.err.println("Failed to close connection and socket properly!"); 
-				return;
-			}
-			
-			System.out.println("Closed connection");
 		}
 	}
 	

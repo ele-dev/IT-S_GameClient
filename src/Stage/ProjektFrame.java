@@ -62,8 +62,8 @@ public class ProjektFrame extends JFrame {
 			public void windowClosing(WindowEvent windowEvent) {
 				System.out.println("window was closed --> cleanup routine");
 				
-				// close the network connection to the game server
-				conn.closeConnection();
+				// Finalize the network classes and close the connection and threads, etc
+				conn.finalize();
 				
 				// Finally exit the application 
 				System.out.println("Application close up");
@@ -82,7 +82,7 @@ public class ProjektFrame extends JFrame {
 		// Check if the the login dialog was canceled by the user 
 		if(inUser == null) {
 			// close connection and continue offline
-			conn.closeConnection();
+			conn.finalize();
 			return;
 		}
 		
@@ -96,7 +96,7 @@ public class ProjektFrame extends JFrame {
 			// Don't accept empty password or dialog abortion
 			if(inPassword == null || inPassword.length() < 1) {
 				// close connection and continue offline
-				conn.closeConnection();
+				conn.finalize();
 				return;
 			}
 		}
