@@ -70,7 +70,6 @@ public class Connection extends Thread {
 	}
 	
 	// Thread function that receives server messages in the background
-	@SuppressWarnings("unused")
 	@Override
 	public void run() 
 	{
@@ -109,7 +108,7 @@ public class Connection extends Thread {
 			}
 			
 			// Now handle and process the message from the server
-			// ...
+			MessageHandler.handleMessage(recvBuffer);
 		}
 		
 		System.out.println("Client listener thread closed");
