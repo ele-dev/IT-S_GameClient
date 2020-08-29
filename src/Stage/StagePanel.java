@@ -15,8 +15,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,8 +23,6 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-
-import com.sun.media.jfxmedia.control.VideoDataBuffer;
 
 import Buttons.ButtonEndTurn;
 import GamePieces.CommanderGamePiece;

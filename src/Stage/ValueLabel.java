@@ -7,8 +7,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import com.sun.javafx.font.Metrics;
-
 public class ValueLabel {
 	private float x,y;
 	private String str;
