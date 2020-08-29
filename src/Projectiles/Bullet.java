@@ -15,7 +15,6 @@ public class Bullet {
 	private double angle;
 	private double v;
 	private boolean isDestroyed = false;
-	private boolean hasHitEnemy = false;
 	private GamePiece currentTarget;
 	private BoardRectangle currentTargetBoardRectangle;
 
@@ -34,17 +33,11 @@ public class Bullet {
 	public float getX() {
 		return x;
 	}
-	
 	public float getY() {
 		return y;
 	}
-	
 	public boolean getIsDestroyed() {
 		return isDestroyed;
-	}
-	
-	public boolean getHasHitEnemy() {
-		return hasHitEnemy;
 	}
 	
 	// moves the bullet according to the velocity (v) and angle (angle)
@@ -70,13 +63,12 @@ public class Bullet {
 	public void checkHitEnemy() {
 		if(currentTarget != null && currentTargetBoardRectangle == null) {
 			if(this.rectHitbox.intersects(currentTarget.getRectHitbox())) {
-				currentTarget.resetDmgFlashCountDown();
-				hasHitEnemy = true;
+				isDestroyed = true;
 			}
 		}
 		if(currentTarget == null && currentTargetBoardRectangle != null) {
 			if(this.rectHitbox.intersects(currentTargetBoardRectangle.rect)) {
-				hasHitEnemy = true;
+				isDestroyed = true;
 			}
 		}
 	}

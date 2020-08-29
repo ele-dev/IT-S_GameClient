@@ -112,7 +112,6 @@ public class Rocket {
 	public void checkHitEnemy() {
 		if(currentTarget != null && currentTargetBoardRectangle == null) {
 			if(this.rectHitbox.intersects(currentTarget.getRectHitbox())) {
-				currentTarget.resetDmgFlashCountDown();
 				explode();
 			}
 		}

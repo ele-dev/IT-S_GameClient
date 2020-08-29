@@ -40,7 +40,7 @@ public class ProjektFrame extends JFrame {
 		
 		// First create a connection instance
 		try {
-//			conn = new Connection();
+			conn = new Connection();
 		} catch (Exception e) {}
 		
 		// If the connection is established prompt the user to login
@@ -62,7 +62,6 @@ public class ProjektFrame extends JFrame {
 				System.out.println("window was closed --> cleanup routine");
 				
 				conn.finalize();
-
 				
 				// Finally exit the application 
 				System.out.println("Application close up");

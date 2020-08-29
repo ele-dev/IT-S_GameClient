@@ -15,6 +15,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,11 +26,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import com.sun.media.jfxmedia.control.VideoDataBuffer;
+
 import Buttons.ButtonEndTurn;
 import GamePieces.CommanderGamePiece;
 import GamePieces.DetonatorPiece;
 import GamePieces.FlamethrowerPiece;
 import GamePieces.GamePiece;
+import GamePieces.GamePieceBase;
 import GamePieces.GunnerPiece;
 import GamePieces.RocketLauncherPiece;
 import GamePieces.SniperCommanderPiece;
@@ -46,17 +51,17 @@ public class StagePanel extends JPanel{
 	
 	Timer tFrameRate;
 	Timer tUpdateRate;
-	
+
 	public static ArrayList<BoardRectangle> boardRectangles = new ArrayList<BoardRectangle>();
 	CommanderGamePiece enemyCommanderPiece;
 	CommanderGamePiece notEnemyCommanderPiece;
 	public static ArrayList<GamePiece> gamePieces = new ArrayList<GamePiece>();
-	public static ArrayList<DmgLabel> dmgLabels = new ArrayList<DmgLabel>();
+	public static ArrayList<ValueLabel> valueLabels = new ArrayList<ValueLabel>();
 	
 	public static ArrayList<Particle> particles = new ArrayList<Particle>();
 	
 	ButtonEndTurn buttonEndTurn;
-	TurnInfo turnInfoPanel;
+	static TurnInfo turnInfoPanel;
 	
 	DetonatorPiece detNotEnemy;
 	DetonatorPiece detEnemy;
@@ -65,13 +70,12 @@ public class StagePanel extends JPanel{
 	Point mousePos;
 	Point mousePosUntranslated;
 	
-	BoardRectangle curHoverBoardRectangle;
+	public static BoardRectangle curHoverBoardRectangle;
 	
 	boolean createLevel = false;
 	
 	Rectangle rectLevelBorder;
 	Color cBackGround;
-	
 	public StagePanel(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -120,6 +124,10 @@ public class StagePanel extends JPanel{
 		
 		addMouseListener(new ML());
 		addMouseMotionListener(new MML());
+	}
+	
+	public static boolean getIsEnemyTurn() {
+		return turnInfoPanel.getIsEnemyTurn();
 	}
 	
 	// creates every BoardRectangle and gives it an index
@@ -207,7 +215,6 @@ public class StagePanel extends JPanel{
 		for(GamePiece curGP : gamePieces) {
 			curGP.initPathFinder();
 		}
-
 	}
 	
 	// graphics methode does all the drawing of objects (renders everything)
@@ -216,6 +223,7 @@ public class StagePanel extends JPanel{
 		g2d.setColor(cBackGround);
 		g2d.fillRect(0, 0, w, h);
 		
+		
 		g2d.translate(camera.x, camera.y);
 		drawEveryGap(g2d);
 		drawEveryBoardRectangle(g2d);
@@ -223,30 +231,30 @@ public class StagePanel extends JPanel{
 		drawAllEmptyShells(g2d);
 		drawEveryWall(g2d);
 		
+		drawAllGamePiecePointers(g2d);
 		drawAllGamePieces(g2d);
 		drawAllGamePieceHealth(g2d);
 		drawSelectedGamePiece(g2d);
 		drawSelectedGamePieceHealth(g2d);
 		drawAllGamePieceAttacks(g2d);
 		drawParticles(g2d);
-		drawAllGamePiecePointers(g2d);
+		
 		
 		g2d.setStroke(new BasicStroke(80));
 		g2d.setColor(cBackGround);
 		g2d.draw(rectLevelBorder);
-		drawDmgLabels(g2d);
+		drawValueLabels(g2d);
+		
 		buttonEndTurn.drawButton(g2d);
 		drawMovesPanel(g2d);
-		g2d.translate(-camera.x, -camera.y);
+		
 		turnInfoPanel.drawTurnInfo(g2d);
-		g2d.translate(camera.x, camera.y);
 		drawCursor(g2d);
 		g2d.translate(-camera.x, -camera.y);
 		g2d.dispose();
 	}
 	// updates the Stage (moves pieces, moves bullets, updates animations...)
 	private void updateStage() {
-		GamePiece.updateSpritePointerElevation();
 		updateParticles();
 		BoardRectangle pHBR = curHoverBoardRectangle;
 		curHoverBoardRectangle = null;
@@ -255,7 +263,6 @@ public class StagePanel extends JPanel{
 				curBR.updateHover(mousePos);
 			}
 			if(curBR.isHover) {
-				curBR.tryAnimate(gamePieces);
 				curHoverBoardRectangle = curBR;
 				if(pHBR != curHoverBoardRectangle) {
 					changedHoverBR();
@@ -343,13 +350,14 @@ public class StagePanel extends JPanel{
 		}
 	}
 	
+	// updates all the ValueLabels (fades them out)
 	private void updateDmgLabels() {
-		for(int i = 0;i<dmgLabels.size();i++) {
-			DmgLabel curDL = dmgLabels.get(i);
-			if(curDL.getColor().getAlpha()>10) {
-				curDL.updateFade();
+		for(int i = 0;i<valueLabels.size();i++) {
+			ValueLabel curVL = valueLabels.get(i);
+			if(curVL.getColor().getAlpha()>10) {
+				curVL.updateFade();
 			}else {
-				dmgLabels.remove(i);
+				valueLabels.remove(i);
 			}
 		}
 	}
@@ -370,7 +378,6 @@ public class StagePanel extends JPanel{
 			if(!curGP.getIsEnemy() && !turnInfoPanel.getIsEnemyTurn()) {
 				curGP.drawPointer(g2d);
 			}
-			
 		}
 	}
 	
@@ -387,7 +394,7 @@ public class StagePanel extends JPanel{
 	
 	private void drawAllGamePieceHealth(Graphics2D g2d) {
 		for(GamePiece curGP : gamePieces) {
-			curGP.drawHealth(g2d);
+			curGP.gamePieceBase.drawHealth(g2d);
 		}
 	}
 	
@@ -395,14 +402,14 @@ public class StagePanel extends JPanel{
 		// draws the one GP that is in Moves-Selection on top of all others
 		for(GamePiece curGP : gamePieces) {
 			if(curGP.isSelected && curGP.movesPanel.getMoveButtonIsActive()) {
-				curGP.drawHealth(g2d);
+				curGP.gamePieceBase.drawHealth(g2d);
 			}
 		}
 	}
 	
-	private void drawDmgLabels(Graphics2D g2d) {
-		for(DmgLabel curDL : dmgLabels) {
-			curDL.drawDmgLabel(g2d);
+	private void drawValueLabels(Graphics2D g2d) {
+		for(ValueLabel curVL : valueLabels) {
+			curVL.drawValueLabel(g2d);
 		}
 	}
 	
@@ -424,6 +431,18 @@ public class StagePanel extends JPanel{
 	// updates/changes Turns
 	private void updateTurn() {
 		turnInfoPanel.toggleTurn();
+		for(GamePiece curGP : gamePieces) {
+			GamePieceBase curGPB = curGP.gamePieceBase;
+			if(turnInfoPanel.getIsEnemyTurn()) {
+				if(curGP.getIsEnemy()) {
+					curGPB.regenShield();
+				}
+			}else {
+				if(!curGP.getIsEnemy()) {
+					curGPB.regenShield();
+				}
+			}
+		}
 		restoreMovesAndAttacks();
 		
 		detNotEnemy.decDetonaterTimers();
@@ -431,6 +450,8 @@ public class StagePanel extends JPanel{
 		
 		for(GamePiece curGP : gamePieces) {
 			curGP.isSelected = false;
+			curGP.movesPanel.setAttackButtonActive(false);
+			curGP.movesPanel.setMoveButtonActive(false);
 		}
 	}
 	// draws every BoardRectangles rectangle that is not a gap and draws the Walls
@@ -500,6 +521,8 @@ public class StagePanel extends JPanel{
 							curGP.isSelected = true;
 						}else {
 							curGP.isSelected = false;
+							curGP.movesPanel.setAttackButtonActive(false);
+							curGP.movesPanel.setMoveButtonActive(false);
 						}
 					}
 				}
@@ -524,6 +547,7 @@ public class StagePanel extends JPanel{
 					if(curBR.isPossibleMove && curBR == curHoverBoardRectangle) {
 						curGP.startMove();
 						curGP.isSelected = false;
+						curGP.movesPanel.setAttackButtonActive(false);
 						return;
 					}
 				}
@@ -654,7 +678,6 @@ public class StagePanel extends JPanel{
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
 		
@@ -694,6 +717,5 @@ public class StagePanel extends JPanel{
 			// TODO Auto-generated method stub
 			
 		}
-		
 	}
 }

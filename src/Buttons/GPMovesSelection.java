@@ -55,7 +55,7 @@ public class GPMovesSelection {
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(new Font("Arial",Font.BOLD,40));
 		g2d.drawString("name: " + parentGamepiece.getName(), rect.x +50, rect.y +80);
-		g2d.drawString("hp: " + parentGamepiece.getHealth() + "/" +  parentGamepiece.getMaxHealth(), rect.x +50, rect.y +150);
+		g2d.drawString("hp: " + parentGamepiece.gamePieceBase.getHealth() + "/" +  parentGamepiece.gamePieceBase.getMaxHealth(), rect.x +50, rect.y +150);
 		g2d.drawString("dmg: " + parentGamepiece.getDmg(), rect.x +50, rect.y +200);
 		
 		attackButton.drawButton(g2d);
@@ -71,6 +71,7 @@ public class GPMovesSelection {
 	public void tryPressButton() {
 		if(moveButton.getIsHover()) {
 			moveButton.press();
+			attackButton.isActive = false;
 			return;
 		}else {
 			moveButton.isActive = false;

@@ -27,7 +27,7 @@ public class RocketLauncherPiece extends GamePiece{
 	boolean startedAttack = false;
 	
 	public RocketLauncherPiece(boolean isEnemy, BoardRectangle boardRect,CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, Commons.nameRocketLauncher, boardRect, Commons.maxHealthRocketLauncher, Commons.dmgRocketLauncher,Commons.MovementRangeRocketLauncher, commanderGamePiece);
+		super(isEnemy, Commons.nameRocketLauncher, boardRect, Commons.dmgRocketLauncher,Commons.baseTypeRocketLauncher, commanderGamePiece);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override

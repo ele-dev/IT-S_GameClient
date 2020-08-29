@@ -58,7 +58,10 @@ public class Sprite {
 	// animates the sprite if it has more spriteLinks/sprites than one (also relative speed to the animation delay)
 	public void animate() {
 		if(sprites.size() > 0) {
-			if(animationCounter % animationDelay == 0) {
+			if(animationCounter>0) {
+				animationCounter--;
+			}else {
+				animationCounter = animationDelay;
 				if(animationIndex+1 < sprites.size()) {
 					animationIndex++;
 				}else {

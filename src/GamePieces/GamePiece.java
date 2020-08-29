@@ -14,12 +14,10 @@ import java.util.ArrayList;
 import javax.swing.Timer;
 
 import Buttons.GPMovesSelection;
-import Particles.UltChargeOrb;
 import PathFinder.AStarPathFinder;
 import PathFinder.PathCell;
 import Stage.BoardRectangle;
 import Stage.Commons;
-import Stage.DmgLabel;
 import Stage.Sprite;
 import Stage.StagePanel;
 
@@ -30,11 +28,8 @@ public abstract class GamePiece {
 	protected Color c,cTurret;
 	private String name;
 	protected float angle,angleDesired;
-	private boolean isDead = false;
-	private float health,maxHealth;
+	boolean isDead = false;
 	private float dmg;
-
-	private int movementRange;
 	
 	public boolean isSelected = false;
 	private boolean isEnemy;
@@ -54,20 +49,16 @@ public abstract class GamePiece {
 	
 	private int rotationDelay = 4;
 	protected Sprite spriteTurret;
-	private int spritePointerX,spritePointerY;
-	private static double spritePointerElevation = 0;
-	private static double speV = 0.3;
-	private Sprite spritePointer,spritePointerDarkened;
 	
 	private int dmgFlashCountDown = 0;
 	private CommanderGamePiece commanderGamePiece;
 	
 	
 	// pathfinding
-	AStarPathFinder pathFinder;
-	GamePieceBase gamePieceBase;
+	private AStarPathFinder pathFinder;
+	public GamePieceBase gamePieceBase;
 	
-	public GamePiece(boolean isEnemy,String name,BoardRectangle boardRect,int maxHealth,float dmg,int movementRange,CommanderGamePiece commanderGamePiece) {
+	public GamePiece(boolean isEnemy,String name,BoardRectangle boardRect,float dmg,int baseTypeIndex,CommanderGamePiece commanderGamePiece) {
 		this.isEnemy = isEnemy;
 		this.boardRect = boardRect;
 
@@ -80,40 +71,21 @@ public abstract class GamePiece {
 			this.c = Commons.notEnemyColor;
 			this.cTurret = Commons.notEnemyColorTurret;
 		} 
-		gamePieceBase = new GamePieceBase(boardRect.getCenterX(), boardRect.getCenterY(), rectShowTurret.width+10, rectShowTurret.width+10, c);
+		gamePieceBase = new GamePieceBase(boardRect.getCenterX(), boardRect.getCenterY(), rectShowTurret.width+10, rectShowTurret.width+10,c,baseTypeIndex,this);
 
 		this.name = name;
-		this.maxHealth = maxHealth;
-		this.health = maxHealth;
 		this.dmg = dmg;
-		this.movementRange = movementRange;
 
 		this.movesPanel = new GPMovesSelection(this);
-		spritePointerX = boardRect.getCenterX();
-		spritePointerY = boardRect.getCenterY()-60;
 
 		if(commanderGamePiece != null) {
 			this.commanderGamePiece = commanderGamePiece;
 		}else {
 			this.commanderGamePiece = (CommanderGamePiece) this;
 		}
-		if(isEnemy) {
-			ArrayList<String> spriteLinks = new ArrayList<String>();
-			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/EnemyPointer.png");
-			spritePointer = new Sprite(spriteLinks, Commons.boardRectSize/2,Commons.boardRectSize/2, 0);
-			ArrayList<String> spriteLinks1 = new ArrayList<String>();
-			spriteLinks1.add(Commons.pathToSpriteSource+"GamePieces/EnemyPointerDarkened.png");
-			spritePointerDarkened = new Sprite(spriteLinks1, Commons.boardRectSize/2,Commons.boardRectSize/2, 0);
-		}else {
-			ArrayList<String> spriteLinks = new ArrayList<String>();
-			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/NotEnemyPointer.png");
-			spritePointer = new Sprite(spriteLinks, Commons.boardRectSize/2,Commons.boardRectSize/2, 0);
-			ArrayList<String> spriteLinks1 = new ArrayList<String>();
-			spriteLinks1.add(Commons.pathToSpriteSource+"GamePieces/NotEnemyPointerDarkened.png");
-			spritePointerDarkened = new Sprite(spriteLinks1, Commons.boardRectSize/2,Commons.boardRectSize/2, 0);
-		}
 	}	
 	
+	// initializes the Pathfinding Grid (!!Does not start the Pathfinder!!)
 	public void initPathFinder() {
 		ArrayList<PathCell> pathCells = new ArrayList<PathCell>();
 		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
@@ -133,12 +105,24 @@ public abstract class GamePiece {
 		pathFinder = new AStarPathFinder(pathCells);
 	}
 	
+	// resets the Pathfinder and also finds a Path to the endBR
 	public void resetPathFinder(BoardRectangle startBR, BoardRectangle endBR) {
+		gamePieceBase.pathBoardRectangles.clear();
+		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+			StagePanel.boardRectangles.get(i).isPossibleMove = false;
+		}
 		if(endBR.isWall || endBR.isDestructibleWall || startBR.isWall || startBR.isDestructibleWall){
 			return;
 		}
+		for(GamePiece curGP : StagePanel.gamePieces) {
+			if(curGP.boardRect == endBR && !curGP.isDead && curGP != this) {
+				return;
+			}
+		}
+		// initializes Pathfinder again
 		initPathFinder();
 		
+		// copies the end and startBR to the Pathfinders Grid
 		PathCell startPathCell = null, endPathCell =  null;
 		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
 			if(startBR == StagePanel.boardRectangles.get(i)) {
@@ -148,14 +132,16 @@ public abstract class GamePiece {
 				endPathCell = pathFinder.pathCells.get(i);
 			}
 		}
+		// sets the End and Start to pathFinder and also calculates Path
 		if(startPathCell != endPathCell) {
 			pathFinder.setPathEnds(startPathCell, endPathCell);
 		}
-		if(pathFinder.getPathPathCells().size() == 0) {
+		// stops if the Path Found has a length of 0 or it has not find a path to the end (maybe the end is blocked by walls)
+		if(pathFinder.getPathPathCells().size() == 0 || pathFinder.noSolution) {
 			return;
 		}
-		gamePieceBase.pathBoardRectangles.clear();
-		for(int j = pathFinder.getPathPathCells().size()-1;j>=pathFinder.getPathPathCells().size()-(movementRange+1) && j>= 0;j--) {
+		
+		for(int j = pathFinder.getPathPathCells().size()-1;j>=pathFinder.getPathPathCells().size()-(gamePieceBase.getMovementRange()+1) && j>= 0;j--) {
 			for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
 				if(pathFinder.getPathPathCells().get(j).getIndex() == i) {
 					gamePieceBase.pathBoardRectangles.add(StagePanel.boardRectangles.get(i));
@@ -163,9 +149,7 @@ public abstract class GamePiece {
 				}
 			}
 		}
-		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
-			StagePanel.boardRectangles.get(i).isPossibleMove = false;
-		}
+		
 		for(BoardRectangle curBr : gamePieceBase.pathBoardRectangles) {
 			curBr.isPossibleMove = true;
 		}
@@ -198,13 +182,6 @@ public abstract class GamePiece {
 	public GamePiece getCurrentTargetGamePiece() {
 		return currentTargetGamePiece;
 	}
-	public float getHealth() {
-		return health;
-	}
-
-	public float getMaxHealth() {
-		return maxHealth;
-	}
 
 	public float getDmg() {
 		return dmg;
@@ -224,19 +201,9 @@ public abstract class GamePiece {
 	public int getCenterY() {
 		return (int) getRectHitbox().getCenterY();
 	}
-	
-	// checks if the piece is dead and sets it as dead if it is ,also updates the Position of the Hitbox
 
-	public void updatePosPointer(int x, int y) {
-		int size = Commons.boardRectSize;
-		if(isMoving) {
-			spritePointerX = x;
-			spritePointerY = y-60-(int)(size*1.5);
-		}else {
-			spritePointerX = boardRect.getCenterX();
-			spritePointerY = boardRect.getCenterY()-60;
-		}
-		
+	public void getDamaged(float dmg,CommanderGamePiece otherCommander) {
+		gamePieceBase.getDamaged(dmg,otherCommander);
 	}
 	
 	// sets each BoardRectangle to being a possible attackPosition if it is(changes color accordingly)
@@ -317,9 +284,6 @@ public abstract class GamePiece {
 			if(dmgFlashCountDown > 0) {
 				g2d.setColor(Color.WHITE);
 			}
-			if(isSelected) {
-				drawSelect(g2d);
-			}
 			if(spriteTurret != null) {
 				spriteTurret.drawSprite(g2d, cx, cy, angle+90, 1);
 			}else {
@@ -340,31 +304,42 @@ public abstract class GamePiece {
 				int textHeight = metrics.getHeight();
 				int textWidth = metrics.stringWidth(text);
 				g2d.drawString(name, cx - textWidth/2, cy + textHeight/3);
-      }
+			}
+			gamePieceBase.drawMoveRange(g2d);
 		}
-	}
-	
-	public static void updateSpritePointerElevation() {
-		if(spritePointerElevation > 20) {
-			speV = -0.3;
-		}
-		if(spritePointerElevation <= 0) {
-			speV = 0.3;
-		}
-		spritePointerElevation += speV;
 	}
 	
 	public void drawPointer(Graphics2D g2d) {
 		if(!hasExecutedAttack) {
-			spritePointer.drawSprite(g2d, spritePointerX, spritePointerY+(int)spritePointerElevation, 0, 1);
+			g2d.setColor(c);
+			
 		}else {
-			spritePointerDarkened.drawSprite(g2d, spritePointerX, spritePointerY, 0, 1);
+			g2d.setColor(new Color(c.getRed()/2,c.getGreen()/2,c.getBlue()/2,200));
 		}
+		
+		int x = boardRect.getX();
+		int y = boardRect.getY();
+		int s = boardRect.getSize();
+		int soI = (int)boardRect.so;
+		g2d.setStroke(new BasicStroke(6));
+		g2d.drawLine(x-soI/2, y-soI/2, x+s/4-soI/2, y-soI/2);
+		g2d.drawLine(x+s+soI/2, y-soI/2, x+s*3/4+soI/2, y-soI/2);
+				
+		g2d.drawLine(x-soI/2, y+s+soI/2, x+s/4-soI/2, y+s+soI/2);
+		g2d.drawLine(x+s+soI/2, y+s+soI/2, x+s*3/4+soI/2, y+s+soI/2);
+				
+		g2d.drawLine(x-soI/2, y-soI/2, x-soI/2, y+s/4-soI/2);
+		g2d.drawLine(x-soI/2, y+s+soI/2, x-soI/2, y+s*3/4+soI/2);
+				
+		g2d.drawLine(x+s+soI/2, y-soI/2, x+s+soI/2, y+s/4-soI/2);
+		g2d.drawLine(x+s+soI/2, y+s+soI/2, x+s+soI/2, y+s*3/4+soI/2);
+		if(isSelected && !hasExecutedAttack) {
+			boardRect.tryAnimate();
+		}
+		
 	}
 	// updates the GamePiece (does things like updating the attack or moves rockets)
-	public void updateGamePiece() {
-		updatePosPointer(0,0);
-		
+	public void updateGamePiece() {	
 		if(currentTargetGamePiece != null) {
 			updateAngle(false);
 		}
@@ -407,69 +382,6 @@ public abstract class GamePiece {
 		angle = Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
 
 	}
-	// draws a HealthBar and a String with The HealthAmount
-	public void drawHealth(Graphics2D g2d) {
-		if(!isDead) {
-			Font fHealthBar = new Font("Arial",Font.BOLD,18);
-			FontMetrics metrics = g2d.getFontMetrics(fHealthBar);
-			double healthRound = Math.round(this.health*100.0)/100.0;
-			String s = healthRound +"";
-			int textWidth = metrics.stringWidth(s);
-	
-			g2d.setColor(new Color(0,0,0,200));
-
-			Rectangle maxHealthRect = new Rectangle((int)getRectHitbox().getCenterX() - (int)(getRectHitbox().width*0.75), (int)getRectHitbox().getCenterY() - boardRect.getSize(), boardRect.getSize(), 15);
-			g2d.fill(maxHealthRect);
-			g2d.setColor(Commons.cHealth);
-			g2d.fillRect((int)getRectHitbox().getCenterX() - (int)(getRectHitbox().width*0.75),(int)getRectHitbox().getCenterY() - boardRect.getSize(), (int)(boardRect.getSize()*(health/maxHealth)), 15);
-
-			g2d.setStroke(new BasicStroke(3));
-			g2d.setColor(Color.BLACK);
-			g2d.draw(maxHealthRect);
-			
-			g2d.setColor(Color.BLACK);
-			g2d.setStroke(new BasicStroke(1));
-			for(int i = 0;i<maxHealth;i++) {
-				g2d.drawLine((int)(maxHealthRect.x+maxHealthRect.width*(i/maxHealth)), (int)maxHealthRect.y, (int)(maxHealthRect.x+maxHealthRect.width*(i/maxHealth)), (int)(maxHealthRect.y+maxHealthRect.height));
-			}
-//			g2d.setFont(fHealthBar);
-//			g2d.setColor(Color.WHITE);
-//			g2d.drawString(health + "", boardRect.x + boardRect.size/2 -textWidth/2, maxHealthRect.y + maxHealthRect.height);
-		}
-	}
-	// draws differently if it is Selected
-	public void drawSelect(Graphics2D g2d) {
-		g2d.setStroke(new BasicStroke(4));
-		g2d.setColor(Color.GREEN);
-		g2d.draw(getRectHitbox());
-	}
-	// damages the Piece (health--)
-	public void getDamaged(double dmg,CommanderGamePiece otherCommander) {
-		addDmgLabel(this,dmg);
-		resetDmgFlashCountDown();
-		if(health -dmg > 0) {
-			health -= dmg;
-			for(int i = 0;i<(int)dmg;i++) {
-			StagePanel.particles.add(new UltChargeOrb(getCenterX()+(int)((Math.random()-0.5)*boardRect.getSize()), getCenterY()+(int)((Math.random()-0.5)*boardRect.getSize()), otherCommander));
-			}
-		}else {
-			for(int i = 0;i<(int)health;i++) {
-				StagePanel.particles.add(new UltChargeOrb(getCenterX()+(int)((Math.random()-0.5)*boardRect.getSize()), getCenterY()+(int)((Math.random()-0.5)*boardRect.getSize()), otherCommander));
-			}
-			health = 0;
-		}
-	}
-	// resets the count down of the DmgFlash so if GamePieces are hit they Flash in white
-	public void resetDmgFlashCountDown() {
-		dmgFlashCountDown = Commons.dmgFlashCountDown;
-	}
-	
-	public void addDmgLabel(GamePiece targetGP,double dmg) {
-		if(!targetGP.isDead) {
-			Point targetP = new Point(targetGP.boardRect.getX() + targetGP.boardRect.getSize()/2,targetGP.boardRect.getY() + targetGP.boardRect.getSize()/2);
-			StagePanel.dmgLabels.add(new DmgLabel((float)(targetP.getX()+((Math.random()-0.5)*60)),(float)(targetP.getY()+((Math.random()-0.5)*60)),dmg,2,Color.WHITE));
-		}	
-	}
 	
 	public void restoreMovesAndAttacks() {
 		hasExecutedAttack = false;
@@ -498,7 +410,6 @@ public abstract class GamePiece {
 	
 	public void updateMove() {
 		gamePieceBase.updateAngle();
-		gamePieceBase.move(this);
-		updatePosPointer((int)gamePieceBase.getX(), (int)gamePieceBase.getY());
+		gamePieceBase.move();
 	}
 }

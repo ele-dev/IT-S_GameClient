@@ -17,7 +17,7 @@ public class DetonatorPiece extends GamePiece{
 	ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
 	
 	public DetonatorPiece(boolean isEnemy,BoardRectangle boardRect, CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, Commons.nameDetonator, boardRect, Commons.maxHealthDetonator, Commons.dmgDetonator,Commons.MovementRangeDetonator, commanderGamePiece);
+		super(isEnemy, Commons.nameDetonator, boardRect, Commons.dmgDetonator,Commons.baseTypeDetonator, commanderGamePiece);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override

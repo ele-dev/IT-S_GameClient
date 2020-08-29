@@ -92,7 +92,6 @@ public class DetonatorProjectile {
 		}else {
 			g2d.setColor(c);
 		}
-		
 		rectHitbox.setBounds((int)(x-rectHitbox.getWidth()/2),(int)(y-rectHitbox.getHeight()/2),(int)rectHitbox.getWidth(),(int)rectHitbox.getHeight());
 		g2d.translate(this.x, this.y);
 		g2d.rotate(Math.toRadians(this.angle));
@@ -135,16 +134,15 @@ public class DetonatorProjectile {
 	public void checkHitEnemy() {
 		if(this.rectHitbox.intersects(currentTarget.getRectHitbox())) {
 			isStuckToTarget = true;
-			currentTarget.resetDmgFlashCountDown();
 			
-			xRelTarget = x - currentTarget.boardRect.getCenterX();
-			yRelTarget = y - currentTarget.boardRect.getCenterY();
+			xRelTarget = x - currentTarget.getCenterX();
+			yRelTarget = y - currentTarget.getCenterY();
 		}
 	}
 	
 	public void stayStuck() {
-		x = currentTarget.boardRect.getCenterX() + xRelTarget;
-		y = currentTarget.boardRect.getCenterY() + yRelTarget;
+		x = currentTarget.getCenterX() + xRelTarget;
+		y = currentTarget.getCenterY() + yRelTarget;
 	}
 	// will set the projectile to be destroyed if its explosion has faded
 	public void checkIfExplosionFaded() {

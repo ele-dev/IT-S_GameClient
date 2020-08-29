@@ -1,11 +1,9 @@
 package GamePieces;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Arc2D;
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
@@ -28,7 +26,7 @@ public class GunnerPiece extends GamePiece {
 	boolean startedAttack = false;
 	
 	public GunnerPiece(boolean isEnemy, BoardRectangle boardRect,CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, Commons.nameGunner, boardRect, Commons.maxHealthGunner, Commons.dmgGunner,Commons.MovementRangeGunner,commanderGamePiece);
+		super(isEnemy, Commons.nameGunner, boardRect, Commons.dmgGunner,Commons.baseTypeGunner,commanderGamePiece);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -55,12 +53,8 @@ public class GunnerPiece extends GamePiece {
 	}
 	//draws every bullet in the bullets Array
 	public void drawAttack(Graphics2D g2d) {
-		g2d.setColor(new Color(20,20,20,200));
-		g2d.fill(aimArc);
 		for(Bullet curB:bullets) {
-			if(!curB.getHasHitEnemy()) {
-				curB.drawBullet(g2d);
-			}
+			curB.drawBullet(g2d);
 		}
 	}
 
@@ -71,10 +65,9 @@ public class GunnerPiece extends GamePiece {
 		
 		for(int i = 0;i<bullets.size();i++) {
 			Bullet curB = bullets.get(i);
-			if(!curB.getHasHitEnemy()) {
-				curB.move();
-				curB.checkHitEnemy();
-			}
+			
+			curB.move();
+			curB.checkHitEnemy();
 			
 			if(curB.getIsDestroyed()) {
 				bullets.remove(i);
@@ -177,7 +170,6 @@ public class GunnerPiece extends GamePiece {
 	// shots are counted by burstCounter (stops shooting if burstCounter >= burstBulletAmount)
 	public void shootOnce() {
 		startedAttack = true;
-		
 		if(isWallAttack) {
 			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c,16, (float) (angle + (Math.random()-0.5)*spreadAngle), null, currentTargetBoardRectangle));	
 		}else {
@@ -200,13 +192,8 @@ public class GunnerPiece extends GamePiece {
 		if(attackDelayTimer.isRunning()) {
 			isAttacking = true;
 		}
-		if(burstTimer.isRunning()) {
+		if(burstCounter > 0 || bullets.size() >0) {
 			isAttacking = true;
-		}
-		for(Bullet curBullet : bullets) {
-			if(!curBullet.getHasHitEnemy()) {
-				isAttacking = true;
-			}
 		}
 		if(!isAttacking && isWallAttack) {
 			isWallAttack = false;

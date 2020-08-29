@@ -32,7 +32,7 @@ public class BoardRectangle {
 	
 	boolean isHover;
 	double animationSpeed;
-	double so = 4;
+	public double so = 4;
 	
 	Sprite wallSprite,destructibleWallsprite;
 	Sprite groundSprite;
@@ -263,10 +263,11 @@ public class BoardRectangle {
 			g2d.drawLine(x+s+soI/2, y+s+soI/2, x+s+soI/2, y+s*3/4+soI/2);
 		}
 	}
+	
 	// makes the Hover Rect bigger and then smaller gives it "pop" 
-	public void tryAnimate(ArrayList<GamePiece> gamePieces) {
+	public void tryAnimate() {
 		boolean onNoGamePiece = true;
-		for(GamePiece curGP : gamePieces) {
+		for(GamePiece curGP : StagePanel.gamePieces) {
 			if(curGP.boardRect == this) {
 				onNoGamePiece = false;
 			}
@@ -282,7 +283,6 @@ public class BoardRectangle {
 		}else {
 			so = 4;
 		}
-		
 	}
 	// updates the Hover boolean to be Hover == true if the mouse is on the BoardRectangle
 	public void updateHover(Point mousePos) {

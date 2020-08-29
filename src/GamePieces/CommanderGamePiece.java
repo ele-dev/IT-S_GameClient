@@ -15,8 +15,8 @@ public abstract class CommanderGamePiece extends GamePiece {
 	float ultCharge;
 
 	public CommanderGamePiece(boolean isEnemy, String name, BoardRectangle boardRect,
-			 int maxHealth, float dmg,int movementRange, CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, name, boardRect, maxHealth, dmg, movementRange, commanderGamePiece);
+			 float dmg,int baseTypeIndex, CommanderGamePiece commanderGamePiece) {
+		super(isEnemy, name, boardRect, dmg, baseTypeIndex, commanderGamePiece);
 
 	}
 	

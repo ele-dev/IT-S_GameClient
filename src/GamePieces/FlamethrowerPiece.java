@@ -24,7 +24,7 @@ public class FlamethrowerPiece extends GamePiece {
 	
 	public FlamethrowerPiece(boolean isEnemy, BoardRectangle boardRect,
 			CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, Commons.nameFlameThrower, boardRect, Commons.maxHealthFlameThrower, Commons.dmgFlameThrower,Commons.MovementRangeFlameThrower, commanderGamePiece);
+		super(isEnemy, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,Commons.baseTypeFlameThrower, commanderGamePiece);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override

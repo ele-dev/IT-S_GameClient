@@ -21,7 +21,7 @@ public class SniperCommanderPiece extends CommanderGamePiece{
 	Bullet sniperBullet;
 	
 	public SniperCommanderPiece(boolean isEnemy, BoardRectangle boardRect,CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, "SC", boardRect, 10, 5, 2, commanderGamePiece);
+		super(isEnemy, "SC", boardRect, 5, 1, commanderGamePiece);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -36,8 +36,7 @@ public class SniperCommanderPiece extends CommanderGamePiece{
 
 	@Override
 	public void drawAttack(Graphics2D g2d) {
-		g2d.setColor(new Color(20,20,20,200));
-		g2d.fill(aimArc);
+		
 	}
 	
 
@@ -146,7 +145,7 @@ public class SniperCommanderPiece extends CommanderGamePiece{
 				StagePanel.particles.add(new SniperTrailParticle((int)(sniperBullet.getX() + (Math.random()-0.5)*10), (int)(sniperBullet.getY() + (Math.random()-0.5)*10)));
 				sniperBullet.move();
 				sniperBullet.checkHitEnemy();
-				if(sniperBullet.getHasHitEnemy()) {
+				if(sniperBullet.getIsDestroyed()) {
 					sniperBullet = null;
 					isAttacking = false;
 					getCurrentTargetGamePiece().getDamaged(getDmg(),getCommanderGamePiece());
