@@ -1,5 +1,14 @@
 package networking;
 
+/*
+ * written by Elias Geiger
+ * 
+ * This class extends the abstract super class Generic Message
+ * It defines the Account Stats message that is used by the server to
+ * send player related information to clients
+ * 
+ */
+
 public class MsgAccountStats extends GenericMessage {
 	
 	private static final long serialVersionUID = -2431115718862124275L;

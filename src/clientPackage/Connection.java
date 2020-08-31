@@ -1,5 +1,17 @@
 package clientPackage;
 
+/*
+ * written by Elias Geiger
+ * 
+ * This class represents the connection endpoint of a player client
+ * It handles most essential operations for communication including connecting,
+ * login authentification, receiving and parsing network messages, sending messages, etc
+ * 
+ * This class also encapsulates a separate thread of execution, so that things can be processed in the background 
+ * without interfering the main thread where all the user interaction, game logic and GUI animation happens.
+ * 
+ */
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

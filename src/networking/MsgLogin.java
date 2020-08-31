@@ -1,5 +1,15 @@
 package networking;
 
+/*
+ * written by Elias Geiger
+ * 
+ * This class extends the abstract super class GenericMessage
+ * It defines the Login Message that every client sends to the server 
+ * to identify himself as a guest player or as registered player after the connection
+ * to the game server was established successfully
+ * 
+ */
+
 public class MsgLogin extends GenericMessage {
 
 	private static final long serialVersionUID = -8509387207270110867L;

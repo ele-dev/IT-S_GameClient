@@ -1,5 +1,18 @@
 package clientPackage;
 
+/*
+ * written by Elias Geiger
+ * 
+ * This class is intented do message handling and is only used in a static context
+ * Every time the listener thread receives a new message the method inside this class 
+ * is called to identify the message type and to decide how to react or what to do with
+ * the data insided the newly received message.
+ * 
+ * This class was mainly introduced to outsource the message handling and not to overload other classes
+ * since the handleMessage() Method is relatively long and was freqently extended during development
+ * 
+ */
+
 import networking.*;
 
 public class MessageHandler {
