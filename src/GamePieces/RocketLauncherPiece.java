@@ -1,20 +1,18 @@
 package GamePieces;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Arc2D;
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
 
-import Particles.Explosion;
 import Projectiles.Rocket;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
+import Stage.StagePanel;
 
 
 public class RocketLauncherPiece extends GamePiece{
@@ -26,10 +24,10 @@ public class RocketLauncherPiece extends GamePiece{
 	double spreadAngle = 120;
 	boolean startedAttack = false;
 	
-	public RocketLauncherPiece(boolean isEnemy, BoardRectangle boardRect,CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, Commons.nameRocketLauncher, boardRect, Commons.dmgRocketLauncher,Commons.baseTypeRocketLauncher, commanderGamePiece);
+	public RocketLauncherPiece(boolean isEnemy, BoardRectangle boardRect) {
+		super(isEnemy, Commons.nameRocketLauncher, boardRect, Commons.dmgRocketLauncher,Commons.baseTypeRocketLauncher);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
-			
+			 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				angle = angleDesired;
@@ -43,7 +41,7 @@ public class RocketLauncherPiece extends GamePiece{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				shootOnce();
-			}
+			} 
 		});
 		burstTimer.setRepeats(false);
 		
@@ -54,47 +52,26 @@ public class RocketLauncherPiece extends GamePiece{
 		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/4,boardRect.getCenterY()-Commons.boardRectSize/4,
 				Commons.boardRectSize/2,Commons.boardRectSize/2,0,0,Arc2D.PIE);
 	}
+	
+	public void update() {
+		if(currentTargetGamePiece != null) {
+			updateAngle(currentTargetGamePiece.getPos());
+		}else if(currenTargetShield != null){
+			updateAngle(currenTargetShield.getPos());
+		}
+		if(isMoving) {
+			updateMove();
+		}
+		updateAttack();
+	}
 
 	public void drawAttack(Graphics2D g2d) {
-		g2d.setColor(new Color(20,20,20,200));
-		g2d.fill(aimArc);
+//		g2d.setColor(new Color(20,20,20,200));
+//		g2d.fill(aimArc);
 		for(int i = 0;i<rockets.size();i++) {		
 			Rocket curR = rockets.get(i);
-			curR.drawRocket(g2d);
+			curR.drawProjectile(g2d);
 		}
-	}
-	
-	public boolean checkMoveRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.row;
-		int column = this.boardRect.column;
-		if(row == selectedRow && column == selectedColumn) {
-			return false;
-		}
-		if(row+1==selectedRow) {
-			return true;
-		}
-		if(row-1==selectedRow) {
-			return true;
-		}
-		if(row==selectedRow) {
-			return true;
-		}
-		return false;
-	}
-
-
-	public boolean checkMoveColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.column;
-		if(column+1==selectedColumn) {
-			return true;
-		}
-		if(column-1==selectedColumn) {
-			return true;
-		}
-		if(column==selectedColumn) {
-			return true;
-		}
-		return false;
 	}
 
 
@@ -166,48 +143,35 @@ public class RocketLauncherPiece extends GamePiece{
 		}else {
 			burstCounter = 0;
 		}
-		
 	}
 
 	
 	public void addRocketInArcFlight() {
-		if(isWallAttack) {
-			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, (float) (angle + (Math.random()-0.5)*spreadAngle), null, currentTargetBoardRectangle));
-		}else {
-			rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c, (float) (angle + (Math.random()-0.5)*spreadAngle), getCurrentTargetGamePiece(), null));
-		}
-		
+		rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c,
+				(float) (angle + (Math.random()-0.5)*spreadAngle), currentTargetGamePiece,currenTargetShield));
 	}
 	// checks if the piece is attacking and sets its boolean isAttacking to true if it is currently attacking and to false if it isn't
 	public void updateIsAttacking() {
 		isAttacking = false;
-		if(attackDelayTimer.isRunning()) {
+		if(attackDelayTimer.isRunning() || burstTimer.isRunning()) {
 			isAttacking = true;
+			return;
 		}
-		if(burstTimer.isRunning()) {
+		if(rockets.size() > 0) {
 			isAttacking = true;
-		}
-		if(rockets.size() > 0 && startedAttack) {
-			isAttacking = true;
-		}
-		if(!isAttacking && isWallAttack) {
-			isWallAttack = false;
-			currentTargetBoardRectangle.isDestructibleWall = false;
+			return;
 		}
 		if(!isAttacking && startedAttack) {
-			startedAttack = false;
-			getCurrentTargetGamePiece().getDamaged(getDmg(),getCommanderGamePiece());
+			if(currentTargetGamePiece != null) {
+				getCurrentTargetGamePiece().gamePieceBase.getDamaged(getDmg());
+				currentTargetGamePiece = null;
+				startedAttack = false;
+			}else if(currenTargetShield != null){
+				currenTargetShield.getDamaged(getDmg());
+				currenTargetShield = null;
+				startedAttack = false;
+			}
 		}
-	}
-	@Override
-	public void startAttackDestructibleWall(BoardRectangle targetBoardRectangle) {
-		currentTargetBoardRectangle = targetBoardRectangle;
-		isAttacking = true;
-		updateAngle(true);
-		attackDelayTimer.start();
-		hasExecutedAttack = true;
-		hasExecutedMove = true;
-		isWallAttack = true;
 	}
 
 	// updates all things that are animated with the attack (for example moves the rockets and updates the explosions)
@@ -219,9 +183,15 @@ public class RocketLauncherPiece extends GamePiece{
 			Rocket curR = rockets.get(i);
 			curR.addTrailParticle();
 			curR.checkHitEnemy();
-			curR.updateAngle();
+			curR.checkHitTargetShield();
+			if(curR.getCurrentTarget() != null) {
+				curR.homeInOnTarget(curR.getCurrentTarget().getPos(), curR.rotationDelay);
+			}else if(curR.getCurrenTargetShield() != null){
+				curR.homeInOnTarget(curR.getCurrenTargetShield().getPos(), curR.rotationDelay);
+			}
+			
 			curR.move();
-			if(curR.isDestroyed()) {
+			if(curR.getIsDestroyed()) {
 				rockets.remove(i);
 			}
 		}

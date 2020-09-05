@@ -7,11 +7,12 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import com.sun.org.apache.xerces.internal.impl.dtd.models.CMAny;
+import javax.swing.Timer;
 
-import Particles.UltChargeOrb;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
@@ -35,6 +36,8 @@ public class GamePieceBase {
 	int baseTypeIndex;
 	Point targetPoint;
 	
+	Timer tAutoDirectionCorrection;
+	
 	
 	public GamePieceBase(float x, float y, int w, int h, Color c,int baseTypeIndex, GamePiece parentGP) {
 		this.x = x;
@@ -43,7 +46,17 @@ public class GamePieceBase {
 		this.parentGP = parentGP;
 
 		initBaseType(baseTypeIndex);
-		initSprites();
+		initSprites(); 
+		
+		tAutoDirectionCorrection = new Timer(500, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				angle = angleDesired;
+				
+			}
+		});
+		tAutoDirectionCorrection.setRepeats(false);
 	}
 	
 	private void initBaseType(int baseTypeIndex) {
@@ -63,9 +76,8 @@ public class GamePieceBase {
 		default:
 			break;
 		}
-		
-		this.health = this.maxHealth;
-		this.shield = this.maxShield;
+		health = maxHealth;
+		shield = maxShield;
 	}
 	
 	private void initSprites() {
@@ -134,30 +146,45 @@ public class GamePieceBase {
 		g2d.fill(maxHealthRect);
 		g2d.setColor(Commons.cShield);
 		g2d.fill(maxShieldRect);
+		g2d.setStroke(new BasicStroke(3)); 
+		g2d.setColor(Color.BLACK);
+		g2d.draw(maxHealthShieldRect);
+		
+		if(parentGP.boardRect == StagePanel.curHoverBR || parentGP.isSelected) {
+			drawHealthValues(g2d, x, y,15);
+		}
+	}
+	
+	public void drawHealth(Graphics2D g2d, int x, int y, int w, int h, int fontSize) {	
+		g2d.setColor(new Color(0,0,0,200));
+		
+		Rectangle maxHealthShieldRect = new Rectangle(x, y, w, h);
+		g2d.fill(maxHealthShieldRect);
+		float unitHealthSize = (w*(1.0f/(maxHealth+maxShield)));
+		Rectangle maxHealthRect = new Rectangle(x,y, (int)(unitHealthSize * health), h);
+		Rectangle maxShieldRect = new Rectangle(x+(int)(unitHealthSize * health),y, (int)(unitHealthSize * shield), h);
+		g2d.setColor(Commons.cHealth);
+		g2d.fill(maxHealthRect);
+		g2d.setColor(Commons.cShield);
+		g2d.fill(maxShieldRect);
 		g2d.setStroke(new BasicStroke(3));
 		g2d.setColor(Color.BLACK);
 		g2d.draw(maxHealthShieldRect);
 		
-		
-//		g2d.setColor(Color.BLACK);
-//		g2d.setStroke(new BasicStroke(1));
-//		for(int i = 1;i<(maxHealth+maxShield+1);i++) {
-//			g2d.drawLine((int)(x+i*unitHealthSize), y, (int)(x+i*unitHealthSize), y+h);
-//		}	
-		if(parentGP.boardRect == StagePanel.curHoverBoardRectangle || parentGP.isSelected) {
-			drawHealthValues(g2d, x, y);
+		if(parentGP.boardRect == StagePanel.curHoverBR || parentGP.isSelected) {
+			drawHealthValues(g2d, x, y,fontSize);
 		}
 	}
 	
-	private void drawHealthValues(Graphics2D g2d,int x, int y) {
-		g2d.setFont(new Font("Arial",Font.BOLD,25));
+	private void drawHealthValues(Graphics2D g2d,int x, int y, int fontSize) {
+		g2d.setFont(new Font("Arial",Font.BOLD,fontSize));
 		FontMetrics metrics = g2d.getFontMetrics();
 		int textHeight = metrics.getHeight();
 		int textWidth = 0;
 		
 		String str = Math.round(health)+"";
 		textWidth = metrics.stringWidth(str);
-		int size0 = (int) (textWidth+20);
+		int size0 = (int) (textWidth+textHeight/2);
 		
 		Rectangle r = new Rectangle((int)x, (int)y-textHeight, size0, textHeight);
 		g2d.setColor(new Color(20,20,20));
@@ -170,7 +197,7 @@ public class GamePieceBase {
 		
 		str = Math.round(shield)+"";
 		textWidth = metrics.stringWidth(str);
-		int size1 = (int) (textWidth+20);
+		int size1 = (int) (textWidth+textHeight/2);
 		
 		if(maxShield > 0) {
 			r = new Rectangle((int)x+size0, (int)y-textHeight, size1, textHeight);
@@ -185,11 +212,11 @@ public class GamePieceBase {
 	}
 	
 	public void drawMoveRange(Graphics2D g2d) {
-		g2d.setFont(new Font("Arial",Font.BOLD,30));
+		g2d.setFont(new Font("Arial",Font.BOLD,20));
 		FontMetrics metrics = g2d.getFontMetrics();
 		int textHeight = metrics.getHeight();
 		int textWidth = 0;
-		if(parentGP.movesPanel.getMoveButtonIsActive()) {
+		if(parentGP.actionSelectionPanel.getMoveButtonIsActive()) {
 			g2d.setColor(Commons.cMove);
 			for(int i = 1;i<pathBoardRectangles.size();i++) {
 				textWidth = metrics.stringWidth(i+"");
@@ -201,26 +228,27 @@ public class GamePieceBase {
 		if(usedMoves < 0) {
 			usedMoves = 0;
 		}
+		if(parentGP.hasExecutedMove) {
+			usedMoves = movementRange;
+		}
 		if(!parentGP.hasExecutedAttack && (parentGP.getIsEnemy() && StagePanel.getIsEnemyTurn()) || (!parentGP.getIsEnemy() && !StagePanel.getIsEnemyTurn())) {
-			if(!parentGP.hasExecutedMove) {
-				textWidth = metrics.stringWidth(movementRange-(usedMoves)+"");
-				int size = (int) (textWidth*2);
-				Rectangle r = new Rectangle((int)x-size/2, (int)y-size/2+Commons.boardRectSize/2, size, size);
-				g2d.setColor(new Color(20,20,20));
-				g2d.fill(r);	
-				g2d.setColor(new Color(5,5,5));
-				g2d.setStroke(new BasicStroke(5));
-				g2d.draw(r);
-				g2d.setColor(Commons.cMove);
-				g2d.drawString(movementRange-(usedMoves)+"", (int)x-textWidth/2, (int)y+textHeight/3 + Commons.boardRectSize/2);
-			}
+			
+			textWidth = metrics.stringWidth(movementRange-(usedMoves)+"");
+			int size = (int) (textWidth*2);
+			Rectangle r = new Rectangle((int)x-size/2, (int)y-size/2+Commons.boardRectSize/2, size, size);
+			g2d.setColor(new Color(20,20,20));
+			g2d.fill(r);	
+			g2d.setColor(new Color(5,5,5));
+			g2d.setStroke(new BasicStroke(5));
+			g2d.draw(r);
+			g2d.setColor(Commons.cMove);
+			g2d.drawString(movementRange-(usedMoves)+"", (int)x-textWidth/2, (int)y+textHeight/3 + Commons.boardRectSize/2);
 		}
 	}
 	
 	// damages the Piece (health--)
-	public void getDamaged(float dmg,CommanderGamePiece otherCommander) {
-		addDmgLabel(parentGP,dmg);
-		int BRS= Commons.boardRectSize;
+	public void getDamaged(float dmg) {
+		StagePanel.addDmgLabel(parentGP,dmg);
 		if(shield - dmg >= 0) {
 			shield-=dmg;
 			dmg = 0;
@@ -230,30 +258,21 @@ public class GamePieceBase {
 		}
 		if(health-dmg > 0) {
 			health-=dmg;
-			for(int i = 0;i<(int)dmg;i++) {
-				StagePanel.particles.add(new UltChargeOrb(x+(int)((Math.random()-0.5)*BRS), y+(int)((Math.random()-0.5)*BRS), otherCommander));
-			}
 		}else {
-			for(int i = 0;i<(int)health;i++) {
-				StagePanel.particles.add(new UltChargeOrb(x+(int)((Math.random()-0.5)*BRS), y+(int)((Math.random()-0.5)*BRS), otherCommander));
-			}
 			health = 0;
 		}
 	}
 	
 	public void regenShield() {
 		if(shield + Commons.shieldRegen >= maxShield) {
+			if(shield < maxShield) {
+				StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", 2,0.3f, Commons.cShield));
+			}
 			shield = maxShield;
 		}else {
 			shield += Commons.shieldRegen;
-			StagePanel.valueLabels.add(new ValueLabel(x, y, "+" + Commons.shieldRegen+" Shield", 2,0.3f, Commons.cShield));
+			StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", 2,0.3f, Commons.cShield));
 		}
-	}
-		
-	private void addDmgLabel(GamePiece targetGP,float dmg) {
-		if(!targetGP.isDead) {
-			StagePanel.valueLabels.add(new ValueLabel((float)(x+((Math.random()-0.5)*60)),(float)(y+((Math.random()-0.5)*60)),"-"+Math.round(dmg),2,0.3f,new Color(255,0,50)));
-		}	
 	}
 	
 	// moves the GamePieceBase only if the angle is somewhat in the direction of the desiredangle, so it only moves if it points in the right direction
@@ -273,16 +292,16 @@ public class GamePieceBase {
 		Rectangle rectSmallerBR = new Rectangle((int)curTPBR.getCenterX()-5,(int)curTPBR.getCenterY()-5,10,10);
 		// updates the index when it crosses a pathCell so it counts down from pathCell to pathCell,
 		// always having the next pathCell in the array as the target until the end is reached then it stops
-		
-		
 		if(rectSmallerBR.contains(new Point((int)x,(int)y))) {
 			if(curTargetPathCellIndex < pathBoardRectangles.size()-1) {
 				curTargetPathCellIndex++;
 				parentGP.boardRect = pathBoardRectangles.get(curTargetPathCellIndex-1);
+				tAutoDirectionCorrection.restart();
 			}else {
 				parentGP.isMoving = false;
 				parentGP.boardRect = pathBoardRectangles.get(curTargetPathCellIndex);
 				pathBoardRectangles.clear();
+				tAutoDirectionCorrection.stop();
 			}
 		}
 	}
@@ -298,11 +317,7 @@ public class GamePieceBase {
 		// if the angle and the angleDesired are opposites the Vector point into the opposite direction
 		// this means the angle will be the angle of the longer vector which is always angle
 		// so if that happens the angleDesired is offset so this won't happen
-		
-		if((angleDesired +175< angle && angleDesired +185> angle) || (angleDesired -175< angle && angleDesired -185> angle)) {
-			angle = angleDesired;
-			System.out.println(angle+"/"+angleDesired);
-		}
+		int tolerance = 10;
 		angle = Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
 	}
 	

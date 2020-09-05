@@ -1,16 +1,33 @@
 package Stage;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.Timer;
+
 public class Camera {
-	float x,y;
+	private float x,y;
 	private float vx,vy;
 	float v = 6;
+	Rectangle rectOfView;
+	
+	int screenShakeCountDown;
+	int screenShakeMagnitude;
 	
 	public Camera() {
 		this.x = 0;
 		this.y = 0;
+	}
+	
+	public void drawRectOfView(Graphics2D g2d) {
+		g2d.setColor(new Color(255,0,50,100));
+		g2d.draw(rectOfView);
+		
 	}
 	
 	public void updateCamera(float x,float y) {
@@ -18,13 +35,49 @@ public class Camera {
 		this.y = y;
 	}
 	
-	public void move() {
+	public void move(Rectangle mapRectangle) {
+		if(screenShakeCountDown > 0) {
+			screenShakeCountDown--;
+		}
 		x += vx;
+		if(!mapRectangle.contains(getCenterOfScreen())) {
+			x -= vx;
+		}
 		y += vy;
+		if(!mapRectangle.contains(getCenterOfScreen())) {
+			y -= vy;
+		}
+		int w = StagePanel.w;
+		int h = StagePanel.h;
+		rectOfView = new Rectangle((int)-x-Commons.boardRectSize,(int)-y-Commons.boardRectSize,w+Commons.boardRectSize*2,h+Commons.boardRectSize*2);
+	}
+	
+	public void applyScreenShake(int screenShakeAmountOfFRames,int screenShakeMagnitude) {
+		this.screenShakeCountDown = screenShakeAmountOfFRames;
+		this.screenShakeMagnitude = screenShakeMagnitude;
+	}
+	
+	public boolean isInView(Rectangle rect) {
+		return rectOfView.intersects(rect);
+	}
+	
+	public boolean isInView(Point p) {
+		return rectOfView.contains(p);
 	}
 	
 	public Point getPos() {
-		return new Point((int)x,(int)y);
+		Point p = null;
+		if(screenShakeCountDown > 0) {
+			p = new Point((int)(x+(Math.random()-0.5)*screenShakeMagnitude),(int)(y+(Math.random()-0.5)*screenShakeMagnitude));
+		}else {
+			p = new Point((int)x,(int)y);
+		}
+		
+		return p;
+	}
+	
+	public Point getCenterOfScreen() {
+		return new Point((int)-x+StagePanel.w/2, (int)-y+StagePanel.h/2);
 	}
 	
 	public void updateMovementPressedKey(KeyEvent e) {

@@ -1,9 +1,12 @@
 package Stage;
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
 
 import clientPackage.Connection;
 
@@ -13,12 +16,16 @@ public class ProjektFrame extends JFrame {
 	
 	static Connection conn;
 	// Windows related
-	int width = Commons.wf;
-	int height = Commons.hf;
+	
+	public static int width,height;
 	
 	StagePanel stagePanel;
 	
 	public ProjektFrame() {
+//		setUndecorated(true);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		width = (int) screenSize.getWidth();
+		height = (int) screenSize.getHeight();
 		setSize(width,height);
 		setLocationRelativeTo(null);
 		setLayout(null);
@@ -27,6 +34,11 @@ public class ProjektFrame extends JFrame {
 		// setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
+		
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		
+		
+		
 		Container cp = getContentPane();
 		stagePanel = new StagePanel(0, 0);
 		cp.add(stagePanel);
@@ -39,18 +51,19 @@ public class ProjektFrame extends JFrame {
 	public static void main(String[] args) {
 		
 		// First create a connection instance
-		try {
-			conn = new Connection();
-		} catch (Exception e) {}
-		
-		// If the connection is established prompt the user to login
-		if(conn.isConnected() == true) {
-			// Enter the login dialog
-			loginDialog();
-		}
+//		try {
+//			conn = new Connection();
+//		} catch (Exception e) {}
+//		
+//		// If the connection is established prompt the user to login
+//		if(conn.isConnected() == true) {
+//			// Enter the login dialog
+//			loginDialog();
+//		}
 		
 		// Second create the main window and start the actual game
 		ProjektFrame f = new ProjektFrame();
+		
 		System.out.println("Main Window is now visible");
 		
 		// Add a window listener to the frame
@@ -61,7 +74,7 @@ public class ProjektFrame extends JFrame {
 			public void windowClosing(WindowEvent windowEvent) {
 				System.out.println("window was closed --> cleanup routine");
 				
-				conn.finalize();
+//				conn.finalize();
 				
 				// Finally exit the application 
 				System.out.println("Application close up");

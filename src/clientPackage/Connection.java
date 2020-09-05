@@ -34,7 +34,7 @@ public class Connection extends Thread {
 		// Initialize state indicators assuming worst case 
 		this.playAsGuest = false;
 		this.isConnected = false;
-		this.loggedIn = false;
+		this.loggedIn = false; 
 		this.stopOrder = false;
 		
 		// Use global configuration vars and store result in the class
