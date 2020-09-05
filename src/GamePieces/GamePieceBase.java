@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
-
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;

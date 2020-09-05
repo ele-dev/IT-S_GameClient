@@ -24,8 +24,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import Abilities.RadialShield;
-import Abilities.WallMine;
 import Buttons.ButtonEndTurn;
 import GamePieces.CommanderGamePiece;
 import GamePieces.DetonatorPiece;
