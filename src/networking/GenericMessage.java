@@ -4,6 +4,15 @@ import java.io.Serializable;
 
 /*
  * written by Elias Geiger
+ * 
+ * This abstract class is super class of all specific message classes and
+ * is intended to define basic attributes and functionalities that all messages have incommon
+ * It implements Serializable interface because the concept of the network protocol is based on 
+ * classes that represent different types of messages which need to be instantiated and serialized 
+ * using Object I/O Streams to be sent over the tcp connection
+ * 
+ * The constant IDs for all existing message types are also defined in this class
+ * 
  */
 
 public abstract class GenericMessage implements Serializable {
