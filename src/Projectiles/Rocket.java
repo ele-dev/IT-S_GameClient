@@ -3,14 +3,11 @@ package Projectiles;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
-import java.awt.Rectangle;
-import java.util.ArrayList;
 
 import Abilities.RadialShield;
 import GamePieces.GamePiece;
 import Particles.Explosion;
 import Particles.RocketTrailParticle;
-import Stage.BoardRectangle;
 import Stage.StagePanel;
 
 

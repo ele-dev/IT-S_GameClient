@@ -1,16 +1,12 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
 
-import com.sun.org.apache.bcel.internal.generic.IFGE;
-
-import Abilities.WallMine;
 import Projectiles.DetonatorProjectile;
 import Stage.BoardRectangle;
 import Stage.Commons;

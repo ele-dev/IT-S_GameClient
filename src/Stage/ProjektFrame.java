@@ -6,23 +6,22 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JRootPane;
 
 import clientPackage.Connection;
 
 @SuppressWarnings("serial")
 public class ProjektFrame extends JFrame {
 	
-	
+	// Network related
 	static Connection conn;
-	// Windows related
 	
+	// Windows related
 	public static int width,height;
 	
 	StagePanel stagePanel;
 	
 	public ProjektFrame() {
-//		setUndecorated(true);
+		// setUndecorated(true);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
 		height = (int) screenSize.getHeight();
@@ -37,29 +36,28 @@ public class ProjektFrame extends JFrame {
 		
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
-		
-		
 		Container cp = getContentPane();
 		stagePanel = new StagePanel(0, 0);
 		cp.add(stagePanel);
 		addKeyListener(stagePanel.kl);
-		// test
 	}
 	
 	// ------------------- MAIN Application Entry Point -------------------------- //
 	
 	public static void main(String[] args) {
 		
+		/*
 		// First create a connection instance
-//		try {
-//			conn = new Connection();
-//		} catch (Exception e) {}
-//		
-//		// If the connection is established prompt the user to login
-//		if(conn.isConnected() == true) {
-//			// Enter the login dialog
-//			loginDialog();
-//		}
+		try {
+			conn = new Connection();
+		} catch (Exception e) {}
+		
+		// If the connection is established prompt the user to login
+		if(conn.isConnected() == true) {
+			// Enter the login dialog
+			loginDialog();
+		}
+		*/
 		
 		// Second create the main window and start the actual game
 		ProjektFrame f = new ProjektFrame();
@@ -74,7 +72,7 @@ public class ProjektFrame extends JFrame {
 			public void windowClosing(WindowEvent windowEvent) {
 				System.out.println("window was closed --> cleanup routine");
 				
-//				conn.finalize();
+				// conn.finalize();
 				
 				// Finally exit the application 
 				System.out.println("Application close up");
@@ -85,6 +83,7 @@ public class ProjektFrame extends JFrame {
 	
 	// this method is a temporary solution for the login dialog
 	// Info: The functionality is supposed be integrated in the GUI later
+	@SuppressWarnings("unused")
 	private static void loginDialog() {
 		
 		// Ask the user for login credentials

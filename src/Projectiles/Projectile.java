@@ -8,7 +8,6 @@ import java.awt.Shape;
 
 import Abilities.RadialShield;
 import GamePieces.GamePiece;
-import Stage.StagePanel;
 
 public abstract class Projectile {
 	protected float x,y;

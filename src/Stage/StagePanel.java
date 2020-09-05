@@ -17,8 +17,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -40,6 +38,7 @@ import Lighting.LightingManager;
 import Particles.EmptyShell;
 import Particles.Particle;
 
+@SuppressWarnings("serial")
 public class StagePanel extends JPanel{
 	int x,y;
 	static int w;
@@ -88,8 +87,8 @@ public class StagePanel extends JPanel{
 	public StagePanel(int x, int y) {
 		this.x = x;
 		this.y = y;
-		this.w = ProjektFrame.width;
-		this.h = ProjektFrame.height;
+		StagePanel.w = ProjektFrame.width;
+		StagePanel.h = ProjektFrame.height;
 		setBounds(x, y, w, h);
 		setVisible(true);
 		cBackGround = new Color(28,26,36);

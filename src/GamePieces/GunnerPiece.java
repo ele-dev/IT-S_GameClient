@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import javax.swing.Timer;
 
 import Abilities.RadialShield;
-import Abilities.WallMine;
 import Particles.EmptyShell;
 import Projectiles.Bullet;
 import Stage.BoardRectangle;

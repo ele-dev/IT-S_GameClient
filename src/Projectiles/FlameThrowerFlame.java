@@ -6,7 +6,6 @@ import java.awt.Rectangle;
 
 import Abilities.RadialShield;
 import GamePieces.GamePiece;
-import Stage.BoardRectangle;
 
 
 public class FlameThrowerFlame extends Projectile{

@@ -12,7 +12,6 @@ import Projectiles.Rocket;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
-import Stage.StagePanel;
 
 
 public class RocketLauncherPiece extends GamePiece{

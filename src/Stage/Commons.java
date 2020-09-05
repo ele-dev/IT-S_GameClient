@@ -2,8 +2,6 @@ package Stage;
 
 import java.awt.Color;
 
-import com.sun.glass.ui.Screen;
-
 public interface Commons {
 	final int boardRectSize = 80;
 	

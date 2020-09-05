@@ -112,7 +112,7 @@ public class BoardRectangle {
 		boolean leftConnected = false;
 		boolean upConnected = false;
 		boolean downConnected = false;
-		for(BoardRectangle curBR : stagePanel.boardRectangles) {
+		for(BoardRectangle curBR : StagePanel.boardRectangles) {
 			if(curBR.isWall) {
 				if(curBR.row == row+1 && curBR.column == column) {
 					downConnected = true;

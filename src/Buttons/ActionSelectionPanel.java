@@ -10,7 +10,6 @@ import java.awt.Rectangle;
 
 import GamePieces.CommanderGamePiece;
 import GamePieces.GamePiece;
-import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.ProjektFrame;
 import Stage.StagePanel;

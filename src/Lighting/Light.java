@@ -3,8 +3,6 @@ package Lighting;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.RadialGradientPaint;
-import java.awt.Rectangle;
 
 public class Light {
 	int x,y;

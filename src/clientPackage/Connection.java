@@ -85,6 +85,7 @@ public class Connection extends Thread {
 		
 		while(!this.stopOrder)
 		{
+			@SuppressWarnings("unused")
 			GenericMessage recvBuffer = null;
 			
 			// Check the input stream of the client socket for incoming messages

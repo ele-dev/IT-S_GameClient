@@ -14,7 +14,6 @@ import java.awt.geom.Ellipse2D;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
-import jdk.internal.org.objectweb.asm.tree.IincInsnNode;
 
 public class RadialShield {
 	private BoardRectangle anchorBR;
