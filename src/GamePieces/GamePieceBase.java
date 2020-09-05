@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
-
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
@@ -157,7 +156,6 @@ public class GamePieceBase {
 	
 	public void drawHealth(Graphics2D g2d, int x, int y, int w, int h, int fontSize) {	
 		g2d.setColor(new Color(0,0,0,200));
-		
 		Rectangle maxHealthShieldRect = new Rectangle(x, y, w, h);
 		g2d.fill(maxHealthShieldRect);
 		float unitHealthSize = (w*(1.0f/(maxHealth+maxShield)));
@@ -170,7 +168,6 @@ public class GamePieceBase {
 		g2d.setStroke(new BasicStroke(3));
 		g2d.setColor(Color.BLACK);
 		g2d.draw(maxHealthShieldRect);
-		
 		if(parentGP.boardRect == StagePanel.curHoverBR || parentGP.isSelected) {
 			drawHealthValues(g2d, x, y,fontSize);
 		}
@@ -317,7 +314,6 @@ public class GamePieceBase {
 		// if the angle and the angleDesired are opposites the Vector point into the opposite direction
 		// this means the angle will be the angle of the longer vector which is always angle
 		// so if that happens the angleDesired is offset so this won't happen
-		int tolerance = 10;
 		angle = Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
 	}
 	
