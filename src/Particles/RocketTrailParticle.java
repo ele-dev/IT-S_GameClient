@@ -1,10 +1,8 @@
-package Projectiles;
+package Particles;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-
-import Particles.Particle;
 
 public class RocketTrailParticle extends Particle{
 	private int fadeSpeed;

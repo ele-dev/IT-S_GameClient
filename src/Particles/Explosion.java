@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
+import Stage.StagePanel;
+
 public class Explosion extends Particle{
 	private ArrayList<ExplosionCloud> explosionClouds = new ArrayList<ExplosionCloud>();
 	private ArrayList<ExplosionFragment> explosionFragments = new ArrayList<ExplosionFragment>();
@@ -16,14 +18,27 @@ public class Explosion extends Particle{
 		this.numberOfClouds = (int) (10*size);
 		this.numberOfFragments = (int) (5*size);
 		for(int i = 0;i<numberOfClouds;i++) {
-			this.explosionClouds.add(new ExplosionCloud(x, y,(int)(Math.random() * 40 * size) + (int)(10 * size), (float)(Math.random() * size), (float)(Math.random()*360)));
+			this.explosionClouds.add(new ExplosionCloud(x, y,(int)(Math.random() * 40 * size) + (int)(10 * size), (float)(Math.random() * size*2), (float)(Math.random()*360)));
 		}
 		for(int i = 0;i<numberOfFragments;i++) {
 			this.explosionFragments.add(new ExplosionFragment(x, y,(int)(Math.random() * 6 * size) + (int)(4 * size),
 					Color.RED, (float)(Math.random()+1), (float)(fragmentAngle+180) + (float)(Math.random()-0.5)*240));
 		}
+		StagePanel.applyScreenShake(2, 10);
 	}
 	
+	public Explosion(float x, float y, float size) {
+		super(x, y, 0, size, null, 0);
+		this.numberOfClouds = (int) (10*size);
+		this.numberOfFragments = (int) (5*size);
+		for(int i = 0;i<numberOfClouds;i++) {
+			this.explosionClouds.add(new ExplosionCloud(x, y,(int)(Math.random() * 40 * size) + (int)(10 * size), (float)(Math.random() * size*2), (float)(Math.random()*360)));
+		}
+		for(int i = 0;i<numberOfFragments;i++) {
+			this.explosionFragments.add(new ExplosionFragment(x, y,(int)(Math.random() * 6 * size) + (int)(4 * size),
+					Color.RED, (float)(Math.random()+1), (float)(Math.random()+360) + (float)(Math.random()-0.5)*240));
+		}
+	}
 	@Override
 	public void drawParticle(Graphics2D g2d) {
 		for(int i = 0;i<explosionClouds.size();i++) {

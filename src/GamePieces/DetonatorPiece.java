@@ -1,12 +1,16 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
 
+import com.sun.org.apache.bcel.internal.generic.IFGE;
+
+import Abilities.WallMine;
 import Projectiles.DetonatorProjectile;
 import Stage.BoardRectangle;
 import Stage.Commons;
@@ -16,8 +20,8 @@ import Stage.StagePanel;
 public class DetonatorPiece extends GamePiece{
 	ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
 	
-	public DetonatorPiece(boolean isEnemy,BoardRectangle boardRect, CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, Commons.nameDetonator, boardRect, Commons.dmgDetonator,Commons.baseTypeDetonator, commanderGamePiece);
+	public DetonatorPiece(boolean isEnemy,BoardRectangle boardRect) {
+		super(isEnemy, Commons.nameDetonator, boardRect, Commons.dmgDetonator,Commons.baseTypeDetonator);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -29,6 +33,18 @@ public class DetonatorPiece extends GamePiece{
 		attackDelayTimer.setRepeats(false);
 	}
 	
+	public void update() {
+		if(currentTargetGamePiece != null) {
+			updateAngle(currentTargetGamePiece.getPos());
+		}else if(currenTargetShield != null){
+			updateAngle(currenTargetShield.getPos());
+		}
+		if(isMoving) {
+			updateMove();
+		}
+		updateAttack();
+	}
+	
 	public void drawAttack(Graphics2D g2d) {
 		for(int i = 0;i<detProjectiles.size();i++) {
 			DetonatorProjectile curDP = detProjectiles.get(i);
@@ -37,52 +53,16 @@ public class DetonatorPiece extends GamePiece{
 				curDP.detExplosion.drawParticle(g2d);
 			}
 			if(!curDP.isDetonated()) {
-				curDP.drawDetonatorProjectile(g2d);	
+				curDP.drawProjectile(g2d);	
 			}
 		}
-	}
-
-	public boolean checkMoveRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.row;
-		int column = this.boardRect.column;
-		if(row == selectedRow && column == selectedColumn) {
-			return false;
-		}
-		if(row+1==selectedRow) {
-			return true;
-		}
-		if(row-1==selectedRow) {
-			return true;
-		}
-		if(row==selectedRow) {
-			return true;
-		}
-		return false;
-	}
-
-
-	public boolean checkMoveColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.column;
-		if(column+1==selectedColumn) {
-			return true;
-		}
-		if(column-1==selectedColumn) {
-			return true;
-		}
-		if(column==selectedColumn) {
-			return true;
-		}
-		return false;
 	}
 
 
 	public boolean checkAttacks(int selectedRow, int selectedColumn) {
 		if(checkAttackRows(selectedRow,selectedColumn) || checkAttackColumns(selectedRow,selectedColumn)) {
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isGap && !curBR.isWall) {
-					if(curBR.isDestructibleWall) {
-						return false;
-					}
+				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
 					if(checkIfBoardRectangleInSight(curBR)) {
 						return true;
 					}
@@ -99,7 +79,6 @@ public class DetonatorPiece extends GamePiece{
 		if(row == selectedRow && column == selectedColumn) {
 			return false;
 		}
-		
 		if(row+2==selectedRow) {
 			for(int i = -2;i<3;i++) {
 				if(column + i == selectedColumn) {
@@ -116,7 +95,6 @@ public class DetonatorPiece extends GamePiece{
 		}
 		return false;
 	}
-
 
 	public boolean checkAttackColumns(int selectedRow, int selectedColumn) {
 		int column = this.boardRect.column;
@@ -139,7 +117,8 @@ public class DetonatorPiece extends GamePiece{
 	}
 	// creates/shoots the DetonatorProjectile
 	public void shootDetonator() {
-		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), 10, 20, c, getDmg(), (float)(angle + (Math.random()-0.5)*10), getCurrentTargetGamePiece(),this));
+		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), 10, 20, c, 
+				getDmg(), (float)(angle + (Math.random()-0.5)*10), getCurrentTargetGamePiece(),currenTargetShield));
 	}
 	// decreases the detonation counter and lets it explode if the timer <= 0
 	public void decDetonaterTimers() {
@@ -153,37 +132,32 @@ public class DetonatorPiece extends GamePiece{
 				curDP.setBlinkeIntervall(5);
 			}
 		}
-		
 	}
 	
 	public void updateIsAttacking() {
 		isAttacking = false;
 		if(attackDelayTimer.isRunning()) {
 			isAttacking = true;
+			return;
 		}
 		for(DetonatorProjectile curDP : detProjectiles) {
-			if(curDP.detonationTimer.isRunning()) {
+			if(curDP.detonationTimer.isRunning() || !curDP.getHasHitTarget()) {
 				isAttacking = true;
+				return;
 			}
 		}
-		for(DetonatorProjectile curDP : detProjectiles) {
-			if(!curDP.isStuckToTarget()) {
-				isAttacking = true;
-			}
+		if(!isAttacking) {
+			currentTargetGamePiece = null;
 		}
-	}
-
-	@Override
-	public void startAttackDestructibleWall(BoardRectangle targetBoardRectangle) {
-		
 	}
 
 	public void updateAttack() {
 		for(int i = 0;i<detProjectiles.size();i++) {
 			DetonatorProjectile curDP = detProjectiles.get(i);
-			if(!curDP.isStuckToTarget()) {
+			if(!curDP.getHasHitTarget()) {
 				curDP.move();
 				curDP.checkHitEnemy();
+				curDP.checkHitTargetShield();
 			}else {
 				curDP.stayStuck();
 				curDP.updateBlink();
@@ -194,7 +168,7 @@ public class DetonatorPiece extends GamePiece{
 				curDP.checkIfExplosionFaded();
 			}
 			
-			if(curDP.isDestroyed()) {
+			if(curDP.getIsDestroyed()) {
 				detProjectiles.remove(i);
 			}
 		}

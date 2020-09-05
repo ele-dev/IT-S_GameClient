@@ -5,21 +5,22 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
+import GamePieces.CommanderGamePiece;
 import GamePieces.GamePiece;
 import Stage.Commons;
 
-class AttackButton extends InterfaceButton{
+class AbilityButton extends InterfaceButton{
 	private GamePiece parentGamepiece;
 	 
-	public AttackButton(int startx, int starty, int w, int h, GamePiece parentGamepiece) {
-		super(startx, starty, w, h, Commons.cAttack, "Attack");
+	public AbilityButton(int startx, int starty, int w, int h, GamePiece parentGamepiece) {
+		super(startx, starty, w, h, Commons.cAbility, "Ability");
 		this.parentGamepiece = parentGamepiece;
 	}
 
 	// draws the button but differently if it is hover or inActive
 	@Override
 	public void drawButton(Graphics2D g2d) {
-		if(isHover && !parentGamepiece.getHasExecutedAttack()) {
+		if(isHover && !parentGamepiece.getHasExecutedAttack() && hasSufficientCharge()) {
 			g2d.setColor(cIsHover);
 		}else {
 			g2d.setColor(c);
@@ -40,7 +41,7 @@ class AttackButton extends InterfaceButton{
 		if(isActive) {
 			g2d.setColor(c);
 		}
-		if(parentGamepiece.getHasExecutedAttack()) {
+		if(parentGamepiece.getHasExecutedAttack() || !hasSufficientCharge()) {
 			g2d.setColor(cInactive);
 		} 
 		g2d.draw(rect);
@@ -55,14 +56,18 @@ class AttackButton extends InterfaceButton{
 	@Override
 	public boolean tryPress() {
 		if(isHover) {
-			if(!parentGamepiece.getHasExecutedAttack()) {
+			if(!parentGamepiece.getHasExecutedAttack() && hasSufficientCharge()) {
 				isActive = true;
-				parentGamepiece.showPossibleAttacks();
+				return true;
 			}
-			return true;
 		}
 		isActive = false;
 		return false;
+	}
+	
+	public boolean hasSufficientCharge() {
+		CommanderGamePiece curCGP = (CommanderGamePiece) parentGamepiece;
+		return curCGP.getAbilityCharge() == curCGP.getMaxAbilityCharge();
 		
 	}
 }

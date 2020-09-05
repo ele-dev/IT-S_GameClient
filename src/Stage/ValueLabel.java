@@ -26,7 +26,7 @@ public class ValueLabel {
 		this.fadeSpeed = fadeSpeed; 
 		this.riseSpeed = riseSpeed;
 		this.c = c;
-		fontDmgLabel = new Font("Arial",Font.BOLD,30);
+		fontDmgLabel = new Font("Arial",Font.BOLD,25);
 		alpha = 255;
 	}
 	

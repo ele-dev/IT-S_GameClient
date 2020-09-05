@@ -6,8 +6,8 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -15,47 +15,45 @@ import javax.swing.ImageIcon;
 import GamePieces.GamePiece;
 
 public class BoardRectangle {
-
 	public int row,column;
-
 	Color c;
 	public Rectangle rect;
-	public Color cPossibleMove;
-	public Color cPossibleAttack;
+	public Color cPossibleMove,cPossibleAttack,cPossibleAbility;
 	int index;
-	boolean isTile1;
-	public boolean isPossibleMove;
-	public boolean isPossibleAttack;
-	public boolean isGap = false;
+	public boolean isTile1;
+	public boolean isPossibleMove,isPossibleAttack,isPossibleAbility;
+	public boolean isShowPossibleMove,isShowPossibleAttack,isShowPossibleAbility;
 	public boolean isWall = false;
-	public boolean isDestructibleWall = false;
 	
 	boolean isHover;
 	double animationSpeed;
-	public double so = 4;
+	public float so = 4;
+	private int rotation = 0;
 	
-	Sprite wallSprite,destructibleWallsprite;
+	Sprite wallSprite;
 	Sprite groundSprite;
 	
-	public BoardRectangle(int x, int y, int size, int row, int column,boolean isTile1,int index) {
+	public BoardRectangle northBR,southBR,eastBR,westBR;
+	
+	public BoardRectangle(int size, int row, int column,boolean isTile1,int index) {
 		this.row = row;
 		this.column = column;
 
-
-		this.rect = new Rectangle(x,y,size,size);
+		rect = new Rectangle(column*size,row*size,size,size);
 		
-		this.cPossibleMove = new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),80);
-		
-		this.cPossibleAttack = new Color(Commons.cAttack.getRed(),Commons.cAttack.getGreen(),Commons.cAttack.getBlue(),80);
+		int alpha = 200;
+		cPossibleMove = new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),alpha);
+		cPossibleAttack = new Color(Commons.cAttack.getRed(),Commons.cAttack.getGreen(),Commons.cAttack.getBlue(),alpha);
+		cPossibleAbility = new Color(Commons.cAbility.getRed(),Commons.cAbility.getGreen(),Commons.cAbility.getBlue(),alpha);
 		
 		this.isTile1 = isTile1;
 		
 		this.index = index;
 		
 		if(isTile1) {
-			this.c = new Color(10,10,10);
+			c = new Color(10,10,10);
 		}else {
-			this.c = new Color(200,200,200);
+			c = new Color(200,200,200);
 		}
 		
 		ArrayList<String> spriteLinks = new ArrayList<String>();
@@ -69,7 +67,7 @@ public class BoardRectangle {
 	
 	public int getX() {
 		return (int) rect.getX();
-	}
+	} 
 	public int getY() {
 		return (int) rect.getY();
 	}
@@ -79,6 +77,33 @@ public class BoardRectangle {
 	}
 	public int getCenterY(){
 		return (int) rect.getCenterY();
+	}
+	
+	public Point getPos() {
+		return new Point(getCenterX(),getCenterY());
+	}
+	
+	public void initAdjecantBRs() {
+		for(BoardRectangle curBR : StagePanel.boardRectangles ) {
+			if(curBR != this) {
+				if(curBR.row == row-1 && curBR.column == column) {
+					northBR = curBR;
+				}
+				if(curBR.row == row+1 && curBR.column == column) {
+					southBR = curBR;
+				}
+				if(curBR.row == row && curBR.column == column+1) {
+					eastBR = curBR;
+				}
+				if(curBR.row == row && curBR.column == column-1) {
+					westBR = curBR;
+				}
+			}
+		}
+	}
+	
+	public static int getDistanceBetweenBRs(BoardRectangle br1,BoardRectangle br2) {
+		return Math.abs(br1.row - br2.row)+Math.abs(br1.column - br2.column);
 	}
 	
 	// initalizes what Sprite is needed depending on neighboring walls
@@ -183,15 +208,8 @@ public class BoardRectangle {
 			wallSprite = new Sprite(spriteLinks3, size,size, 0);
 		}
 	}
-	
-	public void initDestructibleWallSprite() {
-		ArrayList<String> spriteLinks = new ArrayList<String>();
-		spriteLinks.add(Commons.pathToSpriteSource+"Tiles/WoodWall_LR.png");
-		destructibleWallsprite = new Sprite(spriteLinks, getSize(),getSize(), 0);
-	}
 	// draws The Rectangle depending on if it is a Possible move/attack (draws another rectangle with another color over it)
 	public void drawBoardRectangle(Graphics2D g2d,ArrayList<BoardRectangle> boardRectangles) {
-		
 		g2d.setColor(c);
 		g2d.fill(rect);
 		g2d.setStroke(new BasicStroke(5));
@@ -202,77 +220,115 @@ public class BoardRectangle {
 
 		}
 		g2d.setStroke(new BasicStroke(2));
-		
-		if(isPossibleMove && !isPossibleAttack) {
-			g2d.setColor(cPossibleMove);
+		if(isPossibleMove || isPossibleAttack || isPossibleAbility) {
+			if(isPossibleMove) {
+				g2d.setColor(cPossibleMove);
+			}else if(isPossibleAttack){
+				g2d.setColor(cPossibleAttack);
+			}else if(isPossibleAbility){
+				g2d.setColor(cPossibleAbility);
+			}
+			
 			g2d.fill(rect);
 			g2d.setColor(new Color(5,5,5));
 			g2d.draw(rect);
 		}
-		if(isPossibleAttack && !isPossibleMove) {
-			g2d.setColor(cPossibleAttack);
-			g2d.fill(rect);
-			g2d.setColor(new Color(5,5,5));
-			g2d.draw(rect);
+		if((isShowPossibleAbility && !isPossibleAbility) || (isShowPossibleMove && !isPossibleMove) || (isShowPossibleAttack && !isPossibleAttack)) {
+			g2d.setStroke(new BasicStroke(4));
+			if(isShowPossibleAbility) {
+				g2d.setColor(new Color(cPossibleAbility.getRed(),cPossibleAbility.getGreen(),cPossibleAbility.getBlue(),150));
+			}else if(isShowPossibleMove){
+				g2d.setColor(new Color(cPossibleMove.getRed(),cPossibleMove.getGreen(),cPossibleMove.getBlue(),150));
+			}else {
+				g2d.setColor(new Color(cPossibleAttack.getRed(),cPossibleAttack.getGreen(),cPossibleAttack.getBlue(),150));
+			}
+			g2d.drawLine(getX(), getY(), getX()+getSize(), getY());
+			g2d.drawLine(getX(), getY()+getSize(), getX()+getSize(), getY()+getSize());
+			g2d.drawLine(getX(), getY(), getX(), getY()+getSize());
+			g2d.drawLine(getX()+getSize(), getY(), getX()+getSize(), getY()+getSize());
+			for(int i = 0;i<getSize();i+=getSize()/6) {
+				g2d.drawLine(getX()+i, getY(), getX(), getY()+i);
+			}
+			for(int i = getSize()/6;i<getSize();i+=getSize()/6) {
+				g2d.drawLine(getX()+i, getY()+getSize(), getX()+getSize(), getY()+i);
+			}
 		}
 	}
 	
 	// draw the Hover Rect
-	public void tryDrawHover(Graphics2D g2d,ArrayList<GamePiece> gamePieces) {
+	public void tryDrawHover(Graphics2D g2d) {
 		if(isHover) {
-			int alpha = 100;
-			GamePiece curHoverGP = null;
-			GamePiece selectedGP = null;
-			for(GamePiece curGP : gamePieces) {
-				if(curGP.boardRect == this) {
-					curHoverGP = curGP;
-				}else
-				if(curGP.isSelected) {
-					selectedGP  = curGP;
-				}
-			}
-			if(isPossibleMove || (curHoverGP != null && selectedGP != null && ((curHoverGP.getIsEnemy() && !selectedGP.getIsEnemy()) || (!curHoverGP.getIsEnemy() && selectedGP.getIsEnemy()))) || isDestructibleWall) {
-				alpha = 255;
-			}
+			int alpha = 255;
 			g2d.setStroke(new BasicStroke(5));
 			if(isPossibleAttack) {
 				g2d.setColor(Commons.cAttack);
-				g2d.setColor(new Color(Commons.cAttack.getRed(),Commons.cAttack.getGreen(),Commons.cAttack.getBlue(),alpha));
+				g2d.setColor(new Color(10,10,10));
 			}else 
 			if(isPossibleMove){
 				g2d.setColor(Commons.cMove);
 				g2d.setColor(new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),alpha));
+			}else if(isPossibleAbility) {
+				g2d.setColor(new Color(10,10,10));
 			}else {
-				g2d.setColor(c);
-				g2d.setColor(new Color(240,230,100,alpha));
+				g2d.setColor(new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),200));
 			}
 			int x = getX();
 			int y = getY();
 			int s = getSize();
 			int soI = (int)so;
-			g2d.drawLine(x-soI/2, y-soI/2, x+s/4-soI/2, y-soI/2);
-			g2d.drawLine(x+s+soI/2, y-soI/2, x+s*3/4+soI/2, y-soI/2);
+			g2d.translate(x, y);
+			g2d.drawLine(-soI/2, -soI/2, s/4-soI/2, -soI/2);
+			g2d.drawLine(s+soI/2, -soI/2, s*3/4+soI/2, -soI/2);
 					
-			g2d.drawLine(x-soI/2, y+s+soI/2, x+s/4-soI/2, y+s+soI/2);
-			g2d.drawLine(x+s+soI/2, y+s+soI/2, x+s*3/4+soI/2, y+s+soI/2);
+			g2d.drawLine(-soI/2, s+soI/2, s/4-soI/2, s+soI/2);
+			g2d.drawLine(s+soI/2, s+soI/2, s*3/4+soI/2, s+soI/2);
 					
-			g2d.drawLine(x-soI/2, y-soI/2, x-soI/2, y+s/4-soI/2);
-			g2d.drawLine(x-soI/2, y+s+soI/2, x-soI/2, y+s*3/4+soI/2);
+			g2d.drawLine(-soI/2, -soI/2, -soI/2, s/4-soI/2);
+			g2d.drawLine(-soI/2, s+soI/2, -soI/2, s*3/4+soI/2);
 					
-			g2d.drawLine(x+s+soI/2, y-soI/2, x+s+soI/2, y+s/4-soI/2);
-			g2d.drawLine(x+s+soI/2, y+s+soI/2, x+s+soI/2, y+s*3/4+soI/2);
+			g2d.drawLine(s+soI/2, -soI/2, s+soI/2, s/4-soI/2);
+			g2d.drawLine(s+soI/2, s+soI/2, s+soI/2, s*3/4+soI/2);
+			
+			if(isPossibleAttack) {
+				g2d.translate(s/2, s/2);
+				g2d.rotate(Math.toRadians(rotation));
+				g2d.drawLine(-s/3, 0, s/3, 0);
+				g2d.drawLine(0,-s/3, 0, s/3);
+				g2d.drawOval(-s/6, -s/6, s/3, s/3);
+				g2d.rotate(Math.toRadians(-rotation));
+				g2d.translate(-s/2, -s/2);
+			}
+			
+			if(isPossibleAbility) {
+				g2d.translate(s/2, s/2);
+				g2d.rotate(Math.toRadians(rotation));
+				Polygon polygon = new Polygon();
+				int radius = s/3;
+				int j = 0;
+	            for (int i = 0; i < 360; i+= 360/6) {
+	                int xHex = (int) (radius* Math.cos(Math.toRadians(i)));
+	                int yHex = (int) (radius * Math.sin(Math.toRadians(i)));
+	                if(j%2==0) {
+	                	g2d.drawLine(0, 0, xHex, yHex);
+	                }
+	                j++;
+	                polygon.addPoint(xHex, yHex);
+	            }
+	            g2d.draw(polygon);
+	            g2d.rotate(Math.toRadians(-rotation));
+				g2d.translate(-s/2, -s/2);
+			}
+			g2d.translate(-x, -y);
 		}
 	}
 	
 	// makes the Hover Rect bigger and then smaller gives it "pop" 
 	public void tryAnimate() {
-		boolean onNoGamePiece = true;
-		for(GamePiece curGP : StagePanel.gamePieces) {
-			if(curGP.boardRect == this) {
-				onNoGamePiece = false;
-			}
+		if(rotation > 360) {
+			rotation = 0;
 		}
-		if(isPossibleMove || !onNoGamePiece || isDestructibleWall) {
+		rotation++;
+		if(isPossibleAttack || isPossibleAbility) {
 			if(so < 5) {
 				animationSpeed = 0.3;
 			}
@@ -300,21 +356,6 @@ public class BoardRectangle {
 			wallSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
 		}
 	}
-	// draws destructible wall but makes it transparent if it would overdraw a GamePiece
-	public void drawDestructibleWall(Graphics2D g2d,ArrayList<GamePiece> gamePieces) {
-		destructibleWallsprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
-	}
-	// draws the BoardGaps
-	public void drawGapWall(Graphics2D g2d) {
-		// this color makes it more dark to make the depth effect
-		g2d.setColor(new Color(0,0,0,180));
-		g2d.fill(rect);
-	}
-	
-	public void drawGapWater(Graphics2D g2d) {
-		g2d.setColor(new Color(18,48,156));
-		g2d.fill(rect);	
-	}
 	
 	public void drawIndex(Graphics2D g2d) {
 		g2d.setFont(new Font("Arial",Font.PLAIN,15));
@@ -322,9 +363,6 @@ public class BoardRectangle {
 			g2d.setColor(new Color(30,30,30));
 		}else {
 			g2d.setColor(new Color(200,200,200));
-		}
-		if(isGap) {
-			g2d.setColor(Color.WHITE);
 		}
 		g2d.drawString(index+"", getCenterX(), getCenterY());
 	}

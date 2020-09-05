@@ -2,21 +2,16 @@ package Stage;
 
 import java.awt.Color;
 
+import com.sun.glass.ui.Screen;
+
 public interface Commons {
 	final int boardRectSize = 80;
-	// width of frame
-	final int wf = 1800;
-	// height of frame
-	final int hf = 1000;
 	
 	final Color cUltCharge = new Color(234,255,70);
 	
 	final Color cMove = new Color(255,220,90);
-	final Color cMoveActive = new Color(84,75,35);
-	final Color cAttack = new Color(255,0,20);
-	final Color cAttackActive = new Color(87,0,10);
-	
-	final Color cGPMovesPanel = new Color(10,10,10,230);
+	final Color cAttack = new Color(255,0,50);
+	final Color cAbility = new Color(50, 255, 150);
 	
 	final Color enemyColor = new Color(255,0,43);
 	final Color notEnemyColor = new Color(16,68,255);
