@@ -46,7 +46,9 @@ public class ProjektFrame extends JFrame {
 		// If the connection is established prompt the user to login
 		if(conn.isConnected() == true) {
 			// Enter the login dialog
-			loginDialog();
+			// loginDialog();
+			
+			// --------------- Entry point for implementing Login GUI --------------- //
 		}
 		
 		// Second create the main window and start the actual game
