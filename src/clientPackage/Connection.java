@@ -68,7 +68,8 @@ public class Connection extends Thread {
 		{
 			// Send Logout message if the player was logged in
 			if(this.loggedIn) {
-				MsgLogout msg = new MsgLogout();
+				// MsgLogout msg = new MsgLogout();
+				SignalMessage msg = new SignalMessage(GenericMessage.MSG_LOGOUT);
 				this.sendMessageToServer(msg);
 			}
 			
