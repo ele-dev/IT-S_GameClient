@@ -12,7 +12,9 @@ import javax.swing.JPanel;
 
 import game.GridCell;
 
+@SuppressWarnings("serial")
 public class StagePanel extends JPanel {
+	
 	private int x,y;
 	private int w,h;
 	

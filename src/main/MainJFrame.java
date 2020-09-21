@@ -4,6 +4,7 @@ import java.awt.Container;
 
 import javax.swing.JFrame;
 
+@SuppressWarnings("serial")
 public class MainJFrame extends JFrame {
 	
 	private int w = 600;
@@ -27,6 +28,7 @@ public class MainJFrame extends JFrame {
 	}
 	
 	
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		MainJFrame f = new MainJFrame();
 	}
