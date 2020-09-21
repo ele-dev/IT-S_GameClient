@@ -35,6 +35,7 @@ public class ProjektFrame extends JFrame {
 		stagePanel.setVisible(false);
 		cp.add(loginPanel);
 		cp.add(stagePanel);
+		addKeyListener(loginPanel.kl);
 		addKeyListener(stagePanel.kl);
 		// test
 	}
