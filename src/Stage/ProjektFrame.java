@@ -17,11 +17,12 @@ public class ProjektFrame extends JFrame {
 	int width = Commons.wf;
 	int height = Commons.hf;
 	
-	// GUI panels of the application
+	// GUI panels of the application (JPanels)
 	public static StagePanel stagePanel;
 	public static LoginPanel loginPanel;
 	
 	public ProjektFrame() {
+		// Create and init the Window (JFrame)
 		setSize(width,height);
 		setLocationRelativeTo(null);
 		setLayout(null);
@@ -31,7 +32,7 @@ public class ProjektFrame extends JFrame {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
 		
-		// Create and init the GUI panels
+		// Create and init the GUI panels (JPanels)
 		Container cp = getContentPane();
 		loginPanel = new LoginPanel(0, 0);
 		stagePanel = new StagePanel(0, 0);
@@ -57,7 +58,6 @@ public class ProjektFrame extends JFrame {
 			// Enter the login dialog
 			// loginDialog();
 			
-			// --------------- Entry point for implementing Login GUI --------------- //
 		} else {
 			// If theres no connection to the game server the exit
 			System.out.println("\nApplication close up");
