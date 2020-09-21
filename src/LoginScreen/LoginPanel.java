@@ -1,6 +1,5 @@
 package LoginScreen;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -18,12 +17,16 @@ import javax.swing.Timer;
 
 import Stage.Commons;
 
-public class LoginPanel extends JPanel{
+@SuppressWarnings("serial")
+public class LoginPanel extends JPanel {
+	
+	@SuppressWarnings("unused")
 	private int x,y;
 	private int w,h;
 	private Color c;
 	private Timer tFrameRate;
 	private Timer tUpdateRate;
+	@SuppressWarnings("unused")
 	private boolean isSelected = false;
 	private TextInputField[] fields = new TextInputField[2];
 	private LoginButton loginButton = new LoginButton(850, 500, 100, 50);
@@ -109,7 +112,7 @@ public class LoginPanel extends JPanel{
 		
 		if(loginButton.isHover()) {
 			
-			//not finished code login programm entrypoint
+			// not finished code login programm entrypoint //
 			
 		}
 		
@@ -148,7 +151,7 @@ public class LoginPanel extends JPanel{
 
 	}
 	
-	private class KL implements KeyListener{
+	private class KL implements KeyListener {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -167,7 +170,7 @@ public class LoginPanel extends JPanel{
 		}
 		
 	}
-	private class MML implements MouseMotionListener{
+	private class MML implements MouseMotionListener {
 
 		@Override
 		public void mouseDragged(MouseEvent arg0) {
@@ -178,8 +181,6 @@ public class LoginPanel extends JPanel{
 		public void mouseMoved(MouseEvent arg0) {
 			loginButton.updateHover(arg0);
 		}
-		
-		
 		
 	}
 }

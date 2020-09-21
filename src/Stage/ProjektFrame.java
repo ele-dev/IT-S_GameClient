@@ -80,6 +80,7 @@ public class ProjektFrame extends JFrame {
 	
 	// this method is a temporary solution for the login dialog
 	// Info: The functionality is supposed be integrated in the GUI later
+	@SuppressWarnings("unused")
 	private static void loginDialog() {
 		
 		// Ask the user for login credentials
