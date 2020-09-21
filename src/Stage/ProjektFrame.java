@@ -5,6 +5,7 @@ import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import LoginScreen.LoginPanel;
 import clientPackage.Connection;
 
 @SuppressWarnings("serial")
@@ -17,6 +18,7 @@ public class ProjektFrame extends JFrame {
 	int height = Commons.hf;
 	
 	StagePanel stagePanel;
+	LoginPanel loginPanel;
 	
 	public ProjektFrame() {
 		setSize(width,height);
@@ -28,8 +30,12 @@ public class ProjektFrame extends JFrame {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
 		Container cp = getContentPane();
+		loginPanel = new LoginPanel(0, 0);
 		stagePanel = new StagePanel(0, 0);
+		stagePanel.setVisible(false);
+		cp.add(loginPanel);
 		cp.add(stagePanel);
+		addKeyListener(loginPanel.kl);
 		addKeyListener(stagePanel.kl);
 		// test
 	}
@@ -47,6 +53,8 @@ public class ProjektFrame extends JFrame {
 		if(conn.isConnected() == true) {
 			// Enter the login dialog
 			loginDialog();
+			
+			// --------------- Entry point for implementing Login GUI --------------- //
 		}
 		
 		// Second create the main window and start the actual game
@@ -72,6 +80,7 @@ public class ProjektFrame extends JFrame {
 	
 	// this method is a temporary solution for the login dialog
 	// Info: The functionality is supposed be integrated in the GUI later
+	@SuppressWarnings("unused")
 	private static void loginDialog() {
 		
 		// Ask the user for login credentials
