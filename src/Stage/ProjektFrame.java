@@ -74,6 +74,7 @@ public class ProjektFrame extends JFrame {
 			// Define window close event
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
+				f.setVisible(false);
 				System.out.println("window was closed --> cleanup routine");
 				
 				conn.finalize();
