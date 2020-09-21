@@ -12,14 +12,14 @@ import clientPackage.Connection;
 public class ProjektFrame extends JFrame {
 	
 	
-	static Connection conn;
+	public static Connection conn;
 	// Windows related
 	int width = Commons.wf;
 	int height = Commons.hf;
 	
 	// GUI panels of the application
-	StagePanel stagePanel;
-	LoginPanel loginPanel;
+	public static StagePanel stagePanel;
+	public static LoginPanel loginPanel;
 	
 	public ProjektFrame() {
 		setSize(width,height);
@@ -55,7 +55,7 @@ public class ProjektFrame extends JFrame {
 		// If the connection is established prompt the user to login
 		if(conn.isConnected() == true) {
 			// Enter the login dialog
-			loginDialog();
+			// loginDialog();
 			
 			// --------------- Entry point for implementing Login GUI --------------- //
 		} else {
@@ -87,6 +87,7 @@ public class ProjektFrame extends JFrame {
 	
 	// this method is a temporary solution for the login dialog
 	// Info: The functionality is supposed be integrated in the GUI later
+	@SuppressWarnings("unused")
 	private static void loginDialog() {
 		
 		// Ask the user for login credentials
