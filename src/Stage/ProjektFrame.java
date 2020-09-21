@@ -5,6 +5,7 @@ import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import LoginScreen.LoginPanel;
 import clientPackage.Connection;
 
 @SuppressWarnings("serial")
@@ -17,6 +18,7 @@ public class ProjektFrame extends JFrame {
 	int height = Commons.hf;
 	
 	StagePanel stagePanel;
+	LoginPanel loginPanel;
 	
 	public ProjektFrame() {
 		setSize(width,height);
@@ -28,7 +30,10 @@ public class ProjektFrame extends JFrame {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
 		Container cp = getContentPane();
+		loginPanel = new LoginPanel(0, 0);
 		stagePanel = new StagePanel(0, 0);
+		stagePanel.setVisible(false);
+		cp.add(loginPanel);
 		cp.add(stagePanel);
 		addKeyListener(stagePanel.kl);
 		// test
