@@ -17,6 +17,7 @@ public class ProjektFrame extends JFrame {
 	int width = Commons.wf;
 	int height = Commons.hf;
 	
+	// GUI panels of the application
 	StagePanel stagePanel;
 	LoginPanel loginPanel;
 	
@@ -29,15 +30,17 @@ public class ProjektFrame extends JFrame {
 		// setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
+		
+		// Create and init the GUI panels
 		Container cp = getContentPane();
 		loginPanel = new LoginPanel(0, 0);
 		stagePanel = new StagePanel(0, 0);
 		stagePanel.setVisible(false);
+		loginPanel.setVisible(true);		// Display the login screen first
 		cp.add(loginPanel);
 		cp.add(stagePanel);
 		addKeyListener(loginPanel.kl);
 		addKeyListener(stagePanel.kl);
-		// test
 	}
 	
 	// ------------------- MAIN Application Entry Point -------------------------- //
@@ -55,6 +58,10 @@ public class ProjektFrame extends JFrame {
 			loginDialog();
 			
 			// --------------- Entry point for implementing Login GUI --------------- //
+		} else {
+			// If theres no connection to the game server the exit
+			System.out.println("\nApplication close up");
+			System.exit(0);
 		}
 		
 		// Second create the main window and start the actual game
@@ -80,7 +87,6 @@ public class ProjektFrame extends JFrame {
 	
 	// this method is a temporary solution for the login dialog
 	// Info: The functionality is supposed be integrated in the GUI later
-	@SuppressWarnings("unused")
 	private static void loginDialog() {
 		
 		// Ask the user for login credentials
