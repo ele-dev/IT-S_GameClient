@@ -12,10 +12,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import Stage.Commons;
+import Stage.ProjektFrame;
 
 @SuppressWarnings("serial")
 public class LoginPanel extends JPanel {
@@ -110,19 +112,50 @@ public class LoginPanel extends JPanel {
 	
 	public void tryLogin() {
 		
-		if(loginButton.isHover()) {
+		// Login Button click event 
+		if(loginButton.isHover() && !ProjektFrame.conn.isLoggedIn()) {
 			
-			// not finished code login programm entrypoint //
+			// Obtain the content of the text fields
+			String user = this.fields[0].text;
+			String pass = this.fields[1].text;
 			
+			// Login as guest (-> empty username) or as registered player (-> not empty username)
+			boolean loginSuccess = false;
+			if(user.length() <= 0) 
+			{
+				// Attempt to login as guest player
+				loginSuccess = ProjektFrame.conn.loginAsGuest();
+			}
+			else 
+			{
+				// Attempt to login as registered player if a valid password was entered
+				if(pass.length() > 0) {
+					loginSuccess = ProjektFrame.conn.loginWithAccount(user, pass);
+				}
+			}
+			
+			// Show the login status to the user
+			if(!loginSuccess) {
+				System.err.println("Could not login to the game network!");
+				return;
+			} else {
+				System.out.println("Logged in successfully");
+				JOptionPane.showMessageDialog(this, "Logged in as " + ProjektFrame.conn.getUsername());
+				
+				// redirect to the game panel
+				this.setVisible(false);
+				ProjektFrame.stagePanel.setVisible(true);
+			}
 		}
 		
 	}
+	
 	private class ML implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			// TODO Auto-generated method stub
-			
+			tryLogin();
 		}
 
 		@Override
