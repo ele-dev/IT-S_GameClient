@@ -69,17 +69,13 @@ public class ButtonEndTurn {
 	
 	public void updateHover(Point mousePos) {
 		if(mousePos != null) {
-			if(rect.contains(mousePos)) {
-				isHover = true;
-			}else {
-				isHover = false;
-			}
+			isHover = rect.contains(mousePos);
 		}
 		
 	}
 	
 	public void updatePos(Point CameraPos) {
-		this.rect.setBounds(startx-CameraPos.x,starty-CameraPos.y,250,100);
+		rect.setBounds(startx-CameraPos.x,starty-CameraPos.y,250,100);
 	}
 	
 	

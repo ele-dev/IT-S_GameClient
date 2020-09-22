@@ -26,11 +26,7 @@ public abstract class InterfaceButton {
 	}
 	
 	public void updateHover(Point mousePos) {
-		if(rect.contains(mousePos)) {
-			isHover = true;
-		}else {
-			isHover = false;
-		}
+		isHover = rect.contains(mousePos);
 	}
 	
 	public void updatePos(Point CameraPos) {

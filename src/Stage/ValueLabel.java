@@ -14,8 +14,6 @@ public class ValueLabel {
 	private Color c;
 	private float alpha;
 	
-	private Font fontDmgLabel;
-	
 	public ValueLabel(float x, float y, String str,float fadeSpeed, float riseSpeed,Color c) {
 		this.x = x;
 		this.y = y;
@@ -24,7 +22,6 @@ public class ValueLabel {
 		this.fadeSpeed = fadeSpeed; 
 		this.riseSpeed = riseSpeed;
 		this.c = c;
-		fontDmgLabel = new Font("Arial",Font.BOLD,25);
 		alpha = 255;
 	}
 	
@@ -33,7 +30,7 @@ public class ValueLabel {
 	}
 	// draws the dmgLabel to the screen
 	public void drawValueLabel(Graphics2D g2d) {
-		g2d.setFont(fontDmgLabel);
+		g2d.setFont(new Font("Arial",Font.BOLD,25));
 		FontMetrics metrics = g2d.getFontMetrics();
 		int textWidth = metrics.stringWidth(str);
 		int textHeight = metrics.getHeight();
@@ -54,7 +51,7 @@ public class ValueLabel {
 	// fades the color of the dmgLabel out and moves it up 
 	public void updateFade() {
 		alpha-= fadeSpeed;
-		this.c = new Color(c.getRed(),c.getGreen(),c.getBlue(),(int)alpha);
-		this.y -= riseSpeed;
+		c = new Color(c.getRed(),c.getGreen(),c.getBlue(),(int)alpha);
+		y -= riseSpeed;
 	}
 }

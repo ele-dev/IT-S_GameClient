@@ -123,9 +123,7 @@ public class WallMine extends Projectile{
 	}
 	
 	public void checkHitTargetWall() {
-		if(targetBR.rect.contains(new Point((int)x,(int)y))) {
-			hasHitTarget = true;
-		}
+		hasHitTarget = targetBR.rect.contains(new Point((int)x,(int)y));
 	}
 	
 	public void rotateInPlace() {

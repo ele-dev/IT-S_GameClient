@@ -12,8 +12,8 @@ public class Camera {
 	float v = 6;
 	Rectangle rectOfView;
 	
-	int screenShakeCountDown;
-	int screenShakeMagnitude;
+	private int screenShakeCountDown;
+	private int screenShakeMagnitude;
 	
 	public Camera() {
 		this.x = 0;
@@ -23,7 +23,6 @@ public class Camera {
 	public void drawRectOfView(Graphics2D g2d) {
 		g2d.setColor(new Color(255,0,50,100));
 		g2d.draw(rectOfView);
-		
 	}
 	
 	public void updateCamera(float x,float y) {
@@ -62,14 +61,8 @@ public class Camera {
 	}
 	
 	public Point getPos() {
-		Point p = null;
-		if(screenShakeCountDown > 0) {
-			p = new Point((int)(x+(Math.random()-0.5)*screenShakeMagnitude),(int)(y+(Math.random()-0.5)*screenShakeMagnitude));
-		}else {
-			p = new Point((int)x,(int)y);
-		}
-		
-		return p;
+		return screenShakeCountDown>0?new Point((int)(x+(Math.random()-0.5)*screenShakeMagnitude),(int)(y+(Math.random()-0.5)*screenShakeMagnitude))
+				:new Point((int)x,(int)y);
 	}
 	
 	public Point getCenterOfScreen() {

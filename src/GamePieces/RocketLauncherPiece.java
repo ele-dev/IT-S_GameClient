@@ -1,6 +1,7 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Arc2D;
@@ -28,7 +29,7 @@ public class RocketLauncherPiece extends GamePiece{
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) { 
 				angle = angleDesired;
 				shootBurst();
 			}
@@ -53,10 +54,12 @@ public class RocketLauncherPiece extends GamePiece{
 	}
 	
 	public void update() {
-		if(currentTargetGamePiece != null) {
-			updateAngle(currentTargetGamePiece.getPos());
-		}else if(currenTargetShield != null){
-			updateAngle(currenTargetShield.getPos());
+		if(targetGamePiece != null) {
+			updateAngle(targetGamePiece.getPos());
+		}else if(targetShield != null){
+			updateAngle(targetShield.getPos());
+		}else if(targetDestructibleObject != null){ 
+			updateAngle(targetDestructibleObject.getPos());
 		}
 		if(isMoving) {
 			updateMove();
@@ -66,7 +69,7 @@ public class RocketLauncherPiece extends GamePiece{
 
 	public void drawAttack(Graphics2D g2d) {
 //		g2d.setColor(new Color(20,20,20,200));
-//		g2d.fill(aimArc);
+//		g2d.fill(aimArc); 
 		for(int i = 0;i<rockets.size();i++) {		
 			Rocket curR = rockets.get(i);
 			curR.drawProjectile(g2d);
@@ -75,55 +78,9 @@ public class RocketLauncherPiece extends GamePiece{
 
 
 	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(checkAttackRows(selectedRow,selectedColumn) || checkAttackColumns(selectedRow,selectedColumn)) {
+		if(((selectedRow == boardRect.row+3 || selectedRow == boardRect.row-3) && selectedColumn < boardRect.column+3 && selectedColumn > boardRect.column-3) ||
+				((selectedColumn == boardRect.column+3 || selectedColumn == boardRect.column-3) && selectedRow <=boardRect.row+3 && selectedRow >= boardRect.row-3)) {
 			return true;
-		}
-		return false;
-	}
-
-
-	public boolean checkAttackRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.row;
-		int column = this.boardRect.column;
-		
-		if(row == selectedRow && column == selectedColumn) {
-			return false;
-		}
-		
-		if(row+3==selectedRow) {
-			for(int i = -3;i<4;i++) {
-				if(column + i == selectedColumn) {
-					return true;
-				}
-			}
-		}
-		if(row-3==selectedRow) {
-			for(int i = -3;i<4;i++) {
-				if(column + i == selectedColumn) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-
-	public boolean checkAttackColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.column;
-		int row = this.boardRect.row;
-		if(column+3==selectedColumn) {
-			for(int i = -3;i<4;i++) {
-				if(row + i == selectedRow) {
-					return true;
-				}
-			}
-		}
-		if(column-3==selectedColumn) {
-			for(int i = -3;i<4;i++) {
-				if(row + i == selectedRow) {
-					return true;
-				}
-			}
 		}
 		return false;
 	}
@@ -146,8 +103,13 @@ public class RocketLauncherPiece extends GamePiece{
 
 	
 	public void addRocketInArcFlight() {
+		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
+			targetShield != null?targetShield.getShieldCircle():
+			targetDestructibleObject.getRectHitbox();
+			
+			
 		rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c,
-				(float) (angle + (Math.random()-0.5)*spreadAngle), currentTargetGamePiece,currenTargetShield));
+				(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));
 	}
 	// checks if the piece is attacking and sets its boolean isAttacking to true if it is currently attacking and to false if it isn't
 	public void updateIsAttacking() {
@@ -161,14 +123,15 @@ public class RocketLauncherPiece extends GamePiece{
 			return;
 		}
 		if(!isAttacking && startedAttack) {
-			if(currentTargetGamePiece != null) {
-				getCurrentTargetGamePiece().gamePieceBase.getDamaged(getDmg());
-				currentTargetGamePiece = null;
-				startedAttack = false;
-			}else if(currenTargetShield != null){
-				currenTargetShield.getDamaged(getDmg());
-				currenTargetShield = null;
-				startedAttack = false;
+			if(targetGamePiece != null) {
+				targetGamePiece.gamePieceBase.getDamaged(getDmg());
+				targetGamePiece = null;
+			}else if(targetShield != null){
+				targetShield.getDamaged(getDmg());
+				targetShield = null;
+			}else if(targetDestructibleObject != null){
+				targetDestructibleObject.getDamaged(getDmg(),angle);
+				targetDestructibleObject = null;
 			}
 		}
 	}
@@ -181,12 +144,13 @@ public class RocketLauncherPiece extends GamePiece{
 		for(int i = 0;i<rockets.size();i++) {
 			Rocket curR = rockets.get(i);
 			curR.addTrailParticle();
-			curR.checkHitEnemy();
-			curR.checkHitTargetShield();
-			if(curR.getCurrentTarget() != null) {
-				curR.homeInOnTarget(curR.getCurrentTarget().getPos(), curR.rotationDelay);
-			}else if(curR.getCurrenTargetShield() != null){
-				curR.homeInOnTarget(curR.getCurrenTargetShield().getPos(), curR.rotationDelay);
+			curR.tryExplodeTarget();
+			if(targetGamePiece != null) {
+				curR.homeInOnTarget(targetGamePiece.getPos(), curR.rotationDelay);
+			}else if(targetShield != null){
+				curR.homeInOnTarget(targetShield.getPos(), curR.rotationDelay);
+			}else if(targetDestructibleObject != null){
+				curR.homeInOnTarget(targetDestructibleObject.getPos(), curR.rotationDelay);
 			}
 			
 			curR.move();

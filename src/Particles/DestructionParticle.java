@@ -3,40 +3,56 @@ package Particles;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Timer;
 
 import Stage.BoardRectangle;
 import Stage.StagePanel;
 
-public class EmptyShell extends Particle{
+public class DestructionParticle extends Particle{
 	int w,h;
-	public float friction = 0.1f;
+	private float friction = 0.08f;
 	Rectangle rectHitbox;
+	float vRotation = (float) (Math.random()*5+3);
+	float fadeSpeed;
 	
-	double vY1 = 1;
-	double vRotation = Math.random()*5+3;
-	
-	public EmptyShell(float x, float y, int w, int h, float angle, Color c, float v) {
-		super(x, y, angle+(float)((Math.random()-0.5f)*30), (float)(Math.random()*360), c, v,0);
+	public DestructionParticle(float x, float y, int w, int h, Color c,float angle, float v) {
+		super(x, y, angle, (float)(Math.random()*360), c, v, 1f);
 		this.w = w;
 		this.h = h;
 		this.rectHitbox = new Rectangle((int)x+w/2,(int)y+h/2,w,h);
+		
+		tFadeDelayTimer = new Timer(1000, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		tFadeDelayTimer.setRepeats(false);
+		tFadeDelayTimer.start();
 	}
-	
+
 	@Override
 	public void drawParticle(Graphics2D g2d) {
 		g2d.setColor(c);
 		g2d.translate(x, y);
-		g2d.rotate(Math.toRadians(rotation)); 
-		Rectangle rectHidden = new Rectangle(-w/2,-h/2,w,h);
-		g2d.fill(rectHidden);
+		g2d.rotate(Math.toRadians(rotation));
+		Rectangle rectShow = new Rectangle(-w/2,-h/2,w,h);
+		g2d.fill(rectShow);
 		g2d.rotate(Math.toRadians(-rotation));
 		g2d.translate(-x, -y);
+		
 	}
 
 	@Override
 	public void update() {
 		move();
 		tryGetWallBlocked();
+		fadeOut();
 	}
 	
 	public void move() {
@@ -45,25 +61,20 @@ public class EmptyShell extends Particle{
 		}
 		x += Math.cos(Math.toRadians(angle+90)) * v;
 		y += Math.sin(Math.toRadians(angle+90)) * v;
-		y -= this.vY1;
-		if(vY1>-4) {
-			vY1 -= friction*2;
-		}else {
-			v = 0;
-		}
+			
+		v = v > 0?v-friction*2:0;
 		
 		rotation += vRotation;
 		rectHitbox = new Rectangle((int)x+w/2,(int)y+h/2,w,h);
 	}
 	
-	// checks if hit a wall and sets velocity v to 0
 	public void tryGetWallBlocked() {
 		for(BoardRectangle curBR : StagePanel.boardRectangles) {
-			if(curBR.isWall && rectHitbox.intersects(curBR.rect)){
+			if(curBR.isWall && this.rectHitbox.intersects(curBR.rect)){
 				v = 0;
-				break;
 			}
 		}
 	}
 	
+
 }

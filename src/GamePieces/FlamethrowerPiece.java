@@ -1,6 +1,7 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class FlamethrowerPiece extends GamePiece {
 			public void actionPerformed(ActionEvent e) {
 				angle = angleDesired;
 				shootBurst();
-			}
+			} 
 		});
 		attackDelayTimer.setRepeats(false);
 		
@@ -40,15 +41,17 @@ public class FlamethrowerPiece extends GamePiece {
 			public void actionPerformed(ActionEvent arg0) {
 				shootOnce();
 			}
-		});
+		}); 
 		burstTimer.setRepeats(false);
 	}
 	
 	public void update() {
-		if(currentTargetGamePiece != null) {
-			updateAngle(currentTargetGamePiece.getPos());
-		}else if(currenTargetShield != null){
-			updateAngle(currenTargetShield.getPos());
+		if(targetGamePiece != null) {
+			updateAngle(targetGamePiece.getPos());
+		}else if(targetShield != null){
+			updateAngle(targetShield.getPos());
+		}else if(targetDestructibleObject != null){
+			updateAngle(targetDestructibleObject.getPos());
 		}
 		if(isMoving) {
 			updateMove();
@@ -63,61 +66,17 @@ public class FlamethrowerPiece extends GamePiece {
 	}
 
 	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(checkAttackRows(selectedRow,selectedColumn) && checkAttackColumns(selectedRow,selectedColumn)) {
+		
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
 				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
-					
-					if(checkIfBoardRectangleInSight(curBR)) {
-						return true;
+					int dist = BoardRectangle.getDistanceBetweenBRs(boardRect, curBR);
+					if(dist <= 2 && !curBR.isWall) {
+						if(checkIfBoardRectangleInSight(curBR)) {
+							return true;
+						}
 					}
 				}
 			}
-		}
-		return false;
-	}
-
-
-	public boolean checkAttackRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.row;
-		int column = this.boardRect.column;
-		if(row == selectedRow && column == selectedColumn) {
-			return false;
-		}
-		for(int i = 0;i<2;i++) {
-			if(row+i==selectedRow) {
-				return true;
-			}
-			if(row-i==selectedRow) {
-				return true;
-			}
-		}
-		if(row+2 == selectedRow && column == selectedColumn) {
-			return true;
-		}
-		if(row-2 == selectedRow && column == selectedColumn) {
-			return true;
-		}
-		return false;
-	}
-
-
-	public boolean checkAttackColumns(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.row;
-		int column = this.boardRect.column;
-		for(int i = 0;i<2;i++) {
-			if(column+i==selectedColumn) {
-				return true;
-			}
-			if(column-i==selectedColumn) {
-				return true;
-			}
-		}
-		if(column+2 == selectedColumn && row == selectedRow) {
-			return true;
-		}
-		if(column-2 == selectedColumn && row == selectedRow) {
-			return true;
-		}
 		return false;
 	}
 
@@ -135,9 +94,12 @@ public class FlamethrowerPiece extends GamePiece {
 			burstCounter = 0;
 		}
 		int randomSize = (int)(Math.random() * 5 +5);
-		
+		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
+			targetShield != null?targetShield.getShieldCircle():
+			targetDestructibleObject.getRectHitbox();
+			
 		flames.add(new FlameThrowerFlame(getCenterX(), getCenterY(), randomSize, randomSize, 
-				(float)Math.random()+2, (float)(angle + (Math.random()-0.5)*spreadAngle), currentTargetGamePiece,currenTargetShield));
+				(float)Math.random()+2, (float)(angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));
 		
 			
 		
@@ -170,12 +132,15 @@ public class FlamethrowerPiece extends GamePiece {
 				}
 			}
 			if(allHaveHit) {
-				if(currentTargetGamePiece != null) {
-					getCurrentTargetGamePiece().gamePieceBase.getDamaged(getDmg());
-					currentTargetGamePiece = null;
-				}else if(currenTargetShield != null){
-					currenTargetShield.getDamaged(getDmg());
-					currenTargetShield = null;
+				if(targetGamePiece != null) {
+					targetGamePiece.gamePieceBase.getDamaged(getDmg());
+					targetGamePiece = null;
+				}else if(targetShield != null){
+					targetShield.getDamaged(getDmg());
+					targetShield = null;
+				}else {
+					targetDestructibleObject.getDamaged(getDmg(),angle);
+					targetDestructibleObject = null;
 				}
 				startedAttack = false;
 			}
@@ -189,8 +154,7 @@ public class FlamethrowerPiece extends GamePiece {
 		for(int i = 0;i<flames.size();i++) {
 			FlameThrowerFlame curFTF = flames.get(i);
 			curFTF.move();
-			curFTF.checkHitEnemy();
-			curFTF.checkHitTargetShield();
+			curFTF.checkHitAnyTarget();
 			curFTF.updateFade();
 			if(curFTF.getColor().getAlpha()<10) {
 			flames.remove(i);
@@ -198,6 +162,5 @@ public class FlamethrowerPiece extends GamePiece {
 		}
 		updateIsAttacking();
 		showWhenDmg();
-		
 	}
 }

@@ -4,31 +4,28 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-public class SniperTrailParticle extends Particle{
+public class TazerTrailParticle extends Particle{
 	private int size;
 	private Rectangle rectShow;
 	private float fadeSpeed;
-	private float alpha = 200;
-	private int greyTone;
+	private float alpha = 255;
 	
-	public SniperTrailParticle(int x, int y) {
+	public TazerTrailParticle(int x, int y) {
 		super(x, y);
-		
 		size = (int)(Math.random()*3+5);
-		fadeSpeed = (float) (Math.random()*0.2+0.6);
+		fadeSpeed = (float) (Math.random()*4+6);
 		rectShow = new Rectangle(-size/2,-size/2,size,size);
-		greyTone = (int)(Math.random()*90+10);
-		c = new Color(greyTone,greyTone,greyTone,(int)alpha);
+		c = new Color(58, 100+(int)(Math.random()*130), 140+(int)(Math.random()*30),(int)alpha);
 		rotation = (float) (Math.random()*360);
 		
 		angle = (float) (Math.random()*360);
-		v = (float) (Math.random()*0.1);
+		v = (float) (Math.random()*0.7);
 	}
 	
 	private void updateFade() {
 		alpha -= fadeSpeed;
-		this.c = new Color(greyTone,greyTone,greyTone,(int)alpha);
-		if(alpha < 10) {
+		this.c = new Color(c.getRed(),c.getGreen(),c.getBlue(),(int)alpha);
+		if(alpha < 20) {
 			isDestroyed = true;
 		} 
 	}
@@ -52,10 +49,7 @@ public class SniperTrailParticle extends Particle{
 	public void move() {
 		x += Math.cos(Math.toRadians(angle)) * v;
 		y += Math.sin(Math.toRadians(angle)) * v;
-		y -= 0.1;
 	}
-	
-
 	
 	
 	

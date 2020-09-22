@@ -13,7 +13,6 @@ public class Light {
 		this.size = size;
 		this.x = x;
 		this.y = y;
-		
 		this.c =c;
 	}
 	
@@ -32,8 +31,8 @@ public class Light {
 	}
 	
 	public void updatePos(Point mousePos) {
-		this.x = mousePos.x;
-		this.y = mousePos.y;
+		x = mousePos.x;
+		y = mousePos.y;
 	}
 	
 	

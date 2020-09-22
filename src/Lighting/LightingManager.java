@@ -20,7 +20,7 @@ public class LightingManager {
 		this.w = w;
 		this.h = h;
 		this.camera = camera;
-		lights.add(new Light(Commons.boardRectSize*StagePanel.amountOfColumns/2, Commons.boardRectSize*StagePanel.amountOfRows/2, Commons.boardRectSize*StagePanel.amountOfRows*2, new Color(255,255,255,0)));
+		lights.add(new Light(Commons.boardRectSize*StagePanel.gameMap.getColumns()/2, Commons.boardRectSize*StagePanel.gameMap.getRows()/2, Commons.boardRectSize*StagePanel.gameMap.getRows()*2, new Color(255,255,255,0)));
 
 		lightMapBufferedImage = new BufferedImage(w*4, h*4, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D lightmapG2d = lightMapBufferedImage.createGraphics();

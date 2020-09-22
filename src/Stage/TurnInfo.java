@@ -26,11 +26,7 @@ public class TurnInfo {
 		g2d.setColor(c); 
 		g2d.fill(rect);
 		g2d.setStroke(new BasicStroke(4));
-		if(isEnemyTurn) {
-			g2d.setColor(Commons.enemyColor);
-		}else {
-			g2d.setColor(Commons.notEnemyColor);
-		}
+		g2d.setColor(isEnemyTurn?Commons.enemyColor:Commons.notEnemyColor);
 		g2d.draw(rect);
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(new Font("Arial",Font.BOLD,30));
@@ -45,17 +41,13 @@ public class TurnInfo {
 			g2d.setColor(Commons.notEnemyColor);
 			g2d.drawString(" NotEnemy", rect.x +30 + textWidth, rect.y +60);
 		}
-		
+				
 		g2d.setColor(Color.WHITE);
 		g2d.drawString("Turns: " + turnCounter, rect.x+ 30, rect.y+60 + 60);
 	}
 	// toogles the isEnemyTurn variable and counts how often it was toggled
 	public void toggleTurn() {
-		if(isEnemyTurn) {
-			isEnemyTurn = false;
-		}else {
-			isEnemyTurn = true;
-		}
+		isEnemyTurn = !isEnemyTurn;
 		turnCounter++;
 	}
 	

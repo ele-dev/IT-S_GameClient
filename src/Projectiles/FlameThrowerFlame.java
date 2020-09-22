@@ -3,8 +3,10 @@ package Projectiles;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 
 import Abilities.RadialShield;
+import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 
 
@@ -13,8 +15,8 @@ public class FlameThrowerFlame extends Projectile{
 	float w,h;
 	float rotation;
 	
-	public FlameThrowerFlame(int x, int y, int w, int h,float v,float angle,GamePiece currentTarget, RadialShield currenTargetShield) {
-		super(x, y, w, h, new Color(255,250,10), angle, v, -0.01f, currentTarget,currenTargetShield);
+	public FlameThrowerFlame(int x, int y, int w, int h,float v,float angle, Shape targetShape, DestructibleObject targetDestructibleObject) {
+		super(x, y, w, h, new Color(255,250,10), angle, v, -0.01f, targetShape, targetDestructibleObject);
 		rotation = (float) (Math.random()*360);
 		this.w = w;
 		this.h = h;
@@ -26,22 +28,19 @@ public class FlameThrowerFlame extends Projectile{
 	}
 	
 	public void move() {
-		if(acc+v > 0) {
-			v+=acc;
-		}else {
-			v = 0;
-		}
-		double vX = Math.cos(Math.toRadians(this.angle + 90)) * v;
-		double vY = Math.sin(Math.toRadians(this.angle + 90)) * v;
+		v = acc+v > 0?v+acc:0;
+		
+		float vX = (float) (Math.cos(Math.toRadians(this.angle + 90)) * v);
+		float vY = (float) (Math.sin(Math.toRadians(this.angle + 90)) * v);
 		if(hasHitEnemy) {
-			vX = Math.cos(Math.toRadians(this.angle + 90)) * v/3;
-			vY = Math.sin(Math.toRadians(this.angle + 90)) * v/3;
+			vX = (float) (Math.cos(Math.toRadians(this.angle + 90)) * v/3);
+			vY = (float) (Math.sin(Math.toRadians(this.angle + 90)) * v/3);
 		}
 		x += vX;
 		y += vY;	
 
-		w += 0.2;
-		h += 0.2;
+		w += 0.2f;
+		h += 0.2f;
 		shapeShow = new Rectangle((int)(-w/2),(int)(-h/2),(int)(w),(int)(h));
 		rectHitbox = new Rectangle((int)(x-w/2),(int)(y-h/2),(int)(w),(int)(h));
 	}
@@ -55,21 +54,8 @@ public class FlameThrowerFlame extends Projectile{
 		g2d.translate(-x, -y);
 	}
 	
-	@Override
-	public void checkHitTargetShield() {
-		if(currenTargetShield != null) {
-			if(currenTargetShield.getShieldCircle().intersects(rectHitbox)) {
-				v = 0.4f;
-				hasHitTarget = true;
-			}
-		}
-	}
-	
 	public void updateFade() {
-		if(c.getGreen()>10) {
-			c = new Color(c.getRed() -1,c.getGreen() - 4,c.getBlue(),c.getAlpha() -2);
-		}else {
-			c = new Color(c.getRed() -2,c.getGreen(),c.getBlue(),c.getAlpha() -2);
-		}
+		c = c.getGreen()>10?new Color(c.getRed() -1,c.getGreen() - 4,c.getBlue(),c.getAlpha() -2):
+			new Color(c.getRed() -2,c.getGreen(),c.getBlue(),c.getAlpha() -2);
 	}
 }

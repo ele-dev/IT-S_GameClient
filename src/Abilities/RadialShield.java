@@ -24,17 +24,14 @@ public class RadialShield {
 	private Color c;
 	public BoardRectangle[] affectedBoardRectangles = new BoardRectangle[9];
 	float maxHealth,health;
+	public boolean isDestroyed;
 	
 	public RadialShield(BoardRectangle anchorBR, boolean isEnemy) {
 		this.anchorBR = anchorBR;
 		this.isEnemy = isEnemy;
-		this.radius = Commons.boardRectSize*2-Commons.boardRectSize/4;
-		this.shieldCircle = new Ellipse2D.Float(anchorBR.getCenterX()-radius,anchorBR.getCenterY()-radius,radius*2,radius*2);
-		if(isEnemy) {
-			c = Commons.enemyColor;
-		}else {
-			c = Commons.notEnemyColor;
-		}
+		radius = Commons.boardRectSize*2-Commons.boardRectSize/4;
+		shieldCircle = new Ellipse2D.Float(anchorBR.getCenterX()-radius,anchorBR.getCenterY()-radius,radius*2,radius*2);
+		c = isEnemy?Commons.enemyColor:Commons.notEnemyColor;
 		c = new Color(c.getRed(),c.getGreen(),c.getBlue(),60);
 		int j = 0;
 		for(int i = 0;i<radius;i+=radius/pulseRadius.length) {
@@ -56,8 +53,8 @@ public class RadialShield {
 			}
 		}
 		
-		this.maxHealth = 6;
-		this.health = maxHealth;
+		maxHealth = 6;
+		health = maxHealth;
 	}
 	
 	public Point getPos() {
@@ -132,7 +129,9 @@ public class RadialShield {
 			health-=dmg;
 		}else {
 			health = 0;
+			isDestroyed = true;
 		}
+		
 	}
 	
 	

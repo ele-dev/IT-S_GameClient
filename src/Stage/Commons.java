@@ -2,6 +2,10 @@ package Stage;
 
 import java.awt.Color;
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 public interface Commons {
 	final int boardRectSize = 80;
 	

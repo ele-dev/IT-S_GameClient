@@ -17,6 +17,7 @@ import javax.swing.Timer;
 
 import Abilities.RadialShield;
 import Buttons.ActionSelectionPanel;
+import Environment.DestructibleObject;
 import Particles.Explosion;
 import PathFinder.AStarPathFinder;
 import PathFinder.PathCell;
@@ -31,7 +32,7 @@ public abstract class GamePiece {
 	private Rectangle rectShowTurret;
 	protected Color c,cTurret;
 	private String name;
-	protected float angle,angleDesired;
+	protected float angle,angleDesired; 
 	public boolean isDead = false;
 	private float dmg;
 	
@@ -41,8 +42,10 @@ public abstract class GamePiece {
 	protected boolean hasExecutedAttack = false;
 	
 	protected Timer attackDelayTimer,abilityDelayTimer,deathDelayTimer;
-	protected GamePiece currentTargetGamePiece;
-	protected RadialShield currenTargetShield;
+	protected GamePiece targetGamePiece;
+	protected RadialShield targetShield;
+	protected DestructibleObject targetDestructibleObject;
+	
 	protected Arc2D aimArc;
 	
 	public boolean isMoving,isAttacking,isPerformingAbility;
@@ -60,21 +63,7 @@ public abstract class GamePiece {
 	public GamePiece(boolean isEnemy,String name,BoardRectangle boardRect,float dmg,int baseTypeIndex) {
 		this.isEnemy = isEnemy;
 		this.boardRect = boardRect;
-		deathDelayTimer = new Timer(1000, new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				StagePanel.particles.add(new Explosion(getCenterX(), getCenterY(), 1));
-				for(int i = 0;i<3;i++) {
-					StagePanel.particles.add(new Explosion(getCenterX()+(int)((Math.random()-0.5)*Commons.boardRectSize),
-							getCenterY()+(int)((Math.random()-0.5)*Commons.boardRectSize), 1f));
-				}
-				
-				isDead = true;
-				
-			}
-		});
-		deathDelayTimer.setRepeats(false);
+		
     
 		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
 		if(isEnemy) {
@@ -99,7 +88,7 @@ public abstract class GamePiece {
 	} 
 	
 	public boolean isPerformingAction() {
-		return isAttacking || isMoving || isPerformingAbility || deathDelayTimer.isRunning();
+		return isAttacking || isMoving || isPerformingAbility;
 	}
 	
 	// initializes the Pathfinding Grid (!!Does not start the Pathfinder!!)
@@ -109,7 +98,7 @@ public abstract class GamePiece {
 			BoardRectangle curBR  = StagePanel.boardRectangles.get(i);
 			pathCells.add(new PathCell(curBR.getX(), curBR.getY(), Commons.boardRectSize, curBR.row, curBR.column,i));
 				
-			if(curBR.isWall) {
+			if(curBR.isWall || curBR.isDestructibleObject() || curBR.isGap) {
 				pathCells.get(i).setIsWall(true);
 			}
 			for(GamePiece curGP : StagePanel.gamePieces) {
@@ -129,7 +118,7 @@ public abstract class GamePiece {
 			StagePanel.boardRectangles.get(i).isPossibleMove = false;
 			StagePanel.boardRectangles.get(i).isShowPossibleMove = false;
 		}
-		if(endBR.isWall || startBR.isWall){
+		if(endBR.isWall || startBR.isWall || endBR.isGap || startBR.isGap){
 			return;
 		}
 		for(GamePiece curGP : StagePanel.gamePieces) {
@@ -188,10 +177,6 @@ public abstract class GamePiece {
 	public Rectangle getRectHitbox() {
 		return gamePieceBase.getRectHitbox();
 	}
-	
-	public GamePiece getCurrentTargetGamePiece() {
-		return currentTargetGamePiece;
-	}
 
 	public float getDmg() {
 		return dmg;
@@ -217,8 +202,16 @@ public abstract class GamePiece {
 	}
 	
 	public void tryDie() {
-		if(gamePieceBase.getHealth() <= 0 && !deathDelayTimer.isRunning() && !getIsDead()) {
-			deathDelayTimer.start();
+		if(gamePieceBase.getHealth() <= 0 && !getIsDead()) {
+			
+			StagePanel.particles.add(new Explosion(getCenterX(), getCenterY(), 1.2f));
+			for(int i = 0;i<3;i++) {
+				StagePanel.particles.add(new Explosion(getCenterX()+(int)((Math.random()-0.5)*Commons.boardRectSize/2),
+						getCenterY()+(int)((Math.random()-0.5)*Commons.boardRectSize/2), 1f));
+			}
+			
+			isDead = true;
+			StagePanel.impactStop();
 		}
 	}
 	
@@ -254,7 +247,7 @@ public abstract class GamePiece {
 			if(lineOfSight.intersects(rectWall) && (curBR.isWall) && (!targetBoardRectangle.isWall)) {
 				return false;
 			}
-		}
+		} 
 		return true;
 	}
 	// draws the attack differently for each GamePiece
@@ -273,15 +266,15 @@ public abstract class GamePiece {
 	// is abstract because every GamePiece has a different attack pattern
 	public abstract boolean checkAttacks(int selectedRow, int selectedColumn);
 		
-	public abstract boolean checkAttackRows(int selectedRow,int selectedColumn);
-	
-	public abstract boolean checkAttackColumns(int selectedRow,int selectedColumn);
+//	public abstract boolean checkAttackRows(int selectedRow,int selectedColumn);
+//	
+//	public abstract boolean checkAttackColumns(int selectedRow,int selectedColumn);
 	
 	// updates angle to face toward enemy and starts the attack (starts attackDelayTimer)
 	public void startAttack(BoardRectangle targetBoardRectangle) {
 		for(RadialShield curRS : StagePanel.radialShields) {
 			if(curRS.contains(targetBoardRectangle) && checkIfEnemies(curRS)) {
-				currenTargetShield = curRS;
+				targetShield = curRS;
 				isAttacking = true;
 				attackDelayTimer.start();
 				hasExecutedAttack = true;
@@ -289,10 +282,20 @@ public abstract class GamePiece {
 				return;
 			}
 		}
+		for(DestructibleObject curDO : StagePanel.destructibleObjects) {
+			if(curDO.containsBR(targetBoardRectangle)) {
+				System.out.println("confirmed");
+				targetDestructibleObject = curDO;
+				isAttacking = true;
+				attackDelayTimer.start();
+				hasExecutedAttack = true;
+				hasExecutedMove = true;
+			}
+		}
 		for(GamePiece curGP : StagePanel.gamePieces) {
 			if(curGP.boardRect == targetBoardRectangle) {
 				if(!curGP.isDead && checkIfEnemies(curGP)) {
-					currentTargetGamePiece = curGP;
+					targetGamePiece = curGP;
 					isAttacking = true;
 					attackDelayTimer.start();
 					hasExecutedAttack = true;

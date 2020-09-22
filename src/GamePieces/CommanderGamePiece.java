@@ -36,11 +36,7 @@ public abstract class CommanderGamePiece extends GamePiece{
 	public abstract void startAbility(BoardRectangle targetBoardRectangle);
 	
 	public void regenAbilityCharge() {
-		if(abilityCharge+1 < maxAbilityCharge) {
-			abilityCharge++;
-		}else {
-			abilityCharge = maxAbilityCharge;
-		}
+		abilityCharge = abilityCharge+1 < maxAbilityCharge?abilityCharge+1:maxAbilityCharge;
 	}
 	
 }

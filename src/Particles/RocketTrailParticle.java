@@ -5,13 +5,11 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public class RocketTrailParticle extends Particle{
-	private int fadeSpeed;
 	private Rectangle rect;
 	
-	public RocketTrailParticle(float x, float y, int w, int h,Color c, float angle,int fadeSpeed) {
-		super(x, y,angle,(float)(Math.random()*360),c,0);
-		this.rect = new Rectangle(-w/2,-h/2,w,h);;
-		this.fadeSpeed = fadeSpeed;
+	public RocketTrailParticle(float x, float y, int w, int h,Color c, float angle,float fadeSpeed) {
+		super(x, y,0,(float)(Math.random()*360),c,0,fadeSpeed);
+		rect = new Rectangle(-w/2,-h/2,w,h);;
 	}
 	
 
@@ -24,14 +22,10 @@ public class RocketTrailParticle extends Particle{
 		g2d.rotate(Math.toRadians(-rotation));
 		g2d.translate(-x, -y);
 	}
-	// lowers the opacity of the color of the Particle
+	
+	// lowers the opacity of the color of the Particle if opacity is too low particle gets destroyed
 	@Override
 	public void update() {
-		if(c.getAlpha() > 10) {
-			c = new Color(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha()-fadeSpeed);
-		}else {
-			isDestroyed = true;
-		}
-		
+		fadeOut();
 	}	
 }

@@ -31,12 +31,8 @@ public class ExplosionCloud {
 		if(v>0.5) {
 			v -= airResistance;
 		}
-		
-		double vX = Math.cos(Math.toRadians(this.angle + 90)) * v;
-		double vY = Math.sin(Math.toRadians(this.angle + 90)) * v;
-		
-		this.x += vX;
-		this.y += vY -0.2;	
+		x += Math.cos(Math.toRadians(angle + 90)) * v;
+		y += Math.cos(Math.toRadians(angle + 90)) * v -0.2;	
 	}
 	// draws the ExplosionCloud
 	public void drawExplosionCloud(Graphics2D g2d) {

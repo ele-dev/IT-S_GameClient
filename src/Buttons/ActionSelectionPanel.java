@@ -11,7 +11,6 @@ import java.awt.Rectangle;
 import GamePieces.CommanderGamePiece;
 import GamePieces.GamePiece;
 import Stage.Commons;
-import Stage.ProjektFrame;
 import Stage.StagePanel;
 
 
@@ -27,9 +26,9 @@ public class ActionSelectionPanel {
 	 
 	public ActionSelectionPanel(GamePiece parentGamepiece) {
 		w = 400;
-		h = ProjektFrame.height-300;
+		h = StagePanel.h-300;
 		int x = 0;
-		int y = ProjektFrame.height -h;
+		int y = StagePanel.h -h;
 		startx = x;
 		starty = y;
 		
@@ -93,11 +92,8 @@ public class ActionSelectionPanel {
 		g2d.drawString(str, x, y+textHeight*2);
 		g2d.setColor(Color.WHITE);
 		float dmg = parentGamepiece.getDmg();
-		if(dmg == Math.round(dmg)) {
-			g2d.drawString(Math.round(dmg)+"", x+textWidth,y+textHeight*2);
-		}else {
-			g2d.drawString(dmg+"", x+textWidth,y+textHeight*2);
-		}
+		
+		g2d.drawString(dmg == Math.round(dmg)?Math.round(dmg)+"":dmg+"",x+textWidth,y+textHeight*2);
 		
 		str = "Moves: ";
 		textWidth = metrics.stringWidth(str);

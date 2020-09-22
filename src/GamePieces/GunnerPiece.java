@@ -1,6 +1,8 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Arc2D;
@@ -37,7 +39,7 @@ public class GunnerPiece extends CommanderGamePiece {
 				shootBurst();
 			}
 		});
-		attackDelayTimer.setRepeats(false);
+		attackDelayTimer.setRepeats(false); 
 		abilityDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -64,10 +66,12 @@ public class GunnerPiece extends CommanderGamePiece {
 	}
 	
 	public void update() {
-		if(currentTargetGamePiece != null) {
-			updateAngle(currentTargetGamePiece.getPos());
-		}else if(currenTargetShield != null){
-			updateAngle(currenTargetShield.getPos());
+		if(targetGamePiece != null) {
+			updateAngle(targetGamePiece.getPos());
+		}else if(targetShield != null){
+			updateAngle(targetShield.getPos());
+		}else if(targetDestructibleObject != null){
+			updateAngle(targetDestructibleObject.getPos());
 		}
 		if(isMoving) {
 			updateMove();
@@ -89,14 +93,13 @@ public class GunnerPiece extends CommanderGamePiece {
 		for(int i = 0;i<bullets.size();i++) {
 			Bullet curB = bullets.get(i);
 			curB.move();
-			curB.checkHitEnemy();
-			curB.checkHitTargetShield();
+			curB.checkHitAnyTarget(); 
 			
 			if(curB.getHasHitTarget()) {
 				bullets.remove(i);
 			}
 			
-		}
+		} 
 		
 		updateIsAttacking();
 	}
@@ -104,9 +107,12 @@ public class GunnerPiece extends CommanderGamePiece {
 	@Override
 	public void updatePossibleAbilities(BoardRectangle curHoverBoardRectangle) {
 		for(BoardRectangle curBR : StagePanel.boardRectangles) {
-			if(curBR != boardRect && Math.abs(curBR.row - boardRect.row) <= 1 && Math.abs(curBR.column - boardRect.column) <= 1) {
-				curBR.isShowPossibleAbility = true;
+			if(!curBR.isDestructibleObject()) {
+				if(curBR != boardRect && Math.abs(curBR.row - boardRect.row) <= 1 && Math.abs(curBR.column - boardRect.column) <= 1) {
+					curBR.isShowPossibleAbility = true;
+				}
 			}
+			
 		}
 		if(curHoverBoardRectangle == null) {
 			return;
@@ -131,7 +137,8 @@ public class GunnerPiece extends CommanderGamePiece {
 
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
 	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(checkAttackRows(selectedRow,selectedColumn) && checkAttackColumns(selectedRow,selectedColumn)) {
+		
+		if(selectedRow < boardRect.row+3 && selectedRow > boardRect.row-3 && selectedColumn < boardRect.column+3 && selectedColumn > boardRect.column-3) {
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
 				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
 					
@@ -143,39 +150,9 @@ public class GunnerPiece extends CommanderGamePiece {
 		}
 		return false;
 	}
-
-	public boolean checkAttackRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.row;
-		int column = this.boardRect.column;
-		if(row == selectedRow && column == selectedColumn) {
-			return false;
-		}
-		for(int i = 0;i<3;i++) {
-			if(row+i==selectedRow) {
-				return true;
-			}
-			if(row-i==selectedRow) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean checkAttackColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.column;
-		for(int i = 0;i<3;i++) {
-			if(column+i==selectedColumn) {
-				return true;
-			}
-			if(column-i==selectedColumn) {
-				return true;
-			}
-		}
-		return false;
-	}
 	
 	// starts burstTimer
-	public void shootBurst() {
+	public void shootBurst() { 
 		burstTimer.start();
 	}
 	// shoots one shot every timer the burstTimer activates and starts the burstTimer again if it still has shots left to shoot
@@ -189,11 +166,14 @@ public class GunnerPiece extends CommanderGamePiece {
 			burstCounter = 0;
 		}
 		startedAttack = true;
-		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c,16, (float) (angle + (Math.random()-0.5)*spreadAngle), getCurrentTargetGamePiece(),currenTargetShield));	
+		
+		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
+			targetShield != null?targetShield.getShieldCircle():
+			targetDestructibleObject.getRectHitbox();
+			
+		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c,16, 
+				(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));	
 		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),8,12, (float)angle -90, c,(float)(Math.random()*2+3)));
-		
-		
-		
 	}
 	
 	
@@ -209,16 +189,18 @@ public class GunnerPiece extends CommanderGamePiece {
 			return;
 		}
 		if(startedAttack) {
-			if(currentTargetGamePiece != null) {
-				getCurrentTargetGamePiece().gamePieceBase.getDamaged(getDmg());
-				currentTargetGamePiece = null;
-			}else if(currenTargetShield != null){
-				currenTargetShield.getDamaged(getDmg());
-				currenTargetShield = null;
+			if(targetGamePiece != null) {
+				targetGamePiece.gamePieceBase.getDamaged(getDmg());
+				targetGamePiece = null;
+			}else if(targetShield != null){
+				targetShield.getDamaged(getDmg());
+				targetShield = null;
+			}else {
+				targetDestructibleObject.getDamaged(getDmg(),angle);
+				targetDestructibleObject = null;
 			}
 			
 			startedAttack = false;
-			currentTargetGamePiece = null;
 			return;
 		}
 		

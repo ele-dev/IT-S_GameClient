@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
+import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 
 public class BoardRectangle {
@@ -23,22 +24,23 @@ public class BoardRectangle {
 	public boolean isTile1;
 	public boolean isPossibleMove,isPossibleAttack,isPossibleAbility;
 	public boolean isShowPossibleMove,isShowPossibleAttack,isShowPossibleAbility;
-	public boolean isWall = false;
+	public boolean isWall,isGap;
 	
-	boolean isHover;
+	private boolean isHover;
 	double animationSpeed;
 	public float so = 4;
-	private int rotation = 0;
+	private int rotation = 0; 
 	
-	Sprite wallSprite;
-	Sprite groundSprite;
+	private Sprite wallSprite;
+	private Sprite groundSprite;
 	
 	public BoardRectangle northBR,southBR,eastBR,westBR;
+	ArrayList<BoardRectangle> adjecantBoardRectangles = new ArrayList<BoardRectangle>();
 	
-	public BoardRectangle(int size, int row, int column,boolean isTile1,int index) {
+	public BoardRectangle(int row, int column,boolean isTile1,int index) {
 		this.row = row;
 		this.column = column;
-
+		int size = Commons.boardRectSize;
 		rect = new Rectangle(column*size,row*size,size,size);
 		
 		int alpha = 200;
@@ -60,43 +62,54 @@ public class BoardRectangle {
 		spriteLinks.add(Commons.pathToSpriteSource+"Tiles/GrassTile.png");
 		groundSprite = new Sprite(spriteLinks, size,size, 0);
 	}
-	
 	public int getSize() {
 		return (int) rect.getWidth();
 	}
-	
 	public int getX() {
 		return (int) rect.getX();
 	} 
 	public int getY() {
 		return (int) rect.getY();
 	}
-	
 	public int getCenterX(){
 		return (int) rect.getCenterX();
 	}
 	public int getCenterY(){
 		return (int) rect.getCenterY();
 	}
-	
 	public Point getPos() {
 		return new Point(getCenterX(),getCenterY());
 	}
-	
-	public void initAdjecantBRs() {
-		for(BoardRectangle curBR : StagePanel.boardRectangles ) {
+	public boolean isHover() {
+		return isHover;
+	}
+	public boolean isDestructibleObject() {
+		for(DestructibleObject curDO : StagePanel.destructibleObjects) {
+			if(curDO.containsBR(this)) {
+				return true;
+			}
+			
+		}
+		return false;
+	}
+	public void initAdjecantBRs(ArrayList<BoardRectangle> boardRectangles) {
+		for(BoardRectangle curBR : boardRectangles ) {
 			if(curBR != this) {
 				if(curBR.row == row-1 && curBR.column == column) {
 					northBR = curBR;
+					adjecantBoardRectangles.add(northBR);
 				}
 				if(curBR.row == row+1 && curBR.column == column) {
 					southBR = curBR;
+					adjecantBoardRectangles.add(southBR);
 				}
 				if(curBR.row == row && curBR.column == column+1) {
 					eastBR = curBR;
+					adjecantBoardRectangles.add(eastBR);
 				}
 				if(curBR.row == row && curBR.column == column-1) {
 					westBR = curBR;
+					adjecantBoardRectangles.add(westBR);
 				}
 			}
 		}
@@ -106,13 +119,18 @@ public class BoardRectangle {
 		return Math.abs(br1.row - br2.row)+Math.abs(br1.column - br2.column);
 	}
 	
+	
 	// initalizes what Sprite is needed depending on neighboring walls
-	public void initWallSprites(StagePanel stagePanel) {
+	public void initWallSprites() {
 		boolean rightConnected = false;
 		boolean leftConnected = false;
 		boolean upConnected = false;
 		boolean downConnected = false;
+<<<<<<< Updated upstream
 		for(BoardRectangle curBR : StagePanel.boardRectangles) {
+=======
+		for(BoardRectangle curBR : adjecantBoardRectangles) {
+>>>>>>> Stashed changes
 			if(curBR.isWall) {
 				if(curBR.row == row+1 && curBR.column == column) {
 					downConnected = true;
@@ -210,11 +228,11 @@ public class BoardRectangle {
 	}
 	// draws The Rectangle depending on if it is a Possible move/attack (draws another rectangle with another color over it)
 	public void drawBoardRectangle(Graphics2D g2d,ArrayList<BoardRectangle> boardRectangles) {
-		g2d.setColor(c);
+		g2d.setColor(isGap?Color.BLUE:c);
 		g2d.fill(rect);
 		g2d.setStroke(new BasicStroke(5));
 		
-		if(!isTile1) {
+		if(!isTile1 && !isGap) {
 			groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
 		}else {
 
@@ -350,10 +368,15 @@ public class BoardRectangle {
 	}
 	// draws wall but makes it transparent if it would overdraw a GamePiece
 	public void drawWall(Graphics2D g2d,ArrayList<GamePiece> gamePieces) {
-		g2d.setColor(new Color(20,20,20));
-		g2d.fill(rect);
+		
 		if(wallSprite != null) {
 			wallSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
+		}else {
+			g2d.setColor(new Color(10,10,10));
+			g2d.fill(rect);
+			g2d.setColor(new Color(100,100,100));
+			g2d.setStroke(new BasicStroke(6));
+			g2d.draw(rect);
 		}
 	}
 	
