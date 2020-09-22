@@ -1,5 +1,7 @@
 package clientPackage;
 
+import main.MainJFrame;
+
 /*
  * written by Elias Geiger
  * 
@@ -43,6 +45,10 @@ public class MessageHandler {
 				
 				// Store the updated field state locally
 				byte[][] currentField = fieldMessage.getField();
+				
+				// update the GUI and repaint
+				// ...
+				MainJFrame.stagePanel.repaint();
 				
 				break;
 			}

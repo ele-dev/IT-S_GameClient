@@ -24,6 +24,7 @@ public class StagePanel extends JPanel {
 	private boolean isXsTurn;
 	private byte winner = 0;
 	
+	// Constructor
 	public StagePanel(int wF, int hF) {
 		this.x = 0;
 		this.y = 0;
@@ -44,6 +45,7 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
+	// main drawing function 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(new Color(20,20,20)); 
@@ -66,55 +68,57 @@ public class StagePanel extends JPanel {
 		
 	}
 	
+	// Winner detection
 	private void checkSomeoneWon() {
 		for(short i = 0;i<gridSize;i++) {
 			boolean rowWin = true; 
 			for(short j = 0;j<gridSize-1;j++) {
-				if(gridCells[i][j].type == 0 || gridCells[i][j].type != gridCells[i][j+1].type) {
+				if(gridCells[i][j].getCellState() == 0 || gridCells[i][j].getCellState() != gridCells[i][j+1].getCellState()) {
 					rowWin = false;
 				}
 			}
 			if(rowWin) {
-				winner = gridCells[i][0].type;
+				winner = gridCells[i][0].getCellState();
 				return;
 			}
 		}
 		for(short j = 0;j<gridSize;j++) {
 			boolean columnWin = true; 
 			for(short i = 0;i<gridSize-1;i++) {
-				if(gridCells[i][j].type == 0 || gridCells[i][j].type != gridCells[i+1][j].type) {
+				if(gridCells[i][j].getCellState() == 0 || gridCells[i][j].getCellState() != gridCells[i+1][j].getCellState()) {
 					columnWin = false;
 				}
 			}
 			if(columnWin) {
-				winner = gridCells[0][j].type;
+				winner = gridCells[0][j].getCellState();
 				return;
 			}
 		}
 		boolean diagonalWinLUDR = true; 
 		for(short i = 0;i<gridSize-1;i++) {
-			if(gridCells[i][i].type == 0 || gridCells[i][i].type != gridCells[i+1][i+1].type) {
+			if(gridCells[i][i].getCellState() == 0 || gridCells[i][i].getCellState() != gridCells[i+1][i+1].getCellState()) {
 				diagonalWinLUDR = false;
 			}
 		}
 		if(diagonalWinLUDR) {
-			winner = gridCells[0][0].type;
+			winner = gridCells[0][0].getCellState();
 			return;
 		}
 		boolean diagonalWinRUDL = true; 
 		for(short i = 0;i<gridSize-1;i++) {
-			if(gridCells[0][gridSize-1].type == 0 || gridCells[i][gridSize-1-i].type != gridCells[i+1][gridSize-2-i].type) {
+			if(gridCells[0][gridSize-1].getCellState() == 0 || gridCells[i][gridSize-1-i].getCellState() != gridCells[i+1][gridSize-2-i].getCellState()) {
 				diagonalWinRUDL = false;
 			}
 			
 		}
 		if(diagonalWinRUDL) {
-			winner = gridCells[0][gridSize-1].type;
+			winner = gridCells[0][gridSize-1].getCellState();
 			return;
 		}
 	}
 	
-	public void drawGrid(Graphics2D g2d) {
+	// method for grid drawing
+	private void drawGrid(Graphics2D g2d) {
 		for(int i = 0;i<gridSize;i++) {
 			for(int j = 0;j<gridSize;j++) {
 				gridCells[i][j].drawGridCell(g2d);
@@ -122,25 +126,21 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
-	private class ML implements MouseListener{
+	// Method for updating the cells in the grid
+	// ...
+	
+	private class ML implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			
-			
+			// ...
 		}
 
 		@Override
-		public void mouseEntered(MouseEvent e) {
-			
-			
-		}
+		public void mouseEntered(MouseEvent e) {}
 
 		@Override
-		public void mouseExited(MouseEvent e) {
-			
-			
-		}
+		public void mouseExited(MouseEvent e) {}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -149,8 +149,8 @@ public class StagePanel extends JPanel {
 			}
 			for(int i = 0;i<gridSize;i++) {
 				for(int j = 0;j<gridSize;j++) {
-					if(gridCells[i][j].rect.contains(e.getPoint()) && gridCells[i][j].type == 0) {
-						gridCells[i][j].type = (byte) (isXsTurn?1:2);
+					if(gridCells[i][j].rect.contains(e.getPoint()) && gridCells[i][j].getCellState() == 0) {
+						gridCells[i][j].setCellState((byte) (isXsTurn?1:2));
 						isXsTurn = !isXsTurn;
 						checkSomeoneWon();
 						repaint();
@@ -158,14 +158,9 @@ public class StagePanel extends JPanel {
 					}
 				}
 			}
-			
 		}
 
 		@Override
-		public void mouseReleased(MouseEvent e) {
-			
-			
-		}
-		
+		public void mouseReleased(MouseEvent e) {}
 	}
 }

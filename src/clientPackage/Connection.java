@@ -54,7 +54,11 @@ public class Connection extends Thread {
 		} else {
 			JOptionPane.showMessageDialog(null, "Failed to connect to the game server!");
 			System.err.println("Failed establish connection to server!");
+			return;
 		}
+		
+		// If it worked, then launch the listener thread
+		this.start();
 	}
 	
 	// Finalizer that handles close up of the network connection

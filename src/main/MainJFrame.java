@@ -19,10 +19,11 @@ public class MainJFrame extends JFrame {
 	private static Connection conn = null;
 	
 	// Application Gui panels
-	StagePanel stagePanel;
+	public static StagePanel stagePanel;
 	
 	// Constructor
 	public MainJFrame() {
+		// init the window frame (JFrame)
 		setSize(w,h);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLayout(null);
@@ -31,9 +32,9 @@ public class MainJFrame extends JFrame {
 		setVisible(true);
 		setResizable(false);
 		
+		// init the game screen gui (JPanel)
 		stagePanel = new StagePanel(w, h);
-		
-		Container cp = getContentPane();
+		Container cp = this.getContentPane();
 		cp.add(stagePanel);
 	}
 	
@@ -47,8 +48,8 @@ public class MainJFrame extends JFrame {
 		if(conn.isConnected() == true) {
 			JOptionPane.showMessageDialog(null, "Connect to server");
 		} else {
-			// JOptionPane.showMessageDialog(null, "Failed to connect to server!");
-			System.exit(0);
+			// close the application since playing offline is boring
+			// System.exit(0);
 		}
 		
 		// let the player choose his team (x or o)
