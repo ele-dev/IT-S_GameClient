@@ -36,7 +36,16 @@ public class MessageHandler {
 				break;
 			}
 			
-			// ...
+			case GenericMessage.MSG_UPDATED_FIELD_STATE:
+			{
+				// Coerce the message into the right format
+				MsgFieldState fieldMessage = (MsgFieldState)msg;
+				
+				// Store the updated field state locally
+				byte[][] currentField = fieldMessage.getField();
+				
+				break;
+			}
 			
 			default:
 			{
