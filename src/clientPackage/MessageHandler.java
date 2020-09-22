@@ -24,6 +24,18 @@ public class MessageHandler {
 		
 		switch(id)
 		{
+			case GenericMessage.MSG_SET_TURN: 
+			{
+				// Coerce the message into the right format
+				MsgSetTurn turnMessage = (MsgSetTurn)msg;
+				
+				// Store the data 
+				String team = turnMessage.getTeam();
+				// ...
+				
+				break;
+			}
+			
 			// ...
 			
 			default:
