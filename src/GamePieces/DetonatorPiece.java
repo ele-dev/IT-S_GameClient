@@ -1,11 +1,8 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
-<<<<<<< Updated upstream
-=======
-import java.awt.Point;
+
 import java.awt.Shape;
->>>>>>> Stashed changes
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;

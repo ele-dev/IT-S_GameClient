@@ -18,6 +18,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -42,7 +43,6 @@ import Particles.DestructionParticle;
 import Particles.EmptyShell;
 import Particles.Particle;
 
-@SuppressWarnings("serial")
 public class StagePanel extends JPanel{
 	public static int w;
 	public static int h;
@@ -84,17 +84,9 @@ public class StagePanel extends JPanel{
 	public static GameMap gameMap;
 	private LevelDesignTool levelDesignTool;
 	
-<<<<<<< Updated upstream
-	public StagePanel(int x, int y) {
-		this.x = x;
-		this.y = y;
-		StagePanel.w = ProjektFrame.width;
-		StagePanel.h = ProjektFrame.height;
-=======
 	public StagePanel(int x, int y, String mapName) {
 		w = ProjektFrame.width; 
 		h = ProjektFrame.height;
->>>>>>> Stashed changes
 		setBounds(x, y, w, h);
 		setVisible(true);
 		cBackGround = new Color(28,26,36);
@@ -167,12 +159,13 @@ public class StagePanel extends JPanel{
 	}
 	
 	private void initGameMap(String mapName) {
-		if(mapName == "newMap") {
-			gameMap = new GameMap(20,30);
+		if(mapName == null) {
+			gameMap = new GameMap(20,20);
 			levelDesignTool = new LevelDesignTool();
 			addMouseWheelListener(levelDesignTool.mwl);
+			
 		}else {
-			levelinitializer.readFile();
+			levelinitializer.readFile(mapName);
 			gameMap = new GameMap(levelinitializer);
 		}
 		
@@ -758,9 +751,13 @@ public class StagePanel extends JPanel{
 		@Override
 		public void keyPressed(KeyEvent e) {
 			camera.updateMovementPressedKey(e);
-//			if(e.getKeyCode() == KeyEvent.VK_K) {
-//				levelinitializer.writeFile(boardRectangles);
-//			}
+			if(e.getKeyCode() == KeyEvent.VK_K && levelDesignTool != null) {
+				String mapName = JOptionPane.showInputDialog("Type in mapName");
+				if(mapName != null && mapName.length() > 2) {
+					levelinitializer.writeFile(mapName,boardRectangles);
+				}
+				
+			}
 		}
 
 		@Override

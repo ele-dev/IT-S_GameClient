@@ -7,7 +7,6 @@ import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import LevelDesignTools.Levelinitializer;
 import clientPackage.Connection;
 
 @SuppressWarnings("serial")
@@ -22,10 +21,6 @@ class ProjektFrame extends JFrame {
 	StagePanel stagePanel;
 	
 	public ProjektFrame() {
-<<<<<<< Updated upstream
-		// setUndecorated(true);
-=======
->>>>>>> Stashed changes
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
 		height = (int) screenSize.getHeight();
@@ -41,13 +36,9 @@ class ProjektFrame extends JFrame {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		Container cp = getContentPane();
-		stagePanel = new StagePanel(0, 0, "newMap");
+		stagePanel = new StagePanel(0, 0, "TestMap");
 		cp.add(stagePanel);
 		addKeyListener(stagePanel.kl);
-<<<<<<< Updated upstream
-=======
-		
->>>>>>> Stashed changes
 	}
 	
 	// ------------------- MAIN Application Entry Point -------------------------- //

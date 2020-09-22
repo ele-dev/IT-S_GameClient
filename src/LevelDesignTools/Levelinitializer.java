@@ -8,9 +8,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import Environment.DestructibleObject;
 import Stage.BoardRectangle;
-import Stage.Commons;
 import Stage.StagePanel;
 
 public class Levelinitializer {
@@ -28,14 +29,13 @@ public class Levelinitializer {
 		return mapColumns;
 	}
 	// Reads the File and generates the BoardRectangle accordingly
-	public void readFile() {	
+	public void readFile(String mapName) {	
 		try {
-			File file = new File("src/LevelDesignTools/AuthoredLevels.txt");
+			File file = new File("src/LevelDesignTools/"+mapName+".txt");
 			Scanner scanner = new Scanner(file);
 			boardRectangles.clear();
 			
 			int lineIndex = 0;
-			
 			while (scanner.hasNext()) {
 				int index = Integer.parseInt(scanner.next());	
 				int tileIndex = Integer.parseInt(scanner.next());		
@@ -71,7 +71,6 @@ public class Levelinitializer {
 					StagePanel.destructibleObjects.add(new DestructibleObject(boardRectangles.get(lineIndex),1,1, 1,0));
 				}
 				lineIndex++;
-				
 				if(mapRows < row) {
 					mapRows = row;
 				}
@@ -109,13 +108,14 @@ public class Levelinitializer {
 			System.out.println("Columns:" + getMapColumns());
 			System.out.println("closed scanner");
 		} catch(FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "Given map does not exist!");
 			e.printStackTrace();
 		}
 	}
 	// writes the File
-	public void writeFile(ArrayList<BoardRectangle> boardRectangles) {
+	public void writeFile(String mapName,ArrayList<BoardRectangle> boardRectangles) {
 		try {
-			File file = new File("src/LevelDesignTools/AuthoredLevels.txt");
+			File file = new File("src/LevelDesignTools/"+mapName+".txt");
 			
 			// only creates a new File if the File does not exist !!
 			file.createNewFile();

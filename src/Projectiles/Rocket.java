@@ -3,10 +3,7 @@ package Projectiles;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
-<<<<<<< Updated upstream
-=======
 import java.awt.Shape;
->>>>>>> Stashed changes
 
 import Environment.DestructibleObject;
 import Particles.Explosion;
