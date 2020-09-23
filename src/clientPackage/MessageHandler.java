@@ -47,8 +47,9 @@ public class MessageHandler {
 				byte[][] currentField = fieldMessage.getField();
 				
 				// update the GUI and repaint
-				// ...
-				MainJFrame.stagePanel.repaint();
+				if(MainJFrame.stagePanel != null) {
+					MainJFrame.stagePanel.repaint();
+				}
 				
 				break;
 			}
