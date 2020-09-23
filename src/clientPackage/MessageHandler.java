@@ -1,5 +1,6 @@
 package clientPackage;
 
+import game.GameState;
 import main.MainJFrame;
 
 /*
@@ -31,9 +32,8 @@ public class MessageHandler {
 				// Coerce the message into the right format
 				MsgSetTurn turnMessage = (MsgSetTurn)msg;
 				
-				// Store the data 
-				String team = turnMessage.getTeam();
-				// ...
+				// Store the team in the game state class
+				GameState.setActingTeam(turnMessage.getTeam());
 				
 				break;
 			}
@@ -44,12 +44,14 @@ public class MessageHandler {
 				MsgFieldState fieldMessage = (MsgFieldState)msg;
 				
 				// Store the updated field state locally
-				byte[][] currentField = fieldMessage.getField();
+				GameState.updateField(fieldMessage.getField());
 				
 				// update the GUI and repaint
+				/*
 				if(MainJFrame.stagePanel != null) {
 					MainJFrame.stagePanel.repaint();
 				}
+				*/
 				
 				break;
 			}
