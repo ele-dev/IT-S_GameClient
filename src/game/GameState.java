@@ -2,7 +2,7 @@ package game;
 
 public class GameState {
 
-	private static String actingTeam = "cross";
+	private static String actingTeam = "";
 	private static byte[][] gameField = new byte[3][3];
 	
 	public static void clearField() {
