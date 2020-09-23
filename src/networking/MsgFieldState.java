@@ -15,6 +15,12 @@ public class MsgFieldState extends GenericMessage {
 		this.updatedField = generateEmptyField();
 	}
 	
+	public MsgFieldState(byte[][] field) 
+	{
+		this();
+		this.updatedField = field;
+	}
+	
 	public void changeField(byte row, byte column, byte value)
 	{
 		// Prevent invalid values
