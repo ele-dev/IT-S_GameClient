@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import game.GameState;
 import game.GridCell;
+import networking.MsgFieldState;
 
 @SuppressWarnings("serial")
 public class StagePanel extends JPanel {
@@ -68,7 +69,7 @@ public class StagePanel extends JPanel {
 	// main drawing function 
 	public void paintComponent(Graphics g) {
 		// synchronize field state 
-		// this.updateGridGui();
+		this.updateGridGui();
 		
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(new Color(20,20,20)); 
@@ -156,25 +157,33 @@ public class StagePanel extends JPanel {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			System.out.println("Mouse click Event");
 			
 			// Check if it's our turn. If not then abort
 			if(MainJFrame.conn.getTeam().equalsIgnoreCase(GameState.getActingTeam()) == false) {
+				System.out.println("It's not your turn at the moment. Wait for the enemy team to make a move");
 				return;
 			}
 			
 			if(winner != 0) {
 				return;
 			}
-			for(int i = 0;i<gridSize;i++) {
-				for(int j = 0;j<gridSize;j++) {
+			
+			// Go through the 2D Grid and find the cell that was clicked
+			for(byte i = 0; i < gridSize; i++) {
+				for(byte j = 0; j < gridSize; j++) {
 					if(gridCells[i][j].rect.contains(e.getPoint()) && gridCells[i][j].getCellState() == 0) {
 						
-						isXsTurn = GameState.getActingTeam().equalsIgnoreCase("cross");
-						gridCells[i][j].setCellState((byte) (isXsTurn?1:2));
+						// Determine what to draw/send: cross or circle?
+						isXsTurn = MainJFrame.conn.getTeam().equalsIgnoreCase("cross");
+						if(isXsTurn) {
+							GameState.updateField(i, j, (byte) 1);
+						} else {
+							GameState.updateField(i, j, (byte) 2);
+						}
 						
-						// gridCells[i][j].setCellState((byte) (isXsTurn?1:2));
-						// isXsTurn = !isXsTurn;
+						// Now send the message to the server
+						MsgFieldState changedFieldMsg = new MsgFieldState(GameState.getCurrentFieldState());
+						MainJFrame.conn.sendMessageToServer(changedFieldMsg);
 						
 						checkSomeoneWon();
 						repaint();

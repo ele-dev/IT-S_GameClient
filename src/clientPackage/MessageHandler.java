@@ -48,13 +48,6 @@ public class MessageHandler {
 				GameState.updateField(fieldMessage.getField());
 				System.out.println("Received updated game field state from server");
 				
-				// update the GUI and repaint
-				/*
-				if(MainJFrame.stagePanel != null) {
-					MainJFrame.stagePanel.repaint();
-				}
-				*/
-				
 				break;
 			}
 			
