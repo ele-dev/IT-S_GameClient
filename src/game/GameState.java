@@ -27,6 +27,17 @@ public class GameState {
 		gameField = newField;
 	}
 	
+	public static void updateField(byte row, byte column, byte type) {
+		
+		// Avoid invalid paramters 
+		if(row < 0 || row > 2 || column < 0 || column > 2 || type < 0 || type > 2) {
+			return;
+		}
+		
+		// udpate the given cell to the desired value
+		gameField[row][column] = type;
+	}
+	
 	public static byte[][] getCurrentFieldState() {
 		return gameField;
 	}
