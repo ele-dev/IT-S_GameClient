@@ -1,7 +1,7 @@
 package clientPackage;
 
 import game.GameState;
-
+import main.MainJFrame;
 
 /*
  * written by Elias Geiger
@@ -47,6 +47,11 @@ public class MessageHandler {
 				// Store the updated field state locally
 				GameState.updateField(fieldMessage.getField());
 				System.out.println("Received updated game field state from server");
+				
+				// Repaint the GUI to display the recieved updated game field
+				if(MainJFrame.stagePanel != null) {
+					MainJFrame.stagePanel.repaint();
+				}
 				
 				break;
 			}
