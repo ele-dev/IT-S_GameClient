@@ -179,7 +179,7 @@ public class Connection extends Thread {
 	public void chooseTeam() {
 		String input = "";
 		
-		input = JOptionPane.showInputDialog("Which team? (cross or circle)");
+		input = JOptionPane.showInputDialog("Which team? (type in cross or circle)");
 		if(input != null) {
 			this.team = input;
 		}

@@ -12,8 +12,9 @@ import clientPackage.Connection;
 @SuppressWarnings("serial")
 public class MainJFrame extends JFrame {
 	
-	private int w = 600;
-	private int h = 600;
+	private int w = 630
+			;
+	private int h = 650;
 	
 	// Network connection
 	public static Connection conn = null;

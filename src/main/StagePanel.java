@@ -22,8 +22,7 @@ public class StagePanel extends JPanel {
 	
 	private GridCell[][] gridCells;
 	private short gridSize;
-	
-	private boolean isXsTurn;
+
 	private byte winner = 0;
 	
 	// Constructor
@@ -173,11 +172,13 @@ public class StagePanel extends JPanel {
 				for(byte j = 0; j < gridSize; j++) {
 					if(gridCells[i][j].rect.contains(e.getPoint()) && gridCells[i][j].getCellState() == 0) {
 						
-						// Determine what to draw/send: cross or circle?
-						isXsTurn = MainJFrame.conn.getTeam().equalsIgnoreCase("cross");
-						if(isXsTurn) {
+						// Determine what to send: cross or circle?
+						boolean isX = MainJFrame.conn.getTeam().equalsIgnoreCase("cross");
+						if(isX) {
+							// send a cross
 							GameState.updateField(i, j, (byte) 1);
 						} else {
+							// send a circled
 							GameState.updateField(i, j, (byte) 2);
 						}
 						
@@ -186,7 +187,6 @@ public class StagePanel extends JPanel {
 						MainJFrame.conn.sendMessageToServer(changedFieldMsg);
 						
 						checkSomeoneWon();
-						// repaint();
 						
 						return;
 					}

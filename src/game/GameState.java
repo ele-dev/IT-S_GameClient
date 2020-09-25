@@ -2,9 +2,11 @@ package game;
 
 public class GameState {
 
+	// static class members //
 	private static String actingTeam = "";
 	private static byte[][] gameField = new byte[3][3];
 	
+	// Method for clearing the game field
 	public static void clearField() {
 		for(int i = 0; i < 3; i++)
 		{
@@ -15,14 +17,17 @@ public class GameState {
 		}
 	}
 	
+	// Method for setting the team that is from now on allowed to take a move
 	public static void setActingTeam(String team) {
 		actingTeam = team;
 	}
 	
+	// returns the acting team
 	public static String getActingTeam() {
 		return actingTeam;
 	}
 	
+	// Overload function for changing the entire field at once or just a single cell of it
 	public static void updateField(byte[][] newField) {
 		gameField = newField;
 	}
@@ -38,6 +43,7 @@ public class GameState {
 		gameField[row][column] = type;
 	}
 	
+	// Returns the entire game field state
 	public static byte[][] getCurrentFieldState() {
 		return gameField;
 	}
