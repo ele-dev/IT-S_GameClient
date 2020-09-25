@@ -183,6 +183,8 @@ public class Connection extends Thread {
 		if(input != null) {
 			this.team = input;
 		}
+		
+		
 	}
 	
 	// Getters //

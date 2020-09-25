@@ -41,7 +41,7 @@ public class StagePanel extends JPanel {
 		gridSize = 3;
 		gridCells = new GridCell[gridSize][gridSize];
 		for(int i = 0;i<gridSize;i++) {
-			for(int j = 0;j<gridSize;j++) {
+			for(int j = 0; j < gridSize; j++) {
 				gridCells[i][j] = new GridCell(i,j);
 			}
 		}
@@ -73,11 +73,15 @@ public class StagePanel extends JPanel {
 		this.updateGridGui();
 		
 		Graphics2D g2d = (Graphics2D) g;
+		// Draw the background 
 		g2d.setColor(new Color(20,20,20)); 
 		g2d.fillRect(0, 0, w, h);
+		// Draw the grid of the game field
 		drawGrid(g2d);
-		String str = winner==0?"":winner==1?"x is Winner":"o is Winner";
-		
+	
+		// Draw the winner message if one of the players has won the game
+		// Otherwise draw a little status display
+		String str = winner == 0 ? "" : winner == 1 ? "x is Winner" : "o is Winner";
 		
 		if(winner != 0) {
 			g2d.setFont(new Font("Arial",Font.BOLD,60));
@@ -88,6 +92,27 @@ public class StagePanel extends JPanel {
 			g2d.fillRect(w/2-(int)(textWidth*0.75), h/2-textHeight, (int)(textWidth*1.5), textHeight*2);
 			g2d.setColor(new Color(255,0,50));
 			g2d.drawString(str, w/2-textWidth/2, h/2+textHeight/3);
+			g2d.dispose();
+		} else {
+			String yourTeam = MainJFrame.conn.getTeam();
+			String teamStr = "You are team " + yourTeam; 
+			String turnStr = "";
+			
+			// Draw the string which says which team is expected make a move at the moment
+			g2d.setFont(new Font("Arial",Font.PLAIN,15));
+			if(yourTeam.equalsIgnoreCase(GameState.getActingTeam())) {
+				g2d.setColor(Color.GREEN);
+				turnStr = "It's your turn";
+			} else {
+				g2d.setColor(Color.RED);
+				turnStr = "Wait for the enemy to make his move";
+			}
+			g2d.drawString(turnStr, 10, h-65);
+			
+			// Draw the string that says which team you are playing for
+			g2d.setColor(Color.WHITE);
+			g2d.drawString(teamStr, 10, h-90);
+			
 			g2d.dispose();
 		}
 		
@@ -188,8 +213,6 @@ public class StagePanel extends JPanel {
 						// Now send the message to the server
 						MsgFieldState changedFieldMsg = new MsgFieldState(GameState.getCurrentFieldState());
 						MainJFrame.conn.sendMessageToServer(changedFieldMsg);
-						
-						// checkSomeoneWon();
 						
 						return;
 					}

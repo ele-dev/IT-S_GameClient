@@ -36,6 +36,11 @@ public class MessageHandler {
 				GameState.setActingTeam(turnMessage.getTeam());
 				System.out.println("It's team " + turnMessage.getTeam() + " turn now");
 				
+				// Repaint the GUI to upate status message
+				if(MainJFrame.stagePanel != null) {
+					MainJFrame.stagePanel.repaint();
+				}
+				
 				break;
 			}
 			
