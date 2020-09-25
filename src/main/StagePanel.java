@@ -186,7 +186,7 @@ public class StagePanel extends JPanel {
 						MainJFrame.conn.sendMessageToServer(changedFieldMsg);
 						
 						checkSomeoneWon();
-						repaint();
+						// repaint();
 						
 						return;
 					}
