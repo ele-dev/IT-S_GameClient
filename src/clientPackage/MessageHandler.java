@@ -50,6 +50,7 @@ public class MessageHandler {
 				
 				// Repaint the GUI to display the recieved updated game field
 				if(MainJFrame.stagePanel != null) {
+					MainJFrame.stagePanel.checkSomeoneWon();
 					MainJFrame.stagePanel.repaint();
 				}
 				

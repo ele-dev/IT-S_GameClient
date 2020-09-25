@@ -36,6 +36,7 @@ public class StagePanel extends JPanel {
 		initGrid();
 	}
 	
+	// Method initializes the game field GUI with empty cells
 	private void initGrid() {
 		gridSize = 3;
 		gridCells = new GridCell[gridSize][gridSize];
@@ -46,6 +47,7 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
+	// Method feeds the GUI Grid with the field state
 	private void updateGridGui() {
 		
 		// Get the current field from the Game state class
@@ -67,7 +69,7 @@ public class StagePanel extends JPanel {
 	
 	// main drawing function 
 	public void paintComponent(Graphics g) {
-		// synchronize field state 
+		// synchronize field states (GUI and Network) 
 		this.updateGridGui();
 		
 		Graphics2D g2d = (Graphics2D) g;
@@ -92,65 +94,66 @@ public class StagePanel extends JPanel {
 	}
 	
 	// Winner detection
-	private void checkSomeoneWon() {
-		for(short i = 0;i<gridSize;i++) {
+	public void checkSomeoneWon() {
+		
+		// Obtain the current field state from the Game State class
+		byte[][] gameField = GameState.getCurrentFieldState();
+		
+		for(short i = 0; i < gridSize; i++) {
 			boolean rowWin = true; 
-			for(short j = 0;j<gridSize-1;j++) {
-				if(gridCells[i][j].getCellState() == 0 || gridCells[i][j].getCellState() != gridCells[i][j+1].getCellState()) {
+			for(short j = 0; j < gridSize-1; j++) {
+				if(gameField[i][j] == 0 || gameField[i][j] != gameField[i][j+1]) {
 					rowWin = false;
 				}
 			}
 			if(rowWin) {
-				winner = gridCells[i][0].getCellState();
+				winner = gameField[i][0];
 				return;
 			}
 		}
-		for(short j = 0;j<gridSize;j++) {
+		for(short j = 0; j < gridSize; j++) {
 			boolean columnWin = true; 
-			for(short i = 0;i<gridSize-1;i++) {
-				if(gridCells[i][j].getCellState() == 0 || gridCells[i][j].getCellState() != gridCells[i+1][j].getCellState()) {
+			for(short i = 0; i < gridSize-1; i++) {
+				if(gameField[i][j] == 0 || gameField[i][j] != gameField[i+1][j]) {
 					columnWin = false;
 				}
 			}
 			if(columnWin) {
-				winner = gridCells[0][j].getCellState();
+				winner = gameField[0][j];
 				return;
 			}
 		}
 		boolean diagonalWinLUDR = true; 
-		for(short i = 0;i<gridSize-1;i++) {
-			if(gridCells[i][i].getCellState() == 0 || gridCells[i][i].getCellState() != gridCells[i+1][i+1].getCellState()) {
+		for(short i = 0; i < gridSize-1; i++) {
+			if(gameField[i][i] == 0 || gameField[i][i] != gameField[i+1][i+1]) {
 				diagonalWinLUDR = false;
 			}
 		}
 		if(diagonalWinLUDR) {
-			winner = gridCells[0][0].getCellState();
+			winner = gameField[0][0];
 			return;
 		}
 		boolean diagonalWinRUDL = true; 
-		for(short i = 0;i<gridSize-1;i++) {
-			if(gridCells[0][gridSize-1].getCellState() == 0 || gridCells[i][gridSize-1-i].getCellState() != gridCells[i+1][gridSize-2-i].getCellState()) {
+		for(short i = 0; i < gridSize-1; i++) {
+			if(gameField[0][gridSize-1] == 0 || gameField[i][gridSize-1-i] != gameField[i+1][gridSize-2-i]) {
 				diagonalWinRUDL = false;
 			}
 			
 		}
 		if(diagonalWinRUDL) {
-			winner = gridCells[0][gridSize-1].getCellState();
+			winner = gameField[0][gridSize-1];
 			return;
 		}
 	}
 	
 	// method for grid drawing
 	private void drawGrid(Graphics2D g2d) {
-		for(int i = 0;i<gridSize;i++) {
-			for(int j = 0;j<gridSize;j++) {
+		for(int i = 0; i < gridSize; i++) {
+			for(int j = 0; j < gridSize; j++) {
 				gridCells[i][j].drawGridCell(g2d);
 			}
 		}
 	}
-	
-	// Method for updating the cells in the grid
-	// ...
 	
 	private class ML implements MouseListener {
 		
@@ -186,7 +189,7 @@ public class StagePanel extends JPanel {
 						MsgFieldState changedFieldMsg = new MsgFieldState(GameState.getCurrentFieldState());
 						MainJFrame.conn.sendMessageToServer(changedFieldMsg);
 						
-						checkSomeoneWon();
+						// checkSomeoneWon();
 						
 						return;
 					}
@@ -201,9 +204,7 @@ public class StagePanel extends JPanel {
 		public void mouseExited(MouseEvent e) {}
 
 		@Override
-		public void mousePressed(MouseEvent e) {
-			
-		}
+		public void mousePressed(MouseEvent e) {}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {}
