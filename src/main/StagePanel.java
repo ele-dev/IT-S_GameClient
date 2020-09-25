@@ -40,7 +40,7 @@ public class StagePanel extends JPanel {
 	private void initGrid() {
 		gridSize = 3;
 		gridCells = new GridCell[gridSize][gridSize];
-		for(int i = 0;i<gridSize;i++) {
+		for(int i = 0; i < gridSize; i++) {
 			for(int j = 0; j < gridSize; j++) {
 				gridCells[i][j] = new GridCell(i,j);
 			}
@@ -124,9 +124,9 @@ public class StagePanel extends JPanel {
 		// Obtain the current field state from the Game State class
 		byte[][] gameField = GameState.getCurrentFieldState();
 		
-		for(short i = 0; i < gridSize; i++) {
+		for(byte i = 0; i < gridSize; i++) {
 			boolean rowWin = true; 
-			for(short j = 0; j < gridSize-1; j++) {
+			for(byte j = 0; j < gridSize-1; j++) {
 				if(gameField[i][j] == 0 || gameField[i][j] != gameField[i][j+1]) {
 					rowWin = false;
 				}
@@ -136,9 +136,9 @@ public class StagePanel extends JPanel {
 				return;
 			}
 		}
-		for(short j = 0; j < gridSize; j++) {
+		for(byte j = 0; j < gridSize; j++) {
 			boolean columnWin = true; 
-			for(short i = 0; i < gridSize-1; i++) {
+			for(byte i = 0; i < gridSize-1; i++) {
 				if(gameField[i][j] == 0 || gameField[i][j] != gameField[i+1][j]) {
 					columnWin = false;
 				}
@@ -149,7 +149,7 @@ public class StagePanel extends JPanel {
 			}
 		}
 		boolean diagonalWinLUDR = true; 
-		for(short i = 0; i < gridSize-1; i++) {
+		for(byte i = 0; i < gridSize-1; i++) {
 			if(gameField[i][i] == 0 || gameField[i][i] != gameField[i+1][i+1]) {
 				diagonalWinLUDR = false;
 			}
@@ -159,7 +159,7 @@ public class StagePanel extends JPanel {
 			return;
 		}
 		boolean diagonalWinRUDL = true; 
-		for(short i = 0; i < gridSize-1; i++) {
+		for(byte i = 0; i < gridSize-1; i++) {
 			if(gameField[0][gridSize-1] == 0 || gameField[i][gridSize-1-i] != gameField[i+1][gridSize-2-i]) {
 				diagonalWinRUDL = false;
 			}
