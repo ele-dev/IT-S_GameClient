@@ -6,15 +6,19 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public class GridCell {
+	// static class members //
 	public static int size = 200;
+	
+	// non-static class members //
 	public Rectangle rect;
 	private static Color c = new Color(255,0,50);
-	
-	private byte type = 0;
+	private byte type;
 	
 	// Constructor
 	public GridCell(int row, int column) {
 		this.rect = new Rectangle(column*size,row*size,size,size);
+		// initialize the grid cell as empty
+		this.type = 0;
 	}
 	
 	// Main drawing function 

@@ -34,6 +34,7 @@ public class MessageHandler {
 				
 				// Store the team in the game state class
 				GameState.setActingTeam(turnMessage.getTeam());
+				System.out.println("It's team " + turnMessage.getTeam() + " turn now");
 				
 				break;
 			}
@@ -45,6 +46,7 @@ public class MessageHandler {
 				
 				// Store the updated field state locally
 				GameState.updateField(fieldMessage.getField());
+				System.out.println("Received updated game field state from server");
 				
 				// update the GUI and repaint
 				/*

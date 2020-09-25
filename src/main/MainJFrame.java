@@ -16,7 +16,7 @@ public class MainJFrame extends JFrame {
 	private int h = 600;
 	
 	// Network connection
-	private static Connection conn = null;
+	public static Connection conn = null;
 	
 	// Application Gui panels
 	public static StagePanel stagePanel;
