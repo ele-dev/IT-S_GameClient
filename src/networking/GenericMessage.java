@@ -27,7 +27,8 @@ public abstract class GenericMessage implements Serializable {
 	
 	public static final int MSG_JOIN_TEAM = 2001;
 	public static final int MSG_LEAVE_GAME = 2002;
-
+	public static final int MSG_SERVER_FULL = 2003;
+	
 	// ...
 	
 	// ----- non-static members ----- //

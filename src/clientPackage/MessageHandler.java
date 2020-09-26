@@ -1,5 +1,7 @@
 package clientPackage;
 
+import javax.swing.JOptionPane;
+
 import game.GameState;
 import main.MainJFrame;
 
@@ -20,7 +22,7 @@ import networking.*;
 
 public class MessageHandler {
 
-	public static void handleMessage(GenericMessage msg)
+	public static boolean handleMessage(GenericMessage msg)
 	{
 		// Read message id to get the type of the message
 		int id = msg.getMessageID();
@@ -62,11 +64,23 @@ public class MessageHandler {
 				break;
 			}
 			
+			case GenericMessage.MSG_SERVER_FULL:
+			{
+				// Display a message about the full server 
+				System.out.println("Server is full. Try again later");
+				JOptionPane.showMessageDialog(null, "Server is full. Two players are at the moment. Try later");
+				
+				// Return false to send a stop order to the client handler thread
+				return false;
+			}
+			
 			default:
 			{
 				System.err.println("Received message of unknown type!");
 				break;
 			}
 		}
+		
+		return true;
 	}
 }

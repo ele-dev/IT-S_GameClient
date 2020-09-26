@@ -114,7 +114,8 @@ public class Connection extends Thread {
 			}
 			
 			// Now handle and process the message from the server
-			MessageHandler.handleMessage(recvBuffer);
+			// The inverted return value of the handler method is also interpreted as stop order
+			this.stopOrder = !MessageHandler.handleMessage(recvBuffer);
 		}
 		
 		System.out.println("Client listener thread closed");
