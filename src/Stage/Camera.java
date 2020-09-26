@@ -8,10 +8,13 @@ import java.awt.event.KeyEvent;
 
 public class Camera {
 	private float x,y;
+	// velocity x/y direction
 	private float vx,vy;
-	float v = 6;
-	Rectangle rectOfView;
-	
+	private float v = 6;
+	// rectangle in that is seen and where things are rendered 
+	//(things outside of view do not need to be rendered)
+	private Rectangle rectOfView;
+	// variables that control the screen shake
 	private int screenShakeCountDown;
 	private int screenShakeMagnitude;
 	

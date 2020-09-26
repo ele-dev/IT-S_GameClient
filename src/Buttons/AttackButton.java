@@ -11,8 +11,8 @@ import Stage.Commons;
 class AttackButton extends InterfaceButton{
 	private GamePiece parentGamepiece;
 	 
-	public AttackButton(int startx, int starty, int w, int h, GamePiece parentGamepiece) {
-		super(startx, starty, w, h, Commons.cAttack, "Attack");
+	public AttackButton(int startx, int starty, int w, GamePiece parentGamepiece) {
+		super(startx, starty, w, Commons.cAttack, "Attack");
 		this.parentGamepiece = parentGamepiece;
 	}
 
@@ -45,7 +45,6 @@ class AttackButton extends InterfaceButton{
 		} 
 		g2d.draw(rect);
 		
-		Font f = new Font("Arial",Font.BOLD,40);
 		g2d.setFont(f);
 		FontMetrics fMetrics = g2d.getFontMetrics(f);
 		int textHeight = fMetrics.getHeight();

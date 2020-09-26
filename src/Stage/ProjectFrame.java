@@ -10,7 +10,8 @@ import javax.swing.JOptionPane;
 import clientPackage.Connection;
 
 @SuppressWarnings("serial")
-class ProjektFrame extends JFrame {
+public
+class ProjectFrame extends JFrame {
 	
 	// Network related
 	static Connection conn;
@@ -20,7 +21,7 @@ class ProjektFrame extends JFrame {
 	
 	StagePanel stagePanel;
 	
-	public ProjektFrame() {
+	private ProjectFrame() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
 		height = (int) screenSize.getHeight();
@@ -36,7 +37,7 @@ class ProjektFrame extends JFrame {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		Container cp = getContentPane();
-		stagePanel = new StagePanel(0, 0, "TestMap");
+		stagePanel = new StagePanel("TestMap",this);
 		cp.add(stagePanel);
 		addKeyListener(stagePanel.kl);
 	}
@@ -59,7 +60,7 @@ class ProjektFrame extends JFrame {
 		*/
 		
 		// Second create the main window and start the actual game
-		ProjektFrame f = new ProjektFrame();
+		ProjectFrame f = new ProjectFrame();
 		
 		System.out.println("Main Window is now visible");
 		

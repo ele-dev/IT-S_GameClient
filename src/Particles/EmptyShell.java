@@ -10,7 +10,6 @@ import Stage.StagePanel;
 public class EmptyShell extends Particle{
 	int w,h;
 	public float friction = 0.1f;
-	Rectangle rectHitbox;
 	
 	double vY1 = 1;
 	double vRotation = Math.random()*5+3;
@@ -35,14 +34,14 @@ public class EmptyShell extends Particle{
 
 	@Override
 	public void update() {
-		move();
-		tryGetWallBlocked();
+		if(v > 0) {
+			move();
+			tryGetWallBlocked();
+		}
 	}
 	
 	public void move() {
-		if(v <= 0) {
-			return;
-		}
+		
 		x += Math.cos(Math.toRadians(angle+90)) * v;
 		y += Math.sin(Math.toRadians(angle+90)) * v;
 		y -= this.vY1;
@@ -51,19 +50,8 @@ public class EmptyShell extends Particle{
 		}else {
 			v = 0;
 		}
-		
 		rotation += vRotation;
-		rectHitbox = new Rectangle((int)x+w/2,(int)y+h/2,w,h);
-	}
-	
-	// checks if hit a wall and sets velocity v to 0
-	public void tryGetWallBlocked() {
-		for(BoardRectangle curBR : StagePanel.boardRectangles) {
-			if(curBR.isWall && rectHitbox.intersects(curBR.rect)){
-				v = 0;
-				break;
-			}
-		}
+		rectHitbox.setBounds((int)x+w/2,(int)y+h/2,w,h);
 	}
 	
 }

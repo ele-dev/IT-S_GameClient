@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import Environment.DestructibleObject;
 import Stage.BoardRectangle;
 import Stage.StagePanel;
+import Stage.ProjectFrame;
 
 public class Levelinitializer {
 	ArrayList<BoardRectangle> boardRectangles = new ArrayList<BoardRectangle>();
@@ -29,10 +30,11 @@ public class Levelinitializer {
 		return mapColumns;
 	}
 	// Reads the File and generates the BoardRectangle accordingly
-	public void readFile(String mapName) {	
+	public void readFile(String mapName,ProjectFrame pf) {	
 		try {
 			File file = new File("src/LevelDesignTools/"+mapName+".txt");
 			Scanner scanner = new Scanner(file);
+			System.out.println("opened scanner");
 			boardRectangles.clear();
 			
 			int lineIndex = 0;
@@ -44,22 +46,7 @@ public class Levelinitializer {
 				int WallorGapIndex = Integer.parseInt(scanner.next());		
 				int DestructibleObjectIndex = Integer.parseInt(scanner.next());	
 				
-				System.out.println("BoardRectIndex: "+index);
-				System.out.println("TileIndex: "+tileIndex);
-				System.out.println("Row/Coloumn: "+row+"/"+column);
-				if(WallorGapIndex == 0) {
-					System.out.println("IsWall");
-				}else if(WallorGapIndex == 2) {
-					System.out.println("IsGap");
-				}else {
-					System.out.println("IsGround");
-				}
-				if(DestructibleObjectIndex == 0) {
-					System.out.println("IsDestructibleObject");
-				}else {
-					System.out.println("IsNotDestructibleObject");
-				}
-				System.out.println("");
+//				printBR(index, tileIndex, row, column, WallorGapIndex, DestructibleObjectIndex);
 
 				boardRectangles.add(new BoardRectangle(row, column, tileIndex==1, lineIndex));
 				if(WallorGapIndex == 1) {
@@ -81,36 +68,61 @@ public class Levelinitializer {
 			mapRows++;
 			mapColumns++;
 			scanner.close();
-			
-			System.out.println("Level-Wall-Layout");
-			System.out.println("[] = Wall");
-			System.out.println("<> = Destructible Object");
-			System.out.println(":: = Gap");
-			int row = 0;
-			for(BoardRectangle curBR : boardRectangles) {
-				if(curBR.row > row) {
-					row++;
-					System.out.println();
-				}
-				if(curBR.isWall) {
-					System.out.print("[]");
-				}else if(curBR.isDestructibleObject()){
-					System.out.print("<>");
-				}else if(curBR.isGap){
-					System.out.print("::");
-				}else {
-					System.out.print("  ");
-				}
-			}
-			System.out.println();
-			System.out.println("BoardRectAmount:" + boardRectangles.size());
-			System.out.println("Rows:" + getMapRows());
-			System.out.println("Columns:" + getMapColumns());
 			System.out.println("closed scanner");
+			printLevelLAyout();
+			
+			
 		} catch(FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Given map does not exist!");
+			pf.dispose();
 			e.printStackTrace();
 		}
+	}
+	
+	private void printBR(int index, int tileIndex, int row, int column, int WallorGapIndex, int DestructibleObjectIndex) {
+		System.out.println("BoardRectIndex: "+index);
+		System.out.println("TileIndex: "+tileIndex);
+		System.out.println("Row/Coloumn: "+row+"/"+column);
+		if(WallorGapIndex == 0) {
+			System.out.println("IsWall");
+		}else if(WallorGapIndex == 2) {
+			System.out.println("IsGap");
+		}else {
+			System.out.println("IsGround");
+		}
+		if(DestructibleObjectIndex == 0) {
+			System.out.println("IsDestructibleObject");
+		}else {
+			System.out.println("IsNotDestructibleObject");
+		}
+		System.out.println("-----------------------");
+	}
+	private void printLevelLAyout() {
+		System.out.println("###########################################################################");
+		System.out.println("Level-Wall-Layout");
+		System.out.println("---------------------------------------------------------------------------");
+		System.out.println("[] = Wall                 |  " + "BoardRectAmount = " + boardRectangles.size());
+		System.out.println("<> = Destructible Object  |  " + "Rows = " + getMapRows());
+		System.out.println(":: = Gap                  |  " + "Columns = " + getMapColumns());
+		System.out.println("---------------------------------------------------------------------------");
+		int row = 0;
+		for(BoardRectangle curBR : boardRectangles) {
+			if(curBR.row > row) {
+				row++;
+				System.out.println();
+			}
+			if(curBR.isWall) {
+				System.out.print("[]");
+			}else if(curBR.isDestructibleObject()){
+				System.out.print("<>");
+			}else if(curBR.isGap){
+				System.out.print("::");
+			}else {
+				System.out.print("  ");
+			}
+		}
+		System.out.println();
+		System.out.println("###########################################################################");
 	}
 	// writes the File
 	public void writeFile(String mapName,ArrayList<BoardRectangle> boardRectangles) {
@@ -132,11 +144,11 @@ public class Levelinitializer {
 				pw.print(boardRectangles.get(i).row+" ");
 				pw.print(boardRectangles.get(i).column+" ");
 				if(boardRectangles.get(i).isWall) {
-					pw.println(1);
+					pw.print(1+" ");
 				}else if(boardRectangles.get(i).isGap){
-					pw.println(2);
+					pw.print(2+" ");
 				}else {
-					pw.println(0);
+					pw.print(0+" ");
 				}
 				if(boardRectangles.get(i).isDestructibleObject()) {
 					pw.println(1);

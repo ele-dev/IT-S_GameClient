@@ -27,7 +27,7 @@ public class BoardRectangle {
 	public boolean isWall,isGap;
 	
 	private boolean isHover;
-	double animationSpeed;
+	private double animationSpeed;
 	public float so = 4;
 	private int rotation = 0; 
 	
@@ -52,11 +52,9 @@ public class BoardRectangle {
 		
 		this.index = index;
 		
-		if(isTile1) {
-			c = new Color(10,10,10);
-		}else {
-			c = new Color(200,200,200);
-		}
+		
+		c = isTile1?new Color(10,10,10):new Color(200,200,200);
+		
 		
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		spriteLinks.add(Commons.pathToSpriteSource+"Tiles/GrassTile.png");
@@ -83,12 +81,15 @@ public class BoardRectangle {
 	public boolean isHover() {
 		return isHover;
 	}
+	
+	public ArrayList<BoardRectangle> getAdjecantBoardRectangles() {
+		return adjecantBoardRectangles;
+	}
 	public boolean isDestructibleObject() {
 		for(DestructibleObject curDO : StagePanel.destructibleObjects) {
 			if(curDO.containsBR(this)) {
 				return true;
 			}
-			
 		}
 		return false;
 	}
@@ -235,27 +236,19 @@ public class BoardRectangle {
 		}
 		g2d.setStroke(new BasicStroke(2));
 		if(isPossibleMove || isPossibleAttack || isPossibleAbility) {
-			if(isPossibleMove) {
-				g2d.setColor(cPossibleMove);
-			}else if(isPossibleAttack){
-				g2d.setColor(cPossibleAttack);
-			}else if(isPossibleAbility){
-				g2d.setColor(cPossibleAbility);
-			}
 			
+			g2d.setColor(isPossibleMove?cPossibleMove:isPossibleAttack?cPossibleAttack:cPossibleAbility);
 			g2d.fill(rect);
 			g2d.setColor(new Color(5,5,5));
 			g2d.draw(rect);
 		}
 		if((isShowPossibleAbility && !isPossibleAbility) || (isShowPossibleMove && !isPossibleMove) || (isShowPossibleAttack && !isPossibleAttack)) {
 			g2d.setStroke(new BasicStroke(4));
-			if(isShowPossibleAbility) {
-				g2d.setColor(new Color(cPossibleAbility.getRed(),cPossibleAbility.getGreen(),cPossibleAbility.getBlue(),150));
-			}else if(isShowPossibleMove){
-				g2d.setColor(new Color(cPossibleMove.getRed(),cPossibleMove.getGreen(),cPossibleMove.getBlue(),150));
-			}else {
-				g2d.setColor(new Color(cPossibleAttack.getRed(),cPossibleAttack.getGreen(),cPossibleAttack.getBlue(),150));
-			}
+			
+			g2d.setColor(isShowPossibleAbility?new Color(cPossibleAbility.getRed(),cPossibleAbility.getGreen(),cPossibleAbility.getBlue(),150):
+				isShowPossibleMove?new Color(cPossibleMove.getRed(),cPossibleMove.getGreen(),cPossibleMove.getBlue(),150):
+				new Color(cPossibleAttack.getRed(),cPossibleAttack.getGreen(),cPossibleAttack.getBlue(),150));
+			
 			g2d.drawLine(getX(), getY(), getX()+getSize(), getY());
 			g2d.drawLine(getX(), getY()+getSize(), getX()+getSize(), getY()+getSize());
 			g2d.drawLine(getX(), getY(), getX(), getY()+getSize());
@@ -364,7 +357,6 @@ public class BoardRectangle {
 	}
 	// draws wall but makes it transparent if it would overdraw a GamePiece
 	public void drawWall(Graphics2D g2d,ArrayList<GamePiece> gamePieces) {
-		
 		if(wallSprite != null) {
 			wallSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
 		}else {
@@ -384,14 +376,6 @@ public class BoardRectangle {
 			g2d.setColor(new Color(200,200,200));
 		}
 		g2d.drawString(index+"", getCenterX(), getCenterY());
-	}
-	// returns the resized image
-	public Image resizeImage(String imageString) {
-		ImageIcon imageIcon = new ImageIcon(imageString);
-		Image image = imageIcon.getImage();
-		Image modImage = image.getScaledInstance(getSize(), getSize(), java.awt.Image.SCALE_SMOOTH);
-		imageIcon = new ImageIcon(modImage);
-		return imageIcon.getImage();
 	}
 	
 }

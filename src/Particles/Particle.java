@@ -3,8 +3,12 @@ package Particles;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 
 import javax.swing.Timer;
+
+import Stage.BoardRectangle;
+import Stage.StagePanel;
 
 public abstract class Particle {
 	protected float x,y;
@@ -15,6 +19,7 @@ public abstract class Particle {
 	protected float fadeSpeed;
 	private float alpha;
 	protected Timer tFadeDelayTimer;
+	protected Rectangle rectHitbox;
 	
 	protected Particle(float x, float y, float angle, float rotation, Color c, float v, float fadeSpeed) {
 		this.x = x;
@@ -46,6 +51,16 @@ public abstract class Particle {
 		}
 	}
 	
+	// checks if hit a wall and sets velocity v to 0
+	public void tryGetWallBlocked() {
+		for(BoardRectangle curBR : StagePanel.boardRectangles) {
+			if(curBR.isWall && rectHitbox.intersects(curBR.rect)){
+				v = 0;
+				break;
+			}
+		}
+	}
+	
 	public float getX() {
 		return x;
 	}
@@ -64,4 +79,6 @@ public abstract class Particle {
 	public boolean getIsDestroyed() {
 		return isDestroyed;
 	}
+	
+	
 }

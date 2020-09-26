@@ -25,11 +25,8 @@ public class DestructionParticle extends Particle{
 		this.rectHitbox = new Rectangle((int)x+w/2,(int)y+h/2,w,h);
 		
 		tFadeDelayTimer = new Timer(1000, new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		tFadeDelayTimer.setRepeats(false);
@@ -50,31 +47,20 @@ public class DestructionParticle extends Particle{
 
 	@Override
 	public void update() {
-		move();
-		tryGetWallBlocked();
+		if(v > 0) {
+			move();
+			tryGetWallBlocked();
+		}
 		fadeOut();
 	}
 	
 	public void move() {
-		if(v <= 0) {
-			return;
-		}
 		x += Math.cos(Math.toRadians(angle+90)) * v;
 		y += Math.sin(Math.toRadians(angle+90)) * v;
 			
 		v = v > 0?v-friction*2:0;
 		
 		rotation += vRotation;
-		rectHitbox = new Rectangle((int)x+w/2,(int)y+h/2,w,h);
+		rectHitbox.setBounds((int)x+w/2,(int)y+h/2,w,h);
 	}
-	
-	public void tryGetWallBlocked() {
-		for(BoardRectangle curBR : StagePanel.boardRectangles) {
-			if(curBR.isWall && this.rectHitbox.intersects(curBR.rect)){
-				v = 0;
-			}
-		}
-	}
-	
-
 }

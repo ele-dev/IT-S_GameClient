@@ -30,7 +30,7 @@ import Stage.StagePanel;
 public abstract class GamePiece {
 	public BoardRectangle boardRect;
 	private Rectangle rectShowTurret;
-	protected Color c,cTurret;
+	protected Color c;
 	private String name;
 	protected float angle,angleDesired; 
 	public boolean isDead = false;
@@ -68,16 +68,13 @@ public abstract class GamePiece {
 		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
 		if(isEnemy) {
 			this.c = Commons.enemyColor;
-			this.cTurret = Commons.enemyColorTurret;
 		}else {
 			this.c = Commons.notEnemyColor;
-			this.cTurret = Commons.notEnemyColorTurret;
 		} 
 		gamePieceBase = new GamePieceBase(boardRect.getCenterX(), boardRect.getCenterY(), rectShowTurret.width+10, rectShowTurret.width+10,c,baseTypeIndex,this);
 
 		this.name = name;
 		this.dmg = dmg;
-
 		this.actionSelectionPanel = new ActionSelectionPanel(this);
 	}
 	
@@ -310,49 +307,43 @@ public abstract class GamePiece {
 	public abstract void updateAttack();
 	
 	// draws the GamePiece	
-	public void drawGamePiece(Graphics2D g2d,BoardRectangle curHBR) {
-		if(!isDead) {
-			gamePieceBase.drawGamePieceBase(g2d);
-			int cx = getCenterX();
-			int cy = getCenterY();
-			g2d.setColor(c);
-			// draws different when it already attacked
-			if(hasExecutedAttack) {
-				g2d.setColor(new Color(c.getRed()/4,c.getGreen()/4,c.getBlue()/4));
-			}
-			if(spriteTurret != null) {
-				spriteTurret.drawSprite(g2d, cx, cy, angle+90, 1);
-			}else {
-				g2d.setColor(cTurret);
-				g2d.translate(cx, cy);
-				g2d.rotate(Math.toRadians(angle));
-				g2d.setStroke(new BasicStroke(2));
-				g2d.fill(rectShowTurret);
-				g2d.setColor(Color.BLACK);
-				g2d.draw(rectShowTurret);
-				g2d.rotate(Math.toRadians(-angle));
-				g2d.translate(-cx, -cy);
-				
-				g2d.setColor(Color.BLACK);
-				g2d.setFont(new Font("Arial",Font.BOLD,30));
-				FontMetrics metrics = g2d.getFontMetrics();
-				String text = name;
-				int textHeight = metrics.getHeight();
-				int textWidth = metrics.stringWidth(text);
-				g2d.drawString(name, cx - textWidth/2, cy + textHeight/3);
-			}
-			gamePieceBase.drawMoveRange(g2d);
+	public void drawGamePiece(Graphics2D g2d) {
+		gamePieceBase.drawGamePieceBase(g2d);
+		int cx = getCenterX();
+		int cy = getCenterY();
+		g2d.setColor(c);
+		// draws different when it already attacked
+		if(hasExecutedAttack) {
+			g2d.setColor(new Color(c.getRed()/4,c.getGreen()/4,c.getBlue()/4));
 		}
+		if(spriteTurret != null) {
+			spriteTurret.drawSprite(g2d, cx, cy, angle+90, 1);
+		}else {
+			g2d.setColor(c);
+			g2d.translate(cx, cy);
+			g2d.rotate(Math.toRadians(angle));
+			g2d.setStroke(new BasicStroke(2));
+			g2d.fill(rectShowTurret);
+			g2d.setColor(Color.BLACK);
+			g2d.draw(rectShowTurret);
+			g2d.rotate(Math.toRadians(-angle));
+			g2d.translate(-cx, -cy);
+				
+			g2d.setColor(Color.BLACK);
+			g2d.setFont(new Font("Arial",Font.BOLD,30));
+			FontMetrics metrics = g2d.getFontMetrics();
+			String text = name;
+			int textHeight = metrics.getHeight();
+			int textWidth = metrics.stringWidth(text);
+			g2d.drawString(text, cx - textWidth/2, cy + textHeight/3);
+		}
+		gamePieceBase.drawMoveRange(g2d);
+		
 		
 	}
 	
 	public void drawPointer(Graphics2D g2d) {
-		if(!hasExecutedAttack) {
-			g2d.setColor(c);
-			
-		}else {
-			g2d.setColor(new Color(c.getRed()/2,c.getGreen()/2,c.getBlue()/2,200));
-		}
+		g2d.setColor(hasExecutedAttack?new Color(c.getRed()/2,c.getGreen()/2,c.getBlue()/2,200):c);
 		
 		int x = boardRect.getX();
 		int y = boardRect.getY();
@@ -360,14 +351,11 @@ public abstract class GamePiece {
 		int soI = (int)boardRect.so;
 		g2d.setStroke(new BasicStroke(6));
 		g2d.drawLine(x-soI/2, y-soI/2, x+s/4-soI/2, y-soI/2);
-		g2d.drawLine(x+s+soI/2, y-soI/2, x+s*3/4+soI/2, y-soI/2);
-				
+		g2d.drawLine(x+s+soI/2, y-soI/2, x+s*3/4+soI/2, y-soI/2);		
 		g2d.drawLine(x-soI/2, y+s+soI/2, x+s/4-soI/2, y+s+soI/2);
-		g2d.drawLine(x+s+soI/2, y+s+soI/2, x+s*3/4+soI/2, y+s+soI/2);
-				
+		g2d.drawLine(x+s+soI/2, y+s+soI/2, x+s*3/4+soI/2, y+s+soI/2);		
 		g2d.drawLine(x-soI/2, y-soI/2, x-soI/2, y+s/4-soI/2);
-		g2d.drawLine(x-soI/2, y+s+soI/2, x-soI/2, y+s*3/4+soI/2);
-				
+		g2d.drawLine(x-soI/2, y+s+soI/2, x-soI/2, y+s*3/4+soI/2);	
 		g2d.drawLine(x+s+soI/2, y-soI/2, x+s+soI/2, y+s/4-soI/2);
 		g2d.drawLine(x+s+soI/2, y+s+soI/2, x+s+soI/2, y+s*3/4+soI/2);	
 	}
@@ -381,12 +369,8 @@ public abstract class GamePiece {
 	
 	// updates the shot angle towards the TargetEnemy/TargetGamepice
 	public void updateAngle(Point targetPoint) {
-		int cx = getCenterX();
-		int cy = getCenterY();
-		
-		float ak = (float) (targetPoint.getX() - cx);
-		float gk = (float) (targetPoint.getY() - cy);
-		
+		float ak = (float) (targetPoint.getX() - getCenterX());
+		float gk = (float) (targetPoint.getY() - getCenterY());
 		angleDesired = (float) Math.toDegrees(Math.atan2(ak*-1, gk));
 		angle = Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
 	}
@@ -397,22 +381,10 @@ public abstract class GamePiece {
 	}
 	// checks if two pieces are enemies and returns true if they are enemies
 	public boolean checkIfEnemies(GamePiece gP) {
-		if(gP.isEnemy && !this.isEnemy) {
-			return true;
-		}
-		if(!gP.isEnemy && this.isEnemy) {
-			return true;
-		}
-		return false;
+		return gP.isEnemy == !this.isEnemy;
 	}
 	public boolean checkIfEnemies(RadialShield rs) {
-		if(rs.isEnemy && !this.isEnemy) {
-			return true;
-		}
-		if(!rs.isEnemy && this.isEnemy) {
-			return true;
-		}
-		return false;
+		return rs.isEnemy == !this.isEnemy;
 	}
 	// moves the GamePiece to the parameter BoardRectangle and exhausts its moving ability
 	public void startMove() {

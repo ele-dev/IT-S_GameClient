@@ -36,13 +36,12 @@ public class ActionSelectionPanel {
 		this.parentGamepiece = parentGamepiece;
 		int gapSize = 20;
 		int buttonW = w-border*2;
-		int buttonH = 75;
-		attackButton = new AttackButton(x + border,(int)(y + h/2.5) +gapSize,buttonW , buttonH,parentGamepiece);
+		attackButton = new AttackButton(x + border,(int)(y + h/2.5) +gapSize,buttonW ,parentGamepiece);
 		if(parentGamepiece instanceof CommanderGamePiece) {
-			moveButton = new MoveButton(x + border, attackButton.rect.y+attackButton.rect.height+gapSize, buttonW, buttonH,parentGamepiece);
-			abilityButton = new AbilityButton(x + border,  moveButton.rect.y+moveButton.rect.height+gapSize, buttonW, buttonH,parentGamepiece);
+			moveButton = new MoveButton(x + border, attackButton.rect.y+attackButton.rect.height+gapSize, buttonW, parentGamepiece);
+			abilityButton = new AbilityButton(x + border,  moveButton.rect.y+moveButton.rect.height+gapSize, buttonW, parentGamepiece);
 		}else {
-			moveButton = new MoveButton(x + border,  attackButton.rect.y+attackButton.rect.height+gapSize, buttonW, buttonH,parentGamepiece);
+			moveButton = new MoveButton(x + border,  attackButton.rect.y+attackButton.rect.height+gapSize, buttonW, parentGamepiece);
 		}
 		
 	}
