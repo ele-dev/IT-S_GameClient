@@ -25,8 +25,8 @@ public abstract class GenericMessage implements Serializable {
 	public static final int MSG_SET_TURN = 1001;
 	public static final int MSG_UPDATED_FIELD_STATE = 1002;
 	
-	public static final int MSG_JOIN_QUICKMATCH = 3010;
-	public static final int MSG_LEAVE_GAME = 30015;
+	public static final int MSG_JOIN_TEAM = 2001;
+	public static final int MSG_LEAVE_GAME = 2002;
 
 	// ...
 	
