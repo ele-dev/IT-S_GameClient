@@ -184,7 +184,16 @@ public class Connection extends Thread {
 			this.team = input;
 		}
 		
+		// Send team join message to the server
+		byte teamID = 0;
+		if(input.equalsIgnoreCase("cross")) {
+			teamID = 1;
+		} else if(input.equalsIgnoreCase("circle")) {
+			teamID = 2;
+		}
 		
+		MsgJoinTeam joinMessage = new MsgJoinTeam(teamID);
+		this.sendMessageToServer(joinMessage);
 	}
 	
 	// Getters //
