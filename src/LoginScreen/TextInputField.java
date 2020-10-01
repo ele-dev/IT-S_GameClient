@@ -47,6 +47,4 @@ public class TextInputField {
 	public void trySelectField(MouseEvent e) {
 		isSelected = SwingUtilities.isLeftMouseButton(e) && rect.contains(e.getPoint());
 	}
-	
-	
 }
