@@ -46,6 +46,7 @@ public class LoginPanel extends JPanel {
 		addMouseMotionListener(new MML());
 		fields[0] = new TextInputField("Username", new Color(255,0,50), 750, 350, 300, 50);
 		fields[1] = new TextInputField("Password", new Color(255,0,50), 750, 410, 300, 50);
+		
 		// Timer for repainting/redrawing
 		tFrameRate = new Timer(10, new ActionListener() {
 			
