@@ -32,7 +32,6 @@ public class LoginButton {
 	
 	// Update method for hover detection
 	public void updateHover(MouseEvent e) {
-		
 		isHover = rect.contains(e.getPoint());
 	}
 	
