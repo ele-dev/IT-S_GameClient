@@ -5,6 +5,7 @@ import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import LoginScreen.HomePanel;
 import LoginScreen.LoginPanel;
 import clientPackage.Connection;
 
@@ -20,10 +21,11 @@ public class ProjektFrame extends JFrame {
 	// GUI panels of the application (JPanels)
 	public static StagePanel stagePanel;
 	public static LoginPanel loginPanel;
+	public static HomePanel homePanel;
 	
 	public ProjektFrame() {
 		// Create and init the Window (JFrame)
-		setSize(width,height);
+		setSize(width, height);
 		setLocationRelativeTo(null);
 		setLayout(null);
 		setResizable(false);
@@ -36,12 +38,16 @@ public class ProjektFrame extends JFrame {
 		Container cp = getContentPane();
 		loginPanel = new LoginPanel(0, 0);
 		stagePanel = new StagePanel(0, 0);
+		homePanel = new HomePanel(0, 0);
 		stagePanel.setVisible(false);
+		homePanel.setVisible(false);
 		loginPanel.setVisible(true);		// Display the login screen first
 		cp.add(loginPanel);
 		cp.add(stagePanel);
+		cp.add(homePanel);
 		addKeyListener(loginPanel.kl);
 		addKeyListener(stagePanel.kl);
+		// addKeyListener(homePanel.kl);
 	}
 	
 	// ------------------- MAIN Application Entry Point -------------------------- //

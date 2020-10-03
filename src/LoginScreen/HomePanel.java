@@ -15,16 +15,18 @@ import Stage.Commons;
 @SuppressWarnings("serial")
 public class HomePanel extends JPanel {
 	
-	// class members
+	// Dimension and background color properties
 	private int w, h;
 	private Color bgColor;
+	
+	// Timers 
 	private Timer tFrameRate;
 	private Timer tUpdateRate;
 
 	public HomePanel(int x, int y) {
 		this.w = Commons.wf;
 		this.h = Commons.hf;
-		this.bgColor = new Color(28, 26,36);
+		this.bgColor = new Color(28, 26, 36);
 		this.setBounds(x, y, w, h);
 		// add listeners
 		// ...
@@ -37,7 +39,6 @@ public class HomePanel extends JPanel {
 				repaint();
 			}
 		});
-		
 		this.tFrameRate.setRepeats(true);
 		this.tFrameRate.start();
 		
@@ -49,26 +50,26 @@ public class HomePanel extends JPanel {
 				// ...
 			}
 		});
-		
 		this.tUpdateRate.setRepeats(true);
 		this.tUpdateRate.start();
 	}
 	
 	// Drawing function 
 	public void paintComponent(Graphics g) {
+		
 		Graphics2D g2d = (Graphics2D)g;
 		
 		// Draw the colored background
-		g2d.setColor(bgColor);
+		g2d.setColor(this.bgColor);
 		g2d.fillRect(0, 0, this.w, this.h);
 		
 		// Next draw some text
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(new Font("Arial", Font.BOLD, 30));
-		g2d.drawString("", 750, 300);
+		g2d.drawString("Home screen", 750, 300);
 		
 		// Draw the quick match join button
-		g2d.setColor(Color.WHITE);
+		// g2d.setColor(Color.WHITE);
 		// ...
 		
 		// Draw additonal stuff

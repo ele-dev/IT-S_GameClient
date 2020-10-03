@@ -43,7 +43,7 @@ public class LoginPanel extends JPanel {
 		this.w = Commons.wf;
 		this.h = Commons.hf;
 		this.c = new Color(28,26,36);
-		setBounds(x,y,w,h);
+		setBounds(x, y, w, h);
 		addMouseListener(new ML());
 		addMouseMotionListener(new MML());
 		fields[0] = new TextInputField("Username", new Color(255,0,50), 750, 350, 300, 50);
@@ -57,7 +57,6 @@ public class LoginPanel extends JPanel {
 				repaint();
 			}
 		});
-		
 		tFrameRate.setRepeats(true);
 		tFrameRate.start();
 		
@@ -68,7 +67,6 @@ public class LoginPanel extends JPanel {
 				// ...
 			}
 		});
-		
 		tUpdateRate.setRepeats(true);
 		tUpdateRate.start();
 	}
@@ -79,7 +77,7 @@ public class LoginPanel extends JPanel {
 		Graphics2D g2d = (Graphics2D)g;
 		
 		// Draw the colored background
-		g2d.setColor(c);
+		g2d.setColor(this.c);
 		g2d.fillRect(0, 0, this.w, this.h);
 		
 		// Draw Text 
@@ -156,9 +154,10 @@ public class LoginPanel extends JPanel {
 				System.out.println("Logged in successfully");
 				JOptionPane.showMessageDialog(this, "Logged in as " + ProjektFrame.conn.getUsername());
 				
-				// redirect to the game panel
+				// redirect to the home screen panel
 				this.setVisible(false);
-				ProjektFrame.stagePanel.setVisible(true);
+				ProjektFrame.homePanel.setVisible(true);
+				// ProjektFrame.stagePanel.setVisible(true);
 			}
 		}
 	}
