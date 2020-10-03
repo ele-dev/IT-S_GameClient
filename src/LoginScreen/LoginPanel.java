@@ -22,22 +22,19 @@ import Stage.ProjektFrame;
 @SuppressWarnings("serial")
 public class LoginPanel extends JPanel {
 	
-	@SuppressWarnings("unused")
-	private int x,y;
 	private int w,h;
 	private Color c;
 	private Timer tFrameRate;
 	private Timer tUpdateRate;
-	@SuppressWarnings("unused")
-	private boolean isSelected = false;
+	// private boolean isSelected = false;
+	
 	private TextInputField[] fields = new TextInputField[2];
 	private LoginButton loginButton = new LoginButton(850, 500, 100, 50);
 	public KL kl = new KL();
 	
-	
+	// Constructor passing position info
 	public LoginPanel(int x, int y) {
-		this.x = x;
-		this.y = y;
+
 		this.w = Commons.wf;
 		this.h = Commons.hf;
 		this.c = new Color(28,26,36);
@@ -73,21 +70,26 @@ public class LoginPanel extends JPanel {
 	
 	// Main drawing function
 	public void paintComponent(Graphics g) {
+		
 		Graphics2D g2d = (Graphics2D)g;
+		
+		// Draw the colored background
 		g2d.setColor(c);
-		g2d.fillRect(0,0,w,h);
+		g2d.fillRect(0, 0, this.w, this.h);
+		
+		// Draw Text 
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(new Font("Arial",Font.BOLD,30));
 		g2d.drawString("Game Title", 750, 300);
 		
-		//Draws Loginbutton
+		// Draw Loginbutton
 		g2d.setColor(Color.WHITE);
 		g2d.fillRect(850, 500, 100, 50);
 		g2d.setColor(Color.BLACK);
 		g2d.drawString("Login", 860, 535);
 		
-		//Draws Username and Password input-fields
-		for(TextInputField curTIF : fields) {
+		// Draw Username and Password input-fields
+		for(TextInputField curTIF : this.fields) {
 			curTIF.drawTextInputField(g2d);
 		}
 	}
@@ -95,7 +97,7 @@ public class LoginPanel extends JPanel {
 	// Method for changing focus by clicking somewhere
 	public void tryPressSomething(MouseEvent e) {
 		
-		for(TextInputField curTIF : fields) {
+		for(TextInputField curTIF : this.fields) {
 			curTIF.trySelectField(e);
 		}
 		 
@@ -104,7 +106,7 @@ public class LoginPanel extends JPanel {
 	// Method for typing a letter in a text field
 	public void tryTypeIn(KeyEvent e) {
 		
-		for(TextInputField curTIF : fields) { 
+		for(TextInputField curTIF : this.fields) { 
 			if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE && curTIF.text.length() > 0 && curTIF.isSelected()) {
 				curTIF.text = curTIF.text.substring(0, curTIF.text.length() - 1);
 			} else if(curTIF.isSelected() && curTIF.text.length() < 100) {
