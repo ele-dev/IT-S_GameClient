@@ -45,7 +45,7 @@ public class LoginPanel extends JPanel {
 		fields[1] = new TextInputField("Password", new Color(255,0,50), 750, 410, 300, 50);
 		
 		// Timer for repainting/redrawing
-		tFrameRate = new Timer(10, new ActionListener() {
+		tFrameRate = new Timer(Commons.frametime, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -57,7 +57,7 @@ public class LoginPanel extends JPanel {
 		tFrameRate.start();
 		
 		// Timer for updating 
-		tUpdateRate = new Timer(10, new ActionListener() {
+		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// ...

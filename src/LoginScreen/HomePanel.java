@@ -30,7 +30,7 @@ public class HomePanel extends JPanel {
 		// ...
 		
 		// Timer for painting/redrawing
-		this.tFrameRate = new Timer(10, new ActionListener() {
+		this.tFrameRate = new Timer(Commons.frametime, new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -42,7 +42,7 @@ public class HomePanel extends JPanel {
 		this.tFrameRate.start();
 		
 		// Timer for updating
-		this.tUpdateRate = new Timer(10, new ActionListener() {
+		this.tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
