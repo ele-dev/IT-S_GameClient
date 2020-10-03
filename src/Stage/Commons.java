@@ -3,12 +3,17 @@ package Stage;
 import java.awt.Color;
 
 public interface Commons {
+	// Size of the Cells on the game board
 	final int boardRectSize = 80;
-	// width of frame
+	
+	// window frame dimensions 
 	final int wf = 1800;
-	// height of frame
 	final int hf = 1000;
 	
+	// Refresh rates for timers 
+	public static final int frametime = 10;
+	
+	// Important colors
 	final Color cUltCharge = new Color(234,255,70);
 	
 	final Color cMove = new Color(255,220,90);
@@ -26,9 +31,11 @@ public interface Commons {
 	
 	final Color cHealth = new Color(85,255,80);
 	
+	// File path for sprites
 	final String pathToSpriteSource = "sprites/";
 	
-	// GamePieces 
+	
+	// Game Piece config variables //
 	final int dmgFlashCountDown = 5;
 	// GunnerPiece
 	final float dmgGunner = 3;
