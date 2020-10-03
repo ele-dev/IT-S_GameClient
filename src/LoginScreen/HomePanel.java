@@ -1,10 +1,14 @@
 package LoginScreen;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
-import java.util.Timer;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import Stage.Commons;
 
@@ -12,23 +16,64 @@ import Stage.Commons;
 public class HomePanel extends JPanel {
 	
 	// class members
-	private int x, y;
 	private int w, h;
 	private Color bgColor;
 	private Timer tFrameRate;
 	private Timer tUpdateRate;
 
 	public HomePanel(int x, int y) {
-		this.x = x;
-		this.y = y;
 		this.w = Commons.wf;
 		this.h = Commons.hf;
 		this.bgColor = new Color(28, 26,36);
-		this.setBounds(y, y, w, h);
+		this.setBounds(x, y, w, h);
+		// add listeners
+		// ...
+		
+		// Timer for painting/redrawing
+		this.tFrameRate = new Timer(10, new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				repaint();
+			}
+		});
+		
+		this.tFrameRate.setRepeats(true);
+		this.tFrameRate.start();
+		
+		// Timer for updating
+		this.tUpdateRate = new Timer(10, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// ...
+			}
+		});
+		
+		this.tUpdateRate.setRepeats(true);
+		this.tUpdateRate.start();
 	}
 	
 	// Drawing function 
 	public void paintComponent(Graphics g) {
+		Graphics2D g2d = (Graphics2D)g;
 		
+		// Draw the colored background
+		g2d.setColor(bgColor);
+		g2d.fillRect(0, 0, this.w, this.h);
+		
+		// Next draw some text
+		g2d.setColor(Color.WHITE);
+		g2d.setFont(new Font("Arial", Font.BOLD, 30));
+		g2d.drawString("", 750, 300);
+		
+		// Draw the quick match join button
+		g2d.setColor(Color.WHITE);
+		// ...
+		
+		// Draw additonal stuff
+		// ...
 	}
+	
+	
 }
