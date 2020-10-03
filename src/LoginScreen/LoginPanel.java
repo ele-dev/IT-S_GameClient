@@ -22,14 +22,19 @@ import Stage.ProjektFrame;
 @SuppressWarnings("serial")
 public class LoginPanel extends JPanel {
 	
-	private int w,h;
+	// Dimension and background color properties
+	private int w, h;
 	private Color c;
+	
+	// Timers 
 	private Timer tFrameRate;
 	private Timer tUpdateRate;
-	// private boolean isSelected = false;
 	
+	// GUI elements inside this panel
 	private TextInputField[] fields = new TextInputField[2];
 	private LoginButton loginButton = new LoginButton(850, 500, 100, 50);
+	
+	// Listener(s)
 	public KL kl = new KL();
 	
 	// Constructor passing position info
