@@ -33,9 +33,8 @@ public class HomePanel extends JPanel {
 	// Gui elements inside this panel
 	private Button logoutButton = new Button(800, 500, 100, 50, "Logout");
 	private Button quickMatchButton = new Button(800, 200, 120, 50, "Quickmatch");
-	
-	// Listeners
 
+	// Constructor takes initial position
 	public HomePanel(int x, int y) {
 		
 		// init the gui relevant variables
@@ -95,6 +94,7 @@ public class HomePanel extends JPanel {
 		// ...
 	}
 	
+	// Method for processing a click on the logout button
 	private void tryLogout() {
 		
 		// Logout button click event
@@ -108,6 +108,7 @@ public class HomePanel extends JPanel {
 		}
 	}
 	
+	// Method for processing a click on the join quickmatch button
 	private void tryQuickmatchJoin() {
 		
 		// Quickmatch join button click event
@@ -116,7 +117,7 @@ public class HomePanel extends JPanel {
 		}
 	}
 	
-	// Listener classes
+	// Private Listener classes
 	private class ML implements MouseListener {
 
 		@Override
