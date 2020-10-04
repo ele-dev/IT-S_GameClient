@@ -27,7 +27,7 @@ public class Button {
 	private String buttonLabel;
 	private int textSize;
 	
-	// Constructors
+	// Constructor for Button with default specs
 	public Button() {
 		// Set default values
 		this.rect = new Rectangle(0, 0, 200, 100);
@@ -36,6 +36,7 @@ public class Button {
 		this.textSize = 20;
 	}
 	
+	// Constructor for creating button with desired dimensions and textlabel
 	public Button(int x, int y, int w, int h, String label) {
 		this();
 		this.rect.x = x;
