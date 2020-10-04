@@ -17,6 +17,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
+import Stage.Commons;
+
 public class Button {
 
 	// class members
@@ -44,7 +46,8 @@ public class Button {
 	// Drawing method
 	public void drawButton(Graphics2D g2d) {
 		// First draw the box of the button
-		g2d.setColor(isHover? new Color(255,0,50) : new Color(20,20,20));
+		// g2d.setColor(isHover? new Color(255,0,50) : new Color(20,20,20));
+		g2d.setColor(isHover? Commons.buttonHover : new Color(20,20,20));
 		g2d.fill(this.rect);
 		
 		// Then draw the text label on the button

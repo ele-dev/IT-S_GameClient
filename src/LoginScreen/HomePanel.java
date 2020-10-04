@@ -40,7 +40,7 @@ public class HomePanel extends JPanel {
 		// init the gui relevant variables
 		this.w = Commons.wf;
 		this.h = Commons.hf;
-		this.bgColor = new Color(28, 26, 36);
+		this.bgColor = Commons.homeScreenBackground;
 		this.setBounds(x, y, w, h);
 		
 		// add listeners

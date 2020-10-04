@@ -50,12 +50,12 @@ public class LoginPanel extends JPanel {
 		// Set the gui configs
 		this.w = Commons.wf;
 		this.h = Commons.hf;
-		this.bgColor = new Color(28,26,36);
+		this.bgColor = Commons.loginScreenBackground;
 		setBounds(x, y, w, h);
 		
 		// init the list of text input fields 
-		fields[0] = new TextInputField("Username", new Color(255,0,50), 750, 350, 300, 50);
-		fields[1] = new TextInputField("Password", new Color(255,0,50), 750, 410, 300, 50);
+		fields[0] = new TextInputField("Username", 750, 350, 300, 50);
+		fields[1] = new TextInputField("Password", 750, 410, 300, 50);
 		
 		// Add the listeners
 		addMouseListener(new ML());

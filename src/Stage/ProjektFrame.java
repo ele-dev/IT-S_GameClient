@@ -3,8 +3,6 @@ import java.awt.Container;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
 import LoginScreen.HomePanel;
 import LoginScreen.LoginPanel;
 import clientPackage.Connection;

@@ -14,6 +14,12 @@ public interface Commons {
 	public static final int frametime = 10;
 	
 	// Important colors
+	final Color loginScreenBackground = new Color(28, 26, 36);
+	final Color homeScreenBackground = new Color(28, 26, 36);
+	final Color buttonHover = Color.BLUE;
+	final Color textFieldSelected = Color.RED;
+	// final Color textFieldSelected = new Color(255,0,50);
+	
 	final Color cUltCharge = new Color(234,255,70);
 	
 	final Color cMove = new Color(255,220,90);
