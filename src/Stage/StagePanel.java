@@ -37,51 +37,57 @@ import Particles.Particle;
 
 @SuppressWarnings("serial")
 public class StagePanel extends JPanel {
-	int x,y;
+	
+	// width and height 
 	int w,h;
 	KL kl;
 	
-	int amountOfRows= 16;
-	int amountOfColumns = 16;
-	int boardRectSize = Commons.boardRectSize;
+	// game board dimension properties
+	private int amountOfRows= 16;
+	private int amountOfColumns = 16;
+	private int boardRectSize = Commons.boardRectSize;
 	
-	Timer tFrameRate;
-	Timer tUpdateRate;
+	private Rectangle rectLevelBorder;
+	private Color cBackGround;
 	
-	public static ArrayList<BoardRectangle> boardRectangles = new ArrayList<BoardRectangle>();
-	CommanderGamePiece enemyCommanderPiece;
-	CommanderGamePiece notEnemyCommanderPiece;
-	public static ArrayList<GamePiece> gamePieces = new ArrayList<GamePiece>();
-	public static ArrayList<DmgLabel> dmgLabels = new ArrayList<DmgLabel>();
-	
-	public static ArrayList<Particle> particles = new ArrayList<Particle>();
-	
-	ButtonEndTurn buttonEndTurn;
-	TurnInfo turnInfoPanel;
-	
-	DetonatorPiece detNotEnemy;
-	DetonatorPiece detEnemy;
-	
-	Camera camera;
-	Point mousePos;
-	Point mousePosUntranslated;
-	
+	// GUI elements inside this panel
+	private ButtonEndTurn buttonEndTurn;
+	private TurnInfo turnInfoPanel;
 	BoardRectangle curHoverBoardRectangle;
 	
-	boolean createLevel = false;
+	// Timers 
+	private Timer tFrameRate;
+	private Timer tUpdateRate;
 	
-	Rectangle rectLevelBorder;
-	Color cBackGround;
+	// static list of rects, gamePieces, labels, particles, etc
+	public static ArrayList<BoardRectangle> boardRectangles = new ArrayList<BoardRectangle>();
+	public static ArrayList<GamePiece> gamePieces = new ArrayList<GamePiece>();
+	public static ArrayList<DmgLabel> dmgLabels = new ArrayList<DmgLabel>();
+	public static ArrayList<Particle> particles = new ArrayList<Particle>();
 	
+	// Game pieces and game relevant instances
+	private CommanderGamePiece enemyCommanderPiece;
+	private CommanderGamePiece notEnemyCommanderPiece;
+	private DetonatorPiece detNotEnemy;
+	private DetonatorPiece detEnemy;
+	
+	private Camera camera;
+	private Point mousePos;
+	private Point mousePosUntranslated;
+	
+	// state indicator
+	private boolean createLevel = false;
+	
+	// Constructor passes location
 	public StagePanel(int x, int y) {
-		this.x = x;
-		this.y = y;
+		
 		this.w = Commons.wf;
 		this.h = Commons.hf;
 		setBounds(x, y, w, h);
 		setVisible(true);
 		cBackGround = new Color(28,26,36);
 		
+		// create camera and listener(s)
 		camera = new Camera();
 		kl = new KL();
 		
@@ -89,7 +95,8 @@ public class StagePanel extends JPanel {
 		initGamePieces();
 		rectLevelBorder = new Rectangle(0,0,boardRectSize*amountOfColumns,boardRectSize*amountOfRows);
 		
-		tFrameRate = new Timer(10, new ActionListener() {
+		// Timer for painting/drawing
+		tFrameRate = new Timer(Commons.frametime, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -100,16 +107,18 @@ public class StagePanel extends JPanel {
 		tFrameRate.setRepeats(true);
 		tFrameRate.start();
 		
-		tUpdateRate = new Timer(10, new ActionListener() {
+		// Timer for updating/processing
+		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateStage();
-				
 			}
 		});
 		tUpdateRate.setRepeats(true);
 		tUpdateRate.start();
 		
+		// Buttons and other GUI elements
 		buttonEndTurn = new ButtonEndTurn(Commons.wf-350, Commons.hf -200);
 		turnInfoPanel = new TurnInfo();
 		
@@ -119,6 +128,7 @@ public class StagePanel extends JPanel {
 		    cursorImg, new Point(0, 0), "blank cursor");
 		setCursor(blankCursor);
 		
+		// Add the listeners
 		addMouseListener(new ML());
 		addMouseMotionListener(new MML());
 	}
@@ -128,18 +138,18 @@ public class StagePanel extends JPanel {
 	// it also creates the gaps defined at the end of the function
 	private void initBoard() {
 		int index = 0;
-		for(int i = 0;i<amountOfRows;i++) {
-			for(int j = 0;j<amountOfColumns;j++) {
-				if(i%2==0) {
-					if(j%2==0) {
+		for(int i = 0; i < amountOfRows; i++) {
+			for(int j = 0; j < amountOfColumns; j++) {
+				if(i % 2 == 0) {
+					if(j % 2 == 0) {
 						boardRectangles.add(new BoardRectangle(boardRectSize*j, boardRectSize*i, boardRectSize, i, j, false,index));
-					}else {
+					} else {
 						boardRectangles.add(new BoardRectangle(boardRectSize*j, boardRectSize*i, boardRectSize, i, j, true,index));
 					}
-				}else {
-					if(j%2==0) {
+				} else {
+					if(j % 2 == 0) {
 						boardRectangles.add(new BoardRectangle(boardRectSize*j, boardRectSize*i, boardRectSize, i, j, true,index));
-					}else {
+					} else {
 						boardRectangles.add(new BoardRectangle(boardRectSize*j, boardRectSize*i, boardRectSize, i, j, false,index));
 					}
 				}
@@ -171,12 +181,12 @@ public class StagePanel extends JPanel {
 		}
 		 
 		for(BoardRectangle curBR : boardRectangles) {
-			for(int i = 0;i<wallIndexes.size();i++) {
+			for(int i = 0; i < wallIndexes.size(); i++) {
 				if(curBR.index == wallIndexes.get(i)) {
 					curBR.isWall = true;
 				}
 			}
-			for(int i = 0;i<destructibleWallIndexes.size();i++) {
+			for(int i = 0; i < destructibleWallIndexes.size(); i++) {
 				if(curBR.index == destructibleWallIndexes.get(i)) {
 					curBR.isDestructibleWall = true;
 					curBR.initDestructibleWallSprite();
@@ -187,23 +197,23 @@ public class StagePanel extends JPanel {
 		
 	// initializes/creates all GamePieces
 	private void initGamePieces() {
-		enemyCommanderPiece = new SniperCommanderPiece(true, boardRectangles.get(101), null);
-		notEnemyCommanderPiece = new SniperCommanderPiece(false, boardRectangles.get(105), null);
+		this.enemyCommanderPiece = new SniperCommanderPiece(true, boardRectangles.get(101), null);
+		this.notEnemyCommanderPiece = new SniperCommanderPiece(false, boardRectangles.get(105), null);
 		
-		gamePieces.add(enemyCommanderPiece);
-		gamePieces.add(notEnemyCommanderPiece);
+		gamePieces.add(this.enemyCommanderPiece);
+		gamePieces.add(this.notEnemyCommanderPiece);
 		
-		gamePieces.add(new GunnerPiece(false, boardRectangles.get(100), notEnemyCommanderPiece));
-		gamePieces.add(new GunnerPiece(true, boardRectangles.get(103), enemyCommanderPiece));
-		gamePieces.add(new RocketLauncherPiece(false, boardRectangles.get(137), notEnemyCommanderPiece));
-		gamePieces.add(new RocketLauncherPiece(true, boardRectangles.get(120), enemyCommanderPiece));
-		gamePieces.add(new FlamethrowerPiece(false, boardRectangles.get(129), notEnemyCommanderPiece));
-		gamePieces.add(new FlamethrowerPiece(true, boardRectangles.get(171), enemyCommanderPiece));
+		gamePieces.add(new GunnerPiece(false, boardRectangles.get(100), this.notEnemyCommanderPiece));
+		gamePieces.add(new GunnerPiece(true, boardRectangles.get(103), this.enemyCommanderPiece));
+		gamePieces.add(new RocketLauncherPiece(false, boardRectangles.get(137), this.notEnemyCommanderPiece));
+		gamePieces.add(new RocketLauncherPiece(true, boardRectangles.get(120), this.enemyCommanderPiece));
+		gamePieces.add(new FlamethrowerPiece(false, boardRectangles.get(129), this.notEnemyCommanderPiece));
+		gamePieces.add(new FlamethrowerPiece(true, boardRectangles.get(171), this.enemyCommanderPiece));
 			
-		detNotEnemy = new DetonatorPiece(false, boardRectangles.get(92), notEnemyCommanderPiece);
-		detEnemy = new DetonatorPiece(true, boardRectangles.get(69), enemyCommanderPiece);
-		gamePieces.add(detNotEnemy);
-		gamePieces.add(detEnemy);
+		this.detNotEnemy = new DetonatorPiece(false, boardRectangles.get(92), this.notEnemyCommanderPiece);
+		this.detEnemy = new DetonatorPiece(true, boardRectangles.get(69), this.enemyCommanderPiece);
+		gamePieces.add(this.detNotEnemy);
+		gamePieces.add(this.detEnemy);
 		
 		for(GamePiece curGP : gamePieces) {
 			curGP.initPathFinder();
@@ -213,17 +223,24 @@ public class StagePanel extends JPanel {
 	
 	// graphics methode does all the drawing of objects (renders everything)
 	public void paintComponent(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(cBackGround);
-		g2d.fillRect(0, 0, w, h);
 		
-		g2d.translate(camera.x, camera.y);
+		Graphics2D g2d = (Graphics2D) g;
+		
+		// Draw the background
+		g2d.setColor(this.cBackGround);
+		g2d.fillRect(0, 0, this.w, this.h);
+		
+		// update the camera
+		g2d.translate(this.camera.x, this.camera.y);
+		
+		// Draw the game board with all the fields, gaps, walls, obstacles, etc
 		drawEveryGap(g2d);
 		drawEveryBoardRectangle(g2d);
 		drawEveryBoardRectangleIndex(g2d);
 		drawAllEmptyShells(g2d);
 		drawEveryWall(g2d);
 		
+		// Draw the game pieces/actors, particles, 
 		drawAllGamePieces(g2d);
 		drawAllGamePieceHealth(g2d);
 		drawSelectedGamePiece(g2d);
@@ -233,45 +250,47 @@ public class StagePanel extends JPanel {
 		drawAllGamePiecePointers(g2d);
 		
 		g2d.setStroke(new BasicStroke(80));
-		g2d.setColor(cBackGround);
-		g2d.draw(rectLevelBorder);
+		g2d.setColor(this.cBackGround);
+		g2d.draw(this.rectLevelBorder);
 		drawDmgLabels(g2d);
 		buttonEndTurn.drawButton(g2d);
 		drawMovesPanel(g2d);
-		g2d.translate(-camera.x, -camera.y);
+		g2d.translate(-this.camera.x, -this.camera.y);
 		turnInfoPanel.drawTurnInfo(g2d);
-		g2d.translate(camera.x, camera.y);
+		g2d.translate(this.camera.x, this.camera.y);
 		drawCursor(g2d);
-		g2d.translate(-camera.x, -camera.y);
+		g2d.translate(-this.camera.x, -this.camera.y);
 		g2d.dispose();
 	}
+	
 	// updates the Stage (moves pieces, moves bullets, updates animations...)
 	private void updateStage() {
 		GamePiece.updateSpritePointerElevation();
 		updateParticles();
-		BoardRectangle pHBR = curHoverBoardRectangle;
-		curHoverBoardRectangle = null;
+		BoardRectangle pHBR = this.curHoverBoardRectangle;
+		this.curHoverBoardRectangle = null;
 		for(BoardRectangle curBR : boardRectangles) {
-			if(mousePos != null) {
-				curBR.updateHover(mousePos);
+			if(this.mousePos != null) {
+				curBR.updateHover(this.mousePos);
 			}
 			if(curBR.isHover) {
 				curBR.tryAnimate(gamePieces);
-				curHoverBoardRectangle = curBR;
-				if(pHBR != curHoverBoardRectangle) {
+				this.curHoverBoardRectangle = curBR;
+				if(pHBR != this.curHoverBoardRectangle) {
 					changedHoverBR();
 				}
 			}
 		}
-		camera.move();
-		if(mousePosUntranslated != null) {
-			mousePos = new Point((int)(mousePosUntranslated.x-camera.x), (int)(mousePosUntranslated.y-camera.y));
+		
+		this.camera.move();
+		if(this.mousePosUntranslated != null) {
+			this.mousePos = new Point((int)(mousePosUntranslated.x-camera.x), (int)(mousePosUntranslated.y-camera.y));
 		}
-		buttonEndTurn.updatePos(camera.getPos());
+		this.buttonEndTurn.updatePos(this.camera.getPos());
 		
 		updateDmgLabels();
 		boolean noOneAttacking = true;
-		for(int i = 0;i<gamePieces.size();i++) {
+		for(int i = 0; i < gamePieces.size(); i++) {
 			GamePiece curGP = gamePieces.get(i);
 			if(curGP.isMoving) {
 				curGP.updateMove();
@@ -280,8 +299,7 @@ public class StagePanel extends JPanel {
 			curGP.updateGamePiece();
 			
 			
-			
-			curGP.updateMovesPanelPos(camera.getPos(), mousePos);
+			curGP.updateMovesPanelPos(this.camera.getPos(), this.mousePos);
 			if(curGP.getIsAttacking()) {
 				noOneAttacking = false;
 			}
@@ -290,19 +308,22 @@ public class StagePanel extends JPanel {
 				gamePieces.remove(i);
 			}
 		}
-		buttonEndTurn.updatePressable(!noOneAttacking);
-		buttonEndTurn.updateHover(mousePos);
+		this.buttonEndTurn.updatePressable(!noOneAttacking);
+		this.buttonEndTurn.updateHover(this.mousePos);
 	}
+	
 	// draws all GamePieces
 	private void drawAllGamePieces(Graphics2D g2d) {
 		for(GamePiece curGP : gamePieces) {
-			curGP.drawGamePiece(g2d,curHoverBoardRectangle);
+			curGP.drawGamePiece(g2d, this.curHoverBoardRectangle);
 			// for devs
-//			curGP.drawLinesOfSight(g2d);
+			// curGP.drawLinesOfSight(g2d);
 		}
-		enemyCommanderPiece.drawUltCharge(g2d);
-		notEnemyCommanderPiece.drawUltCharge(g2d);
+		
+		this.enemyCommanderPiece.drawUltCharge(g2d);
+		this.notEnemyCommanderPiece.drawUltCharge(g2d);
 	}
+	
 	// draws all Particles
 	private void drawParticles(Graphics2D g2d) {
 		for(Particle curP : particles) {
@@ -311,6 +332,7 @@ public class StagePanel extends JPanel {
 			}
 		}
 	}
+	
 	// Method must exist because if it is drawn with all other particles like explosions it is drawn on top of GamePieces
 	// and does not make sense
 	private void drawAllEmptyShells(Graphics2D g2d) {
@@ -320,10 +342,11 @@ public class StagePanel extends JPanel {
 			}
 		}
 	}
+	
 	// updates all Particles
 	private void updateParticles() {
 		int amountOfEmptyShells = 0;
-		for(int i = 0;i<particles.size();i++) {
+		for(int i = 0; i < particles.size(); i++) {
 			Particle curP = particles.get(i);
 			curP.update();
 			if(curP instanceof EmptyShell) {
@@ -333,8 +356,9 @@ public class StagePanel extends JPanel {
 				particles.remove(i);
 			}
 		}
+		
 		if(amountOfEmptyShells > 100) {
-			for(int i = 0; i<particles.size();i++) {
+			for(int i = 0; i < particles.size(); i++) {
 				Particle curP = particles.get(i);
 				if(curP instanceof EmptyShell) {
 					particles.remove(i);
@@ -345,38 +369,38 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void updateDmgLabels() {
-		for(int i = 0;i<dmgLabels.size();i++) {
+		for(int i = 0;i < dmgLabels.size(); i++) {
 			DmgLabel curDL = dmgLabels.get(i);
 			if(curDL.getColor().getAlpha()>10) {
 				curDL.updateFade();
-			}else {
+			} else {
 				dmgLabels.remove(i);
 			}
 		}
 	}
+	
 	private void drawSelectedGamePiece(Graphics2D g2d) {
 		// draws the one GP that is in Moves-Selection on top of all others
 		for(GamePiece curGP : gamePieces) {
 			if(curGP.isSelected && curGP.movesPanel.getMoveButtonIsActive()) {
-				curGP.drawGamePiece(g2d,curHoverBoardRectangle);
+				curGP.drawGamePiece(g2d, this.curHoverBoardRectangle);
 			}
 		}
 	}
 	
 	private void drawAllGamePiecePointers(Graphics2D g2d) {
-		for(GamePiece curGP : gamePieces) {
-			if(curGP.getIsEnemy() && turnInfoPanel.getIsEnemyTurn()) {
+		for(GamePiece curGP : gamePieces) 
+		{
+			if(curGP.getIsEnemy() && this.turnInfoPanel.getIsEnemyTurn()) {
 				curGP.drawPointer(g2d);
-			}else 
-			if(!curGP.getIsEnemy() && !turnInfoPanel.getIsEnemyTurn()) {
+			} else if(!curGP.getIsEnemy() && !this.turnInfoPanel.getIsEnemyTurn()) {
 				curGP.drawPointer(g2d);
 			}
-			
 		}
 	}
 	
 	private void drawCursor(Graphics2D g2d) {
-		if(mousePos != null) {
+		if(this.mousePos != null) {
 			g2d.setColor(Color.WHITE);
 			g2d.setStroke(new BasicStroke(5));
 			int x = mousePos.x;
@@ -411,7 +435,6 @@ public class StagePanel extends JPanel {
 		for(GamePiece curGP : gamePieces) {
 			curGP.drawAttack(g2d);
 		}
-		
 	}
 	
 	private void drawMovesPanel(Graphics2D g2d) {
@@ -422,40 +445,45 @@ public class StagePanel extends JPanel {
 			}
 		}
 	}
+	
 	// updates/changes Turns
 	private void updateTurn() {
-		turnInfoPanel.toggleTurn();
+		this.turnInfoPanel.toggleTurn();
 		restoreMovesAndAttacks();
 		
-		detNotEnemy.decDetonaterTimers();
-		detEnemy.decDetonaterTimers();
+		this.detNotEnemy.decDetonaterTimers();
+		this.detEnemy.decDetonaterTimers();
 		
 		for(GamePiece curGP : gamePieces) {
 			curGP.isSelected = false;
 		}
 	}
+	
 	// draws every BoardRectangles rectangle that is not a gap and draws the Walls
 	private void drawEveryBoardRectangle(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			if(!curBR.isGap) {
-				curBR.drawBoardRectangle(g2d,boardRectangles);
+				curBR.drawBoardRectangle(g2d, boardRectangles);
 			}
 		}
+		
 		for(BoardRectangle curBR : boardRectangles) {
-			curBR.tryDrawHover(g2d,gamePieces);
+			curBR.tryDrawHover(g2d, gamePieces);
 		}
 	}
+	
 	// draws all the Walls including destructible walls
 	private void drawEveryWall(Graphics2D g2d){
 		for(BoardRectangle curBR : boardRectangles) {
 			if(curBR.isWall) {
-				curBR.drawWall(g2d,gamePieces);
+				curBR.drawWall(g2d, gamePieces);
 			}
 			if(curBR.isDestructibleWall) {
-				curBR.drawDestructibleWall(g2d,gamePieces);
+				curBR.drawDestructibleWall(g2d, gamePieces);
 			}
 		}
 	}
+	
 	// draws all Gaps in the Board (all Rivers for now)
 	private void drawEveryGap(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
@@ -494,7 +522,7 @@ public class StagePanel extends JPanel {
 	// selects a piece if it is clicked on and not dead
 	private void selectPieceIfPossible(Point mousePos) {
 		for(BoardRectangle curBR : boardRectangles) {
-			if(curBR.rect.contains(mousePos)) {
+			if(curBR.rect.contains(this.mousePos)) {
 				for(GamePiece curGP : gamePieces) {
 					if(!curGP.getIsDead()) {
 						if(curGP.boardRect == curBR && checkIfHasTurn(curGP)) {
@@ -531,7 +559,8 @@ public class StagePanel extends JPanel {
 			}
 		}
 	}
-	//  selected GamePiece attacks GamePiece sitting (or attacks BoardRectangle) on the BoardRectangle pressed if it is a valid spot to attack(depends on the GamePieces checkAttacks function)
+	
+	// selected GamePiece attacks GamePiece sitting (or attacks BoardRectangle) on the BoardRectangle pressed if it is a valid spot to attack(depends on the GamePieces checkAttacks function)
 	private void attackPressedPositionIfPossible(Point mousePos) {
 		for(GamePiece curGP : gamePieces) {
 			if(!curGP.getIsDead() && curGP.isSelected) {
@@ -540,12 +569,11 @@ public class StagePanel extends JPanel {
 						if(curBR.isDestructibleWall) {
 							curGP.startAttackDestructibleWall(curBR);
 							curGP.isSelected = false;
-						}else {
+						} else {
 							curGP.startAttack(curBR,gamePieces);
 							curGP.isSelected = false;
 							return;
 						}
-						
 					}
 				}
 			}
@@ -556,7 +584,7 @@ public class StagePanel extends JPanel {
 	private void giveWallsAsList() {
 		for(BoardRectangle curBR : boardRectangles) {
 			if(curBR.isWall) {
-				System.out.print(curBR.index+",");
+				System.out.print(curBR.index + ",");
 			}
 		}
 	}
@@ -568,6 +596,7 @@ public class StagePanel extends JPanel {
 		if(!gamePiece.getIsEnemy() && !turnInfoPanel.getIsEnemyTurn()) {
 			return true;
 		}
+		
 		return false;
 	}
 	
@@ -579,25 +608,16 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
-	class ML implements MouseListener{
+	class ML implements MouseListener {
 
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void mouseClicked(MouseEvent e) {}
 
 		@Override
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void mouseEntered(MouseEvent e) {}
 
 		@Override
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void mouseExited(MouseEvent e) {}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -618,7 +638,6 @@ public class StagePanel extends JPanel {
 				}
 				initWallSpriteConnections();
 			}
-			
 			
 			
 			mousePosUntranslated = e.getPoint();
@@ -654,14 +673,11 @@ public class StagePanel extends JPanel {
 		}
 
 		@Override
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void mouseReleased(MouseEvent e) {}
 		
 	}
 	
-	class MML implements MouseMotionListener{
+	class MML implements MouseMotionListener {
 
 		@Override		
 		public void mouseDragged(MouseEvent e) {
@@ -674,7 +690,7 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
-	class KL implements KeyListener{
+	class KL implements KeyListener {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -691,10 +707,7 @@ public class StagePanel extends JPanel {
 		}
 
 		@Override
-		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void keyTyped(KeyEvent e) {}
 		
 	}
 }
