@@ -58,7 +58,7 @@ public class Connection extends Thread {
 		if(this.isConnected)  {
 			System.out.println("Socket is now connected to server");
 		} else {
-			JOptionPane.showMessageDialog(null,  "Failed to connect to the game server!");
+			JOptionPane.showMessageDialog(null, "Failed to connect to the game server!");
 			System.err.println("Failed establish connection to server!");
 		}
 	}
@@ -70,7 +70,6 @@ public class Connection extends Thread {
 		{
 			// Send Logout message if the player was logged in
 			if(this.loggedIn) {
-				// MsgLogout msg = new MsgLogout();
 				SignalMessage msg = new SignalMessage(GenericMessage.MSG_LOGOUT);
 				this.sendMessageToServer(msg);
 			}
@@ -92,7 +91,7 @@ public class Connection extends Thread {
 		
 		// Set the socket timeout before entering the loop
 		try {
-			this.clientSocket.setSoTimeout(2000);
+			this.clientSocket.setSoTimeout(NetworkConfig.clientSocketTimeout);
 		} catch (SocketException e5) {
 			System.err.println("[ClientThread] Failed to set the socket timeout");
 			return;
@@ -104,7 +103,7 @@ public class Connection extends Thread {
 			// skip the network reading until
 			if(this.sleepOrder) {
 				try {
-					Thread.sleep(100);
+					Thread.sleep(50);
 				} catch (InterruptedException e) {
 					// e.printStackTrace();
 				}
@@ -115,6 +114,7 @@ public class Connection extends Thread {
 			
 			// Check the input stream of the client socket for incoming messages
 			try {
+				// Read from the socket's input stream
 				recvBuffer = (GenericMessage) this.objIn.readObject();
 			} catch (ClassNotFoundException e) {
 				System.err.println("[ClientThread] Class Not Found Exception thrown");
@@ -365,7 +365,7 @@ public class Connection extends Thread {
 		// Wait 2 seconds (= client socket timeout) to make sure the thread 
 		// has recognized the updated sleep order
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(NetworkConfig.clientSocketTimeout);
 		} catch (InterruptedException e) {}
 	}
 	

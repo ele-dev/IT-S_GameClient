@@ -15,6 +15,7 @@ public interface NetworkConfig {
 	public static final String serverAddress = "ele-server.de";
 	public static final int serverPort = 50044;
 	public static final String hashingSalt = "g_p8nrY3";
+	public static final int clientSocketTimeout = 2000;
 	// ...
 	
 }
