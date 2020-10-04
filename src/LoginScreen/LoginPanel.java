@@ -1,5 +1,10 @@
 package LoginScreen;
 
+/*
+ * written by Ben Brandes
+ * 
+ */
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -16,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import Buttons.Button;
 import Stage.Commons;
 import Stage.ProjektFrame;
 
@@ -24,7 +30,7 @@ public class LoginPanel extends JPanel {
 	
 	// Dimension and background color properties
 	private int w, h;
-	private Color c;
+	private Color bgColor;
 	
 	// Timers 
 	private Timer tFrameRate;
@@ -32,22 +38,28 @@ public class LoginPanel extends JPanel {
 	
 	// GUI elements inside this panel
 	private TextInputField[] fields = new TextInputField[2];
-	private LoginButton loginButton = new LoginButton(850, 500, 100, 50);
+	// private LoginButton loginButton = new LoginButton(850, 500, 100, 50);
+	private Button loginButton = new Button(850, 500, 100, 50, "Login"); 
 	
-	// Listener(s)
+	// Key listener
 	public KL kl = new KL();
 	
 	// Constructor passing position info
 	public LoginPanel(int x, int y) {
 
+		// Set the gui configs
 		this.w = Commons.wf;
 		this.h = Commons.hf;
-		this.c = new Color(28,26,36);
+		this.bgColor = new Color(28,26,36);
 		setBounds(x, y, w, h);
-		addMouseListener(new ML());
-		addMouseMotionListener(new MML());
+		
+		// init the list of text input fields 
 		fields[0] = new TextInputField("Username", new Color(255,0,50), 750, 350, 300, 50);
 		fields[1] = new TextInputField("Password", new Color(255,0,50), 750, 410, 300, 50);
+		
+		// Add the listeners
+		addMouseListener(new ML());
+		addMouseMotionListener(new MML());
 		
 		// Timer for repainting/redrawing
 		tFrameRate = new Timer(Commons.frametime, new ActionListener() {
@@ -78,19 +90,16 @@ public class LoginPanel extends JPanel {
 		Graphics2D g2d = (Graphics2D)g;
 		
 		// Draw the colored background
-		g2d.setColor(this.c);
+		g2d.setColor(this.bgColor);
 		g2d.fillRect(0, 0, this.w, this.h);
 		
 		// Draw Text 
 		g2d.setColor(Color.WHITE);
-		g2d.setFont(new Font("Arial",Font.BOLD,30));
+		g2d.setFont(new Font("Arial", Font.BOLD, 30));
 		g2d.drawString("Game Title", 750, 300);
 		
 		// Draw Loginbutton
-		g2d.setColor(Color.WHITE);
-		g2d.fillRect(850, 500, 100, 50);
-		g2d.setColor(Color.BLACK);
-		g2d.drawString("Login", 860, 535);
+		this.loginButton.drawButton(g2d);
 		
 		// Draw Username and Password input-fields
 		for(TextInputField curTIF : this.fields) {
