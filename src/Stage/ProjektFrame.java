@@ -3,8 +3,7 @@ import java.awt.Container;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
+import LoginScreen.HomePanel;
 import LoginScreen.LoginPanel;
 import clientPackage.Connection;
 
@@ -20,15 +19,15 @@ public class ProjektFrame extends JFrame {
 	// GUI panels of the application (JPanels)
 	public static StagePanel stagePanel;
 	public static LoginPanel loginPanel;
+	public static HomePanel homePanel;
 	
 	public ProjektFrame() {
 		// Create and init the Window (JFrame)
-		setSize(width,height);
+		setSize(width, height);
 		setLocationRelativeTo(null);
 		setLayout(null);
 		setResizable(false);
 		setTitle("IT PROJECT");
-		// setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
 		
@@ -36,12 +35,16 @@ public class ProjektFrame extends JFrame {
 		Container cp = getContentPane();
 		loginPanel = new LoginPanel(0, 0);
 		stagePanel = new StagePanel(0, 0);
+		homePanel = new HomePanel(0, 0);
 		stagePanel.setVisible(false);
+		homePanel.setVisible(false);
 		loginPanel.setVisible(true);		// Display the login screen first
 		cp.add(loginPanel);
 		cp.add(stagePanel);
+		cp.add(homePanel);
 		addKeyListener(loginPanel.kl);
 		addKeyListener(stagePanel.kl);
+		// addKeyListener(homePanel.kl);
 	}
 	
 	// ------------------- MAIN Application Entry Point -------------------------- //
@@ -85,54 +88,4 @@ public class ProjektFrame extends JFrame {
 			}
 		});
 	}
-	
-	// this method is a temporary solution for the login dialog
-	// Info: The functionality is supposed be integrated in the GUI later
-	@SuppressWarnings("unused")
-	private static void loginDialog() {
-		
-		// Ask the user for login credentials
-		String inUser = JOptionPane.showInputDialog("Type in your username (leave empty for guest)");
-		
-		// Check if the the login dialog was canceled by the user 
-		if(inUser == null) {
-			// close connection and continue offline
-			conn.finalize();
-			return;
-		}
-		
-		// For registered players we also need the password for authentification
-		String inPassword = "";
-		boolean guestLogin = false;
-		if(inUser.length() < 1) {
-			guestLogin = true;
-		} else {
-			inPassword = JOptionPane.showInputDialog("Type in your password");
-			// Don't accept empty password or dialog abortion
-			if(inPassword == null || inPassword.length() < 1) {
-				// close connection and continue offline
-				conn.finalize();
-				return;
-			}
-		}
-		
-		// Before the player can enter the main menue he must identify himself
-		boolean loginSuccess = false;
-		if(guestLogin) {
-			loginSuccess = conn.loginAsGuest();
-		} else {
-			loginSuccess = conn.loginWithAccount(inUser, inPassword);
-		}
-		
-		// Show the login status to the user
-		if(!loginSuccess) {
-			System.err.println("Could not login to the game network!");
-			JOptionPane.showMessageDialog(null, "Login Failed");
-			return;
-		} else {
-			System.out.println("Logged in successfully");
-			JOptionPane.showMessageDialog(null, "Logged in as " + conn.getUsername());
-		}
-	}
-
 }

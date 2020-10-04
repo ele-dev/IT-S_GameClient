@@ -39,6 +39,7 @@ public class Connection extends Thread {
 	private boolean isConnected;
 	private boolean loggedIn;
 	private boolean stopOrder;
+	private boolean sleepOrder;
 	
 	// Constructor attempts to connect to server
 	public Connection() {
@@ -48,6 +49,7 @@ public class Connection extends Thread {
 		this.isConnected = false;
 		this.loggedIn = false;
 		this.stopOrder = false;
+		this.sleepOrder = false;
 		
 		// Use global configuration vars and store result in the class
 		this.isConnected = this.connectToServer(NetworkConfig.serverAddress, NetworkConfig.serverPort);
@@ -56,7 +58,7 @@ public class Connection extends Thread {
 		if(this.isConnected)  {
 			System.out.println("Socket is now connected to server");
 		} else {
-			JOptionPane.showMessageDialog(null,  "Failed to connect to the game server!");
+			JOptionPane.showMessageDialog(null, "Failed to connect to the game server!");
 			System.err.println("Failed establish connection to server!");
 		}
 	}
@@ -68,7 +70,6 @@ public class Connection extends Thread {
 		{
 			// Send Logout message if the player was logged in
 			if(this.loggedIn) {
-				// MsgLogout msg = new MsgLogout();
 				SignalMessage msg = new SignalMessage(GenericMessage.MSG_LOGOUT);
 				this.sendMessageToServer(msg);
 			}
@@ -90,33 +91,45 @@ public class Connection extends Thread {
 		
 		// Set the socket timeout before entering the loop
 		try {
-			this.clientSocket.setSoTimeout(2000);
+			this.clientSocket.setSoTimeout(NetworkConfig.clientSocketTimeout);
 		} catch (SocketException e5) {
-			System.err.println("Failed to set the socket timeout");
+			System.err.println("[ClientThread] Failed to set the socket timeout");
 			return;
 		}
 		
 		while(!this.stopOrder)
 		{
+			// If the thread is supposed to sleep then simply wait a short time and
+			// skip the network reading until
+			if(this.sleepOrder) {
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// e.printStackTrace();
+				}
+				continue;
+			}
+			
 			GenericMessage recvBuffer = null;
 			
 			// Check the input stream of the client socket for incoming messages
 			try {
+				// Read from the socket's input stream
 				recvBuffer = (GenericMessage) this.objIn.readObject();
 			} catch (ClassNotFoundException e) {
-				System.err.println("Class Not Found Exception thrown");
-				System.err.println("Failed to parse incoming message");
+				System.err.println("[ClientThread] Class Not Found Exception thrown");
+				System.err.println("[ClientThread] Failed to parse incoming message");
 				continue;
 			} catch(SocketTimeoutException e1) {
 				continue;
 			} catch (StreamCorruptedException e2) {
-				System.err.println("Stream corrupted exception thrown while reading");
+				System.err.println("[ClientThread] Stream corrupted exception thrown while reading");
 				break;
 			} catch(IOException e3) {
-				System.err.println("IOException thrown while reading");
+				System.err.println("[ClientThread] IOException thrown while reading");
 				break;
 			} catch (Exception e4) {
-				System.err.println("Unhandled Exception thrown while parsing incoming message!");
+				System.err.println("[ClientThread] Unhandled Exception thrown while parsing incoming message!");
 				break;
 			}
 			
@@ -128,7 +141,6 @@ public class Connection extends Thread {
 	}
 	
 	// Method for connecting to the game server
-
 	private boolean connectToServer(String addr, int port) {
 		
 		// Now attempt to connect to the game server
@@ -171,6 +183,12 @@ public class Connection extends Thread {
 	// Method that handles the login procedure for accounts
 	public boolean loginWithAccount(String user, String pwd) {
 		
+		// If this login happens after a logout, then the running client thread must be
+		// ordered to sleep until login is complete, otherwise the thread interferes the routine
+		if(this.isAlive() && !this.sleepOrder) {
+			this.setSleeping(true);
+		}
+		
 		// Start communication by sending login reuqest message
 		MsgLogin loginMsg = new MsgLogin(user, pwd);
 		this.sendMessageToServer(loginMsg);
@@ -198,7 +216,7 @@ public class Connection extends Thread {
 			JOptionPane.showMessageDialog(null, "Server did not answer the login request");
 			return false;
 		} catch(StreamCorruptedException e1) {
-			System.err.println("Stream corrupted Excption throw while reading message!");
+			System.err.println("Stream corrupted Excption thrown while reading message!");
 			return false;
 		} catch(IOException e2) {
 			System.err.println("IO Exception thrown while reading message!");
@@ -226,13 +244,24 @@ public class Connection extends Thread {
 		}
 		
 		// If everything went well then launch the thread for continous message processing
-		this.start();
+		// If the thread is already running then order it to exit sleep mode
+		if(!this.isAlive()) {
+			this.start();
+		} else {
+			this.setSleeping(false);
+		}
 		
 		return true;
 	}
 	
 	// Method that handles the login procedure for guest players
 	public boolean loginAsGuest() {
+		
+		// If this login happens after a logout, then the running client thread must be
+		// ordered to sleep until login is complete, otherwise the thread interferes the routine
+		if(this.isAlive() && !this.sleepOrder) {
+			this.setSleeping(true);
+		}
 		
 		// Start communication by sending login reuqest message
 		MsgLogin loginMsg = new MsgLogin();
@@ -289,9 +318,28 @@ public class Connection extends Thread {
 		this.loggedIn = true;
 		
 		// If everything went well then launch the thread for continous message processing
-		this.start();
+		// If the thread is already running then order it to exit sleep mode
+		if(!this.isAlive()) {
+			this.start();
+		} else {
+			this.setSleeping(false);
+		}
 		
 		return true;
+	}
+	
+	// Method for logout 
+	public void logout() {
+		// Only try if the player is logged in
+		if(this.loggedIn && this.isAlive()) {
+			// Send a logout message to the server
+			SignalMessage logoutMessage = new SignalMessage(GenericMessage.MSG_LOGOUT);
+			this.sendMessageToServer(logoutMessage);
+			
+			// Change the login status and reset player account info
+			this.loggedIn = false;
+			this.username = "";
+		}
 	}
 	
 	// Method for sending Message objects to the server
@@ -307,6 +355,18 @@ public class Connection extends Thread {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	// Helper methods for controlling the client thread
+	private void setSleeping(boolean order) {
+		// update the sleep order in the class
+		this.sleepOrder = order;
+		
+		// Wait 2 seconds (= client socket timeout) to make sure the thread 
+		// has recognized the updated sleep order
+		try {
+			Thread.sleep(NetworkConfig.clientSocketTimeout);
+		} catch (InterruptedException e) {}
 	}
 	
 	// Getters //
