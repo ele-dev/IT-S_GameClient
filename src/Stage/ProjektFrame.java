@@ -44,7 +44,7 @@ public class ProjektFrame extends JFrame {
 		cp.add(homePanel);
 		addKeyListener(loginPanel.kl);
 		addKeyListener(stagePanel.kl);
-		// addKeyListener(homePanel.kl);
+		addKeyListener(homePanel.keyListener);
 	}
 	
 	// ------------------- MAIN Application Entry Point -------------------------- //

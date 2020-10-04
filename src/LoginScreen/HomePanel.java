@@ -1,5 +1,15 @@
 package LoginScreen;
 
+/*
+ * written by Elias Geiger
+ * 
+ * This is the homescreen that appears after successfull login
+ * It contains GUI elements for different purposes:
+ * e.g. player stats display, interaction buttons for joining a match, logging out,
+ * searching online players, configuring personal loadout, etc.
+ * 
+ */
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -30,9 +40,13 @@ public class HomePanel extends JPanel {
 	private Timer tFrameRate;
 	private Timer tUpdateRate;
 	
-	// Gui elements inside this panel
+	// Listener(s)
+	public KL keyListener = new KL();
+	
+	// Gui elements inside this panel (buttons, text fields, etc.)
 	private Button logoutButton = new Button(800, 500, 100, 50, "Logout");
-	private Button quickMatchButton = new Button(800, 200, 120, 50, "Quickmatch");
+	private Button quickMatchButton = new Button(1200, 200, 130, 50, "Quickmatch");
+	private Button abortMatchSearch = new Button(1200, 350, 130, 50, "Abort Search");
 
 	// Constructor takes initial position
 	public HomePanel(int x, int y) {
@@ -46,7 +60,6 @@ public class HomePanel extends JPanel {
 		// add listeners
 		addMouseListener(new ML());
 		addMouseMotionListener(new MML());
-		addKeyListener(new KL());
 		
 		// Timer for painting/redrawing
 		this.tFrameRate = new Timer(Commons.frametime, new ActionListener() {
@@ -89,6 +102,7 @@ public class HomePanel extends JPanel {
 		// Draw the buttons
 		this.logoutButton.drawButton(g2d);
 		this.quickMatchButton.drawButton(g2d);
+		this.abortMatchSearch.drawButton(g2d);
 		
 		// Draw additonal stuff
 		// ...
@@ -117,6 +131,14 @@ public class HomePanel extends JPanel {
 		}
 	}
 	
+	private void tryAbortMatchSearch() {
+		
+		// Abort button click event
+		if(abortMatchSearch.isHover() && ProjektFrame.conn.isLoggedIn()) {
+			System.out.println("--> About quick-matchmaking");
+		}
+	}
+	
 	// Private Listener classes
 	private class ML implements MouseListener {
 
@@ -124,6 +146,7 @@ public class HomePanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			// React on the mouse click
 			tryQuickmatchJoin();
+			tryAbortMatchSearch();
 			tryLogout();
 		}
 
@@ -165,6 +188,7 @@ public class HomePanel extends JPanel {
 			// Update the hover states of the buttons
 			logoutButton.updateHover(arg0);
 			quickMatchButton.updateHover(arg0);
+			abortMatchSearch.updateHover(arg0);
 		}
 
 		@Override
@@ -172,6 +196,7 @@ public class HomePanel extends JPanel {
 			// Update the hover states of the buttons
 			logoutButton.updateHover(arg0);
 			quickMatchButton.updateHover(arg0);
+			abortMatchSearch.updateHover(arg0);
 		}
 	}
 }
