@@ -72,6 +72,7 @@ public class LoginPanel extends JPanel {
 	}
 	
 	// Main drawing function
+	@Override
 	public void paintComponent(Graphics g) {
 		
 		Graphics2D g2d = (Graphics2D)g;
@@ -98,16 +99,15 @@ public class LoginPanel extends JPanel {
 	}
 	
 	// Method for changing focus by clicking somewhere
-	public void tryPressSomething(MouseEvent e) {
+	private void tryPressSomething(MouseEvent e) {
 		
 		for(TextInputField curTIF : this.fields) {
 			curTIF.trySelectField(e);
 		}
-		 
 	}
 	
 	// Method for typing a letter in a text field
-	public void tryTypeIn(KeyEvent e) {
+	private void tryTypeIn(KeyEvent e) {
 		
 		for(TextInputField curTIF : this.fields) { 
 			if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE && curTIF.text.length() > 0 && curTIF.isSelected()) {
@@ -122,7 +122,7 @@ public class LoginPanel extends JPanel {
 	}
 	
 	// Method that handles a login attempt
-	public void tryLogin() {
+	private void tryLogin() {
 		
 		// Login Button click event 
 		if(loginButton.isHover() && !ProjektFrame.conn.isLoggedIn()) {

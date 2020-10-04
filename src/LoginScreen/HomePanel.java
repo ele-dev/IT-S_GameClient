@@ -17,6 +17,7 @@ import javax.swing.Timer;
 
 import Buttons.Button;
 import Stage.Commons;
+import Stage.ProjektFrame;
 
 @SuppressWarnings("serial")
 public class HomePanel extends JPanel {
@@ -94,12 +95,31 @@ public class HomePanel extends JPanel {
 		// ...
 	}
 	
+	private void tryLogout() {
+		
+		// Logout button click event
+		if(logoutButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
+			System.out.println("--> Logout");
+			
+		}
+	}
+	
+	private void tryQuickmatchJoin() {
+		
+		// Quickmatch join button click event
+		if(quickMatchButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
+			System.out.println("--> Join quickmatch (waiting queue)");
+		}
+	}
+	
 	// Listener classes
 	private class ML implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// React on the mouse click
+			tryQuickmatchJoin();
+			tryLogout();
 		}
 
 		@Override
