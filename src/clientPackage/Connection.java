@@ -39,6 +39,7 @@ public class Connection extends Thread {
 	private boolean isConnected;
 	private boolean loggedIn;
 	private boolean stopOrder;
+	private boolean sleepOrder;
 	
 	// Constructor attempts to connect to server
 	public Connection() {
@@ -48,6 +49,7 @@ public class Connection extends Thread {
 		this.isConnected = false;
 		this.loggedIn = false;
 		this.stopOrder = false;
+		this.sleepOrder = false;
 		
 		// Use global configuration vars and store result in the class
 		this.isConnected = this.connectToServer(NetworkConfig.serverAddress, NetworkConfig.serverPort);
@@ -92,31 +94,42 @@ public class Connection extends Thread {
 		try {
 			this.clientSocket.setSoTimeout(2000);
 		} catch (SocketException e5) {
-			System.err.println("Failed to set the socket timeout");
+			System.err.println("[ClientThread] Failed to set the socket timeout");
 			return;
 		}
 		
 		while(!this.stopOrder)
 		{
+			// If the thread is supposed to sleep then simply wait a short time and
+			// skip the network reading until
+			if(this.sleepOrder) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// e.printStackTrace();
+				}
+				continue;
+			}
+			
 			GenericMessage recvBuffer = null;
 			
 			// Check the input stream of the client socket for incoming messages
 			try {
 				recvBuffer = (GenericMessage) this.objIn.readObject();
 			} catch (ClassNotFoundException e) {
-				System.err.println("Class Not Found Exception thrown");
-				System.err.println("Failed to parse incoming message");
+				System.err.println("[ClientThread] Class Not Found Exception thrown");
+				System.err.println("[ClientThread] Failed to parse incoming message");
 				continue;
 			} catch(SocketTimeoutException e1) {
 				continue;
 			} catch (StreamCorruptedException e2) {
-				System.err.println("Stream corrupted exception thrown while reading");
+				System.err.println("[ClientThread] Stream corrupted exception thrown while reading");
 				break;
 			} catch(IOException e3) {
-				System.err.println("IOException thrown while reading");
+				System.err.println("[ClientThread] IOException thrown while reading");
 				break;
 			} catch (Exception e4) {
-				System.err.println("Unhandled Exception thrown while parsing incoming message!");
+				System.err.println("[ClientThread] Unhandled Exception thrown while parsing incoming message!");
 				break;
 			}
 			
@@ -170,6 +183,12 @@ public class Connection extends Thread {
 	// Method that handles the login procedure for accounts
 	public boolean loginWithAccount(String user, String pwd) {
 		
+		// If this login happens after a logout, then the running client thread must be
+		// ordered to sleep until login is complete, otherwise the thread interferes the routine
+		if(this.isAlive() && !this.sleepOrder) {
+			this.setSleeping(true);
+		}
+		
 		// Start communication by sending login reuqest message
 		MsgLogin loginMsg = new MsgLogin(user, pwd);
 		this.sendMessageToServer(loginMsg);
@@ -197,7 +216,7 @@ public class Connection extends Thread {
 			JOptionPane.showMessageDialog(null, "Server did not answer the login request");
 			return false;
 		} catch(StreamCorruptedException e1) {
-			System.err.println("Stream corrupted Excption throw while reading message!");
+			System.err.println("Stream corrupted Excption thrown while reading message!");
 			return false;
 		} catch(IOException e2) {
 			System.err.println("IO Exception thrown while reading message!");
@@ -225,9 +244,11 @@ public class Connection extends Thread {
 		}
 		
 		// If everything went well then launch the thread for continous message processing
-		// But only if the thread isn't started yet!
+		// If the thread is already running then order it to exit sleep mode
 		if(!this.isAlive()) {
 			this.start();
+		} else {
+			this.setSleeping(false);
 		}
 		
 		return true;
@@ -235,6 +256,12 @@ public class Connection extends Thread {
 	
 	// Method that handles the login procedure for guest players
 	public boolean loginAsGuest() {
+		
+		// If this login happens after a logout, then the running client thread must be
+		// ordered to sleep until login is complete, otherwise the thread interferes the routine
+		if(this.isAlive() && !this.sleepOrder) {
+			this.setSleeping(true);
+		}
 		
 		// Start communication by sending login reuqest message
 		MsgLogin loginMsg = new MsgLogin();
@@ -291,9 +318,11 @@ public class Connection extends Thread {
 		this.loggedIn = true;
 		
 		// If everything went well then launch the thread for continous message processing
-		// But only if the thread isn't started yet!
+		// If the thread is already running then order it to exit sleep mode
 		if(!this.isAlive()) {
 			this.start();
+		} else {
+			this.setSleeping(false);
 		}
 		
 		return true;
@@ -326,6 +355,18 @@ public class Connection extends Thread {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	// Helper methods for controlling the client thread
+	private void setSleeping(boolean order) {
+		// update the sleep order in the class
+		this.sleepOrder = order;
+		
+		// Wait 2 seconds (= client socket timeout) to make sure the thread 
+		// has recognized the updated sleep order
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {}
 	}
 	
 	// Getters //
