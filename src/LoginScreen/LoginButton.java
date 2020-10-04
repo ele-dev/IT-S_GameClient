@@ -21,13 +21,15 @@ public class LoginButton {
 	// Drawing Function 
 	public void drawButton(Graphics2D g2d) {
 		
+		// Draw the rectangle of the button
 		g2d.setColor(isHover? new Color(255,0,50) : new Color(20,20,20));
 		g2d.fill(rect);
+		
+		// Draw the text label on the button
 		g2d.setColor(!isHover? new Color(255,0,50) : new Color(20,20,20));
 		g2d.setFont(new Font("Arial", Font.PLAIN, 20));
 		FontMetrics m = g2d.getFontMetrics();
 		g2d.drawString("Login", rect.x+rect.width/2-m.stringWidth("Login")/2, rect.y+rect.height/2+m.getHeight()/3);
-		
 	}
 	
 	// Update method for hover detection
