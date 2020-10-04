@@ -101,6 +101,10 @@ public class HomePanel extends JPanel {
 		if(logoutButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
 			System.out.println("--> Logout");
 			
+			// run the logout routine and return to the login panel
+			ProjektFrame.conn.logout();
+			this.setVisible(false);
+			ProjektFrame.loginPanel.setVisible(true);
 		}
 	}
 	
