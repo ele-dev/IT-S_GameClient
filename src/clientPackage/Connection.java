@@ -128,7 +128,6 @@ public class Connection extends Thread {
 	}
 	
 	// Method for connecting to the game server
-
 	private boolean connectToServer(String addr, int port) {
 		
 		// Now attempt to connect to the game server
@@ -226,7 +225,10 @@ public class Connection extends Thread {
 		}
 		
 		// If everything went well then launch the thread for continous message processing
-		this.start();
+		// But only if the thread isn't started yet!
+		if(!this.isAlive()) {
+			this.start();
+		}
 		
 		return true;
 	}
@@ -289,9 +291,26 @@ public class Connection extends Thread {
 		this.loggedIn = true;
 		
 		// If everything went well then launch the thread for continous message processing
-		this.start();
+		// But only if the thread isn't started yet!
+		if(!this.isAlive()) {
+			this.start();
+		}
 		
 		return true;
+	}
+	
+	// Method for logout 
+	public void logout() {
+		// Only try if the player is logged in
+		if(this.loggedIn && this.isAlive()) {
+			// Send a logout message to the server
+			SignalMessage logoutMessage = new SignalMessage(GenericMessage.MSG_LOGOUT);
+			this.sendMessageToServer(logoutMessage);
+			
+			// Change the login status and reset player account info
+			this.loggedIn = false;
+			this.username = "";
+		}
 	}
 	
 	// Method for sending Message objects to the server
