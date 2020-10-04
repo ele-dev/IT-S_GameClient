@@ -157,7 +157,6 @@ public class LoginPanel extends JPanel {
 				// redirect to the home screen panel
 				this.setVisible(false);
 				ProjektFrame.homePanel.setVisible(true);
-				// ProjektFrame.stagePanel.setVisible(true);
 			}
 		}
 	}
