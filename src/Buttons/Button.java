@@ -1,11 +1,11 @@
 package Buttons;
 
 /*
- * written by Elias Geiger
+ * written by Elias Geiger and Ben Brandes
  * 
  * This class defines a basic Button in the GUI panels
  * It's attributes are dimension (size and position), textlabel, and the hover status
- * This Buttons can't be strongly individualized (e.g color, text color, frame arent changable) and are 
+ * This Buttons can't be strongly individualized (e.g color, text color, frame aren't changable) and are 
  * supposed for simple use cases as buttons for logout, login or match join
  * 
  */
@@ -25,6 +25,7 @@ public class Button {
 	private Rectangle rect;
 	private boolean isHover;
 	private String buttonLabel;
+	private int textSize;
 	
 	// Constructors
 	public Button() {
@@ -32,6 +33,7 @@ public class Button {
 		this.rect = new Rectangle(0, 0, 200, 100);
 		this.isHover = false;
 		this.buttonLabel = "Button";
+		this.textSize = 20;
 	}
 	
 	public Button(int x, int y, int w, int h, String label) {
@@ -46,7 +48,6 @@ public class Button {
 	// Drawing method
 	public void drawButton(Graphics2D g2d) {
 		// First draw the box of the button
-		// g2d.setColor(isHover? new Color(255,0,50) : new Color(20,20,20));
 		g2d.setColor(isHover? Commons.buttonHover : new Color(20,20,20));
 		g2d.fill(this.rect);
 		
@@ -56,7 +57,7 @@ public class Button {
 	
 	// Method for drawing the buttons text label
 	private void drawButtonLabel(Graphics2D g2d) {
-		g2d.setFont(new Font("Arial", Font.PLAIN, 20));
+		g2d.setFont(new Font("Arial", Font.PLAIN, this.textSize));
 		FontMetrics metrics = g2d.getFontMetrics();
 		int posX = this.rect.x + this.rect.width / 2 - metrics.stringWidth(this.buttonLabel) / 2;
 		int posY = this.rect.y + this.rect.height / 2 + metrics.getHeight() / 3;
@@ -69,8 +70,17 @@ public class Button {
 		this.isHover = this.rect.contains(e.getPoint());
 	}
 	
+	// Setter
+	public void setTextSize(int size) {
+		this.textSize = size;
+	}
+	
 	// Getter
 	public  boolean isHover() {
 		return this.isHover;
+	}
+	
+	public int getTextSize() {
+		return this.textSize;
 	}
 }

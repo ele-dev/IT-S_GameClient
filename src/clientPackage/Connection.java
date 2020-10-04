@@ -103,10 +103,9 @@ public class Connection extends Thread {
 			// skip the network reading until
 			if(this.sleepOrder) {
 				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					// e.printStackTrace();
-				}
+					Thread.sleep(NetworkConfig.threadSleepDelay);
+				} catch (InterruptedException e) {}
+				
 				continue;
 			}
 			
@@ -183,12 +182,6 @@ public class Connection extends Thread {
 	// Method that handles the login procedure for accounts
 	public boolean loginWithAccount(String user, String pwd) {
 		
-		// If this login happens after a logout, then the running client thread must be
-		// ordered to sleep until login is complete, otherwise the thread interferes the routine
-		if(this.isAlive() && !this.sleepOrder) {
-			this.setSleeping(true);
-		}
-		
 		// Start communication by sending login reuqest message
 		MsgLogin loginMsg = new MsgLogin(user, pwd);
 		this.sendMessageToServer(loginMsg);
@@ -199,7 +192,7 @@ public class Connection extends Thread {
 		
 		// Define how long to wait for a response (socket timeout)
 		try {
-			this.clientSocket.setSoTimeout(3000);
+			this.clientSocket.setSoTimeout(NetworkConfig.loginTimeout);
 		} catch (SocketException e) {
 			System.err.println("Failed to set socket timeout!");
 			return false;
@@ -257,12 +250,6 @@ public class Connection extends Thread {
 	// Method that handles the login procedure for guest players
 	public boolean loginAsGuest() {
 		
-		// If this login happens after a logout, then the running client thread must be
-		// ordered to sleep until login is complete, otherwise the thread interferes the routine
-		if(this.isAlive() && !this.sleepOrder) {
-			this.setSleeping(true);
-		}
-		
 		// Start communication by sending login reuqest message
 		MsgLogin loginMsg = new MsgLogin();
 		this.sendMessageToServer(loginMsg);
@@ -273,7 +260,7 @@ public class Connection extends Thread {
 		
 		// Define how long to wait for a response (socket timeout)
 		try {
-			this.clientSocket.setSoTimeout(3000);
+			this.clientSocket.setSoTimeout(NetworkConfig.loginTimeout);
 		} catch (SocketException e) {
 			System.err.println("Failed to set socket timeout!");
 			return false;
@@ -339,6 +326,9 @@ public class Connection extends Thread {
 			// Change the login status and reset player account info
 			this.loggedIn = false;
 			this.username = "";
+			
+			// Put the client thread into sleep mode until the player gets logged in again
+			this.setSleeping(true);
 		}
 	}
 	
@@ -364,9 +354,15 @@ public class Connection extends Thread {
 		
 		// Wait 2 seconds (= client socket timeout) to make sure the thread 
 		// has recognized the updated sleep order
-		try {
-			Thread.sleep(NetworkConfig.clientSocketTimeout);
-		} catch (InterruptedException e) {}
+		if(order == true) {
+			try {
+				Thread.sleep(NetworkConfig.clientSocketTimeout + 20);
+			} catch (InterruptedException e) {}
+		} else {
+			try {
+				Thread.sleep(NetworkConfig.threadSleepDelay + 10);
+			} catch (InterruptedException e) {}
+		}
 	}
 	
 	// Getters //
