@@ -1,5 +1,15 @@
 package Buttons;
 
+/*
+ * written by Elias Geiger
+ * 
+ * This class defines a basic Button in the GUI panels
+ * It's attributes are dimension (size and position), textlabel, and the hover status
+ * This Buttons can't be strongly individualized (e.g color, text color, frame arent changable) and are 
+ * supposed for simple use cases as buttons for logout, login or match join
+ * 
+ */
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
