@@ -1,5 +1,25 @@
 package menueGui;
 
+/*
+ * written by Elias Geiger
+ * 
+ * This abstract class extends JPanel abend implements multiple listener interfaces
+ * to serve as superclass for all panel classes that make up the game menue.
+ * This class holds timers for processing & drawing, listeners for event based input handling 
+ * and a few basic graphical attributes that all panels posses: width, height, background color
+ * 
+ * This class intends to simplify the implementation of Panel classes by hiding most of the mechanics
+ * and aspects of panels that don't have to be customizable during panel design and would only overload
+ * the child classes with redundant bloat code.
+ * 
+ * Panel classes can be implemented by extending this abstract class, defining the drawPanelContent()
+ * method and calling the super constructor at the very beginning 
+ * 
+ * All the Event methods of the listener and the update() method can be optionally overwritten in the
+ * child classes to add functionality as desired
+ * 
+ */
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
