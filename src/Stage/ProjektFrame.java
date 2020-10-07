@@ -1,4 +1,5 @@
 package Stage;
+
 import java.awt.Container;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
@@ -58,9 +59,7 @@ public class ProjektFrame extends JFrame {
 		
 		// If the connection is established prompt the user to login
 		if(conn.isConnected() == true) {
-			// Enter the login dialog
-			// loginDialog();
-			
+			// ...
 		} else {
 			// If theres no connection to the game server the exit
 			System.out.println("\nApplication close up");
