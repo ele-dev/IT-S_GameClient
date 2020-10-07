@@ -34,9 +34,9 @@ public class ProjektFrame extends JFrame {
 		
 		// Create and init the GUI panels (JPanels)
 		Container cp = getContentPane();
-		loginPanel = new LoginPanel(0, 0);
+		loginPanel = new LoginPanel();
 		stagePanel = new StagePanel(0, 0);
-		homePanel = new HomePanel(0, 0);
+		homePanel = new HomePanel();
 		stagePanel.setVisible(false);
 		homePanel.setVisible(false);
 		loginPanel.setVisible(true);		// Display the login screen first
@@ -45,7 +45,6 @@ public class ProjektFrame extends JFrame {
 		cp.add(homePanel);
 		addKeyListener(loginPanel.kl);
 		addKeyListener(stagePanel.kl);
-		addKeyListener(homePanel.keyListener);
 	}
 	
 	// ------------------- MAIN Application Entry Point -------------------------- //

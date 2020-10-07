@@ -7,33 +7,16 @@ package menueGui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.Timer;
-
 import Stage.Commons;
 import Stage.ProjektFrame;
 
 @SuppressWarnings("serial")
-public class LoginPanel extends JPanel {
-	
-	// Dimension and background color properties
-	private int w, h;
-	private Color bgColor;
-	
-	// Timers 
-	private Timer tFrameRate;
-	private Timer tUpdateRate;
+public class LoginPanel extends GuiPanel {
 	
 	// GUI elements inside this panel
 	private TextInputField[] fields = new TextInputField[2];
@@ -43,53 +26,22 @@ public class LoginPanel extends JPanel {
 	public KL kl = new KL();
 	
 	// Constructor passing position info
-	public LoginPanel(int x, int y) {
+	public LoginPanel() {
 
-		// Set the gui configs
-		this.w = Commons.wf;
-		this.h = Commons.hf;
+		// call constructor of the super class
+		super();
+		
+		// Set the desired background color
 		this.bgColor = Commons.loginScreenBackground;
-		setBounds(x, y, w, h);
 		
 		// init the list of text input fields 
 		fields[0] = new TextInputField("Username", 750, 350, 300, 50);
 		fields[1] = new TextInputField("Password", 750, 410, 300, 50);
-		
-		// Add the listeners
-		addMouseListener(new ML());
-		addMouseMotionListener(new MML());
-		
-		// Timer for repainting/redrawing
-		tFrameRate = new Timer(Commons.frametime, new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				repaint();
-			}
-		});
-		tFrameRate.setRepeats(true);
-		tFrameRate.start();
-		
-		// Timer for updating 
-		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// ...
-			}
-		});
-		tUpdateRate.setRepeats(true);
-		tUpdateRate.start();
 	}
 	
-	// Main drawing function
+	// Drawing method for GUI elements
 	@Override
-	public void paintComponent(Graphics g) {
-		
-		Graphics2D g2d = (Graphics2D)g;
-		
-		// Draw the colored background
-		g2d.setColor(this.bgColor);
-		g2d.fillRect(0, 0, this.w, this.h);
+	protected void drawPanelContent(Graphics2D g2d) {
 		
 		// Draw Text 
 		g2d.setColor(Color.WHITE);
@@ -168,30 +120,28 @@ public class LoginPanel extends JPanel {
 		}
 	}
 	
-	// Mouse Listener for detecting clicks on GUI elements
-	private class ML implements MouseListener {
+	// Mouse Listener events for detecting clicks on GUI elements
+	@Override 
+	public void mouseClicked(MouseEvent e) {
+		tryLogin();
+	}
 
-		@Override
-		public void mouseClicked(MouseEvent arg0) {
-			tryLogin();
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent arg0) {}
-
-		@Override
-		public void mouseExited(MouseEvent arg0) {}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			tryPressSomething(e);
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent arg0) {}
-
+	@Override
+	public void mousePressed(MouseEvent e) {
+		tryPressSomething(e);
 	}
 	
+	// Mouse motion listener events for updating the hover status of GUI elements
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		loginButton.updateHover(e);		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		loginButton.updateHover(e);		
+	}
+
 	// Key listener for typing text into textfields
 	private class KL implements KeyListener {
 
@@ -206,19 +156,5 @@ public class LoginPanel extends JPanel {
 		@Override
 		public void keyTyped(KeyEvent e) {}
 		
-	}
-	
-	// Mouse motion listener for updating the hover status of GUI elements
-	private class MML implements MouseMotionListener {
-
-		@Override
-		public void mouseDragged(MouseEvent arg0) {
-			loginButton.updateHover(arg0);			
-		}
-
-		@Override
-		public void mouseMoved(MouseEvent arg0) {
-			loginButton.updateHover(arg0);
-		}
 	}
 }
