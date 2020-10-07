@@ -25,7 +25,6 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import Buttons.Button;
 import Stage.Commons;
 import Stage.ProjektFrame;
 

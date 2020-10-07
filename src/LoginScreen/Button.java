@@ -1,4 +1,4 @@
-package Buttons;
+package LoginScreen;
 
 /*
  * written by Elias Geiger and Ben Brandes
