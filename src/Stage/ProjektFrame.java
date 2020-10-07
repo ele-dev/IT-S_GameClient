@@ -3,9 +3,10 @@ import java.awt.Container;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
-import LoginScreen.HomePanel;
-import LoginScreen.LoginPanel;
+
 import clientPackage.Connection;
+import menueGui.HomePanel;
+import menueGui.LoginPanel;
 
 @SuppressWarnings("serial")
 public class ProjektFrame extends JFrame {

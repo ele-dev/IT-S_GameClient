@@ -1,4 +1,4 @@
-package LoginScreen;
+package menueGui;
 
 /*
  * written by Elias Geiger
