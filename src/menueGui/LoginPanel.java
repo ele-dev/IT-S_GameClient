@@ -7,90 +7,40 @@ package menueGui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.Timer;
-
 import Stage.Commons;
 import Stage.ProjektFrame;
 
 @SuppressWarnings("serial")
-public class LoginPanel extends JPanel {
-	
-	// Dimension and background color properties
-	private int w, h;
-	private Color bgColor;
-	
-	// Timers 
-	private Timer tFrameRate;
-	private Timer tUpdateRate;
+public class LoginPanel extends GuiPanel {
 	
 	// GUI elements inside this panel
 	private TextInputField[] fields = new TextInputField[2];
-	// private LoginButton loginButton = new LoginButton(850, 500, 100, 50);
 	private Button loginButton = new Button(850, 500, 100, 50, "Login"); 
 	
-	// Key listener
-	public KL kl = new KL();
-	
 	// Constructor passing position info
-	public LoginPanel(int x, int y) {
+	public LoginPanel() {
 
-		// Set the gui configs
-		this.w = Commons.wf;
-		this.h = Commons.hf;
+		// call constructor of the super class
+		super();
+		
+		// Set the desired background color
 		this.bgColor = Commons.loginScreenBackground;
-		setBounds(x, y, w, h);
 		
 		// init the list of text input fields 
 		fields[0] = new TextInputField("Username", 750, 350, 300, 50);
 		fields[1] = new TextInputField("Password", 750, 410, 300, 50);
 		
-		// Add the listeners
-		addMouseListener(new ML());
-		addMouseMotionListener(new MML());
-		
-		// Timer for repainting/redrawing
-		tFrameRate = new Timer(Commons.frametime, new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				repaint();
-			}
-		});
-		tFrameRate.setRepeats(true);
-		tFrameRate.start();
-		
-		// Timer for updating 
-		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// ...
-			}
-		});
-		tUpdateRate.setRepeats(true);
-		tUpdateRate.start();
+		// Set the text in the password field to hidden
+		fields[1].hideText(true);
 	}
 	
-	// Main drawing function
+	// Drawing method for GUI elements
 	@Override
-	public void paintComponent(Graphics g) {
-		
-		Graphics2D g2d = (Graphics2D)g;
-		
-		// Draw the colored background
-		g2d.setColor(this.bgColor);
-		g2d.fillRect(0, 0, this.w, this.h);
+	protected void drawPanelContent(Graphics2D g2d) {
 		
 		// Draw Text 
 		g2d.setColor(Color.WHITE);
@@ -98,11 +48,11 @@ public class LoginPanel extends JPanel {
 		g2d.drawString("Game Title", 750, 300);
 		
 		// Draw Loginbutton
-		this.loginButton.drawButton(g2d);
+		this.loginButton.draw(g2d);
 		
 		// Draw Username and Password input-fields
 		for(TextInputField curTIF : this.fields) {
-			curTIF.drawTextInputField(g2d);
+			curTIF.draw(g2d);
 		}
 	}
 	
@@ -117,15 +67,9 @@ public class LoginPanel extends JPanel {
 	// Method for typing a letter in a text field
 	private void tryTypeIn(KeyEvent e) {
 		
-		for(TextInputField curTIF : this.fields) { 
-			if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE && curTIF.text.length() > 0 && curTIF.isSelected()) {
-				curTIF.text = curTIF.text.substring(0, curTIF.text.length() - 1);
-			} else if(curTIF.isSelected() && curTIF.text.length() < 100) {
-				String validChars = "abcdefghijklmnopqrstuvwxyz1234567890!?_ ";
-				if(validChars.contains((e.getKeyChar() + "").toLowerCase())) {
-					curTIF.text = curTIF.text + e.getKeyChar();
-				}
-			} 
+		for(TextInputField curTIF : this.fields) 
+		{ 
+			curTIF.typeInText(e);
 		}	
 	}
 	
@@ -141,13 +85,10 @@ public class LoginPanel extends JPanel {
 			
 			// Login as guest (-> empty username) or as registered player (-> not empty username)
 			boolean loginSuccess = false;
-			if(user.length() <= 0) 
-			{
+			if(user.length() <= 0) {
 				// Attempt to login as guest player
 				loginSuccess = ProjektFrame.conn.loginAsGuest();
-			}
-			else 
-			{
+			} else {
 				// Attempt to login as registered player if a valid password was entered
 				if(pass.length() > 0) {
 					loginSuccess = ProjektFrame.conn.loginWithAccount(user, pass);
@@ -169,57 +110,33 @@ public class LoginPanel extends JPanel {
 		}
 	}
 	
-	// Mouse Listener for detecting clicks on GUI elements
-	private class ML implements MouseListener {
+	// ----- Event handling section -------- //
+	
+	// Mouse Listener events for detecting clicks on GUI elements
+	@Override 
+	public void mouseClicked(MouseEvent e) {
+		tryLogin();
+	}
 
-		@Override
-		public void mouseClicked(MouseEvent arg0) {
-			tryLogin();
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent arg0) {}
-
-		@Override
-		public void mouseExited(MouseEvent arg0) {}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			tryPressSomething(e);
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent arg0) {}
-
+	@Override
+	public void mousePressed(MouseEvent e) {
+		tryPressSomething(e);
 	}
 	
+	// Mouse motion listener events for updating the hover status of GUI elements
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		loginButton.updateHover(e);		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		loginButton.updateHover(e);		
+	}
+
 	// Key listener for typing text into textfields
-	private class KL implements KeyListener {
-
-		@Override
-		public void keyPressed(KeyEvent e) {
-			tryTypeIn(e);
-		}
-
-		@Override
-		public void keyReleased(KeyEvent e) {}
-
-		@Override
-		public void keyTyped(KeyEvent e) {}
-		
-	}
-	
-	// Mouse motion listener for updating the hover status of GUI elements
-	private class MML implements MouseMotionListener {
-
-		@Override
-		public void mouseDragged(MouseEvent arg0) {
-			loginButton.updateHover(arg0);			
-		}
-
-		@Override
-		public void mouseMoved(MouseEvent arg0) {
-			loginButton.updateHover(arg0);
-		}
+	@Override
+	public void keyPressed(KeyEvent e) {
+		tryTypeIn(e);
 	}
 }
