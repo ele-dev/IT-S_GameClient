@@ -102,9 +102,9 @@ public class HomePanel extends JPanel {
 		g2d.drawString("Home screen", 750, 300);
 		
 		// Draw the buttons
-		this.logoutButton.drawButton(g2d);
-		this.quickMatchButton.drawButton(g2d);
-		this.abortMatchSearchButton.drawButton(g2d);
+		this.logoutButton.draw(g2d);
+		this.quickMatchButton.draw(g2d);
+		this.abortMatchSearchButton.draw(g2d);
 		
 		// Draw additonal stuff
 		// ...

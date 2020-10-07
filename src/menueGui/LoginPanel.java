@@ -97,11 +97,11 @@ public class LoginPanel extends JPanel {
 		g2d.drawString("Game Title", 750, 300);
 		
 		// Draw Loginbutton
-		this.loginButton.drawButton(g2d);
+		this.loginButton.draw(g2d);
 		
 		// Draw Username and Password input-fields
 		for(TextInputField curTIF : this.fields) {
-			curTIF.drawTextInputField(g2d);
+			curTIF.draw(g2d);
 		}
 	}
 	
