@@ -37,7 +37,6 @@ public class LoginPanel extends JPanel {
 	
 	// GUI elements inside this panel
 	private TextInputField[] fields = new TextInputField[2];
-	// private LoginButton loginButton = new LoginButton(850, 500, 100, 50);
 	private Button loginButton = new Button(850, 500, 100, 50, "Login"); 
 	
 	// Key listener

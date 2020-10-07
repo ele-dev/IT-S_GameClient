@@ -16,19 +16,24 @@ public class TextInputField {
 	// Class members 
 	public String text;
 	private Rectangle rect; 
-	private boolean isSelected, isFlash;
+	private boolean isSelected, isFlash, isEnabled;
 	private short flashCounter, flashIntervall = 10;
+	
+	// Constructor for text input field with default specs
+	public TextInputField() {
+		this.rect = new Rectangle(0, 0, 400, 100);
+		this.isFlash = false;
+		this.isSelected = false;
+		this.text = "";
+		this.isEnabled = false;
+	}
 	
 	// Constructor, taking text, color and dimension
 	public TextInputField(String text, int x, int y, int w, int h) {
-		// init class members
+		this();
 		this.text = text;
 		this.rect = new Rectangle(x, y, w, h);
-	}
-	
-	// Getter 
-	public boolean isSelected() {
-		return isSelected;
+		this.isEnabled = true;
 	}
 	
 	// Drawing method
@@ -36,6 +41,7 @@ public class TextInputField {
 		// Draw box of the field
 		g2d.setColor(isSelected? Commons.textFieldSelected : Color.darkGray);
 		g2d.fill(rect);
+		
 		// Draw the contained text
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -55,5 +61,19 @@ public class TextInputField {
 	// method for selecting this field
 	public void trySelectField(MouseEvent e) {
 		isSelected = SwingUtilities.isLeftMouseButton(e) && rect.contains(e.getPoint());
+	}
+	
+	// Setters
+	public void setEnable(boolean status) {
+		this.isEnabled = status;
+	}
+	
+	// Getters
+	public boolean isSelected() {
+		return isSelected;
+	}
+	
+	public boolean isEnabled() {
+		return this.isEnabled;
 	}
 }
