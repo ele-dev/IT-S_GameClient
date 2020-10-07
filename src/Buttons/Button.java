@@ -26,6 +26,7 @@ public class Button {
 	private boolean isHover;
 	private String buttonLabel;
 	private int textSize;
+	private boolean isEnabled;
 	
 	// Constructor for Button with default specs
 	public Button() {
@@ -34,6 +35,7 @@ public class Button {
 		this.isHover = false;
 		this.buttonLabel = "Button";
 		this.textSize = 20;
+		this.isEnabled = false;
 	}
 	
 	// Constructor for creating button with desired dimensions and textlabel
@@ -44,10 +46,17 @@ public class Button {
 		this.rect.width = w;
 		this.rect.height = h;
 		this.buttonLabel = label;
+		this.isEnabled = true;
 	}
 	
 	// Drawing method
 	public void drawButton(Graphics2D g2d) {
+		
+		// Only draw the button if it is enabled
+		if(this.isEnabled == false) {
+			return;
+		}
+		
 		// First draw the box of the button
 		g2d.setColor(isHover? Commons.buttonHover : new Color(20,20,20));
 		g2d.fill(this.rect);
@@ -71,17 +80,25 @@ public class Button {
 		this.isHover = this.rect.contains(e.getPoint());
 	}
 	
-	// Setter
+	// Setters
 	public void setTextSize(int size) {
 		this.textSize = size;
 	}
 	
-	// Getter
+	public void setEnabled(boolean status) {
+		this.isEnabled = status;
+	}
+	
+	// Getters
 	public  boolean isHover() {
 		return this.isHover;
 	}
 	
 	public int getTextSize() {
 		return this.textSize;
+	}
+	
+	public boolean isEnabled() {
+		return this.isEnabled;
 	}
 }
