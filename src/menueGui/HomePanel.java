@@ -24,7 +24,11 @@ public class HomePanel extends GuiPanel {
 	// Gui elements inside this panel (buttons, text fields, etc.)
 	private Button logoutButton = new Button(800, 500, 100, 50, "Logout");
 	private Button quickMatchButton = new Button(1200, 200, 130, 50, "Quickmatch");
-	private Button abortMatchSearchButton = new Button(1200, 350, 130, 50, "Abort Search");
+	private Button abortMatchSearchButton = new Button(1200, 300, 130, 50, "Abort Search");
+	
+	// Fonts 
+	private Font caption1 = new Font("Arial", Font.BOLD, 30);
+	private Font normal = new Font("Tahoma", Font.PLAIN, 17);
 
 	// Constructor takes initial position
 	public HomePanel() {
@@ -37,15 +41,36 @@ public class HomePanel extends GuiPanel {
 		
 		// disable the search abortion button at the beginning
 		this.abortMatchSearchButton.setEnabled(false);
+		
+		// init the gui elements 
+		initGuiElements();
+	}
+	
+	private void initGuiElements() {
+		
+		// Place logout button in the bottom left corner
+		int btnHeight = this.logoutButton.getDimension().height;
+		this.logoutButton.setPosition(10, Commons.hf - btnHeight * 2);
+		
+		// ...
 	}
 	
 	// Drawing method for GUI elements
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
+		
 		// Next draw some text
 		g2d.setColor(Color.WHITE);
-		g2d.setFont(new Font("Arial", Font.BOLD, 30));
-		g2d.drawString("Home screen", 750, 300);
+		g2d.setFont(this.caption1);
+		g2d.drawString("Home screen", 750, 200);
+		
+		g2d.setFont(this.normal);
+		g2d.drawString("Logged in as " + ProjektFrame.conn.getUsername(), 750, 250);
+		
+		if(this.abortMatchSearchButton.isEnabled) {
+			g2d.setColor(Color.ORANGE);
+			g2d.drawString("Waiting for an opponent ...", 1200, 400);
+		}
 		
 		// Draw the buttons
 		this.logoutButton.draw(g2d);
@@ -62,6 +87,11 @@ public class HomePanel extends GuiPanel {
 		// Logout button click event
 		if(this.logoutButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
 			System.out.println("--> Logout");
+			
+			// First abort possible game search
+			// ...
+			this.abortMatchSearchButton.setEnabled(false);
+			this.quickMatchButton.setEnabled(true);
 			
 			// run the logout routine and return to the login panel
 			ProjektFrame.conn.logout();

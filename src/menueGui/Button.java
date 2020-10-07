@@ -93,6 +93,11 @@ public class Button extends GuiElement {
 		this.textSize = size;
 	}
 	
+	public void setPosition(int posX, int posY) {
+		this.rect.x = posX;
+		this.rect.y = posY;
+	}
+	
 	// Getters
 	public  boolean isHover() {
 		// Only enabled buttons can be hovered
@@ -101,5 +106,9 @@ public class Button extends GuiElement {
 	
 	public int getTextSize() {
 		return this.textSize;
+	}
+	
+	public Rectangle getDimension() {
+		return this.rect;
 	}
 }
