@@ -1,4 +1,4 @@
-package Buttons;
+package menueGui;
 
 /*
  * written by Elias Geiger and Ben Brandes
@@ -26,16 +26,19 @@ public class Button {
 	private boolean isHover;
 	private String buttonLabel;
 	private int textSize;
+	private boolean isEnabled;
 	
-	// Constructors
+	// Constructor for Button with default specs
 	public Button() {
 		// Set default values
 		this.rect = new Rectangle(0, 0, 200, 100);
 		this.isHover = false;
 		this.buttonLabel = "Button";
 		this.textSize = 20;
+		this.isEnabled = false;
 	}
 	
+	// Constructor for creating button with desired dimensions and textlabel
 	public Button(int x, int y, int w, int h, String label) {
 		this();
 		this.rect.x = x;
@@ -43,10 +46,17 @@ public class Button {
 		this.rect.width = w;
 		this.rect.height = h;
 		this.buttonLabel = label;
+		this.isEnabled = true;
 	}
 	
 	// Drawing method
 	public void drawButton(Graphics2D g2d) {
+		
+		// Only draw the button if it is enabled
+		if(this.isEnabled == false) {
+			return;
+		}
+		
 		// First draw the box of the button
 		g2d.setColor(isHover? Commons.buttonHover : new Color(20,20,20));
 		g2d.fill(this.rect);
@@ -67,20 +77,30 @@ public class Button {
 	
 	// Update method for the hover status of a button through 
 	public void updateHover(MouseEvent e) {
-		this.isHover = this.rect.contains(e.getPoint());
+		// Only enabled buttons can be hovered
+		this.isHover = this.rect.contains(e.getPoint()) && this.isEnabled;
 	}
 	
-	// Setter
+	// Setters
 	public void setTextSize(int size) {
 		this.textSize = size;
 	}
 	
-	// Getter
+	public void setEnabled(boolean status) {
+		this.isEnabled = status;
+	}
+	
+	// Getters
 	public  boolean isHover() {
-		return this.isHover;
+		// Only enabled buttons can be hovered
+		return this.isHover && this.isEnabled;
 	}
 	
 	public int getTextSize() {
 		return this.textSize;
+	}
+	
+	public boolean isEnabled() {
+		return this.isEnabled;
 	}
 }

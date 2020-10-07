@@ -1,4 +1,4 @@
-package LoginScreen;
+package menueGui;
 
 /*
  * written by Ben Brandes
@@ -21,7 +21,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import Buttons.Button;
 import Stage.Commons;
 import Stage.ProjektFrame;
 
