@@ -135,6 +135,9 @@ public class HomePanel extends JPanel {
 			// Enable the match search abortion button and disable this one
 			this.quickMatchButton.setEnabled(false);
 			this.abortMatchSearchButton.setEnabled(true);
+			
+			// Update the state value that indicates, we are waiting for a player now
+			// ...
 		}
 	}
 	
@@ -147,6 +150,9 @@ public class HomePanel extends JPanel {
 			// Enable the quick match search button and disable this one
 			this.abortMatchSearchButton.setEnabled(false);
 			this.quickMatchButton.setEnabled(true);
+			
+			// update state value that indicates, we aren't waiting for a player anymore
+			// ...
 		}
 	}
 	
