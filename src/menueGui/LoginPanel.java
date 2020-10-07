@@ -10,6 +10,9 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+
+import javax.swing.JOptionPane;
+
 import Stage.Commons;
 import Stage.ProjektFrame;
 
@@ -18,7 +21,8 @@ public class LoginPanel extends GuiPanel {
 	
 	// GUI elements inside this panel
 	private TextInputField[] fields = new TextInputField[2];
-	private Button loginButton = new Button(850, 500, 100, 50, "Login"); 
+	private Button loginButton = new Button(770, 500, 100, 50, "Login"); 
+	private Button playAsGuestButton = new Button(895, 500, 140, 50, "Play as Guest");
 	
 	// Constructor passing position info
 	public LoginPanel() {
@@ -46,8 +50,9 @@ public class LoginPanel extends GuiPanel {
 		g2d.setFont(new Font("Arial", Font.BOLD, 30));
 		g2d.drawString("Game Title", 750, 300);
 		
-		// Draw Loginbutton
+		// Draw Loginbutton and play as guest button
 		this.loginButton.draw(g2d);
+		this.playAsGuestButton.draw(g2d);
 		
 		// Draw Username and Password input-fields
 		for(TextInputField curTIF : this.fields) {
@@ -91,6 +96,25 @@ public class LoginPanel extends GuiPanel {
 		}	
 	}
 	
+	// Method that handles play as guest login
+	private void playAsGuest() {
+		
+		// play as guest button click event
+		if(playAsGuestButton.isHover() && !ProjektFrame.conn.isLoggedIn()) {
+			// Attempt to login as guest player
+			boolean success = ProjektFrame.conn.loginAsGuest();
+			if(!success) {
+				System.err.println("Could not login to the game network!");
+			} else {
+				System.out.println("Logged in as guest player successfully");
+				
+				// redirect to the home screen panel
+				this.setVisible(false);
+				ProjektFrame.homePanel.setVisible(true);
+			}
+		}
+	}
+	
 	// Method that handles a login attempt
 	private void tryLogin() {
 		
@@ -101,25 +125,21 @@ public class LoginPanel extends GuiPanel {
 			String user = this.fields[0].text;
 			String pass = this.fields[1].text;
 			
-			// Login as guest (-> empty username) or as registered player (-> not empty username)
+			// Attempt to login as registered player if a valid password was entered
 			boolean loginSuccess = false;
-			if(user.length() <= 0) {
-				// Attempt to login as guest player
-				loginSuccess = ProjektFrame.conn.loginAsGuest();
+			if(pass.length() > 0 && user.length() > 0) {
+				loginSuccess = ProjektFrame.conn.loginWithAccount(user, pass);
 			} else {
-				// Attempt to login as registered player if a valid password was entered
-				if(pass.length() > 0) {
-					loginSuccess = ProjektFrame.conn.loginWithAccount(user, pass);
-				}
+				JOptionPane.showMessageDialog(null, "Empty fields aren't allowed!");
+				return;
 			}
-			
+				
 			// Show the login status to the user
 			if(!loginSuccess) {
 				System.err.println("Could not login to the game network!");
 				return;
 			} else {
 				System.out.println("Logged in successfully");
-				// JOptionPane.showMessageDialog(this, "Logged in as " + ProjektFrame.conn.getUsername());
 				
 				// redirect to the home screen panel
 				this.setVisible(false);
@@ -134,6 +154,7 @@ public class LoginPanel extends GuiPanel {
 	@Override 
 	public void mouseClicked(MouseEvent e) {
 		tryLogin();
+		playAsGuest();
 	}
 
 	@Override
@@ -144,12 +165,14 @@ public class LoginPanel extends GuiPanel {
 	// Mouse motion listener events for updating the hover status of GUI elements
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		loginButton.updateHover(e);		
+		loginButton.updateHover(e);
+		playAsGuestButton.updateHover(e);
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		loginButton.updateHover(e);		
+		playAsGuestButton.updateHover(e);
 	}
 
 	// Key listener for typing text into textfields
