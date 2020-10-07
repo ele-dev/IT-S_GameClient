@@ -1,4 +1,14 @@
-package LoginScreen;
+package menueGui;
+
+/*
+ * written by Elias Geiger
+ * 
+ * This is the homescreen that appears after successfull login
+ * It contains GUI elements for different purposes:
+ * e.g. player stats display, interaction buttons for joining a match, logging out,
+ * searching online players, configuring personal loadout, etc.
+ * 
+ */
 
 import java.awt.Color;
 import java.awt.Font;
@@ -15,7 +25,6 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import Buttons.Button;
 import Stage.Commons;
 import Stage.ProjektFrame;
 
@@ -30,9 +39,13 @@ public class HomePanel extends JPanel {
 	private Timer tFrameRate;
 	private Timer tUpdateRate;
 	
-	// Gui elements inside this panel
+	// Listener(s)
+	public KL keyListener = new KL();
+	
+	// Gui elements inside this panel (buttons, text fields, etc.)
 	private Button logoutButton = new Button(800, 500, 100, 50, "Logout");
-	private Button quickMatchButton = new Button(800, 200, 120, 50, "Quickmatch");
+	private Button quickMatchButton = new Button(1200, 200, 130, 50, "Quickmatch");
+	private Button abortMatchSearchButton = new Button(1200, 350, 130, 50, "Abort Search");
 
 	// Constructor takes initial position
 	public HomePanel(int x, int y) {
@@ -43,10 +56,12 @@ public class HomePanel extends JPanel {
 		this.bgColor = Commons.homeScreenBackground;
 		this.setBounds(x, y, w, h);
 		
+		// disable the search abortion button at the beginning
+		this.abortMatchSearchButton.setEnabled(false);
+		
 		// add listeners
 		addMouseListener(new ML());
 		addMouseMotionListener(new MML());
-		addKeyListener(new KL());
 		
 		// Timer for painting/redrawing
 		this.tFrameRate = new Timer(Commons.frametime, new ActionListener() {
@@ -89,6 +104,7 @@ public class HomePanel extends JPanel {
 		// Draw the buttons
 		this.logoutButton.drawButton(g2d);
 		this.quickMatchButton.drawButton(g2d);
+		this.abortMatchSearchButton.drawButton(g2d);
 		
 		// Draw additonal stuff
 		// ...
@@ -98,7 +114,7 @@ public class HomePanel extends JPanel {
 	private void tryLogout() {
 		
 		// Logout button click event
-		if(logoutButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
+		if(this.logoutButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
 			System.out.println("--> Logout");
 			
 			// run the logout routine and return to the login panel
@@ -112,8 +128,30 @@ public class HomePanel extends JPanel {
 	private void tryQuickmatchJoin() {
 		
 		// Quickmatch join button click event
-		if(quickMatchButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
+		if(this.quickMatchButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
 			System.out.println("--> Join quickmatch (waiting queue)");
+			
+			// Enable the match search abortion button and disable this one
+			this.quickMatchButton.setEnabled(false);
+			this.abortMatchSearchButton.setEnabled(true);
+			
+			// Update the state value that indicates, we are waiting for a player now
+			// ...
+		}
+	}
+	
+	private void tryAbortMatchSearch() {
+		
+		// Abort button click event
+		if(this.abortMatchSearchButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
+			System.out.println("--> Abort quick-matchmaking");
+			
+			// Enable the quick match search button and disable this one
+			this.abortMatchSearchButton.setEnabled(false);
+			this.quickMatchButton.setEnabled(true);
+			
+			// update state value that indicates, we aren't waiting for a player anymore
+			// ...
 		}
 	}
 	
@@ -124,6 +162,7 @@ public class HomePanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			// React on the mouse click
 			tryQuickmatchJoin();
+			tryAbortMatchSearch();
 			tryLogout();
 		}
 
@@ -165,6 +204,7 @@ public class HomePanel extends JPanel {
 			// Update the hover states of the buttons
 			logoutButton.updateHover(arg0);
 			quickMatchButton.updateHover(arg0);
+			abortMatchSearchButton.updateHover(arg0);
 		}
 
 		@Override
@@ -172,6 +212,7 @@ public class HomePanel extends JPanel {
 			// Update the hover states of the buttons
 			logoutButton.updateHover(arg0);
 			quickMatchButton.updateHover(arg0);
+			abortMatchSearchButton.updateHover(arg0);
 		}
 	}
 }

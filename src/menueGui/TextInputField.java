@@ -1,4 +1,4 @@
-package LoginScreen;
+package menueGui;
 
 import java.awt.Color;
 import java.awt.Font;
