@@ -1,5 +1,10 @@
 package menueGui;
 
+/*
+ * written by Ben Brandes
+ * 
+ */
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -16,7 +21,9 @@ public class TextInputField extends GuiElement {
 	// Class members 
 	public String text;
 	private boolean isSelected, isFlash;
-	private short flashCounter, flashIntervall = 10;
+	private short flashCounter;
+	private final short flashIntervall = 10;
+	private boolean hiddenText;
 	
 	// Constructor for text input field with default specs
 	public TextInputField() {
@@ -26,6 +33,7 @@ public class TextInputField extends GuiElement {
 		// set default values
 		this.isFlash = false;
 		this.isSelected = false;
+		this.hiddenText = false;
 		this.text = "";
 	}
 	
@@ -66,7 +74,7 @@ public class TextInputField extends GuiElement {
 	private void drawText(Graphics2D g2d) {
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(new Font("Arial", Font.PLAIN, 20));
-		FontMetrics m = g2d.getFontMetrics();
+		FontMetrics metrics = g2d.getFontMetrics();
 		String str = "";
 		if(isSelected) {
 			flashCounter--;
@@ -76,7 +84,22 @@ public class TextInputField extends GuiElement {
 			}
 			str = isFlash? "_" : "";
 		}
-		g2d.drawString(text + str , rect.x + 5, rect.y + rect.height / 2 + m.getHeight() / 3);
+		
+		// Check if the text should be drawn hidden or visible
+		String drawingText = "";
+		if(this.hiddenText) {
+			for(int i = this.text.length(); i > 0; i--) 
+			{
+				drawingText += "*";
+			}
+		} else {
+			drawingText = this.text;
+		}
+		
+		// Estimate coordinates of the text inside the box of the text field
+		int posX = this.rect.x + 5;
+		int posY = this.rect.y + this.rect.height / 2 + metrics.getHeight() / 3;
+		g2d.drawString(drawingText + str , posX, posY);
 	}
 	
 	// method for selecting this field
@@ -85,10 +108,16 @@ public class TextInputField extends GuiElement {
 	}
 	
 	// Setters
-	// ...
+	public void hideText(boolean status) {
+		this.hiddenText = status;
+	}
 	
 	// Getters
 	public boolean isSelected() {
 		return isSelected;
+	}
+	
+	public boolean isTextHidden() {
+		return this.hiddenText;
 	}
 }

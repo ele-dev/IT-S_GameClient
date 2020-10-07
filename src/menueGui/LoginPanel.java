@@ -33,6 +33,9 @@ public class LoginPanel extends GuiPanel {
 		// init the list of text input fields 
 		fields[0] = new TextInputField("Username", 750, 350, 300, 50);
 		fields[1] = new TextInputField("Password", 750, 410, 300, 50);
+		
+		// Set the text in the password field to hidden
+		fields[1].hideText(true);
 	}
 	
 	// Drawing method for GUI elements

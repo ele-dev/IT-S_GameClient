@@ -111,8 +111,4 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	protected void setBackgoundColor(Color color) {
 		this.bgColor = color;
 	}
-	
-	// getters 
-	
-	// ...
 }
