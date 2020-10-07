@@ -46,7 +46,7 @@ public class HomePanel extends JPanel {
 	// Gui elements inside this panel (buttons, text fields, etc.)
 	private Button logoutButton = new Button(800, 500, 100, 50, "Logout");
 	private Button quickMatchButton = new Button(1200, 200, 130, 50, "Quickmatch");
-	private Button abortMatchSearch = new Button(1200, 350, 130, 50, "Abort Search");
+	private Button abortMatchSearchButton = new Button(1200, 350, 130, 50, "Abort Search");
 
 	// Constructor takes initial position
 	public HomePanel(int x, int y) {
@@ -56,6 +56,9 @@ public class HomePanel extends JPanel {
 		this.h = Commons.hf;
 		this.bgColor = Commons.homeScreenBackground;
 		this.setBounds(x, y, w, h);
+		
+		// disable the search abortion button at the beginning
+		this.abortMatchSearchButton.setEnabled(false);
 		
 		// add listeners
 		addMouseListener(new ML());
@@ -102,7 +105,7 @@ public class HomePanel extends JPanel {
 		// Draw the buttons
 		this.logoutButton.drawButton(g2d);
 		this.quickMatchButton.drawButton(g2d);
-		this.abortMatchSearch.drawButton(g2d);
+		this.abortMatchSearchButton.drawButton(g2d);
 		
 		// Draw additonal stuff
 		// ...
@@ -112,7 +115,7 @@ public class HomePanel extends JPanel {
 	private void tryLogout() {
 		
 		// Logout button click event
-		if(logoutButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
+		if(this.logoutButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
 			System.out.println("--> Logout");
 			
 			// run the logout routine and return to the login panel
@@ -126,16 +129,24 @@ public class HomePanel extends JPanel {
 	private void tryQuickmatchJoin() {
 		
 		// Quickmatch join button click event
-		if(quickMatchButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
+		if(this.quickMatchButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
 			System.out.println("--> Join quickmatch (waiting queue)");
+			
+			// Enable the match search abortion button and disable this one
+			this.quickMatchButton.setEnabled(false);
+			this.abortMatchSearchButton.setEnabled(true);
 		}
 	}
 	
 	private void tryAbortMatchSearch() {
 		
 		// Abort button click event
-		if(abortMatchSearch.isHover() && ProjektFrame.conn.isLoggedIn()) {
-			System.out.println("--> About quick-matchmaking");
+		if(this.abortMatchSearchButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
+			System.out.println("--> Abort quick-matchmaking");
+			
+			// Enable the quick match search button and disable this one
+			this.abortMatchSearchButton.setEnabled(false);
+			this.quickMatchButton.setEnabled(true);
 		}
 	}
 	
@@ -188,7 +199,7 @@ public class HomePanel extends JPanel {
 			// Update the hover states of the buttons
 			logoutButton.updateHover(arg0);
 			quickMatchButton.updateHover(arg0);
-			abortMatchSearch.updateHover(arg0);
+			abortMatchSearchButton.updateHover(arg0);
 		}
 
 		@Override
@@ -196,7 +207,7 @@ public class HomePanel extends JPanel {
 			// Update the hover states of the buttons
 			logoutButton.updateHover(arg0);
 			quickMatchButton.updateHover(arg0);
-			abortMatchSearch.updateHover(arg0);
+			abortMatchSearchButton.updateHover(arg0);
 		}
 	}
 }

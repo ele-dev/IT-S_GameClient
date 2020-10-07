@@ -77,7 +77,8 @@ public class Button {
 	
 	// Update method for the hover status of a button through 
 	public void updateHover(MouseEvent e) {
-		this.isHover = this.rect.contains(e.getPoint());
+		// Only enabled buttons can be hovered
+		this.isHover = this.rect.contains(e.getPoint()) && this.isEnabled;
 	}
 	
 	// Setters
@@ -91,7 +92,8 @@ public class Button {
 	
 	// Getters
 	public  boolean isHover() {
-		return this.isHover;
+		// Only enabled buttons can be hovered
+		return this.isHover && this.isEnabled;
 	}
 	
 	public int getTextSize() {
