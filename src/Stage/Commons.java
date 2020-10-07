@@ -37,6 +37,9 @@ public interface Commons {
 	
 	final Color cHealth = new Color(85,255,80);
 	
+	// Gui elements constants
+	public final short maxInputLength = 18;
+	
 	// File path for sprites
 	final String pathToSpriteSource = "sprites/";
 	

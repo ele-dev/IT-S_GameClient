@@ -19,50 +19,57 @@ import java.awt.event.MouseEvent;
 
 import Stage.Commons;
 
-public class Button {
+public class Button extends GuiElement {
 
 	// class members
-	private Rectangle rect;
 	private boolean isHover;
 	private String buttonLabel;
 	private int textSize;
-	private boolean isEnabled;
 	
 	// Constructor for Button with default specs
 	public Button() {
+		// call constructor from super class
+		super(0, 0, 200, 100);
+		
 		// Set default values
-		this.rect = new Rectangle(0, 0, 200, 100);
 		this.isHover = false;
 		this.buttonLabel = "Button";
 		this.textSize = 20;
-		this.isEnabled = false;
 	}
 	
 	// Constructor for creating button with desired dimensions and textlabel
-	public Button(int x, int y, int w, int h, String label) {
+	public Button(int posX, int posY, int width, int height, String label) {
+		
+		// call default constructor
 		this();
-		this.rect.x = x;
-		this.rect.y = y;
-		this.rect.width = w;
-		this.rect.height = h;
+		
+		// Set the parameters
+		this.rect = new Rectangle(posX, posY, width, height);
 		this.buttonLabel = label;
+		
+		// enable the button from the beginning
 		this.isEnabled = true;
 	}
 	
-	// Drawing method
-	public void drawButton(Graphics2D g2d) {
+	// Drawing Method 
+	@Override
+	public void draw(Graphics2D g2d) {
 		
 		// Only draw the button if it is enabled
-		if(this.isEnabled == false) {
+		if(!this.isEnabled) {
 			return;
 		}
 		
 		// First draw the box of the button
-		g2d.setColor(isHover? Commons.buttonHover : new Color(20,20,20));
-		g2d.fill(this.rect);
+		drawButtonBox(g2d);
 		
 		// Then draw the text label on the button
 		drawButtonLabel(g2d);
+	}
+	
+	private void drawButtonBox(Graphics2D g2d) {
+		g2d.setColor(isHover? Commons.buttonHover : new Color(20,20,20));
+		g2d.fill(this.rect);
 	}
 	
 	// Method for drawing the buttons text label
@@ -86,10 +93,6 @@ public class Button {
 		this.textSize = size;
 	}
 	
-	public void setEnabled(boolean status) {
-		this.isEnabled = status;
-	}
-	
 	// Getters
 	public  boolean isHover() {
 		// Only enabled buttons can be hovered
@@ -98,9 +101,5 @@ public class Button {
 	
 	public int getTextSize() {
 		return this.textSize;
-	}
-	
-	public boolean isEnabled() {
-		return this.isEnabled;
 	}
 }
