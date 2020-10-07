@@ -119,7 +119,7 @@ public class TextInputField extends GuiElement {
 			str = isFlash? "_" : "";
 		}
 		
-		// Check if the text should be drawn hidden or visible
+		// Decide if the text should be drawn hidden or visible
 		String drawingText = "";
 		if(this.hiddenText) {
 			for(int i = this.text.length(); i > 0; i--) 
