@@ -67,15 +67,9 @@ public class LoginPanel extends GuiPanel {
 	// Method for typing a letter in a text field
 	private void tryTypeIn(KeyEvent e) {
 		
-		for(TextInputField curTIF : this.fields) { 
-			if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE && curTIF.text.length() > 0 && curTIF.isSelected()) {
-				curTIF.text = curTIF.text.substring(0, curTIF.text.length() - 1);
-			} else if(curTIF.isSelected() && curTIF.text.length() < 100) {
-				String validChars = "abcdefghijklmnopqrstuvwxyz1234567890!?_ ";
-				if(validChars.contains((e.getKeyChar() + "").toLowerCase())) {
-					curTIF.text = curTIF.text + e.getKeyChar();
-				}
-			} 
+		for(TextInputField curTIF : this.fields) 
+		{ 
+			curTIF.typeInText(e);
 		}	
 	}
 	
