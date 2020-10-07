@@ -120,7 +120,7 @@ public class LoginPanel extends GuiPanel {
 				return;
 			} else {
 				System.out.println("Logged in successfully");
-				JOptionPane.showMessageDialog(this, "Logged in as " + ProjektFrame.conn.getUsername());
+				// JOptionPane.showMessageDialog(this, "Logged in as " + ProjektFrame.conn.getUsername());
 				
 				// redirect to the home screen panel
 				this.setVisible(false);
