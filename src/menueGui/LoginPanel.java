@@ -67,6 +67,25 @@ public class LoginPanel extends GuiPanel {
 	// Method for typing a letter in a text field
 	private void tryTypeIn(KeyEvent e) {
 		
+		// Switch focus to next text field when TAB was typed
+		/*
+			if(e.getKeyCode() == KeyEvent.VK_TAB) {
+			System.out.println("TAB key pressed");
+			
+			if(this.fields[0].isSelected()) {
+				// set focus on field[1] now
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(true);
+			} else {
+				// set focus on field[0] now
+				this.fields[1].selectFieldNow(false);
+				this.fields[0].selectFieldNow(true);
+			} 
+			
+			return;
+		}
+		 */
+		
 		for(TextInputField curTIF : this.fields) 
 		{ 
 			curTIF.typeInText(e);

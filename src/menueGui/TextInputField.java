@@ -150,9 +150,14 @@ public class TextInputField extends GuiElement {
 		g2d.drawString(this.hint, posX, posY);
 	}
 	
-	// method for selecting this field
+	// method for selecting this field through mouse click
 	public void trySelectField(MouseEvent e) {
 		isSelected = SwingUtilities.isLeftMouseButton(e) && rect.contains(e.getPoint());
+	}
+	
+	// method for selecting this field without any condition (e.g. TAB typed)
+	public void selectFieldNow(boolean status) {
+		this.isSelected = status;
 	}
 	
 	// Setters
