@@ -119,7 +119,7 @@ public class TextInputField extends GuiElement {
 			str = isFlash? "_" : "";
 		}
 		
-		// Check if the text should be drawn hidden or visible
+		// Decide if the text should be drawn hidden or visible
 		String drawingText = "";
 		if(this.hiddenText) {
 			for(int i = this.text.length(); i > 0; i--) 
@@ -150,9 +150,14 @@ public class TextInputField extends GuiElement {
 		g2d.drawString(this.hint, posX, posY);
 	}
 	
-	// method for selecting this field
+	// method for selecting this field through mouse click
 	public void trySelectField(MouseEvent e) {
 		isSelected = SwingUtilities.isLeftMouseButton(e) && rect.contains(e.getPoint());
+	}
+	
+	// method for selecting this field without any condition (e.g. TAB typed)
+	public void selectFieldNow(boolean status) {
+		this.isSelected = status;
 	}
 	
 	// Setters

@@ -17,7 +17,7 @@ public interface Commons {
 	final Color loginScreenBackground = new Color(28, 26, 36);
 	final Color homeScreenBackground = new Color(28, 26, 36);
 	final Color buttonHover = Color.BLUE;
-	final Color textFieldSelected = Color.RED;
+	final Color textFieldSelected = new Color(136, 24, 206);
 	// final Color textFieldSelected = new Color(255,0,50);
 	
 	final Color cUltCharge = new Color(234,255,70);
