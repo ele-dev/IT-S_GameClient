@@ -86,6 +86,7 @@ public class HomePanel extends GuiPanel {
 		}
 	}
 	
+	// Method for processing a click on the abort search button
 	private void tryAbortMatchSearch() {
 		
 		// Abort button click event
@@ -100,6 +101,8 @@ public class HomePanel extends GuiPanel {
 			// ...
 		}
 	}
+	
+	// ----- Event handling section ----- //
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {

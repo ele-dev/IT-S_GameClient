@@ -43,7 +43,7 @@ public class ProjektFrame extends JFrame {
 		cp.add(loginPanel);
 		cp.add(stagePanel);
 		cp.add(homePanel);
-		addKeyListener(loginPanel.kl);
+		addKeyListener(loginPanel);
 		addKeyListener(stagePanel.kl);
 	}
 	

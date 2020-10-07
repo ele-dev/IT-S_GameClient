@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -15,7 +17,7 @@ import javax.swing.Timer;
 import Stage.Commons;
 
 @SuppressWarnings("serial")
-public abstract class GuiPanel extends JPanel implements MouseListener, MouseMotionListener {
+public abstract class GuiPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 	
 	// Dimension and background color properties
 	protected int width, height;
@@ -96,7 +98,9 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	public void mouseExited(MouseEvent e) {}
 	public void mouseDragged(MouseEvent e) {}
 	public void mouseMoved(MouseEvent e) {}
-	
+	public void keyPressed(KeyEvent e) {}
+	public void keyReleased(KeyEvent e) {}
+	public void keyTyped(KeyEvent e) {}
 	
 	// Abstract methods
 	// This method must be implemented to draw draw gui elements

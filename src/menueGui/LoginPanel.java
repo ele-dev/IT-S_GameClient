@@ -9,7 +9,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 import Stage.Commons;
@@ -21,9 +20,6 @@ public class LoginPanel extends GuiPanel {
 	// GUI elements inside this panel
 	private TextInputField[] fields = new TextInputField[2];
 	private Button loginButton = new Button(850, 500, 100, 50, "Login"); 
-	
-	// Key listener
-	public KL kl = new KL();
 	
 	// Constructor passing position info
 	public LoginPanel() {
@@ -92,13 +88,10 @@ public class LoginPanel extends GuiPanel {
 			
 			// Login as guest (-> empty username) or as registered player (-> not empty username)
 			boolean loginSuccess = false;
-			if(user.length() <= 0) 
-			{
+			if(user.length() <= 0) {
 				// Attempt to login as guest player
 				loginSuccess = ProjektFrame.conn.loginAsGuest();
-			}
-			else 
-			{
+			} else {
 				// Attempt to login as registered player if a valid password was entered
 				if(pass.length() > 0) {
 					loginSuccess = ProjektFrame.conn.loginWithAccount(user, pass);
@@ -119,6 +112,8 @@ public class LoginPanel extends GuiPanel {
 			}
 		}
 	}
+	
+	// ----- Event handling section -------- //
 	
 	// Mouse Listener events for detecting clicks on GUI elements
 	@Override 
@@ -143,18 +138,8 @@ public class LoginPanel extends GuiPanel {
 	}
 
 	// Key listener for typing text into textfields
-	private class KL implements KeyListener {
-
-		@Override
-		public void keyPressed(KeyEvent e) {
-			tryTypeIn(e);
-		}
-
-		@Override
-		public void keyReleased(KeyEvent e) {}
-
-		@Override
-		public void keyTyped(KeyEvent e) {}
-		
+	@Override
+	public void keyPressed(KeyEvent e) {
+		tryTypeIn(e);
 	}
 }
