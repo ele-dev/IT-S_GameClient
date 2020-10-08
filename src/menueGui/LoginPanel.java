@@ -21,6 +21,7 @@ public class LoginPanel extends GuiPanel {
 	private TextInputField[] fields = new TextInputField[2];
 	private Button loginButton = new Button(770, 510, 100, 50, "Login"); 
 	private Button playAsGuestButton = new Button(895, 510, 140, 50, "Play as Guest");
+	private Button goToRegisterButton = new Button(800, 700, 190, 50, "Register an account");
 	
 	// Status message and success status
 	private String loginStatusStr = "";
@@ -59,7 +60,7 @@ public class LoginPanel extends GuiPanel {
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
 		
-		// Draw Text 
+		// Draw title Text 
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(this.caption1);
 		g2d.drawString("Game Title", 750, 300);
@@ -67,6 +68,7 @@ public class LoginPanel extends GuiPanel {
 		// Draw Loginbutton and play as guest button
 		this.loginButton.draw(g2d);
 		this.playAsGuestButton.draw(g2d);
+		this.goToRegisterButton.draw(g2d);
 		
 		// Draw Username and Password input-fields
 		for(TextInputField curTIF : this.fields) {
@@ -174,6 +176,17 @@ public class LoginPanel extends GuiPanel {
 		}
 	}
 	
+	// Method for navigating to the register panel
+	private void redirectToRegister() {
+		
+		// Go to register button click event 
+		if(this.goToRegisterButton.isHover()) {
+			// redirect to the register panel
+			this.setVisible(false);
+			ProjektFrame.registerPanel.setVisible(true);
+		}
+	}
+	
 	// ----- Event handling section -------- //
 	
 	// Mouse Listener events for detecting clicks on GUI elements
@@ -181,6 +194,7 @@ public class LoginPanel extends GuiPanel {
 	public void mouseClicked(MouseEvent e) {
 		tryLogin();
 		playAsGuest();
+		redirectToRegister();
 	}
 
 	@Override
@@ -193,12 +207,14 @@ public class LoginPanel extends GuiPanel {
 	public void mouseDragged(MouseEvent e) {
 		loginButton.updateHover(e);
 		playAsGuestButton.updateHover(e);
+		goToRegisterButton.updateHover(e);
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		loginButton.updateHover(e);		
 		playAsGuestButton.updateHover(e);
+		goToRegisterButton.updateHover(e);
 	}
 
 	// Key listener for typing text into textfields
