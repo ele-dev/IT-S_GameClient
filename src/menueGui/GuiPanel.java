@@ -110,6 +110,21 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		// ...
 	}
 	
+	// Method that is called to close a panel that is currently visible
+	public void closePanel() {
+		
+		// Hide the Panel 
+		this.setVisible(false);
+		
+		// call the reset method to do optional cleanup tasks before leaving
+		onClose();
+	}
+	
+	// Event method that is called on Panel close up (can be overwritten)
+	protected void onClose() {
+		// ...
+	}
+	
 	// Listener event methods (supposed to be overwritten in child classes)
 	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {}
