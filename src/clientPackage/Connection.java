@@ -228,7 +228,6 @@ public class Connection extends Thread {
 		// Then parse message into desired format and check the content 
 		MsgLoginStatus statusMsg = (MsgLoginStatus) recvBuffer;
 		if(statusMsg.success() == false) {
-			JOptionPane.showMessageDialog(null, "Login Data was incorrect");
 			return false;
 		} else {
 			// When login was sucessfull then store the username in the class
