@@ -56,6 +56,15 @@ public class LoginPanel extends GuiPanel {
 		this.loginStatusStr = "";
 	}
 	
+	@Override
+	protected void onClose() {
+		// call the original method from the super class
+		super.onClose();
+		
+		// Empty the password input field before panel closes
+		this.fields[1].clearField();
+	}
+	
 	// Drawing method for GUI elements
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
@@ -130,7 +139,7 @@ public class LoginPanel extends GuiPanel {
 				System.out.println("Logged in as guest player successfully");
 				
 				// redirect to the home screen panel
-				this.setVisible(false);
+				this.closePanel();
 				ProjektFrame.homePanel.setVisible(true);
 			}
 		}
@@ -170,7 +179,7 @@ public class LoginPanel extends GuiPanel {
 				System.out.println("Logged in successfully");
 				
 				// redirect to the home screen panel
-				this.setVisible(false);
+				this.closePanel();
 				ProjektFrame.homePanel.setVisible(true);
 			}
 		}
@@ -182,7 +191,7 @@ public class LoginPanel extends GuiPanel {
 		// Go to register button click event 
 		if(this.goToRegisterButton.isHover()) {
 			// redirect to the register panel
-			this.setVisible(false);
+			this.closePanel();
 			ProjektFrame.registerPanel.setVisible(true);
 		}
 	}

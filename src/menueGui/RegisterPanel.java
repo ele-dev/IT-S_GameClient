@@ -59,6 +59,18 @@ public class RegisterPanel extends GuiPanel {
 		this.registerStatusStr = "";
 	}
 	
+	@Override
+	protected void onClose() {
+		
+		// call the original method from the super class
+		super.onClose();
+		
+		// Clear all text fields before panel closes
+		for(TextInputField curTIF : this.fields) {
+			curTIF.clearField();
+		}
+	}
+	
 	// Drawing method for GUI elements
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
@@ -107,6 +119,7 @@ public class RegisterPanel extends GuiPanel {
 		if(this.registerAccountButton.isHover()) {
 			// do register attempt
 			System.out.println("--> Register attempt");
+			this.registerStatusStr = "Processing ...";
 			
 			// validation of input fields
 			for(TextInputField curTIF : this.fields) 
@@ -148,7 +161,7 @@ public class RegisterPanel extends GuiPanel {
 		// Go to login button click event
 		if(this.goToLoginButton.isHover()) {
 			// redirect to the login panel
-			this.setVisible(false);
+			this.closePanel();
 			ProjektFrame.loginPanel.setVisible(true);
 		}
 	}

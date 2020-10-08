@@ -56,6 +56,16 @@ public class HomePanel extends GuiPanel {
 		// ...
 	}
 	
+	@Override
+	protected void onClose() {
+		
+		// call the original method from the super class
+		super.onClose();
+		
+		this.abortMatchSearchButton.setEnabled(false);
+		this.quickMatchButton.setEnabled(true);
+	}
+	
 	// Drawing method for GUI elements
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
@@ -77,9 +87,6 @@ public class HomePanel extends GuiPanel {
 		this.logoutButton.draw(g2d);
 		this.quickMatchButton.draw(g2d);
 		this.abortMatchSearchButton.draw(g2d);
-		
-		// Draw additonal stuff
-		// ...
 	}
 	
 	// Method for processing a click on the logout button
@@ -89,14 +96,16 @@ public class HomePanel extends GuiPanel {
 		if(this.logoutButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
 			System.out.println("--> Logout");
 			
-			// First abort possible game search
-			// ...
-			this.abortMatchSearchButton.setEnabled(false);
-			this.quickMatchButton.setEnabled(true);
+			// Abort possible game search
+			if(GameState.isSearching) {
+				// Send the abortion message to the server
+				// ...
+			}
 			
-			// run the logout routine and return to the login panel
+			// Run the logout routine and return to the login screen
 			ProjektFrame.conn.logout();
-			this.setVisible(false);
+			
+			this.closePanel();
 			ProjektFrame.loginPanel.setVisible(true);
 		}
 	}
