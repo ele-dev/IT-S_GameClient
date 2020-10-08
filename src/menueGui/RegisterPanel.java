@@ -50,7 +50,7 @@ public class RegisterPanel extends GuiPanel {
 		// Configure parameters of the input fields
 		this.fields[2].hideText(true);
 		this.fields[3].hideText(true);
-		this.fields[1].changeMaxInputLength((short) 25);
+		this.fields[1].changeMaxInputLength((short) 35);
 		char[] additionalChars = {'.', '@', '-'};
 		this.fields[1].addValidChars(additionalChars);
 		
@@ -81,7 +81,7 @@ public class RegisterPanel extends GuiPanel {
 		// Draw the status message
 		g2d.setColor(this.failedAttempt ? Color.RED : Color.WHITE);
 		g2d.setFont(this.statusDisplay);
-		g2d.drawString(this.registerStatusStr, 760, 250);
+		g2d.drawString(this.registerStatusStr, 760, 570);
 	}
 	
 	// Method for changing focus by clicking somewhere
@@ -109,6 +109,35 @@ public class RegisterPanel extends GuiPanel {
 			System.out.println("--> Register attempt");
 			
 			// validation of input fields
+			for(TextInputField curTIF : this.fields) 
+			{
+				this.failedAttempt = (curTIF.text.length() <= 0);
+			}
+			
+			if(this.failedAttempt) {
+				this.registerStatusStr = "Empty fields are not allowed!";
+				return;
+			}
+			
+			// check if the password fields were equal
+			this.failedAttempt = !(this.fields[2].text.equals(this.fields[3].text));
+			if(this.failedAttempt) {
+				this.registerStatusStr = "The passwords must be equal!";
+				return;
+			}
+			
+			// check the syntax of the entered email
+			String[] tmpStr = this.fields[1].text.split("@");
+			this.failedAttempt = (tmpStr.length != 2);
+			if(this.failedAttempt) {
+				this.registerStatusStr = "Invalid email address!";
+				return;
+			}
+			
+			// Send register message to the server
+			// ...
+			
+			// Wait for the response and read the status 
 			// ...
 		}
 	}
