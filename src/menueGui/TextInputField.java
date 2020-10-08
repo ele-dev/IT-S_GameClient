@@ -165,6 +165,23 @@ public class TextInputField extends GuiElement {
 		this.hiddenText = status;
 	}
 	
+	public void clearField() {
+		this.text = "";
+	}
+	
+	public void changeMaxInputLength(short maxLength) {
+		this.maxLength = maxLength;
+	}
+	
+	public void addValidChars(char[] chars) {
+		// Go through the elements of the char array and append them to the
+		// string that lists all valid chars for this input field
+		for(char validCharacter : chars)
+		{
+			this.validChars += validCharacter;
+		}
+	}
+	
 	// Getters
 	public boolean isSelected() {
 		return isSelected;

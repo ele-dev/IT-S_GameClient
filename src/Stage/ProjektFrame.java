@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import clientPackage.Connection;
 import menueGui.HomePanel;
 import menueGui.LoginPanel;
+import menueGui.RegisterPanel;
 
 @SuppressWarnings("serial")
 public class ProjektFrame extends JFrame {
@@ -21,6 +22,7 @@ public class ProjektFrame extends JFrame {
 	public static StagePanel stagePanel;
 	public static LoginPanel loginPanel;
 	public static HomePanel homePanel;
+	public static RegisterPanel registerPanel;
 	
 	public ProjektFrame() {
 		// Create and init the Window (JFrame)
@@ -35,15 +37,19 @@ public class ProjektFrame extends JFrame {
 		// Create and init the GUI panels (JPanels)
 		Container cp = getContentPane();
 		loginPanel = new LoginPanel();
+		registerPanel = new RegisterPanel();
 		stagePanel = new StagePanel(0, 0);
 		homePanel = new HomePanel();
 		stagePanel.setVisible(false);
 		homePanel.setVisible(false);
 		loginPanel.setVisible(true);		// Display the login screen first
+		registerPanel.setVisible(false);
 		cp.add(loginPanel);
 		cp.add(stagePanel);
 		cp.add(homePanel);
+		cp.add(registerPanel);
 		addKeyListener(loginPanel);
+		addKeyListener(registerPanel);
 		addKeyListener(stagePanel.kl);
 	}
 	
