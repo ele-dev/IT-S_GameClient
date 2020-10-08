@@ -126,6 +126,8 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	// This method must be implemented to draw draw gui elements
 	protected abstract void drawPanelContent(Graphics2D g2d);
 	
+	protected abstract void initGuiElements();
+	
 	// setters
 	
 	protected void setBackgoundColor(Color color) {

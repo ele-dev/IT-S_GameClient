@@ -11,8 +11,6 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import javax.swing.JOptionPane;
-
 import Stage.Commons;
 import Stage.ProjektFrame;
 
@@ -21,8 +19,16 @@ public class LoginPanel extends GuiPanel {
 	
 	// GUI elements inside this panel
 	private TextInputField[] fields = new TextInputField[2];
-	private Button loginButton = new Button(770, 500, 100, 50, "Login"); 
-	private Button playAsGuestButton = new Button(895, 500, 140, 50, "Play as Guest");
+	private Button loginButton = new Button(770, 510, 100, 50, "Login"); 
+	private Button playAsGuestButton = new Button(895, 510, 140, 50, "Play as Guest");
+	
+	// Status message and success status
+	private String loginStatusStr = "";
+	private boolean failedAttempt = false;
+	
+	// Fonts 
+	private Font caption1 = new Font("Arial", Font.PLAIN, 30);
+	private Font statusMessage = new Font("Tahoma", Font.PLAIN, 17);
 	
 	// Constructor passing position info
 	public LoginPanel() {
@@ -33,12 +39,20 @@ public class LoginPanel extends GuiPanel {
 		// Set the desired background color
 		this.bgColor = Commons.loginScreenBackground;
 		
+		// init the gui elements
+		initGuiElements();
+	}
+	
+	@Override
+	protected void initGuiElements() {
 		// init the list of text input fields 
 		fields[0] = new TextInputField("Username", 750, 350, 300, 50);
 		fields[1] = new TextInputField("Password", 750, 410, 300, 50);
 		
 		// Set the text in the password field to hidden
 		fields[1].hideText(true);
+		
+		this.loginStatusStr = "";
 	}
 	
 	// Drawing method for GUI elements
@@ -47,7 +61,7 @@ public class LoginPanel extends GuiPanel {
 		
 		// Draw Text 
 		g2d.setColor(Color.WHITE);
-		g2d.setFont(new Font("Arial", Font.BOLD, 30));
+		g2d.setFont(this.caption1);
 		g2d.drawString("Game Title", 750, 300);
 		
 		// Draw Loginbutton and play as guest button
@@ -58,6 +72,11 @@ public class LoginPanel extends GuiPanel {
 		for(TextInputField curTIF : this.fields) {
 			curTIF.draw(g2d);
 		}
+		
+		// Draw the status message directly under the input fields
+		g2d.setColor(this.failedAttempt ? Color.RED : Color.WHITE);
+		g2d.setFont(this.statusMessage);
+		g2d.drawString(this.loginStatusStr, 760, 485);
 	}
 	
 	// Method for changing focus by clicking somewhere
@@ -130,15 +149,22 @@ public class LoginPanel extends GuiPanel {
 			if(pass.length() > 0 && user.length() > 0) {
 				loginSuccess = ProjektFrame.conn.loginWithAccount(user, pass);
 			} else {
-				JOptionPane.showMessageDialog(null, "Empty fields aren't allowed!");
+				this.failedAttempt = true;
+				this.loginStatusStr = "Empty fields are not allowed!";
+				
 				return;
 			}
 				
 			// Show the login status to the user
 			if(!loginSuccess) {
 				System.err.println("Could not login to the game network!");
+				this.failedAttempt = true;
+				this.loginStatusStr = "Login data was incorrect!";
+				
 				return;
 			} else {
+				this.failedAttempt = false;
+				this.loginStatusStr = "";
 				System.out.println("Logged in successfully");
 				
 				// redirect to the home screen panel

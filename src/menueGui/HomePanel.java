@@ -46,7 +46,8 @@ public class HomePanel extends GuiPanel {
 		initGuiElements();
 	}
 	
-	private void initGuiElements() {
+	@Override
+	protected void initGuiElements() {
 		
 		// Place logout button in the bottom left corner
 		int btnHeight = this.logoutButton.getDimension().height;
