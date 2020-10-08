@@ -1,4 +1,5 @@
 package Stage;
+
 import java.awt.Container;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
