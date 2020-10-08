@@ -46,6 +46,7 @@ public class HomePanel extends GuiPanel {
 		initGuiElements();
 	}
 	
+	// Method for creating/initializing all the gui elements on this panel
 	@Override
 	protected void initGuiElements() {
 		
@@ -56,6 +57,7 @@ public class HomePanel extends GuiPanel {
 		// ...
 	}
 	
+	// Method for implementing clean up tasks before panel closure
 	@Override
 	protected void onClose() {
 		
