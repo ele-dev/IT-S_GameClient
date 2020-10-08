@@ -47,9 +47,12 @@ public class RegisterPanel extends GuiPanel {
 		this.fields[2] = new TextInputField("Password", 750, 420, 350, 50);
 		this.fields[3] = new TextInputField("Repeat password", 750, 480, 350, 50);
 
-		// Set text in the two password fields to be hidden
+		// Configure parameters of the input fields
 		this.fields[2].hideText(true);
 		this.fields[3].hideText(true);
+		this.fields[1].changeMaxInputLength((short) 25);
+		char[] additionalChars = {'.', '@', '-'};
+		this.fields[1].addValidChars(additionalChars);
 		
 		// set the initial state and according message
 		this.failedAttempt = false;
