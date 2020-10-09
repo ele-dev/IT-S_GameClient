@@ -17,6 +17,8 @@ import java.awt.event.MouseEvent;
 
 import Stage.Commons;
 import Stage.ProjektFrame;
+import networking.GenericMessage;
+import networking.SignalMessage;
 
 @SuppressWarnings("serial")
 public class HomePanel extends GuiPanel {
@@ -101,7 +103,8 @@ public class HomePanel extends GuiPanel {
 			// Abort possible game search
 			if(GameState.isSearching) {
 				// Send the abortion message to the server
-				// ...
+				SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
+				ProjektFrame.conn.sendMessageToServer(abortMessage);
 			}
 			
 			// Run the logout routine and return to the login screen
@@ -120,7 +123,8 @@ public class HomePanel extends GuiPanel {
 			System.out.println("--> Join quickmatch (waiting queue)");
 			
 			// send the join quickmatch message to the server
-			// ...
+			SignalMessage joinQuickMatchMessage = new SignalMessage(GenericMessage.MSG_JOIN_QUICKMATCH);
+			ProjektFrame.conn.sendMessageToServer(joinQuickMatchMessage);
 			
 			// Enable the match search abortion button and disable this one
 			this.quickMatchButton.setEnabled(false);
@@ -139,7 +143,8 @@ public class HomePanel extends GuiPanel {
 			System.out.println("--> Abort quick-matchmaking");
 			
 			// Send the abort message to the server
-			// ...
+			SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
+			ProjektFrame.conn.sendMessageToServer(abortMessage);
 			
 			// Enable the quick match search button and disable this one
 			this.abortMatchSearchButton.setEnabled(false);
