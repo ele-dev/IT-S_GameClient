@@ -119,6 +119,7 @@ public class RegisterPanel extends GuiPanel {
 		if(this.registerAccountButton.isHover()) {
 			// do register attempt
 			System.out.println("--> Register attempt");
+			this.failedAttempt = false;
 			this.registerStatusStr = "Processing ...";
 			
 			// validation of input fields
@@ -147,11 +148,15 @@ public class RegisterPanel extends GuiPanel {
 				return;
 			}
 			
-			// Send register message to the server
-			// ...
-			
-			// Wait for the response and read the status 
-			// ...
+			// run the registration process with the validated parameters
+			boolean result = ProjektFrame.conn.registerAccount(this.fields[0].text, this.fields[1].text, this.fields[2].text);
+			if(result) {
+				this.failedAttempt = false;
+				this.registerStatusStr = "Registration done successfully";
+			} else {
+				this.failedAttempt = true;
+				this.registerStatusStr = GameState.registerStatusDescrption;
+			}
 		}
 	}
 	
