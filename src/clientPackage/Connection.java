@@ -208,7 +208,7 @@ public class Connection extends Thread {
 			return false;
 		} catch(SocketTimeoutException e) {
 			// JOptionPane.showMessageDialog(null, "Server did not answer the register request");
-			GameState.registerStatusDescrption = "timeout: server did not respond!";
+			GameState.registerStatusDescription = "timeout: server did not respond!";
 			return false;
 		} catch(StreamCorruptedException e1) {
 			System.err.println("Stream corrupted Excption thrown while reading message!");
@@ -224,7 +224,7 @@ public class Connection extends Thread {
 		// Now checkout if the message is from the right type
 		if(recvBuffer.getMessageID() != GenericMessage.MSG_REGISTER_STATUS) 
 		{
-			GameState.registerStatusDescrption = "Wrong message type received!";
+			GameState.registerStatusDescription = "Wrong message type received!";
 			return false;
 		}
 		
@@ -232,7 +232,7 @@ public class Connection extends Thread {
 		MsgRegisterStatus statusMsg = (MsgRegisterStatus)recvBuffer;
 	
 		// read success status
-		GameState.registerStatusDescrption = statusMsg.getDescription();
+		GameState.registerStatusDescription = statusMsg.getDescription();
 		return statusMsg.getSuccessStatus();
 	}
 	

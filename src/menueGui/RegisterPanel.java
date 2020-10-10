@@ -121,6 +121,7 @@ public class RegisterPanel extends GuiPanel {
 			System.out.println("--> Register attempt");
 			this.failedAttempt = false;
 			this.registerStatusStr = "Processing ...";
+			repaint();
 			
 			// validation of input fields
 			for(TextInputField curTIF : this.fields) 
@@ -155,7 +156,7 @@ public class RegisterPanel extends GuiPanel {
 				this.registerStatusStr = "Registration done successfully";
 			} else {
 				this.failedAttempt = true;
-				this.registerStatusStr = GameState.registerStatusDescrption;
+				this.registerStatusStr = GameState.registerStatusDescription;
 			}
 		}
 	}

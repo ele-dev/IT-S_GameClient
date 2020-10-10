@@ -15,6 +15,6 @@ public class GameState {
 	public static boolean isIngame = false;
 	public static boolean isSearching = false;
 	
-	public static String registerStatusDescrption = "";
+	public static String registerStatusDescription = "";
 	// ...
 }
