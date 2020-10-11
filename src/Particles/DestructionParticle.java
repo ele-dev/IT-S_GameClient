@@ -8,10 +8,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
-import Stage.BoardRectangle;
-import Stage.StagePanel;
-
-public class DestructionParticle extends Particle{
+public class DestructionParticle extends Particle {
 	int w,h;
 	private float friction = 0.08f;
 	float vRotation = (float) (Math.random()*5+3);

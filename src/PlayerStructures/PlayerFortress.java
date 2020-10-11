@@ -3,13 +3,10 @@ package PlayerStructures;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import Environment.DestructibleObject;
-import GamePieces.GunnerPiece;
-import Particles.DestructionParticle;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;

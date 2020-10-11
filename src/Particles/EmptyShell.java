@@ -4,10 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import Stage.BoardRectangle;
-import Stage.StagePanel;
-
-public class EmptyShell extends Particle{
+public class EmptyShell extends Particle {
 	int w,h;
 	public float friction = 0.1f;
 	
