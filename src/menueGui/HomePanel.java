@@ -16,9 +16,10 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 
 import Stage.Commons;
-import Stage.ProjektFrame;
+import Stage.ProjectFrame;
 import networking.GenericMessage;
 import networking.SignalMessage;
+
 
 @SuppressWarnings("serial")
 public class HomePanel extends GuiPanel {
@@ -80,7 +81,7 @@ public class HomePanel extends GuiPanel {
 		g2d.drawString("Home screen", 750, 200);
 		
 		g2d.setFont(this.normal);
-		g2d.drawString("Logged in as " + ProjektFrame.conn.getUsername(), 750, 250);
+		g2d.drawString("Logged in as " + ProjectFrame.conn.getUsername(), 750, 250);
 		
 		if(this.abortMatchSearchButton.isEnabled) {
 			g2d.setColor(Color.ORANGE);
@@ -97,7 +98,7 @@ public class HomePanel extends GuiPanel {
 	private void tryLogout() {
 		
 		// Logout button click event
-		if(this.logoutButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
+		if(this.logoutButton.isHover() && ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Logout");
 			
 			// Abort possible game search
@@ -108,10 +109,10 @@ public class HomePanel extends GuiPanel {
 			}
 			
 			// Run the logout routine and return to the login screen
-			ProjektFrame.conn.logout();
+			ProjectFrame.conn.logout();
 			
 			this.closePanel();
-			ProjektFrame.loginPanel.setVisible(true);
+			ProjectFrame.loginPanel.setVisible(true);
 		}
 	}
 	
@@ -119,7 +120,7 @@ public class HomePanel extends GuiPanel {
 	private void tryQuickmatchJoin() {
 		
 		// Quickmatch join button click event
-		if(this.quickMatchButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
+		if(this.quickMatchButton.isHover() && ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Join quickmatch (waiting queue)");
 			
 			// send the join quickmatch message to the server
@@ -139,7 +140,7 @@ public class HomePanel extends GuiPanel {
 	private void tryAbortMatchSearch() {
 		
 		// Abort button click event
-		if(this.abortMatchSearchButton.isHover() && ProjektFrame.conn.isLoggedIn()) {
+		if(this.abortMatchSearchButton.isHover() && ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Abort quick-matchmaking");
 			
 			// Send the abort message to the server

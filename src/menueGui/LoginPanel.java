@@ -12,7 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import Stage.Commons;
-import Stage.ProjektFrame;
+import Stage.ProjectFrame;
 
 @SuppressWarnings("serial")
 public class LoginPanel extends GuiPanel {
@@ -130,9 +130,9 @@ public class LoginPanel extends GuiPanel {
 	private void playAsGuest() {
 		
 		// play as guest button click event
-		if(playAsGuestButton.isHover() && !ProjektFrame.conn.isLoggedIn()) {
+		if(playAsGuestButton.isHover() && !ProjectFrame.conn.isLoggedIn()) {
 			// Attempt to login as guest player
-			boolean success = ProjektFrame.conn.loginAsGuest();
+			boolean success = ProjectFrame.conn.loginAsGuest();
 			if(!success) {
 				System.err.println("Could not login to the game network!");
 			} else {
@@ -140,7 +140,7 @@ public class LoginPanel extends GuiPanel {
 				
 				// redirect to the home screen panel
 				this.closePanel();
-				ProjektFrame.homePanel.setVisible(true);
+				ProjectFrame.homePanel.setVisible(true);
 			}
 		}
 	}
@@ -149,7 +149,7 @@ public class LoginPanel extends GuiPanel {
 	private void tryLogin() {
 		
 		// Login Button click event 
-		if(loginButton.isHover() && !ProjektFrame.conn.isLoggedIn()) {
+		if(loginButton.isHover() && !ProjectFrame.conn.isLoggedIn()) {
 			
 			// Obtain the content of the text fields
 			String user = this.fields[0].text;
@@ -158,7 +158,7 @@ public class LoginPanel extends GuiPanel {
 			// Attempt to login as registered player if a valid password was entered
 			boolean loginSuccess = false;
 			if(pass.length() > 0 && user.length() > 0) {
-				loginSuccess = ProjektFrame.conn.loginWithAccount(user, pass);
+				loginSuccess = ProjectFrame.conn.loginWithAccount(user, pass);
 			} else {
 				this.failedAttempt = true;
 				this.loginStatusStr = "Empty fields are not allowed!";
@@ -180,7 +180,7 @@ public class LoginPanel extends GuiPanel {
 				
 				// redirect to the home screen panel
 				this.closePanel();
-				ProjektFrame.homePanel.setVisible(true);
+				ProjectFrame.homePanel.setVisible(true);
 			}
 		}
 	}
@@ -192,7 +192,7 @@ public class LoginPanel extends GuiPanel {
 		if(this.goToRegisterButton.isHover()) {
 			// redirect to the register panel
 			this.closePanel();
-			ProjektFrame.registerPanel.setVisible(true);
+			ProjectFrame.registerPanel.setVisible(true);
 		}
 	}
 	

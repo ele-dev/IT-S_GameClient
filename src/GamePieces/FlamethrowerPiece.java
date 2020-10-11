@@ -1,6 +1,7 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -22,16 +23,15 @@ public class FlamethrowerPiece extends GamePiece {
 	double spreadAngle = 20;
 	boolean startedAttack = false;
 	
-	public FlamethrowerPiece(boolean isEnemy, BoardRectangle boardRect,
-			CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, Commons.nameFlameThrower, boardRect, Commons.maxHealthFlameThrower, Commons.dmgFlameThrower,Commons.MovementRangeFlameThrower, commanderGamePiece);
+	public FlamethrowerPiece(boolean isEnemy, BoardRectangle boardRect) {
+		super(isEnemy, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,Commons.baseTypeFlameThrower);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				angle = angleDesired;
 				shootBurst();
-			}
+			} 
 		});
 		attackDelayTimer.setRepeats(false);
 		
@@ -41,107 +41,40 @@ public class FlamethrowerPiece extends GamePiece {
 			public void actionPerformed(ActionEvent arg0) {
 				shootOnce();
 			}
-		});
+		}); 
 		burstTimer.setRepeats(false);
+	}
+	
+	public void update() {
+		if(targetGamePiece != null) {
+			updateAngle(targetGamePiece.getPos());
+		}else if(targetDestructibleObject != null){
+			updateAngle(targetDestructibleObject.getPos());
+		}
+		if(isMoving) {
+			updateMove();
+		}
+		updateAttack();
 	}
 
 	public void drawAttack(Graphics2D g2d) {
 		for(FlameThrowerFlame curFTF : flames) {
-				curFTF.drawFlame(g2d);
+				curFTF.drawProjectile(g2d);
 		}
 	}
-
-	public boolean checkMoveRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.row;
-		int column = this.boardRect.column;
-		
-		if(row == selectedRow && column == selectedColumn) {
-			return false;
-		}
-		if(row+1==selectedRow) {
-			return true;
-		}
-		if(row-1==selectedRow) {
-			return true;
-		}
-		if(row==selectedRow) {
-			return true;
-		}
-		return false;
-	}
-
-
-	public boolean checkMoveColumns(int selectedRow, int selectedColumn) {
-		int column = this.boardRect.column;
-		if(column+1==selectedColumn) {
-			return true;
-		}
-		if(column-1==selectedColumn) {
-			return true;
-		}
-		if(column==selectedColumn) {
-			return true;
-		}
-		return false;
-	}
-
 
 	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(checkAttackRows(selectedRow,selectedColumn) && checkAttackColumns(selectedRow,selectedColumn)) {
+		
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isGap && !curBR.isWall) {
-					
-					if(checkIfBoardRectangleInSight(curBR)) {
-						return true;
+				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
+					int dist = BoardRectangle.getDistanceBetweenBRs(boardRect, curBR);
+					if(dist <= 2 && !curBR.isWall) {
+						if(checkIfBoardRectangleInSight(curBR)) {
+							return true;
+						}
 					}
 				}
 			}
-		}
-		return false;
-	}
-
-
-	public boolean checkAttackRows(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.row;
-		int column = this.boardRect.column;
-		if(row == selectedRow && column == selectedColumn) {
-			return false;
-		}
-		for(int i = 0;i<2;i++) {
-			if(row+i==selectedRow) {
-				return true;
-			}
-			if(row-i==selectedRow) {
-				return true;
-			}
-		}
-		if(row+2 == selectedRow && column == selectedColumn) {
-			return true;
-		}
-		if(row-2 == selectedRow && column == selectedColumn) {
-			return true;
-		}
-		return false;
-	}
-
-
-	public boolean checkAttackColumns(int selectedRow, int selectedColumn) {
-		int row = this.boardRect.row;
-		int column = this.boardRect.column;
-		for(int i = 0;i<2;i++) {
-			if(column+i==selectedColumn) {
-				return true;
-			}
-			if(column-i==selectedColumn) {
-				return true;
-			}
-		}
-		if(column+2 == selectedColumn && row == selectedRow) {
-			return true;
-		}
-		if(column-2 == selectedColumn && row == selectedRow) {
-			return true;
-		}
 		return false;
 	}
 
@@ -151,6 +84,7 @@ public class FlamethrowerPiece extends GamePiece {
 	}
 	
 	public void shootOnce() {
+		startedAttack = true;
 		burstCounter++;
 		if(burstCounter <burstBulletAmount) {
 			burstTimer.start();
@@ -158,64 +92,63 @@ public class FlamethrowerPiece extends GamePiece {
 			burstCounter = 0;
 		}
 		int randomSize = (int)(Math.random() * 5 +5);
-		if(isWallAttack) {
-			flames.add(new FlameThrowerFlame(getCenterX(), getCenterY(), randomSize, randomSize, Math.random()+3, getDmg(), angle + (Math.random()-0.5)*spreadAngle, null , currentTargetBoardRectangle));
-		}else {
-			flames.add(new FlameThrowerFlame(getCenterX(), getCenterY(), randomSize, randomSize, Math.random()+3, getDmg(), angle + (Math.random()-0.5)*spreadAngle, getCurrentTargetGamePiece() , null));
-		}
+		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
+			targetDestructibleObject.getRectHitbox();
 			
-		startedAttack = true;
+		flames.add(new FlameThrowerFlame(getCenterX(), getCenterY(), randomSize, randomSize, 
+				(float)Math.random()+2, (float)(angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));
+		
+			
+		
 	}
 	// checks if the GamePiece is attacking and sets it (isAttacking = true)
 	public void updateIsAttacking() {
 		isAttacking = false;
 		if(attackDelayTimer.isRunning()) {
 			isAttacking = true;
+			return;
 		}
 		if(burstTimer.isRunning()) {
 			isAttacking = true;
+			return;
 		}
 		for(FlameThrowerFlame curFTF : flames) {
 			if(!curFTF.hasHitEnemy) {
 				isAttacking = true;
+				return;
 			}
-		}
+		} 
 	}
 	// damages the Target only if all flames have hit it or are faded
 	public void showWhenDmg() {
-		boolean allHaveHit = true;
-		for(FlameThrowerFlame curFTF : flames) {
-			if(!curFTF.hasHitEnemy) {
-				allHaveHit = false;
+		if(startedAttack) {
+			boolean allHaveHit = true;
+			for(FlameThrowerFlame curFTF : flames) {
+				if(!curFTF.getHasHitTarget()) {
+					allHaveHit = false;
+				}
+			}
+			if(allHaveHit) {
+				if(targetGamePiece != null) {
+					targetGamePiece.gamePieceBase.getDamaged(getDmg());
+					targetGamePiece = null;
+				}else {
+					targetDestructibleObject.getDamaged(getDmg(),angle);
+					targetDestructibleObject = null;
+				}
+				startedAttack = false;
 			}
 		}
-		if(allHaveHit && startedAttack && !isWallAttack) {
-			getCurrentTargetGamePiece().getDamaged(getDmg(),getCommanderGamePiece());
-			startedAttack = false;
-		}
-		if(allHaveHit && startedAttack && isWallAttack) {
-			startedAttack = false;
-			currentTargetBoardRectangle.isDestructibleWall = false;
-		}	
+		
+			
 	}
 	
-	@Override
-	public void startAttackDestructibleWall(BoardRectangle targetBoardRectangle) {
-		currentTargetBoardRectangle = targetBoardRectangle;
-		isAttacking = true;
-		updateAngle(true);
-		attackDelayTimer.start();
-		hasExecutedAttack = true;
-		hasExecutedMove = true;
-		isWallAttack = true;
-		
-	}
 	// updates the attack (moves flames,checks if they hit something and so forth)
 	public void updateAttack() {
 		for(int i = 0;i<flames.size();i++) {
 			FlameThrowerFlame curFTF = flames.get(i);
 			curFTF.move();
-			curFTF.checkHitEnemy();
+			curFTF.checkHitAnyTarget();
 			curFTF.updateFade();
 			if(curFTF.getColor().getAlpha()<10) {
 			flames.remove(i);
@@ -223,6 +156,5 @@ public class FlamethrowerPiece extends GamePiece {
 		}
 		updateIsAttacking();
 		showWhenDmg();
-		
 	}
 }

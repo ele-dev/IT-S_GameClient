@@ -1,8 +1,10 @@
 package Stage;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -57,15 +59,33 @@ public class Sprite {
 	
 	// animates the sprite if it has more spriteLinks/sprites than one (also relative speed to the animation delay)
 	public void animate() {
-		if(sprites.size() > 0) {
-			if(animationCounter % animationDelay == 0) {
-				if(animationIndex+1 < sprites.size()) {
-					animationIndex++;
-				}else {
-					animationIndex = 0;
-				}
-			}
+		if(animationCounter>0) {
+			animationCounter--;
+		}else {
+			animationCounter = animationDelay;
+			animationIndex = animationIndex+1 < sprites.size()?animationIndex+1:0;
 		}
+	}
+	
+	public Color getPixelColor(int x, int y) {
+		Color c = new Color(0,0,0,0);
+		BufferedImage buffered = new BufferedImage(w, h, Image.SCALE_SMOOTH);
+		buffered.getGraphics().drawImage(sprites.get(animationIndex), 0, 0 , null);
+		c = new Color(buffered.getRGB(x, y));
+		return c;
+	}
+	
+	// gets a random Pixel that is not totally black or transparent
+	public Color getRandomPixelColor() {
+		Color c = Color.BLACK;
+		while (c.getRed() == 0 && c.getGreen() == 0 && c.getBlue() == 0) {
+			int x = (int) (Math.random()*w);
+			int y = (int) (Math.random()*h);
+			BufferedImage buffered = new BufferedImage(w, h, Image.SCALE_SMOOTH);
+			buffered.getGraphics().drawImage(sprites.get(animationIndex), 0, 0 , null);
+			c = new Color(buffered.getRGB(x, y));
+		}
+		return c;
 	}
 	
 	

@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import Stage.Commons;
-import Stage.ProjektFrame;
+import Stage.ProjectFrame;
 
 @SuppressWarnings("serial")
 public class RegisterPanel extends GuiPanel {
@@ -168,7 +168,7 @@ public class RegisterPanel extends GuiPanel {
 		if(this.goToLoginButton.isHover()) {
 			// redirect to the login panel
 			this.closePanel();
-			ProjektFrame.loginPanel.setVisible(true);
+			ProjectFrame.loginPanel.setVisible(true);
 		}
 	}
 	

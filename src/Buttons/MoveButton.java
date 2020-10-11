@@ -1,53 +1,39 @@
 package Buttons;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
 
 import GamePieces.GamePiece;
 import Stage.Commons;
 
-class MoveButton {
-	private int startx,starty;
-	private Color c = new Color(30,30,30);
-	private Color cIsHover = Commons.cMove;
-	private Color cInactive = new Color(60,60,60); 
-	private Color cActive = Commons.cMoveActive;
-	protected Rectangle rect;
-	private String name = "Move";
-	private boolean isHover = false;
-	public boolean isActive = false;
+class MoveButton extends InterfaceButton{
 	private GamePiece parentGamepiece;
 	
-	public MoveButton(int startx, int starty, GamePiece parentGamepiece) {
-		this.startx = startx;
-		this.starty = starty;	 
-		this.rect = new Rectangle(startx,starty,100,75);
-		this.parentGamepiece  = parentGamepiece;
-	}
-	
-	public boolean getIsHover() {
-		return isHover;
+	public MoveButton(int startx, int starty, int w, GamePiece parentGamepiece) {
+		super(startx, starty, w, Commons.cMove, "Move");
+		this.parentGamepiece = parentGamepiece;
 	}
 	// draws the button but differently if it is hover or blocked
+	@Override
 	public void drawButton(Graphics2D g2d) {
 		if(isHover && !parentGamepiece.getHasExecutedMove()) {
-			g2d.setColor(cIsHover);
+			g2d.setColor(cHover);
 		}else {
 			g2d.setColor(c);
 		}
 		if(isActive) {
-			g2d.setColor(cActive);
+			g2d.setColor(c);
+			g2d.fill(rect);
+			g2d.setColor(new Color(cHover.getRed(),cHover.getGreen(),cHover.getBlue(),100));
 		}
 		g2d.fill(rect);
+		
 		
 		if(isHover && !parentGamepiece.getHasExecutedMove()) {
 			g2d.setColor(c);
 		}else {
-			g2d.setColor(cIsHover);
+			g2d.setColor(cHover); 
 		}
 		if(isActive) {
 			g2d.setColor(c);
@@ -57,32 +43,24 @@ class MoveButton {
 		}
 		g2d.draw(rect);
 		
-		Font f = new Font("Arial",Font.BOLD,40);
 		g2d.setFont(f);
 		FontMetrics fMetrics = g2d.getFontMetrics(f);
 		int textHeight = fMetrics.getHeight();
 		int textWidth = fMetrics.stringWidth(name);
 		g2d.drawString(name,(int)(rect.x+rect.getWidth()/2 - textWidth/2),(int)(rect.y + rect.getHeight()/2 +textHeight/3));
 	}
-	
-	public void press() {
-		if(!parentGamepiece.getHasExecutedMove() && !parentGamepiece.getHasExecutedAttack()) {
-			isActive = true;
-		}else {
-			isActive = false;
+	@Override
+	public boolean tryPress() {
+		if(isHover) {
+			if(!parentGamepiece.getHasExecutedMove() && !parentGamepiece.getHasExecutedAttack()) {
+				isActive = true;
+			}else {
+				isActive = false;
+			}	
+			return true;
 		}
-	}
-	
-	public void updateHover(Point mousePos) {
-		if(rect.contains(mousePos)) {
-			isHover = true;
-		}else {
-			isHover = false;
-		}
-	}
-	
-	public void updatePos(Point CameraPos) {
-		this.rect.setBounds(startx-CameraPos.x,starty-CameraPos.y,150,80);
+		isActive = false;
+		return false;
 	}
 	
 	

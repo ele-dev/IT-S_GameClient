@@ -4,15 +4,15 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.geom.Ellipse2D;
+import java.awt.Rectangle;
 
 public class ExplosionFragment {
 	private float x,y;
 	private float size;
 	private Color c;
-	private Ellipse2D oval;
+	private Rectangle rectShow;
 	private float v;
-	private float angle;
+	private float angle,rotation;
 	private float airResistance = 0.02f;
 	private int fadeSpeed = 3;
 	private Point[] trail = new Point[10];
@@ -23,9 +23,10 @@ public class ExplosionFragment {
 		this.y = y;
 		this.size = size;
 		this.c = c;
-		this.oval = new Ellipse2D.Double(x-size/2,y-size/2,size,size);
+		rectShow = new Rectangle(-size/2,-size/2,size,size);
 		this.v = v;
 		this.angle = angle;
+		this.rotation = (float) (Math.random()*360);
 		for(int i = 0;i<trail.length;i++) {
 			trail[i] = new Point((int)x,(int)y);
 		}
@@ -61,9 +62,12 @@ public class ExplosionFragment {
 	}
 	// draws the fragment and the trail
 	public void drawExplosionFragments(Graphics2D g2d) {
-		this.oval = new Ellipse2D.Double(x-size/2,y-size/2,size,size);
 		g2d.setColor(c);
-		g2d.fill(oval);
+		g2d.translate(x, y);
+		g2d.rotate(Math.toRadians(rotation));
+		g2d.fill(rectShow);
+		g2d.rotate(Math.toRadians(-rotation));
+		g2d.translate(-x, -y);
 		g2d.setStroke(new BasicStroke((int)(size/2)));
 		for(int i = 0;i<trail.length-1;i++) {
 			g2d.drawLine((int)trail[i].getX(), (int)trail[i].getY(), (int)trail[i+1].getX(), (int)trail[i+1].getY());

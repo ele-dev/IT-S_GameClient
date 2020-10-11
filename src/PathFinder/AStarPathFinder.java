@@ -15,7 +15,7 @@ public class AStarPathFinder {
 	
 	private ArrayList<PathCell> pathPathCells = new ArrayList<PathCell>();
 	boolean isDone = false;
-	boolean noSolution = false;
+	public boolean noSolution = false;
 	
 	public AStarPathFinder(ArrayList<PathCell> pathCells) {
 		this.pathCells = pathCells;
