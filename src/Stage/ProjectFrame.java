@@ -1,6 +1,8 @@
 package Stage;
 
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
@@ -11,13 +13,14 @@ import menueGui.LoginPanel;
 import menueGui.RegisterPanel;
 
 @SuppressWarnings("serial")
-public class ProjektFrame extends JFrame {
+public
+class ProjectFrame extends JFrame {
 	
-	
+	// Network related
 	public static Connection conn;
+
 	// Windows related
-	int width = Commons.wf;
-	int height = Commons.hf;
+	public static int width,height;
 	
 	// GUI panels of the application (JPanels)
 	public static StagePanel stagePanel;
@@ -25,9 +28,13 @@ public class ProjektFrame extends JFrame {
 	public static HomePanel homePanel;
 	public static RegisterPanel registerPanel;
 	
-	public ProjektFrame() {
+	private ProjectFrame() {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		width = (int) screenSize.getWidth();
+		height = (int) screenSize.getHeight();
+		setSize(width,height);
+		
 		// Create and init the Window (JFrame)
-		setSize(width, height);
 		setLocationRelativeTo(null);
 		setLayout(null);
 		setResizable(false);
@@ -35,15 +42,18 @@ public class ProjektFrame extends JFrame {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
 		
-		// Create and init the GUI panels (JPanels)
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		
 		Container cp = getContentPane();
+		stagePanel = new StagePanel("TestMap",this);
+		
+		// Create and init the GUI panels (JPanels)
 		loginPanel = new LoginPanel();
 		registerPanel = new RegisterPanel();
-		stagePanel = new StagePanel(0, 0);
 		homePanel = new HomePanel();
-		stagePanel.setVisible(false);
+		stagePanel.setVisible(true);
 		homePanel.setVisible(false);
-		loginPanel.setVisible(true);		// Display the login screen first
+		loginPanel.setVisible(false);		// Display the login screen first
 		registerPanel.setVisible(false);
 		cp.add(loginPanel);
 		cp.add(stagePanel);
@@ -73,7 +83,8 @@ public class ProjektFrame extends JFrame {
 		}
 		
 		// Second create the main window and start the actual game
-		ProjektFrame f = new ProjektFrame();
+		ProjectFrame f = new ProjectFrame();
+		
 		System.out.println("Main Window is now visible");
 		
 		// Add a window listener to the frame

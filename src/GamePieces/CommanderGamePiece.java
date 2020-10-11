@@ -6,42 +6,38 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 import Stage.BoardRectangle;
-import Stage.Commons;
+import Stage.StagePanel;
 
-public abstract class CommanderGamePiece extends GamePiece {
-	
-	float maxUltCharge = 10;
-	float ultCharge;
-
-	public CommanderGamePiece(boolean isEnemy, String name, BoardRectangle boardRect,
-			 int maxHealth, float dmg,int movementRange, CommanderGamePiece commanderGamePiece) {
-		super(isEnemy, name, boardRect, maxHealth, dmg, movementRange, commanderGamePiece);
-
+public abstract class CommanderGamePiece extends GamePiece{
+	protected int maxAbilityCharge,abilityCharge;
+	public CommanderGamePiece(boolean isEnemy, String name, BoardRectangle boardRect, float dmg, int maxAbilityCharge, int baseTypeIndex) {
+		super(isEnemy, name, boardRect, dmg, baseTypeIndex);
+		this.maxAbilityCharge = maxAbilityCharge;
+		this.abilityCharge = maxAbilityCharge;
+		
 	}
 	
-	public void updateUltCharge(float value) {
-		if(ultCharge+value < maxUltCharge) {
-			ultCharge += value;
-		}else {
-			ultCharge = maxUltCharge;
+	public void showPossibleAbilities(BoardRectangle curHoverBoardRectangle) {
+		for(BoardRectangle curBR : StagePanel.boardRectangles) {
+			curBR.isPossibleAbility = false;	
 		}
+		updatePossibleAbilities(curHoverBoardRectangle);	
 	}
 	
-	public void drawUltCharge(Graphics2D g2d) {
-		Rectangle rectUltChargeBar = new Rectangle((int)getRectHitbox().getCenterX() - (int)(getRectHitbox().width*0.75),
-				(int)getRectHitbox().getCenterY() + boardRect.getSize()/4, boardRect.getSize(), 15);
-		g2d.setColor(new Color(0,0,0,200));
-		g2d.fill(rectUltChargeBar);
-		g2d.setColor(Commons.cUltCharge);
-		g2d.fillRect(rectUltChargeBar.x,rectUltChargeBar.y,(int)(rectUltChargeBar.width*(ultCharge/maxUltCharge)),rectUltChargeBar.height);
-		g2d.setColor(Color.BLACK);
-		g2d.setStroke(new BasicStroke(3));
-		g2d.draw(rectUltChargeBar);
+	public int getMaxAbilityCharge() {
+		return maxAbilityCharge;
 	}
 	
+	public int getAbilityCharge() {
+		return abilityCharge;
+	}
 	
+	public abstract void updatePossibleAbilities(BoardRectangle curHoverBoardRectangle);
 	
-
+	public abstract void startAbility(BoardRectangle targetBoardRectangle);
 	
-
+	public void regenAbilityCharge() {
+		abilityCharge = abilityCharge+1 < maxAbilityCharge?abilityCharge+1:maxAbilityCharge;
+	}
+	
 }

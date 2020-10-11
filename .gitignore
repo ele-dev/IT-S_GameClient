@@ -3,5 +3,4 @@
 bin/*
 */*.class 
 /bin/
-GameServer.jar
-
+GameClient.jar

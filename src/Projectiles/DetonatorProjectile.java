@@ -4,29 +4,23 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
+import Abilities.RadialShield;
+import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 import Particles.Explosion;
+import Stage.StagePanel;
 
 
 
-public class DetonatorProjectile {
-	private float x,y;
+public class DetonatorProjectile extends Projectile{
 	private float xRelTarget,yRelTarget;
-	private Color c;
-	private Rectangle rect;
-	private Rectangle rectHitbox;
 	private float dmg;
-	private float angle;
-	private float v;
-	private boolean isStuckToTarget = false;
-	private boolean isDestroyed = false;
-	private GamePiece currentTarget;
-	private GamePiece parentGP;
 	
 	public Timer detonationTimer;
 	public Explosion detExplosion;
@@ -38,19 +32,17 @@ public class DetonatorProjectile {
 	private int blinkeIntervall = 30;
 	private boolean isColorBlink = false;
 	
-	public DetonatorProjectile(int x, int y, int w, int h, Color c,float dmg,float angle,GamePiece currentTarget,GamePiece parentGP) {
-		this.x = x;
-		this.y = y;
-		this.c = c;
-		this.cBlink = Color.BLACK;
-		this.rect = new Rectangle(-w/2,-h/2,w,h);
-		this.rectHitbox = new Rectangle(x-w/2,y-h/2,w,h);
+	private GamePiece targetGamePiece;
+	private DestructibleObject targetDestructibleObject;
+	
+	
+	public DetonatorProjectile(int x, int y, int w, int h, Color c,float dmg,float angle,Shape targetShape
+			,GamePiece targetGamePiece,DestructibleObject targetDestructibleObject) {
+		super(x, y, w, h, c, angle, 16, 0, targetShape, targetDestructibleObject);
+		shapeShow = new Rectangle(-w/2,-h/2,w,h);
+		cBlink = Color.BLACK;
 		this.dmg = dmg;
-		this.angle = angle;
-		this.v = 16;
-		this.currentTarget = currentTarget;
-		this.parentGP = parentGP;
-		this.detonationTimer = new Timer(1500,new ActionListener() {
+		detonationTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -59,47 +51,34 @@ public class DetonatorProjectile {
 			}
 		});
 		detonationTimer.setRepeats(false);
+		this.targetGamePiece = targetGamePiece;
+		this.targetDestructibleObject = targetDestructibleObject;
 	}
 	
-	public boolean isDestroyed() {
-		return isDestroyed;
+	public GamePiece getTargetGamePiece() {
+		return targetGamePiece;
 	}
-	public boolean isStuckToTarget() {
-		return isStuckToTarget;
-	}
+	
 	public boolean isDetonated() {
 		return isDetonated;
 	}
-	
 	public void setBlinkeIntervall(int blinkeIntervall) {
 		this.blinkeIntervall = blinkeIntervall;
 	}
-	
-	public void move() {
-		double vX = Math.cos(Math.toRadians(this.angle + 90)) * v;
-		double vY = Math.sin(Math.toRadians(this.angle + 90)) * v;
-		
-		this.x += vX;
-		this.y += vY;	
-		rectHitbox = new Rectangle((int)(x-rectHitbox.getWidth()/2),(int)(y-rectHitbox.getHeight()/2),(int)rectHitbox.getWidth(),(int)rectHitbox.getHeight());
-		
-	}
 	// draws the projectile
-	public void drawDetonatorProjectile(Graphics2D g2d) {
-		if(isStuckToTarget && !isColorBlink) {
+	public void drawProjectile(Graphics2D g2d) {
+		if(hasHitTarget && !isColorBlink) {
 			g2d.setColor(cBlink);
 		}else {
 			g2d.setColor(c);
 		}
-		
-		rectHitbox.setBounds((int)(x-rectHitbox.getWidth()/2),(int)(y-rectHitbox.getHeight()/2),(int)rectHitbox.getWidth(),(int)rectHitbox.getHeight());
 		g2d.translate(this.x, this.y);
 		g2d.rotate(Math.toRadians(this.angle));
-		g2d.fill(rect);
+		g2d.fill(shapeShow);
 		g2d.rotate(Math.toRadians(-this.angle));
 		g2d.translate(-this.x, -this.y);
 		
-		if(isStuckToTarget) {
+		if(hasHitTarget) {
 			drawTTD(g2d);
 		}
 	}
@@ -127,28 +106,38 @@ public class DetonatorProjectile {
 		if(!isDetonated) {
 			detExplosion = new Explosion((float)x, (float)y,1.5f,(float)angle);
 			isDetonated = true;
-			currentTarget.getDamaged(dmg,parentGP.getCommanderGamePiece());
+			if(targetGamePiece != null) {
+				targetGamePiece.gamePieceBase.getDamaged(dmg);
+			}else if(targetDestructibleObject != null) {
+				targetDestructibleObject.getDamaged(dmg,angle);
+			}
+			
 		}
 	}
 	// checks if it has hit an Enemy and will set it to be Stuck (isStuckToTarget = true)
 	public void checkHitEnemy() {
-		if(this.rectHitbox.intersects(currentTarget.getRectHitbox())) {
-			isStuckToTarget = true;
-			currentTarget.resetDmgFlashCountDown();
+		if(targetGamePiece != null && rectHitbox.intersects(targetGamePiece.getRectHitbox())) {
+			hasHitTarget = true;
 			
-			xRelTarget = x - currentTarget.boardRect.getCenterX();
-			yRelTarget = y - currentTarget.boardRect.getCenterY();
+			xRelTarget = x - targetGamePiece.getCenterX();
+			yRelTarget = y - targetGamePiece.getCenterY();
 		}
 	}
 	
+	
+	public void checkHitTargetShieldOrDestructibleObject() {
+		if((targetDestructibleObject != null) && hasHitTarget) {
+			detonate();
+		}
+	}
 	public void stayStuck() {
-		x = currentTarget.boardRect.getCenterX() + xRelTarget;
-		y = currentTarget.boardRect.getCenterY() + yRelTarget;
+		x = targetGamePiece.getCenterX() + xRelTarget; 
+		y = targetGamePiece.getCenterY() + yRelTarget;
 	}
 	// will set the projectile to be destroyed if its explosion has faded
 	public void checkIfExplosionFaded() {
 		if(detExplosion.checkIfExplosionFaded()) {
-			this.isDestroyed = true;
+			isDestroyed = true;
 		}
 	}
 	
