@@ -105,7 +105,7 @@ public class HomePanel extends GuiPanel {
 			if(GameState.isSearching) {
 				// Send the abortion message to the server
 				SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
-				ProjektFrame.conn.sendMessageToServer(abortMessage);
+				ProjectFrame.conn.sendMessageToServer(abortMessage);
 			}
 			
 			// Run the logout routine and return to the login screen
@@ -125,7 +125,7 @@ public class HomePanel extends GuiPanel {
 			
 			// send the join quickmatch message to the server
 			SignalMessage joinQuickMatchMessage = new SignalMessage(GenericMessage.MSG_JOIN_QUICKMATCH);
-			ProjektFrame.conn.sendMessageToServer(joinQuickMatchMessage);
+			ProjectFrame.conn.sendMessageToServer(joinQuickMatchMessage);
 			
 			// Enable the match search abortion button and disable this one
 			this.quickMatchButton.setEnabled(false);
@@ -145,7 +145,7 @@ public class HomePanel extends GuiPanel {
 			
 			// Send the abort message to the server
 			SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
-			ProjektFrame.conn.sendMessageToServer(abortMessage);
+			ProjectFrame.conn.sendMessageToServer(abortMessage);
 			
 			// Enable the quick match search button and disable this one
 			this.abortMatchSearchButton.setEnabled(false);
