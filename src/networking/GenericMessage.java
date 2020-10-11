@@ -26,6 +26,9 @@ public abstract class GenericMessage implements Serializable {
 	public static final int MSG_LOGIN_STATUS = 1001;
 	public static final int MSG_LOGOUT = 1002;
 	
+	public static final int MSG_REGISTER = 1010;
+	public static final int MSG_REGISTER_STATUS = 1011;
+	
 	public static final int MSG_KEEP_ALIVE = 2000;
 	
 	public static final int MSG_ACCOUNT_STATS = 3005;
