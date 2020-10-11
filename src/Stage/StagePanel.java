@@ -47,7 +47,7 @@ import Particles.Particle;
 import PlayerStructures.PlayerFortress;
 
 // This is the main Panel where the Game is Happening
-public class StagePanel extends JPanel{
+public class StagePanel extends JPanel {
 	public static int w;
 	public static int h;
 	KL kl = new KL();
@@ -99,9 +99,11 @@ public class StagePanel extends JPanel{
 		w = ProjectFrame.width; 
 		h = ProjectFrame.height;
 		setBounds(0, 0, w, h);
+
 		setVisible(true);
 		cBackGround = new Color(28,26,36);
 		
+		// create camera and listener(s)
 		camera = new Camera();
 		levelinitializer = new Levelinitializer();
 		initGameMap(mapName,pf);
@@ -119,20 +121,19 @@ public class StagePanel extends JPanel{
 				
 			}
 		});
+		
 		tUpdateRate = new Timer(10, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateStage();
-				
 			}
 		});
 		tFrameRate.setRepeats(true);
 		tUpdateRate.setRepeats(true);
 		
-		
 		buttonEndTurn = new ButtonEndTurn(ProjectFrame.width-350, ProjectFrame.height -200);
+
 		turnInfoPanel = new TurnInfo();
-		
 		
 		// makes Cursor invisible
 		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
@@ -140,6 +141,7 @@ public class StagePanel extends JPanel{
 		    cursorImg, new Point(0, 0), "blank cursor");
 		setCursor(blankCursor);
 		
+		// Add the listeners
 		addMouseListener(new ML());
 		addMouseMotionListener(new MML());
 		lightingManager = new LightingManager(w, h,camera);
@@ -156,6 +158,7 @@ public class StagePanel extends JPanel{
 	public static void impactStop() {
 		timeStopCounter = 25;
 	}
+	
 	// sets a screen shake so that the camera will shake for "screenShakeAmountOfFRames" of Frames
 	public static void applyScreenShake(int screenShakeAmountOfFRames,int screenShakeMagnitude) {
 		camera.applyScreenShake(screenShakeAmountOfFRames,screenShakeMagnitude);
@@ -223,10 +226,12 @@ public class StagePanel extends JPanel{
 			timeStopCounter--;
 			return;
 		}
+
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(cBackGround);
-		g2d.fillRect(0, 0, w, h);
 		
+		// Draw the background
+		g2d.setColor(this.cBackGround);
+		g2d.fillRect(0, 0, this.w, this.h);
 		
 		g2d.translate(camera.getPos().x, camera.getPos().y);
 		
@@ -240,6 +245,7 @@ public class StagePanel extends JPanel{
 		
 		drawAllGamePiecePointers(g2d);
 		
+		// Draw the game pieces/actors, particles, 
 		drawAllGamePieces(g2d);
 		if(curHoverBR != null && (levelDesignTool != null || !enemyFortress.containsBR(curHoverBR) && !notEnemyFortress.containsBR(curHoverBR))) {
 			curHoverBR.tryDrawHover(g2d);
@@ -312,8 +318,8 @@ public class StagePanel extends JPanel{
 			g2d.setColor(Commons.notEnemyColor);
 			g2d.drawString("NotEnemy", w/2-textWidth/2, h/2+textHeight/3+textHeight);
 		}
-		
 	}
+	
 	// draws all GamePieces
 	private void drawAllGamePieces(Graphics2D g2d) {
 		for(GamePiece curGP : gamePieces) {
@@ -321,7 +327,7 @@ public class StagePanel extends JPanel{
 				curGP.drawGamePiece(g2d);
 			}
 			// for devs
-//			curGP.drawLinesOfSight(g2d);
+			// curGP.drawLinesOfSight(g2d);
 		}
 	}
 	
@@ -331,6 +337,7 @@ public class StagePanel extends JPanel{
 			notEnemyFortress.drawDestructibleObject(g2d);
 		}
 	}
+	
 	// draws all Particles
 	private void drawParticles(Graphics2D g2d) {
 		for(Particle curP : particles) {
@@ -352,6 +359,7 @@ public class StagePanel extends JPanel{
 			} 
 		}
 	}
+
 	// Method must exist because if it is drawn with all other particles like explosions it is drawn on top of GamePieces
 	// and does not make sense
 	private void drawAllEmptyShells(Graphics2D g2d) {
@@ -378,7 +386,7 @@ public class StagePanel extends JPanel{
 	}
 	
 	private void drawCursor(Graphics2D g2d) {
-		if(mousePos != null) {
+		if(this.mousePos != null) {
 			g2d.setColor(Color.WHITE);
 			g2d.setStroke(new BasicStroke(5));
 			int x = mousePos.x;
@@ -424,7 +432,7 @@ public class StagePanel extends JPanel{
 			}
 		}
 	}
-	
+
 	private void drawMovesPanel(Graphics2D g2d) {
 		if(curSelectedGP != null) {
 			curSelectedGP.actionSelectionPanel.drawActionSelectionPanel(g2d);
@@ -445,6 +453,7 @@ public class StagePanel extends JPanel{
 			curDO.drawDestructibleObject(g2d);
 		}
 	}
+	
 	// draws all the Walls including destructible walls
 	private void drawEveryWall(Graphics2D g2d){
 		for(BoardRectangle curBR : boardRectangles) {
@@ -566,6 +575,7 @@ public class StagePanel extends JPanel{
 			}
 		}
 	}
+	
 	// updates destructible objects (removes them if they are flagged as destroyed)
 	private void updateDestructibleObject() {
 		for(int i = 0;i<destructibleObjects.size();i++) {
@@ -597,6 +607,7 @@ public class StagePanel extends JPanel{
 		}
 	}
 	
+
 	// updates/changes Turns
 	private void updateTurn() {
 		turnInfoPanel.toggleTurn();
@@ -704,23 +715,14 @@ public class StagePanel extends JPanel{
 	private class ML implements MouseListener{
 
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			
-			
-		}
+		public void mouseClicked(MouseEvent e) {}
 
 		@Override
-		public void mouseEntered(MouseEvent e) {
-			
-			
-		}
+		public void mouseEntered(MouseEvent e) {}
 
 		@Override
-		public void mouseExited(MouseEvent e) {
-			
-			
-		}
-
+		public void mouseExited(MouseEvent e) {}
+		
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (levelDesignTool != null) {
@@ -778,20 +780,16 @@ public class StagePanel extends JPanel{
 							return;
 						}
 					}
-					
 				}
 			}
-			
 		}
 
 		@Override
-		public void mouseReleased(MouseEvent e) {
-			
-		}
+		public void mouseReleased(MouseEvent e) {}
 		
 	}
 	
-	private class MML implements MouseMotionListener{
+	private class MML implements MouseMotionListener {
 
 		@Override		
 		public void mouseDragged(MouseEvent e) {
@@ -814,7 +812,7 @@ public class StagePanel extends JPanel{
 		}
 	}
 	
-	class KL implements KeyListener{
+	class KL implements KeyListener {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -838,9 +836,6 @@ public class StagePanel extends JPanel{
 		}
 
 		@Override
-		public void keyTyped(KeyEvent e) {
-			
-			
-		}
+		public void keyTyped(KeyEvent e) {}
 	}
 }

@@ -144,6 +144,7 @@ public class BoardRectangle {
 		boolean leftConnected = false;
 		boolean upConnected = false;
 		boolean downConnected = false;
+
 		for(BoardRectangle curBR : adjecantBoardRectangles) {
 			if(curBR.isWall) {
 				if(curBR.row == row+1 && curBR.column == column) {
@@ -179,12 +180,12 @@ public class BoardRectangle {
 						spriteLinks3.add(Commons.pathToSpriteSource+"Tiles/DarkWall_LRUD.png");
 						wallSprite = new Sprite(spriteLinks3, size,size, 0);
 					}
-				}else if(upConnected){
+				} else if (upConnected) {
 					ArrayList<String> spriteLinks2 = new ArrayList<String>();
 					spriteLinks2.add(Commons.pathToSpriteSource+"Tiles/DarkWall_LRU.png");
 					wallSprite = new Sprite(spriteLinks2, size,size, 0);
 				}
-			}else
+			} else
 			if(upConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
 				spriteLinks1.add(Commons.pathToSpriteSource+"Tiles/DarkWall_RU.png");
@@ -214,13 +215,13 @@ public class BoardRectangle {
 					spriteLinks2.add(Commons.pathToSpriteSource+"Tiles/DarkWall_LUD.png");
 					wallSprite = new Sprite(spriteLinks2, size,size, 0);
 				}
-			}else if(downConnected){
+			}else if(downConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
 				spriteLinks1.add(Commons.pathToSpriteSource+"Tiles/DarkWall_LD.png");
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 			}
 		}else 
-		if(upConnected){
+		if(upConnected) {
 			ArrayList<String> spriteLinks2 = new ArrayList<String>();
 			spriteLinks2.add(Commons.pathToSpriteSource+"Tiles/DarkWall_U.png");
 			wallSprite = new Sprite(spriteLinks2, size,size, 0);
@@ -230,7 +231,7 @@ public class BoardRectangle {
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 			}
 		}else 
-		if(downConnected){
+		if(downConnected) {
 			ArrayList<String> spriteLinks1 = new ArrayList<String>();
 			spriteLinks1.add(Commons.pathToSpriteSource+"Tiles/DarkWall_D.png");
 			wallSprite = new Sprite(spriteLinks1, size,size, 0);
@@ -244,8 +245,6 @@ public class BoardRectangle {
 	public void drawBoardRectangle(Graphics2D g2d,ArrayList<BoardRectangle> boardRectangles) {
 		g2d.setColor(isGap?Color.BLUE:isHinderingTerrain?Color.MAGENTA:c);
 		g2d.fill(rect);
-		
-		
 			
 		if(groundSprite != null && !isGap && !isWall) {
 			groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);

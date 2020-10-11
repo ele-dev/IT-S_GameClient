@@ -11,9 +11,10 @@ import Particles.RocketTrailParticle;
 import Stage.StagePanel;
 
 
-public class Rocket extends Projectile{
+public class Rocket extends Projectile {
 	private Polygon poly;
 	public float rotationDelay = 4;
+
 	
 	public Rocket(int x, int y, int w, int h, Color c,float angle, Shape targetShape, DestructibleObject targetDestructibleObject) {
 		super(x, y, w, h, c, angle, 0, 0.3f, targetShape, targetDestructibleObject);

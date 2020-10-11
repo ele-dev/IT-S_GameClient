@@ -3,7 +3,22 @@ package Stage;
 import java.awt.Color;
 
 public interface Commons {
+	// Size of the Cells on the game board
 	final int boardRectSize = 80;
+	
+	// window frame dimensions 
+	final int wf = 1800;
+	final int hf = 1000;
+	
+	// Refresh rates for timers 
+	public static final int frametime = 10;
+	
+	// Important colors
+	final Color loginScreenBackground = new Color(28, 26, 36);
+	final Color homeScreenBackground = new Color(28, 26, 36);
+	final Color buttonHover = Color.BLUE;
+	final Color textFieldSelected = new Color(136, 24, 206);
+	// final Color textFieldSelected = new Color(255,0,50);
 	
 	final Color cUltCharge = new Color(234,255,70);
 	
@@ -19,9 +34,14 @@ public interface Commons {
 	
 	final Color cCurrency = new Color(255,230,50);
 	
+	// Gui elements constants
+	public final short maxInputLength = 18;
+	
+	// File path for sprites
 	final String pathToSpriteSource = "sprites/";
 	
-	// GamePieces 
+	
+	// Game Piece config variables //
 	final int dmgFlashCountDown = 5;
 	final int shieldRegen = 1;
 	// BaseTypes

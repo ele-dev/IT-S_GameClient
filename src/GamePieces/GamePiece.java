@@ -153,7 +153,6 @@ public abstract class GamePiece {
 			}
 		}
 		
-		
 		for(BoardRectangle curBr : gamePieceBase.pathBoardRectangles) {
 			if(curBr == StagePanel.curHoverBR) {
 				curBr.isPossibleMove = true;
@@ -235,7 +234,6 @@ public abstract class GamePiece {
 		}
 		
 	} 
-
 	
 	// returns true if the BoardRectangle is in sight of the GamePiece and return false if it is for example behind a wall
 	public boolean checkIfBoardRectangleInSight(BoardRectangle targetBoardRectangle) {
@@ -259,7 +257,6 @@ public abstract class GamePiece {
 			g2d.setColor(new Color(0,0,255,200));
 			g2d.draw(line);
 		}
-		
 	}
 	
 	// checks if the PositionParameter is a valid position to attack and returns true if it is
