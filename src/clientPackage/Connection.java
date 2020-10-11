@@ -22,6 +22,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import javax.swing.JOptionPane;
 
+import menueGui.GameState;
 import networking.*;
 
 public class Connection extends Thread {
@@ -47,7 +48,7 @@ public class Connection extends Thread {
 		// Initialize state indicators assuming worst case 
 		this.playAsGuest = false;
 		this.isConnected = false;
-		this.loggedIn = false;
+		this.loggedIn = false; 
 		this.stopOrder = false;
 		this.sleepOrder = false;
 		
@@ -177,6 +178,62 @@ public class Connection extends Thread {
 		}
 		
 		System.out.println("Closed connection");
+	}
+	
+	// Method that makes and attempt to create a new account
+	public boolean registerAccount(String user, String mail, String pwd) {
+		
+		// create the message and send it so the server
+		MsgRegister registerMsg = new MsgRegister(user, mail, pwd);
+		this.sendMessageToServer(registerMsg);
+		System.out.println("Sent registration message to the server");
+		
+		// Wait for the response
+		GenericMessage recvBuffer = null;
+		
+		// Define how long to wait for a response (socket timeout)
+		try {
+			this.clientSocket.setSoTimeout(NetworkConfig.registerTimeout);
+		} catch (SocketException e) {
+			System.err.println("Failed to set socket timeout!");
+			return false;
+		}
+		
+		// Wait for a response to the register request
+		try {
+			recvBuffer = (GenericMessage) this.objIn.readObject();
+		} catch(ClassNotFoundException e) {
+			System.err.println("Class Not Found Exception thrown!");
+			System.out.println("Failed to parse incoming message");
+			return false;
+		} catch(SocketTimeoutException e) {
+			// JOptionPane.showMessageDialog(null, "Server did not answer the register request");
+			GameState.registerStatusDescription = "timeout: server did not respond!";
+			return false;
+		} catch(StreamCorruptedException e1) {
+			System.err.println("Stream corrupted Excption thrown while reading message!");
+			return false;
+		} catch(IOException e2) {
+			System.err.println("IO Exception thrown while reading message!");
+			return false;
+		} catch(Exception e3) {
+			System.err.println("Unknown exception thrown while parsing incoming message!");
+			return false;
+		}
+		
+		// Now checkout if the message is from the right type
+		if(recvBuffer.getMessageID() != GenericMessage.MSG_REGISTER_STATUS) 
+		{
+			GameState.registerStatusDescription = "Wrong message type received!";
+			return false;
+		}
+		
+		// Coerce message into the desired format
+		MsgRegisterStatus statusMsg = (MsgRegisterStatus)recvBuffer;
+	
+		// read success status
+		GameState.registerStatusDescription = statusMsg.getDescription();
+		return statusMsg.getSuccessStatus();
 	}
 	
 	// Method that handles the login procedure for accounts

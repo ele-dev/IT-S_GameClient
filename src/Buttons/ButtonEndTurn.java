@@ -15,8 +15,6 @@ public class ButtonEndTurn {
 	private Color cIsNotPressable;
 	private Rectangle rect;
 	private boolean isHover = false;
-	private String name = " End Turn";
-	private Font f;
 	private boolean isPressable = true;
 	 
 	public ButtonEndTurn(int startx, int starty) {
@@ -26,7 +24,6 @@ public class ButtonEndTurn {
 		this.cHover = new Color(60,60,60);
 		this.cIsNotPressable = new Color(10,10,10);
 		this.rect = new Rectangle(startx,starty,250,100);
-		f = new Font("Arial",Font.BOLD,30);
 	}
 	
 	public boolean getIsHover() {
@@ -52,11 +49,11 @@ public class ButtonEndTurn {
 			g2d.setColor(new Color(20,20,20));
 		}
 		g2d.draw(rect);
-		g2d.setFont(f);
-		FontMetrics fMetrics = g2d.getFontMetrics(f);
+		g2d.setFont(new Font("Arial",Font.BOLD,30));
+		FontMetrics fMetrics = g2d.getFontMetrics();
 		int textHeight = fMetrics.getHeight();
-		int textWidth = fMetrics.stringWidth(name);
-		g2d.drawString(name,(int)(rect.x+rect.getWidth()/2 - textWidth/2),(int)(rect.y + rect.getHeight()/2 +textHeight/3));
+		int textWidth = fMetrics.stringWidth("End Turn");
+		g2d.drawString("End Turn",(int)(rect.x+rect.getWidth()/2 - textWidth/2),(int)(rect.y + rect.getHeight()/2 +textHeight/3));
 	}
 	
 	public void updatePressable(boolean isOngoingAttack) {
@@ -69,17 +66,13 @@ public class ButtonEndTurn {
 	
 	public void updateHover(Point mousePos) {
 		if(mousePos != null) {
-			if(rect.contains(mousePos)) {
-				isHover = true;
-			}else {
-				isHover = false;
-			}
+			isHover = rect.contains(mousePos);
 		}
 		
 	}
 	
 	public void updatePos(Point CameraPos) {
-		this.rect.setBounds(startx-CameraPos.x,starty-CameraPos.y,250,100);
+		rect.setBounds(startx-CameraPos.x,starty-CameraPos.y,250,100);
 	}
 	
 	
