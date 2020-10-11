@@ -90,6 +90,7 @@ public class StagePanel extends JPanel {
 	public static GamePiece curSelectedGP,curActionPerformingGP;
 	
 	private Color cBackGround;
+	@SuppressWarnings("unused")
 	private static LightingManager lightingManager;
 	private Levelinitializer levelinitializer;
 	public static GameMap gameMap;
@@ -465,6 +466,7 @@ public class StagePanel extends JPanel {
 		}
 	}
 		
+	@SuppressWarnings("unused")
 	private void drawEveryBoardRectangleIndex(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			curBR.drawIndex(g2d);
