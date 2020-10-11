@@ -108,6 +108,7 @@ public class RocketLauncherPiece extends GamePiece{
 		rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c,
 				(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));
 	}
+	
 	// checks if the piece is attacking and sets its boolean isAttacking to true if it is currently attacking and to false if it isn't
 	public void updateIsAttacking() {
 		isAttacking = false;
@@ -123,8 +124,8 @@ public class RocketLauncherPiece extends GamePiece{
 			if(targetGamePiece != null) {
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
-			}else if(targetDestructibleObject != null){
-				targetDestructibleObject.getDamaged(getDmg(),angle);
+			} else if(targetDestructibleObject != null) {
+				targetDestructibleObject.getDamaged(getDmg(), angle);
 				targetDestructibleObject = null;
 			}
 		}
