@@ -150,7 +150,7 @@ public class RegisterPanel extends GuiPanel {
 			}
 			
 			// run the registration process with the validated parameters
-			boolean result = ProjektFrame.conn.registerAccount(this.fields[0].text, this.fields[1].text, this.fields[2].text);
+			boolean result = ProjectFrame.conn.registerAccount(this.fields[0].text, this.fields[1].text, this.fields[2].text);
 			if(result) {
 				this.failedAttempt = false;
 				this.registerStatusStr = "Registration done successfully";
