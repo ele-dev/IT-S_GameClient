@@ -45,7 +45,7 @@ class ProjectFrame extends JFrame {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		Container cp = getContentPane();
-		stagePanel = new StagePanel("TestMap",this);
+		stagePanel = new StagePanel("TestMap", this);
 		
 		// Create and init the GUI panels (JPanels)
 		loginPanel = new LoginPanel();
@@ -53,8 +53,8 @@ class ProjectFrame extends JFrame {
 		homePanel = new HomePanel();
 		stagePanel.setVisible(true);
 		homePanel.setVisible(false);
-		loginPanel.setVisible(false);		// Display the login screen first
-		registerPanel.setVisible(false);
+		loginPanel.setVisible(false);			// Display the login screen first
+		registerPanel.setVisible(false);		
 		cp.add(loginPanel);
 		cp.add(stagePanel);
 		cp.add(homePanel);

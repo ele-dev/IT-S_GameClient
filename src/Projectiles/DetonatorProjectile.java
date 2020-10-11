@@ -10,13 +10,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
-import Abilities.RadialShield;
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 import Particles.Explosion;
-import Stage.StagePanel;
-
-
 
 public class DetonatorProjectile extends Projectile{
 	private float xRelTarget,yRelTarget;

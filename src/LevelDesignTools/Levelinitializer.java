@@ -30,6 +30,7 @@ public class Levelinitializer {
 		return mapColumns;
 	}
 	// Reads the File and generates the BoardRectangle accordingly
+	@SuppressWarnings("unused")
 	public void readFile(String mapName,ProjectFrame pf) {	
 		try {
 			File file = new File("src/LevelDesignTools/"+mapName+".txt");
@@ -81,6 +82,7 @@ public class Levelinitializer {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void printBR(int index, int tileIndex, int row, int column, int WallorGapIndex, int DestructibleObjectIndex) {
 		System.out.println("BoardRectIndex: "+index);
 		System.out.println("TileIndex: "+tileIndex);

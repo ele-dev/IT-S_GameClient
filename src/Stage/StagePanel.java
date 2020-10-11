@@ -47,6 +47,7 @@ import Particles.Particle;
 import PlayerStructures.PlayerFortress;
 
 // This is the main Panel where the Game is Happening
+@SuppressWarnings("serial")
 public class StagePanel extends JPanel {
 	public static int w;
 	public static int h;
@@ -231,7 +232,7 @@ public class StagePanel extends JPanel {
 		
 		// Draw the background
 		g2d.setColor(this.cBackGround);
-		g2d.fillRect(0, 0, this.w, this.h);
+		g2d.fillRect(0, 0, StagePanel.w, StagePanel.h);
 		
 		g2d.translate(camera.getPos().x, camera.getPos().y);
 		
@@ -257,11 +258,10 @@ public class StagePanel extends JPanel {
 		
 		g2d.setStroke(new BasicStroke(80));
 		g2d.setColor(cBackGround);
-		g2d.draw(gameMap.mapRectangle);
+		g2d.draw(GameMap.mapRectangle);
 		drawValueLabels(g2d);
 		
-//		lightingManager.drawLight(g2d);
-		
+		// lightingManager.drawLight(g2d);
 		
 		drawMovesPanel(g2d);
 		
@@ -386,7 +386,7 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void drawCursor(Graphics2D g2d) {
-		if(this.mousePos != null) {
+		if(StagePanel.mousePos != null) {
 			g2d.setColor(Color.WHITE);
 			g2d.setStroke(new BasicStroke(5));
 			int x = mousePos.x;
@@ -486,8 +486,6 @@ public class StagePanel extends JPanel {
 		updateDestructibleObject();
 		updateParticles();
 		
-		
-		
 		camera.move(GameMap.mapRectangle);
 		if(mousePosUntranslated != null) {
 			mousePos = new Point((int)(mousePosUntranslated.x-camera.getPos().x), (int)(mousePosUntranslated.y-camera.getPos().y));
@@ -538,7 +536,7 @@ public class StagePanel extends JPanel {
 	// also moves the ActionSelectionPanel relative to the camera position
 	private void updateGamePieces() {
 		StagePanel.curActionPerformingGP = null;
-		for(int i = 0;i<gamePieces.size();i++) {
+		for(int i = 0; i < gamePieces.size(); i++) {
 			GamePiece curGP = gamePieces.get(i);
 			if(curGP.isPerformingAction()) {
 				curActionPerformingGP = curGP;
@@ -587,11 +585,11 @@ public class StagePanel extends JPanel {
 	
 	// updates all the ValueLabels (fades them out)
 	private void updateDmgLabels() {
-		for(int i = 0;i<valueLabels.size();i++) {
+		for(int i = 0; i < valueLabels.size(); i++) {
 			ValueLabel curVL = valueLabels.get(i);
 			if(curVL.getColor().getAlpha()>10) {
 				curVL.updateFade();
-			}else {
+			} else {
 				valueLabels.remove(i);
 			}
 		}

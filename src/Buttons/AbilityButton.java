@@ -1,7 +1,6 @@
 package Buttons;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
@@ -9,7 +8,7 @@ import GamePieces.CommanderGamePiece;
 import GamePieces.GamePiece;
 import Stage.Commons;
 
-class AbilityButton extends InterfaceButton{
+class AbilityButton extends InterfaceButton {
 	private GamePiece parentGamepiece;
 	 
 	public AbilityButton(int startx, int starty, int w, GamePiece parentGamepiece) {

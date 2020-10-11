@@ -6,9 +6,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
-import Abilities.RadialShield;
 import Environment.DestructibleObject;
-import GamePieces.GamePiece;
 
 public abstract class Projectile {
 	protected float x,y;
