@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 import javax.swing.Timer;
 
+import com.sun.org.apache.bcel.internal.generic.IFGE;
+
 import Abilities.RadialShield;
 import Buttons.ActionSelectionPanel;
 import Environment.DestructibleObject;
@@ -36,14 +38,12 @@ public abstract class GamePiece {
 	public boolean isDead = false;
 	private float dmg;
 	
-	public boolean isSelected = false;
 	private boolean isEnemy;
-	protected boolean hasExecutedMove = false;
-	protected boolean hasExecutedAttack = false;
+	protected boolean hasExecutedMove = true;
+	protected boolean hasExecutedAttack = true;
 	
 	protected Timer attackDelayTimer,abilityDelayTimer,deathDelayTimer;
 	protected GamePiece targetGamePiece;
-	protected RadialShield targetShield;
 	protected DestructibleObject targetDestructibleObject;
 	
 	protected Arc2D aimArc;
@@ -97,7 +97,7 @@ public abstract class GamePiece {
 				
 			if(curBR.isWall || curBR.isDestructibleObject() || curBR.isGap) {
 				pathCells.get(i).setIsWall(true);
-			}
+			}else
 			for(GamePiece curGP : StagePanel.gamePieces) {
 				if(curGP.boardRect == StagePanel.boardRectangles.get(i) && !curGP.isDead && curGP != this) {
 					pathCells.get(i).setIsWall(true);
@@ -143,14 +143,21 @@ public abstract class GamePiece {
 		if(pathFinder.getPathPathCells().size() == 0 || pathFinder.noSolution) {
 			return;
 		}
-		for(int j = pathFinder.getPathPathCells().size()-1;j>=pathFinder.getPathPathCells().size()-(gamePieceBase.getMovementRange()+1) && j>= 0;j--) {
+		
+		int movementRange = gamePieceBase.getMovementRange();
+		for(int j = pathFinder.getPathPathCells().size()-1;j>=pathFinder.getPathPathCells().size()-(movementRange+1) && j>= 0;j--) {
 			for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
 				if(pathFinder.getPathPathCells().get(j).getIndex() == i) {
 					gamePieceBase.pathBoardRectangles.add(StagePanel.boardRectangles.get(i));
+					if(StagePanel.boardRectangles.get(i).isHinderingTerrain) {
+						movementRange--;
+					}
 					break;
 				}
 			}
 		}
+		
+		
 		for(BoardRectangle curBr : gamePieceBase.pathBoardRectangles) {
 			if(curBr == StagePanel.curHoverBR) {
 				curBr.isPossibleMove = true;
@@ -214,23 +221,23 @@ public abstract class GamePiece {
 	
 	// sets each BoardRectangle to being a possible attackPosition if it is(changes color accordingly)
 	public void showPossibleAttacks() {
-		if(isSelected) {
-			sightLines.clear(); 
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(checkAttacks(curBR.row, curBR.column) && !curBR.isWall) {
-					boolean success = true;
-					for(GamePiece curGP : StagePanel.gamePieces) {
-						if(curGP.boardRect == curBR && !this.checkIfEnemies(curGP)) {
-							success = false;
-							break;
-						}
+		
+		sightLines.clear(); 
+		for(BoardRectangle curBR : StagePanel.boardRectangles) {
+			if(checkAttacks(curBR.row, curBR.column) && !curBR.isWall) {
+				boolean success = true;
+				for(GamePiece curGP : StagePanel.gamePieces) {
+					if(curGP.boardRect == curBR && !this.checkIfEnemies(curGP)) {
+						success = false;
+						break;
 					}
-					if(success) {
-						curBR.isShowPossibleAttack = true;
-					}
+				}
+				if(success) {
+					curBR.isShowPossibleAttack = true;
 				}
 			}
 		}
+		
 	} 
 
 	
@@ -251,31 +258,33 @@ public abstract class GamePiece {
 	public abstract void drawAttack(Graphics2D g2d);
 	// draws all LinesOfSight (only for devs)
 	public void drawLinesOfSight(Graphics2D g2d) {
-		if(isSelected) {
-			for(Line2D line : sightLines) {
-				g2d.setColor(new Color(0,0,255,200));
-				g2d.draw(line);
-			}
+		
+		for(Line2D line : sightLines) {
+			g2d.setColor(new Color(0,0,255,200));
+			g2d.draw(line);
 		}
+		
 	}
 	
 	// checks if the PositionParameter is a valid position to attack and returns true if it is
 	// is abstract because every GamePiece has a different attack pattern
 	public abstract boolean checkAttacks(int selectedRow, int selectedColumn);
-		
-//	public abstract boolean checkAttackRows(int selectedRow,int selectedColumn);
-//	
-//	public abstract boolean checkAttackColumns(int selectedRow,int selectedColumn);
 	
 	// updates angle to face toward enemy and starts the attack (starts attackDelayTimer)
 	public void startAttack(BoardRectangle targetBoardRectangle) {
+		if(StagePanel.enemyFortress.containsBR(targetBoardRectangle) && !isEnemy) {
+			targetDestructibleObject = StagePanel.enemyFortress;
+			startAttackDelay();
+			return;
+		}else if(StagePanel.notEnemyFortress.containsBR(targetBoardRectangle) && isEnemy){
+			targetDestructibleObject = StagePanel.notEnemyFortress;
+			startAttackDelay();
+			return;
+		}
 		for(RadialShield curRS : StagePanel.radialShields) {
 			if(curRS.contains(targetBoardRectangle) && checkIfEnemies(curRS)) {
-				targetShield = curRS;
-				isAttacking = true;
-				attackDelayTimer.start();
-				hasExecutedAttack = true;
-				hasExecutedMove = true;
+				targetDestructibleObject = curRS;
+				startAttackDelay();
 				return;
 			}
 		}
@@ -283,24 +292,25 @@ public abstract class GamePiece {
 			if(curDO.containsBR(targetBoardRectangle)) {
 				System.out.println("confirmed");
 				targetDestructibleObject = curDO;
-				isAttacking = true;
-				attackDelayTimer.start();
-				hasExecutedAttack = true;
-				hasExecutedMove = true;
+				startAttackDelay();
 			}
 		}
 		for(GamePiece curGP : StagePanel.gamePieces) {
 			if(curGP.boardRect == targetBoardRectangle) {
 				if(!curGP.isDead && checkIfEnemies(curGP)) {
 					targetGamePiece = curGP;
-					isAttacking = true;
-					attackDelayTimer.start();
-					hasExecutedAttack = true;
-					hasExecutedMove = true;
+					startAttackDelay();
 					return;
 				}	
 			}
 		}
+	}
+	
+	private void startAttackDelay() {
+		isAttacking = true;
+		attackDelayTimer.start();
+		hasExecutedAttack = true;
+		hasExecutedMove = true;
 	}
 	
 	// updates all things that are animated with the attack (for example moves the rockets and updates the explosions)
@@ -337,9 +347,6 @@ public abstract class GamePiece {
 			int textWidth = metrics.stringWidth(text);
 			g2d.drawString(text, cx - textWidth/2, cy + textHeight/3);
 		}
-		gamePieceBase.drawMoveRange(g2d);
-		
-		
 	}
 	
 	public void drawPointer(Graphics2D g2d) {
@@ -362,7 +369,7 @@ public abstract class GamePiece {
 	// updates the MovesPanels position so it follows the camera (also updates the isHover boolean)
 	public void updateActionSelectionPanelPos(Point CameraPos,Point mousePos) {
 		actionSelectionPanel.updatePos(CameraPos);
-		if(mousePos != null && isSelected) {
+		if(mousePos != null) {
 			actionSelectionPanel.updateHover(mousePos);
 		}
 	}

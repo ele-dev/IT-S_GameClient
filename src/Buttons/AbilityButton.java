@@ -20,12 +20,12 @@ class AbilityButton extends InterfaceButton{
 	// draws the button but differently if it is hover or inActive
 	@Override
 	public void drawButton(Graphics2D g2d) {
-		g2d.setColor(isHover && !parentGamepiece.getHasExecutedAttack() && hasSufficientCharge()?cIsHover:c);
+		g2d.setColor(isHover && !parentGamepiece.getHasExecutedAttack() && hasSufficientCharge()?cHover:c);
 		
 		if(isActive) {
 			g2d.setColor(c);
 			g2d.fill(rect);
-			g2d.setColor(new Color(cIsHover.getRed(),cIsHover.getGreen(),cIsHover.getBlue(),100));
+			g2d.setColor(new Color(cHover.getRed(),cHover.getGreen(),cHover.getBlue(),100));
 		}
 		g2d.fill(rect);
 		
@@ -33,7 +33,7 @@ class AbilityButton extends InterfaceButton{
 		if(isHover && !parentGamepiece.getHasExecutedAttack()) {
 			g2d.setColor(c);
 		}else {
-			g2d.setColor(cIsHover);
+			g2d.setColor(cHover);
 		}
 		if(isActive) {
 			g2d.setColor(c);

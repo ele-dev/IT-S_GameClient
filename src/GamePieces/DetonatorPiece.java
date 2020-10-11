@@ -34,8 +34,6 @@ public class DetonatorPiece extends GamePiece{
 	public void update() {
 		if(targetGamePiece != null) {
 			updateAngle(targetGamePiece.getPos());
-		}else if(targetShield != null){
-			updateAngle(targetShield.getPos());
 		}else if(targetDestructibleObject != null){
 			updateAngle(targetDestructibleObject.getPos());
 		}
@@ -76,11 +74,10 @@ public class DetonatorPiece extends GamePiece{
 	// creates/shoots the DetonatorProjectile
 	public void shootDetonator() {
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
-			targetShield != null?targetShield.getShieldCircle():
 			targetDestructibleObject.getRectHitbox();
 			
 		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), 10, 20, c, 
-				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape,targetGamePiece,targetShield,targetDestructibleObject));
+				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape,targetGamePiece,targetDestructibleObject));
 	}
 	// decreases the detonation counter and lets it explode if the timer <= 0
 	public void decDetonaterTimers() {

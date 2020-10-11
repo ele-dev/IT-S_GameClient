@@ -56,8 +56,6 @@ public class RocketLauncherPiece extends GamePiece{
 	public void update() {
 		if(targetGamePiece != null) {
 			updateAngle(targetGamePiece.getPos());
-		}else if(targetShield != null){
-			updateAngle(targetShield.getPos());
 		}else if(targetDestructibleObject != null){ 
 			updateAngle(targetDestructibleObject.getPos());
 		}
@@ -104,7 +102,6 @@ public class RocketLauncherPiece extends GamePiece{
 	
 	public void addRocketInArcFlight() {
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
-			targetShield != null?targetShield.getShieldCircle():
 			targetDestructibleObject.getRectHitbox();
 			
 			
@@ -126,9 +123,6 @@ public class RocketLauncherPiece extends GamePiece{
 			if(targetGamePiece != null) {
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
-			}else if(targetShield != null){
-				targetShield.getDamaged(getDmg());
-				targetShield = null;
 			}else if(targetDestructibleObject != null){
 				targetDestructibleObject.getDamaged(getDmg(),angle);
 				targetDestructibleObject = null;
@@ -147,8 +141,6 @@ public class RocketLauncherPiece extends GamePiece{
 			curR.tryExplodeTarget();
 			if(targetGamePiece != null) {
 				curR.homeInOnTarget(targetGamePiece.getPos(), curR.rotationDelay);
-			}else if(targetShield != null){
-				curR.homeInOnTarget(targetShield.getPos(), curR.rotationDelay);
 			}else if(targetDestructibleObject != null){
 				curR.homeInOnTarget(targetDestructibleObject.getPos(), curR.rotationDelay);
 			}

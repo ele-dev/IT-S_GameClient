@@ -15,7 +15,7 @@ public class PathCell {
 	float h;
 	ArrayList<PathCell> adjecantPathCells = new ArrayList<PathCell>();
 	PathCell parentGridCell = null;
-	boolean isWall = false;
+	boolean isWall;
 	int index;
 	
 	public PathCell(int x, int y, int size, int row, int column, int index) {

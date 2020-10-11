@@ -68,9 +68,7 @@ public class GunnerPiece extends CommanderGamePiece {
 	public void update() {
 		if(targetGamePiece != null) {
 			updateAngle(targetGamePiece.getPos());
-		}else if(targetShield != null){
-			updateAngle(targetShield.getPos());
-		}else if(targetDestructibleObject != null){
+		} else if(targetDestructibleObject != null){
 			updateAngle(targetDestructibleObject.getPos());
 		}
 		if(isMoving) {
@@ -131,7 +129,12 @@ public class GunnerPiece extends CommanderGamePiece {
 	}
 	
 	public void createShield() { 
-		StagePanel.radialShields.add(new RadialShield(targetBoardRectangleNextRadialShield, getIsEnemy()));
+		for(BoardRectangle curBR : StagePanel.boardRectangles) {
+			if(curBR.row == targetBoardRectangleNextRadialShield.row-1 && curBR.column == targetBoardRectangleNextRadialShield.column-1) {
+				StagePanel.radialShields.add(new RadialShield(curBR, getIsEnemy()));
+				break;
+			}
+		}
 		isPerformingAbility = false;
 	}
 
@@ -168,7 +171,6 @@ public class GunnerPiece extends CommanderGamePiece {
 		startedAttack = true;
 		
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
-			targetShield != null?targetShield.getShieldCircle():
 			targetDestructibleObject.getRectHitbox();
 			
 		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c,16, 
@@ -192,10 +194,7 @@ public class GunnerPiece extends CommanderGamePiece {
 			if(targetGamePiece != null) {
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
-			}else if(targetShield != null){
-				targetShield.getDamaged(getDmg());
-				targetShield = null;
-			}else {
+			}else { 
 				targetDestructibleObject.getDamaged(getDmg(),angle);
 				targetDestructibleObject = null;
 			}

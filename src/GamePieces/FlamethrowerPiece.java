@@ -48,8 +48,6 @@ public class FlamethrowerPiece extends GamePiece {
 	public void update() {
 		if(targetGamePiece != null) {
 			updateAngle(targetGamePiece.getPos());
-		}else if(targetShield != null){
-			updateAngle(targetShield.getPos());
 		}else if(targetDestructibleObject != null){
 			updateAngle(targetDestructibleObject.getPos());
 		}
@@ -95,7 +93,6 @@ public class FlamethrowerPiece extends GamePiece {
 		}
 		int randomSize = (int)(Math.random() * 5 +5);
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
-			targetShield != null?targetShield.getShieldCircle():
 			targetDestructibleObject.getRectHitbox();
 			
 		flames.add(new FlameThrowerFlame(getCenterX(), getCenterY(), randomSize, randomSize, 
@@ -135,9 +132,6 @@ public class FlamethrowerPiece extends GamePiece {
 				if(targetGamePiece != null) {
 					targetGamePiece.gamePieceBase.getDamaged(getDmg());
 					targetGamePiece = null;
-				}else if(targetShield != null){
-					targetShield.getDamaged(getDmg());
-					targetShield = null;
 				}else {
 					targetDestructibleObject.getDamaged(getDmg(),angle);
 					targetDestructibleObject = null;

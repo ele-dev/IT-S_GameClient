@@ -24,7 +24,7 @@ public class BoardRectangle {
 	public boolean isTile1;
 	public boolean isPossibleMove,isPossibleAttack,isPossibleAbility;
 	public boolean isShowPossibleMove,isShowPossibleAttack,isShowPossibleAbility;
-	public boolean isWall,isGap;
+	public boolean isWall,isGap,isHinderingTerrain;
 	
 	private boolean isHover;
 	private double animationSpeed;
@@ -37,28 +37,38 @@ public class BoardRectangle {
 	public BoardRectangle northBR,southBR,eastBR,westBR;
 	ArrayList<BoardRectangle> adjecantBoardRectangles = new ArrayList<BoardRectangle>();
 	
-	public BoardRectangle(int row, int column,boolean isTile1,int index) {
+	public BoardRectangle(int row, int column,boolean isTile1,int index,boolean isHinderingTerrain) {
 		this.row = row;
 		this.column = column;
 		int size = Commons.boardRectSize;
 		rect = new Rectangle(column*size,row*size,size,size);
-		
 		int alpha = 200;
 		cPossibleMove = new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),alpha);
 		cPossibleAttack = new Color(Commons.cAttack.getRed(),Commons.cAttack.getGreen(),Commons.cAttack.getBlue(),alpha);
 		cPossibleAbility = new Color(Commons.cAbility.getRed(),Commons.cAbility.getGreen(),Commons.cAbility.getBlue(),alpha);
-		
 		this.isTile1 = isTile1;
-		
 		this.index = index;
-		
+		this.isHinderingTerrain = isHinderingTerrain;
 		
 		c = isTile1?new Color(10,10,10):new Color(200,200,200);
 		
 		
 		ArrayList<String> spriteLinks = new ArrayList<String>();
-		spriteLinks.add(Commons.pathToSpriteSource+"Tiles/GrassTile.png");
+		String spriteDirector = "";
+		String biomType = "Grass";
+		if(Math.random() < 0.3) {
+			spriteDirector = "Tiles/"+biomType+"Tile0.png";
+		}else if(Math.random() < 0.5){
+			spriteDirector = "Tiles/"+biomType+"Tile1.png";
+		}else {
+			spriteDirector = "Tiles/"+biomType+"Tile2.png";
+		}
+		if(isHinderingTerrain) {
+			spriteDirector = "Tiles/RockTile.png";
+		}
+		spriteLinks.add(Commons.pathToSpriteSource+spriteDirector);
 		groundSprite = new Sprite(spriteLinks, size,size, 0);
+		
 	}
 	public int getSize() {
 		return (int) rect.getWidth();
@@ -86,8 +96,18 @@ public class BoardRectangle {
 		return adjecantBoardRectangles;
 	}
 	public boolean isDestructibleObject() {
+		if(StagePanel.enemyFortress != null && StagePanel.enemyFortress.containsBR(this)) return true;
+		if(StagePanel.notEnemyFortress != null && StagePanel.notEnemyFortress.containsBR(this)) return true;
 		for(DestructibleObject curDO : StagePanel.destructibleObjects) {
 			if(curDO.containsBR(this)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean hasGamePieceOnIt() {
+		for(GamePiece curGP : StagePanel.gamePieces) {
+			if(curGP.boardRect == this) {
 				return true;
 			}
 		}
@@ -225,17 +245,22 @@ public class BoardRectangle {
 	}
 	// draws The Rectangle depending on if it is a Possible move/attack (draws another rectangle with another color over it)
 	public void drawBoardRectangle(Graphics2D g2d,ArrayList<BoardRectangle> boardRectangles) {
-		g2d.setColor(isGap?Color.BLUE:c);
+		g2d.setColor(isGap?Color.BLUE:isHinderingTerrain?Color.MAGENTA:c);
 		g2d.fill(rect);
-		g2d.setStroke(new BasicStroke(5));
 		
-		if(!isTile1 && !isGap) {
+		
+			
+		if(groundSprite != null && !isGap && !isWall) {
 			groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
-		}else {
-
 		}
+		
+		g2d.setColor(new Color(0,0,0,100));
+		g2d.fill(rect);
+		
 		g2d.setStroke(new BasicStroke(2));
 		if(isPossibleMove || isPossibleAttack || isPossibleAbility) {
+			g2d.setColor(new Color(10,10,10,100));
+			g2d.fill(rect);
 			
 			g2d.setColor(isPossibleMove?cPossibleMove:isPossibleAttack?cPossibleAttack:cPossibleAbility);
 			g2d.fill(rect);
@@ -244,10 +269,11 @@ public class BoardRectangle {
 		}
 		if((isShowPossibleAbility && !isPossibleAbility) || (isShowPossibleMove && !isPossibleMove) || (isShowPossibleAttack && !isPossibleAttack)) {
 			g2d.setStroke(new BasicStroke(4));
-			
-			g2d.setColor(isShowPossibleAbility?new Color(cPossibleAbility.getRed(),cPossibleAbility.getGreen(),cPossibleAbility.getBlue(),150):
-				isShowPossibleMove?new Color(cPossibleMove.getRed(),cPossibleMove.getGreen(),cPossibleMove.getBlue(),150):
-				new Color(cPossibleAttack.getRed(),cPossibleAttack.getGreen(),cPossibleAttack.getBlue(),150));
+			g2d.setColor(new Color(10,10,10,100));
+			g2d.fill(rect);
+			g2d.setColor(isShowPossibleAbility?new Color(cPossibleAbility.getRed(),cPossibleAbility.getGreen(),cPossibleAbility.getBlue(),200):
+				isShowPossibleMove?new Color(cPossibleMove.getRed(),cPossibleMove.getGreen(),cPossibleMove.getBlue(),200):
+				new Color(cPossibleAttack.getRed(),cPossibleAttack.getGreen(),cPossibleAttack.getBlue(),200));
 			
 			g2d.drawLine(getX(), getY(), getX()+getSize(), getY());
 			g2d.drawLine(getX(), getY()+getSize(), getX()+getSize(), getY()+getSize());
@@ -366,6 +392,12 @@ public class BoardRectangle {
 			g2d.setStroke(new BasicStroke(6));
 			g2d.draw(rect);
 		}
+	}
+	
+	public void drawPossibleRecruitPlace(Graphics2D g2d) {
+		g2d.setColor(Color.GREEN);
+		g2d.setStroke(new BasicStroke(4));
+		g2d.draw(rect);
 	}
 	
 	public void drawIndex(Graphics2D g2d) {

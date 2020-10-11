@@ -41,8 +41,6 @@ public class TazerPiece extends GamePiece{
 	public void update() {
 		if(targetGamePiece != null) {
 			updateAngle(targetGamePiece.getPos());
-		}else if(targetShield != null){
-			updateAngle(targetShield.getPos());
 		}else if(targetDestructibleObject != null){
 			updateAngle(targetDestructibleObject.getPos());
 		}
@@ -77,7 +75,6 @@ public class TazerPiece extends GamePiece{
 
 	public void shootOnce() {	
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
-			targetShield != null?targetShield.getShieldCircle():
 			targetDestructibleObject.getRectHitbox();
 			
 		tazerBullet = new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 6, c,1,
@@ -169,9 +166,6 @@ public class TazerPiece extends GamePiece{
 				for(GamePiece curGP : alreadyHitGPs) {
 					curGP.gamePieceBase.getDamaged(getDmg());
 				}
-			}else if(targetShield != null){
-				targetShield.getDamaged(getDmg());
-				targetShield = null;
 			}else {
 				targetDestructibleObject.getDamaged(getDmg(),tazerBullet.angle);
 				targetDestructibleObject = null;

@@ -13,11 +13,11 @@ public interface Commons {
 	
 	final Color enemyColor = new Color(255,0,43);
 	final Color notEnemyColor = new Color(16,68,255);
-	final Color enemyColorTurret = new Color(230,0,33);
-	final Color notEnemyColorTurret = new Color(10,48,230);
 	
 	final Color cHealth = new Color(85,255,80);
 	final Color cShield = new Color(39,86,155);
+	
+	final Color cCurrency = new Color(255,230,50);
 	
 	final String pathToSpriteSource = "sprites/";
 	

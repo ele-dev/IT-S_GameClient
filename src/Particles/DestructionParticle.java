@@ -14,7 +14,6 @@ import Stage.StagePanel;
 public class DestructionParticle extends Particle{
 	int w,h;
 	private float friction = 0.08f;
-	Rectangle rectHitbox;
 	float vRotation = (float) (Math.random()*5+3);
 	float fadeSpeed;
 	

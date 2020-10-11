@@ -19,14 +19,14 @@ class MoveButton extends InterfaceButton{
 	@Override
 	public void drawButton(Graphics2D g2d) {
 		if(isHover && !parentGamepiece.getHasExecutedMove()) {
-			g2d.setColor(cIsHover);
+			g2d.setColor(cHover);
 		}else {
 			g2d.setColor(c);
 		}
 		if(isActive) {
 			g2d.setColor(c);
 			g2d.fill(rect);
-			g2d.setColor(new Color(cIsHover.getRed(),cIsHover.getGreen(),cIsHover.getBlue(),100));
+			g2d.setColor(new Color(cHover.getRed(),cHover.getGreen(),cHover.getBlue(),100));
 		}
 		g2d.fill(rect);
 		
@@ -34,7 +34,7 @@ class MoveButton extends InterfaceButton{
 		if(isHover && !parentGamepiece.getHasExecutedMove()) {
 			g2d.setColor(c);
 		}else {
-			g2d.setColor(cIsHover); 
+			g2d.setColor(cHover); 
 		}
 		if(isActive) {
 			g2d.setColor(c);

@@ -53,8 +53,6 @@ public class SniperPiece extends CommanderGamePiece{
 	public void update() {
 		if(targetGamePiece != null) {
 			updateAngle(targetGamePiece.getPos());
-		}else if(targetShield != null){
-			updateAngle(targetShield.getPos());
 		}else if(targetDestructibleObject != null){
 			updateAngle(targetDestructibleObject.getPos());
 		}
@@ -162,7 +160,6 @@ public class SniperPiece extends CommanderGamePiece{
 		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2,boardRect.getCenterY()-Commons.boardRectSize/2,
 				Commons.boardRectSize,Commons.boardRectSize,0,-angle-90,Arc2D.PIE);	
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
-			targetShield != null?targetShield.getShieldCircle():
 			targetDestructibleObject.getRectHitbox();
 			
 		sniperBullet = new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 6, c,1,
@@ -188,9 +185,6 @@ public class SniperPiece extends CommanderGamePiece{
 		if(targetGamePiece != null) {
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());
 			targetGamePiece = null;
-		}else if(targetShield != null){
-			targetShield.getDamaged(getDmg());
-			targetShield = null;
 		}else {
 			targetDestructibleObject.getDamaged(getDmg(),angle);
 			targetDestructibleObject = null;

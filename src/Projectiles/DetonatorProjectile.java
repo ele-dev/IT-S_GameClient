@@ -33,12 +33,11 @@ public class DetonatorProjectile extends Projectile{
 	private boolean isColorBlink = false;
 	
 	private GamePiece targetGamePiece;
-	private RadialShield targetShield;
 	private DestructibleObject targetDestructibleObject;
 	
 	
 	public DetonatorProjectile(int x, int y, int w, int h, Color c,float dmg,float angle,Shape targetShape
-			,GamePiece targetGamePiece,RadialShield targetShield,DestructibleObject targetDestructibleObject) {
+			,GamePiece targetGamePiece,DestructibleObject targetDestructibleObject) {
 		super(x, y, w, h, c, angle, 16, 0, targetShape, targetDestructibleObject);
 		shapeShow = new Rectangle(-w/2,-h/2,w,h);
 		cBlink = Color.BLACK;
@@ -53,7 +52,6 @@ public class DetonatorProjectile extends Projectile{
 		});
 		detonationTimer.setRepeats(false);
 		this.targetGamePiece = targetGamePiece;
-		this.targetShield = targetShield;
 		this.targetDestructibleObject = targetDestructibleObject;
 	}
 	
@@ -110,8 +108,6 @@ public class DetonatorProjectile extends Projectile{
 			isDetonated = true;
 			if(targetGamePiece != null) {
 				targetGamePiece.gamePieceBase.getDamaged(dmg);
-			}else if(targetShield != null){
-				targetShield.getDamaged(dmg);
 			}else if(targetDestructibleObject != null) {
 				targetDestructibleObject.getDamaged(dmg,angle);
 			}
@@ -130,7 +126,7 @@ public class DetonatorProjectile extends Projectile{
 	
 	
 	public void checkHitTargetShieldOrDestructibleObject() {
-		if((targetShield != null || targetDestructibleObject != null) && hasHitTarget) {
+		if((targetDestructibleObject != null) && hasHitTarget) {
 			detonate();
 		}
 	}

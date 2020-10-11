@@ -16,13 +16,13 @@ import Stage.Sprite;
 import Stage.StagePanel;
 
 public class DestructibleObject {
-	private float rotation;
-	private float health;
-	private boolean isDestroyed;
-	private Rectangle rectHitbox;
-	private Sprite sprite;
-	private int impactFlashCounter;
-	BoardRectangle[] occupiedBRs;
+	protected float rotation;
+	protected float health;
+	protected boolean isDestroyed;
+	protected Rectangle rectHitbox;
+	protected Sprite sprite;
+	protected int impactFlashCounter;
+	protected BoardRectangle[] occupiedBRs;
 	
 	
 	public DestructibleObject(BoardRectangle boardRectangle,int occupiedRows,int occupiedColumns,float maxHealth,float rotation) {
@@ -85,7 +85,7 @@ public class DestructibleObject {
 		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), 25);
 	}
 	
-	private void drawHealthValues(Graphics2D g2d,int x, int y, int fontSize) {
+	protected void drawHealthValues(Graphics2D g2d,int x, int y, int fontSize) {
 		g2d.setFont(new Font("Arial",Font.BOLD,fontSize));
 		FontMetrics metrics = g2d.getFontMetrics();
 		int textHeight = metrics.getHeight();

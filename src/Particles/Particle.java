@@ -34,6 +34,10 @@ public abstract class Particle {
 		}
 	} 
 	
+	public boolean isDestroyed() {
+		return isDestroyed;
+	}
+	
 	protected Particle(float x, float y) {
 		this.x = x;
 		this.y = y;
@@ -75,10 +79,6 @@ public abstract class Particle {
 	public abstract void drawParticle(Graphics2D g2d);
 	
 	public abstract void update();
-	
-	public boolean getIsDestroyed() {
-		return isDestroyed;
-	}
 	
 	
 }

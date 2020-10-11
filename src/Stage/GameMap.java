@@ -33,9 +33,9 @@ public class GameMap {
 		for(int i = 0;i<rows;i++) {
 			for(int j = 0;j<columns;j++) {
 				if(i%2==0) {
-					boardRectangles.add(new BoardRectangle(i, j, j%2==0, index));
+					boardRectangles.add(new BoardRectangle(i, j, j%2==0, index,false));
 				}else{
-					boardRectangles.add(new BoardRectangle(i, j, j%2==1, index));
+					boardRectangles.add(new BoardRectangle(i, j, j%2==1, index,false));
 				}
 				index++;
 			}

@@ -21,6 +21,10 @@ public class Camera {
 	public Camera() {
 		this.x = 0;
 		this.y = 0;
+		int w = StagePanel.w;
+		int h = StagePanel.h;
+		rectOfView = new Rectangle((int)-x-Commons.boardRectSize,(int)-y-Commons.boardRectSize,w+Commons.boardRectSize*2,h+Commons.boardRectSize*2);
+
 	}
 	
 	public void drawRectOfView(Graphics2D g2d) {

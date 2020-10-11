@@ -75,31 +75,24 @@ public class ActionSelectionPanel {
 		x = x+border;
 		y = y+h/5;
 		
+		float dmg = parentGamepiece.getDmg();
+		String[] strs = {"Name: ","Dmg: ","Moves: "};
+		String[] strValues = {parentGamepiece.getName(),dmg == Math.round(dmg)?Math.round(dmg)+"":dmg+"",parentGamepiece.gamePieceBase.getMovementRange()+""};
+		Color[] colors = {parentGamepiece.getColor(),Commons.cAttack,Commons.cMove};
+		
 		g2d.setFont(new Font("Arial",Font.BOLD,40));
 		FontMetrics metrics = g2d.getFontMetrics();
 		int textHeight = metrics.getHeight();
-		String str = "Name: ";
-		int textWidth = metrics.stringWidth(str);
-		g2d.setColor(parentGamepiece.getColor());
-		g2d.drawString(str, x, y+textHeight);
-		g2d.setColor(Color.WHITE);
-		g2d.drawString(parentGamepiece.getName(), x+textWidth, y+textHeight);
 		
-		str = "Dmg: ";
-		textWidth = metrics.stringWidth(str);
-		g2d.setColor(Commons.cAttack);
-		g2d.drawString(str, x, y+textHeight*2);
-		g2d.setColor(Color.WHITE);
-		float dmg = parentGamepiece.getDmg();
 		
-		g2d.drawString(dmg == Math.round(dmg)?Math.round(dmg)+"":dmg+"",x+textWidth,y+textHeight*2);
-		
-		str = "Moves: ";
-		textWidth = metrics.stringWidth(str);
-		g2d.setColor(Commons.cMove);
-		g2d.drawString(str, x, y+textHeight*3);
-		g2d.setColor(Color.WHITE);
-		g2d.drawString(parentGamepiece.gamePieceBase.getMovementRange()+"", x+textWidth,y+textHeight*3);
+		for(int i = 0;i<strs.length;i++) {
+			int textWidth = metrics.stringWidth(strs[i]);
+			g2d.setColor(colors[i]);
+			g2d.drawString(strs[i], x, y+textHeight*(i+1));
+			g2d.setColor(Color.WHITE);
+			g2d.drawString(strValues[i], x+textWidth, y+textHeight*(i+1));
+		}
+
 		
 		g2d.setStroke(new BasicStroke(8));
 		attackButton.drawButton(g2d);
@@ -135,21 +128,25 @@ public class ActionSelectionPanel {
 		}
 	}
 	
-	public void tryPressButton() {
+	public boolean tryPressButton() {
 		if(moveButton.tryPress()) {
 			attackButton.isActive = false;
 			if(abilityButton != null) {
 				abilityButton.isActive = false;
 			}
-			return;
+			return true;
 		}
 		if(abilityButton != null && abilityButton.tryPress()) {
 			CommanderGamePiece curPCGP = (CommanderGamePiece) parentGamepiece;
 			curPCGP.showPossibleAbilities(StagePanel.curHoverBR);
 			attackButton.isActive = false;
-			return;
+			return true;
 		}
-		attackButton.tryPress();
+		if(attackButton.tryPress()) {
+			return true;
+		}
+		return false;
+		
 	} 
 	
 	public void updatePos(Point CameraPos) {
@@ -160,7 +157,6 @@ public class ActionSelectionPanel {
 		if(abilityButton != null) {
 			abilityButton.updatePos(CameraPos);
 		}
-		
 	}
 	
 	public boolean containsMousePos(Point mousePos) {

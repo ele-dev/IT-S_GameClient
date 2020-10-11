@@ -15,12 +15,10 @@ public abstract class CommanderGamePiece extends GamePiece{
 	}
 	
 	public void showPossibleAbilities(BoardRectangle curHoverBoardRectangle) {
-		if(isSelected) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				curBR.isPossibleAbility = false;	
-			}
-			updatePossibleAbilities(curHoverBoardRectangle);	
+		for(BoardRectangle curBR : StagePanel.boardRectangles) {
+			curBR.isPossibleAbility = false;	
 		}
+		updatePossibleAbilities(curHoverBoardRectangle);	
 	}
 	
 	public int getMaxAbilityCharge() {

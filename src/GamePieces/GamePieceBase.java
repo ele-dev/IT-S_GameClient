@@ -60,7 +60,6 @@ public class GamePieceBase {
 	
 	private void initBaseType(int baseTypeIndex) {
 		this.baseTypeIndex = baseTypeIndex;
-		
 		switch (baseTypeIndex) {
 		case 0:
 			this.maxHealth = Commons.maxHealthType0;
@@ -149,7 +148,7 @@ public class GamePieceBase {
 		g2d.setColor(Color.BLACK);
 		g2d.draw(maxHealthShieldRect);
 		
-		if(parentGP.boardRect == StagePanel.curHoverBR || parentGP.isSelected) {
+		if(parentGP.boardRect == StagePanel.curHoverBR || parentGP == StagePanel.curSelectedGP) {
 			drawHealthValues(g2d, x, y,15);
 		}
 	}
@@ -168,7 +167,7 @@ public class GamePieceBase {
 		g2d.setStroke(new BasicStroke(3));
 		g2d.setColor(Color.BLACK);
 		g2d.draw(maxHealthShieldRect);
-		if(parentGP.boardRect == StagePanel.curHoverBR || parentGP.isSelected) {
+		if(parentGP.boardRect == StagePanel.curHoverBR || parentGP == StagePanel.curSelectedGP) {
 			drawHealthValues(g2d, x, y,fontSize);
 		}
 	}
@@ -205,41 +204,6 @@ public class GamePieceBase {
 			g2d.draw(r);
 			g2d.setColor(Commons.cShield);
 			g2d.drawString(str, (int)r.getCenterX()-textWidth/2, (int)r.getCenterY()+textHeight/3);
-		}
-	}
-	
-	public void drawMoveRange(Graphics2D g2d) {
-		g2d.setFont(new Font("Arial",Font.BOLD,20));
-		FontMetrics metrics = g2d.getFontMetrics();
-		int textHeight = metrics.getHeight();
-		int textWidth = 0;
-		if(parentGP.actionSelectionPanel.getMoveButtonIsActive()) {
-			g2d.setColor(Commons.cMove);
-			for(int i = 1;i<pathBoardRectangles.size();i++) {
-				textWidth = metrics.stringWidth(i+"");
-				g2d.drawString(i+"", pathBoardRectangles.get(i).getCenterX()-textWidth/2, pathBoardRectangles.get(i).getCenterY()+textHeight/3);
-			}
-			
-		}
-		int usedMoves = pathBoardRectangles.size()-1;
-		if(usedMoves < 0) {
-			usedMoves = 0;
-		}
-		if(parentGP.hasExecutedMove) {
-			usedMoves = movementRange;
-		}
-		if(!parentGP.hasExecutedAttack && (parentGP.getIsEnemy() && StagePanel.getIsEnemyTurn()) || (!parentGP.getIsEnemy() && !StagePanel.getIsEnemyTurn())) {
-			
-			textWidth = metrics.stringWidth(movementRange-(usedMoves)+"");
-			int size = (int) (textWidth*2);
-			Rectangle r = new Rectangle((int)x-size/2, (int)y-size/2+Commons.boardRectSize/2, size, size);
-			g2d.setColor(new Color(20,20,20));
-			g2d.fill(r);	
-			g2d.setColor(new Color(5,5,5));
-			g2d.setStroke(new BasicStroke(5));
-			g2d.draw(r);
-			g2d.setColor(Commons.cMove);
-			g2d.drawString(movementRange-(usedMoves)+"", (int)x-textWidth/2, (int)y+textHeight/3 + Commons.boardRectSize/2);
 		}
 	}
 	

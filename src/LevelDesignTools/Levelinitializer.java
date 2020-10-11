@@ -43,16 +43,18 @@ public class Levelinitializer {
 				int tileIndex = Integer.parseInt(scanner.next());		
 				int row = Integer.parseInt(scanner.next());	
 				int column = Integer.parseInt(scanner.next());	 
-				int WallorGapIndex = Integer.parseInt(scanner.next());		
+				int WallorGaporHinderingTerrainIndex = Integer.parseInt(scanner.next());		
 				int DestructibleObjectIndex = Integer.parseInt(scanner.next());	
 				
 //				printBR(index, tileIndex, row, column, WallorGapIndex, DestructibleObjectIndex);
 
-				boardRectangles.add(new BoardRectangle(row, column, tileIndex==1, lineIndex));
-				if(WallorGapIndex == 1) {
+				boardRectangles.add(new BoardRectangle(row, column, tileIndex==1, lineIndex,Math.random() > 0.9));
+				if(WallorGaporHinderingTerrainIndex == 1) {
 					boardRectangles.get(lineIndex).isWall = true;
-				}else if(WallorGapIndex == 2) {
+				}else if(WallorGaporHinderingTerrainIndex == 2) {
 					boardRectangles.get(lineIndex).isGap = true;
+				}else if(WallorGaporHinderingTerrainIndex == 3) {
+					boardRectangles.get(lineIndex).isHinderingTerrain = true;
 				}
 				if(DestructibleObjectIndex == 1) {
 					StagePanel.destructibleObjects.add(new DestructibleObject(boardRectangles.get(lineIndex),1,1, 1,0));
@@ -147,6 +149,8 @@ public class Levelinitializer {
 					pw.print(1+" ");
 				}else if(boardRectangles.get(i).isGap){
 					pw.print(2+" ");
+				}else if(boardRectangles.get(i).isHinderingTerrain){
+					pw.print(3+" ");
 				}else {
 					pw.print(0+" ");
 				}
