@@ -55,7 +55,7 @@ public class HomePanel extends GuiPanel {
 		
 		// Place logout button in the bottom left corner
 		int btnHeight = this.logoutButton.getDimension().height;
-		this.logoutButton.setPosition(10, Commons.hf - btnHeight * 2);
+		this.logoutButton.setPosition(10, ProjectFrame.height - btnHeight * 2);
 		
 		// ...
 	}
