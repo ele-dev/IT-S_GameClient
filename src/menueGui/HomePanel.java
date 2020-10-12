@@ -11,7 +11,6 @@ package menueGui;
  */
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 
@@ -28,10 +27,9 @@ public class HomePanel extends GuiPanel {
 	private Button logoutButton = new Button(800, 500, 100, 50, "Logout");
 	private Button quickMatchButton = new Button(1200, 200, 130, 50, "Quickmatch");
 	private Button abortMatchSearchButton = new Button(1200, 300, 130, 50, "Abort Search");
-	
-	// Fonts 
-	private Font caption1 = new Font("Arial", Font.BOLD, 30);
-	private Font normal = new Font("Tahoma", Font.PLAIN, 17);
+	private TextLabel caption = new TextLabel("Homescreen", 30);
+	private TextLabel welcomeMessage = new TextLabel("Welcome", 18);
+	private TextLabel gameSearchMessage = new TextLabel("Waiting for an opponent ...", 18);
 
 	// Constructor takes initial position
 	public HomePanel() {
@@ -53,11 +51,16 @@ public class HomePanel extends GuiPanel {
 	@Override
 	protected void initGuiElements() {
 		
-		// Place logout button in the bottom left corner
-		int btnHeight = this.logoutButton.getDimension().height;
-		this.logoutButton.setPosition(10, ProjectFrame.height - btnHeight * 2);
+		// give the label relative screen positions
+		this.caption.setRelativePosition(50, 20);
+		this.welcomeMessage.setRelativePosition(50, 28);
+		this.gameSearchMessage.setRelativePosition(75, 47);
+		this.gameSearchMessage.setTextColor(Color.ORANGE);
 		
-		// ...
+		// Give the buttons relative screen positions
+		this.logoutButton.setRelativePosition(3, 95);
+		this.quickMatchButton.setRelativePosition(75, 40);
+		this.abortMatchSearchButton.setRelativePosition(75, 55);
 	}
 	
 	// Method for implementing clean up tasks before panel closure
@@ -76,16 +79,13 @@ public class HomePanel extends GuiPanel {
 	protected void drawPanelContent(Graphics2D g2d) {
 		
 		// Next draw some text
-		g2d.setColor(Color.WHITE);
-		g2d.setFont(this.caption1);
-		g2d.drawString("Home screen", 750, 200);
+		this.caption.draw(g2d);
 		
-		g2d.setFont(this.normal);
-		g2d.drawString("Logged in as " + ProjectFrame.conn.getUsername(), 750, 250);
+		this.welcomeMessage.setText("Welcome " + ProjectFrame.conn.getUsername());
+		this.welcomeMessage.draw(g2d);
 		
 		if(this.abortMatchSearchButton.isEnabled) {
-			g2d.setColor(Color.ORANGE);
-			g2d.drawString("Waiting for an opponent ...", 1200, 400);
+			this.gameSearchMessage.draw(g2d);
 		}
 		
 		// Draw the buttons
