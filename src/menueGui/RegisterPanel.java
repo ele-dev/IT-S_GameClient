@@ -1,7 +1,6 @@
 package menueGui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -16,10 +15,8 @@ public class RegisterPanel extends GuiPanel {
 	private Button goToLoginButton = new Button(0, 0, 180, 50, "Back to Login");
 	private Button registerAccountButton = new Button(750, 600, 170, 50, "Register");
 	private TextInputField[] fields = new TextInputField[4];
-	
-	// Fonts
-	private Font caption1 = new Font("Arial", Font.PLAIN, 30);
-	private Font statusDisplay = new Font("Tahoma", Font.PLAIN, 17);
+	private TextLabel caption = new TextLabel("Create new Account", 40);
+	private TextLabel statusLabel = new TextLabel("", 17);
 	
 	// status message and register status
 	private String registerStatusStr;
@@ -41,11 +38,19 @@ public class RegisterPanel extends GuiPanel {
 	@Override
 	protected void initGuiElements() {
 		
-		// init the list of textfields
-		this.fields[0] = new TextInputField("Username", 750, 300, 350, 50);
-		this.fields[1] = new TextInputField("Email address", 750, 360, 350, 50);
-		this.fields[2] = new TextInputField("Password", 750, 420, 350, 50);
-		this.fields[3] = new TextInputField("Repeat password", 750, 480, 350, 50);
+		// Give the text label relative positions
+		this.caption.setRelativePosition(50, 30);
+		this.statusLabel.setRelativePosition(45, 57);
+		
+		// init the list of textfields and give them relative positions
+		this.fields[0] = new TextInputField("Username", 750, 300, 450, 50);
+		this.fields[0].setRelativePosition(50, 37);
+		this.fields[1] = new TextInputField("Email address", 750, 360, 450, 50);
+		this.fields[1].setRelativePosition(50, 42);
+		this.fields[2] = new TextInputField("Password", 750, 420, 450, 50);
+		this.fields[2].setRelativePosition(50, 47);
+		this.fields[3] = new TextInputField("Repeat password", 750, 480, 450, 50);
+		this.fields[3].setRelativePosition(50, 52);
 
 		// Configure parameters of the input fields
 		this.fields[2].hideText(true);
@@ -53,6 +58,10 @@ public class RegisterPanel extends GuiPanel {
 		this.fields[1].changeMaxInputLength((short) 35);
 		char[] additionalChars = {'.', '@', '-'};
 		this.fields[1].addValidChars(additionalChars);
+		
+		// Give the buttons relative position
+		this.goToLoginButton.setRelativePosition(5, 95);
+		this.registerAccountButton.setRelativePosition(50, 61);
 		
 		// set the initial state and according message
 		this.failedAttempt = false;
@@ -76,9 +85,7 @@ public class RegisterPanel extends GuiPanel {
 	protected void drawPanelContent(Graphics2D g2d) {
 		
 		// Draw title text
-		g2d.setColor(Color.WHITE);
-		g2d.setFont(this.caption1);
-		g2d.drawString("Create new account", 750, 240);
+		this.caption.draw(g2d);
 		
 		// Draw the input fields
 		for(TextInputField curTIF: this.fields) 
@@ -91,9 +98,9 @@ public class RegisterPanel extends GuiPanel {
 		this.registerAccountButton.draw(g2d);
 		
 		// Draw the status message
-		g2d.setColor(this.failedAttempt ? Color.RED : Color.WHITE);
-		g2d.setFont(this.statusDisplay);
-		g2d.drawString(this.registerStatusStr, 760, 570);
+		this.statusLabel.setTextColor(this.failedAttempt ? Color.RED : Color.WHITE);
+		this.statusLabel.setText(this.registerStatusStr);
+		this.statusLabel.draw(g2d);
 	}
 	
 	// Method for changing focus by clicking somewhere
@@ -120,8 +127,8 @@ public class RegisterPanel extends GuiPanel {
 			// do register attempt
 			System.out.println("--> Register attempt");
 			this.failedAttempt = false;
+			System.out.println("Processing ...");
 			this.registerStatusStr = "Processing ...";
-			repaint();
 			
 			// validation of input fields
 			for(TextInputField curTIF : this.fields) 
