@@ -22,7 +22,8 @@ public class LoginPanel extends GuiPanel {
 	private Button playAsGuestButton = new Button(895, 510, 140, 50, "Play as Guest");
 	private Button goToRegisterButton = new Button(800, 700, 190, 50, "Register an account");
 	private TextLabel statusLabel = new TextLabel("", 17);
-	private TextLabel gameTitle = new TextLabel(Commons.gameTitle, 50);
+	private TextLabel gameTitle = new TextLabel(Commons.gameTitle, 55);
+	private TextLabel noAccountYet = new TextLabel("You don't have an account yet?", 17);
 	
 	// Status message and success status
 	private String loginStatusStr = "";
@@ -46,12 +47,13 @@ public class LoginPanel extends GuiPanel {
 		
 		// give the labels relative screen positions 
 		this.gameTitle.setRelativePosition(50, 30);
-		this.statusLabel.setRelativePosition(47, 47);
+		this.statusLabel.setRelativePosition(46, 47);
+		this.noAccountYet.setRelativePosition(50, 60);
 		
 		// give the buttons relative screen positions
 		this.loginButton.setRelativePosition(47, 50);
 		this.playAsGuestButton.setRelativePosition(53, 50);
-		this.goToRegisterButton.setRelativePosition(50, 60);
+		this.goToRegisterButton.setRelativePosition(50, 65);
 		
 		// create the input fields and place them at relative position
 		fields[0] = new TextInputField("Username", 750, 350, 400, 50);
@@ -73,15 +75,15 @@ public class LoginPanel extends GuiPanel {
 		// Empty the password input field and the status label before panel closes
 		this.fields[1].clearField();
 		this.loginStatusStr = "";
-		// this.statusLabel.setText("");
 	}
 	
 	// Drawing method for GUI elements
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
 		
-		// Draw game title label
+		// Draw game title and other labels
 		this.gameTitle.draw(g2d);
+		this.noAccountYet.draw(g2d);
 		
 		// Draw Loginbutton and play as guest button
 		this.loginButton.draw(g2d);
