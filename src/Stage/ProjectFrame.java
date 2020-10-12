@@ -20,7 +20,7 @@ class ProjectFrame extends JFrame {
 	public static Connection conn;
 
 	// Windows related
-	public static int width,height;
+	public static int width, height;
 	
 	// GUI panels of the application (JPanels)
 	public static StagePanel stagePanel;
@@ -38,7 +38,7 @@ class ProjectFrame extends JFrame {
 		setLocationRelativeTo(null);
 		setLayout(null);
 		setResizable(false);
-		setTitle("IT PROJECT");
+		setTitle(Commons.gameTitle);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
 		

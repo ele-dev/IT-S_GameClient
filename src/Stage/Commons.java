@@ -3,6 +3,10 @@ package Stage;
 import java.awt.Color;
 
 public interface Commons {
+	
+	// The game title
+	public final String gameTitle = "Game Title";
+	
 	// Size of the Cells on the game board
 	final int boardRectSize = 80;
 	
