@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import Stage.Commons;
+import Stage.ProjectFrame;
 
 @SuppressWarnings("serial")
 public abstract class GuiPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
@@ -51,8 +52,8 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	public GuiPanel() {
 		
 		// Set the gui configs
-		this.width = Commons.wf;
-		this.height = Commons.hf;
+		this.width = ProjectFrame.width;
+		this.height = ProjectFrame.height;
 		setBounds(0, 0, width, height);
 		this.bgColor = Color.GRAY; 			// Default panel color gray
 		

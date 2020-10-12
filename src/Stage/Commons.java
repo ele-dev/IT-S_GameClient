@@ -10,10 +10,6 @@ public interface Commons {
 	// Size of the Cells on the game board
 	final int boardRectSize = 80;
 	
-	// window frame dimensions 
-	final int wf = 1800;
-	final int hf = 1000;
-	
 	// Refresh rates for timers 
 	public static final int frametime = 10;
 	

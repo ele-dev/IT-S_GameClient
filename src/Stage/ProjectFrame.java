@@ -32,7 +32,7 @@ class ProjectFrame extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
 		height = (int) screenSize.getHeight();
-		setSize(width,height);
+		setSize(width, height);
 		
 		// Create and init the Window (JFrame)
 		setLocationRelativeTo(null);
