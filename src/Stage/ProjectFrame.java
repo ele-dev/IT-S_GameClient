@@ -20,7 +20,7 @@ class ProjectFrame extends JFrame {
 	public static Connection conn;
 
 	// Windows related
-	public static int width,height;
+	public static int width, height;
 	
 	// GUI panels of the application (JPanels)
 	public static StagePanel stagePanel;
@@ -32,13 +32,13 @@ class ProjectFrame extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
 		height = (int) screenSize.getHeight();
-		setSize(width,height);
+		setSize(width, height);
 		
 		// Create and init the Window (JFrame)
 		setLocationRelativeTo(null);
 		setLayout(null);
 		setResizable(false);
-		setTitle("IT PROJECT");
+		setTitle(Commons.gameTitle);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
 		
