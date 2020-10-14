@@ -15,21 +15,23 @@ public class MsgLoginStatus extends GenericMessage {
 	private static final long serialVersionUID = -4884148962350653015L;
 	
 	private boolean status;
+	private boolean isAccountVerified;
 	private String assignedPlayerName;
 	
 	// Default Constructor for answering account login requests
-	public MsgLoginStatus(boolean status)
+	public MsgLoginStatus(boolean status, boolean verifiedStatus)
 	{
 		super();
 		this.msgID = MSG_LOGIN_STATUS;
 		this.status = status;
+		this.isAccountVerified = verifiedStatus;
 		this.assignedPlayerName = "";
 	}
 	
 	// Additional Constructor for answering guest login requests
 	public MsgLoginStatus(boolean status, String name) 
 	{
-		this(status);
+		this(status, false);
 		this.assignedPlayerName = name;
 	}
 	
@@ -39,9 +41,14 @@ public class MsgLoginStatus extends GenericMessage {
 		return this.status;
 	}
 	
+	public boolean isAccountVerified() 
+	{
+		return this.isAccountVerified;
+	}
+	
 	public String getAssignedName() 
 	{
 		return this.assignedPlayerName;
 	}
-
 }
+
