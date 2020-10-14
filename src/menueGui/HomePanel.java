@@ -30,7 +30,7 @@ public class HomePanel extends GuiPanel {
 	private TextLabel caption = new TextLabel("Homescreen", 30);
 	private TextLabel welcomeMessage = new TextLabel("Welcome", 18);
 	private TextLabel gameSearchMessage = new TextLabel("Waiting for an opponent ...", 18);
-	private TextLabel accountVerificationMessage = new TextLabel("Account verified", 17);
+	private TextLabel accountVerificationMessage = new TextLabel("", 17);
 
 	// Constructor takes initial position
 	public HomePanel() {
@@ -58,8 +58,7 @@ public class HomePanel extends GuiPanel {
 		this.gameSearchMessage.setRelativePosition(75, 47);
 		this.gameSearchMessage.setTextColor(Color.ORANGE);
 		this.accountVerificationMessage.setRelativePosition(10, 10);
-		this.accountVerificationMessage.setTextColor(Color.GREEN);
-		
+
 		// Give the buttons relative screen positions
 		this.logoutButton.setRelativePosition(3, 95);
 		this.quickMatchButton.setRelativePosition(75, 40);
@@ -79,7 +78,7 @@ public class HomePanel extends GuiPanel {
 	
 	// Method for updating/processing stuff 
 	@Override
-	public void update() {
+	protected void update() {
 		// Update the account verification status label
 		if(GameState.userAccountVerified) {
 			this.accountVerificationMessage.setTextColor(Color.GREEN);

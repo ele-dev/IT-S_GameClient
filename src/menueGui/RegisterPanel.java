@@ -82,6 +82,14 @@ public class RegisterPanel extends GuiPanel {
 		}
 	}
 	
+	// Updating method
+	@Override
+	protected void update() {
+		// Update the register status label
+		this.statusLabel.setTextColor(this.failedAttempt ? Color.RED : Color.WHITE);
+		this.statusLabel.setText(this.registerStatusStr);
+	}
+	
 	// Drawing method for GUI elements
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
@@ -101,8 +109,6 @@ public class RegisterPanel extends GuiPanel {
 		this.registerAccountButton.draw(g2d);
 		
 		// Draw the status message
-		this.statusLabel.setTextColor(this.failedAttempt ? Color.RED : Color.WHITE);
-		this.statusLabel.setText(this.registerStatusStr);
 		this.statusLabel.draw(g2d);
 	}
 	
