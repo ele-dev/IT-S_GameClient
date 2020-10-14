@@ -17,6 +17,7 @@ public class RegisterPanel extends GuiPanel {
 	private TextInputField[] fields = new TextInputField[4];
 	private TextLabel caption = new TextLabel("Create new Account", 40);
 	private TextLabel statusLabel = new TextLabel("", 17);
+	private TextLabel noteLabel = new TextLabel("Note: Use a real email address you have access to!", 15);
 	
 	// status message and register status
 	private String registerStatusStr;
@@ -41,6 +42,7 @@ public class RegisterPanel extends GuiPanel {
 		// Give the text label relative positions
 		this.caption.setRelativePosition(50, 30);
 		this.statusLabel.setRelativePosition(45, 57);
+		this.noteLabel.setRelativePosition(50, 34);
 		
 		// init the list of textfields and give them relative positions
 		this.fields[0] = new TextInputField("Username", 750, 300, 450, 50);
@@ -84,8 +86,9 @@ public class RegisterPanel extends GuiPanel {
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
 		
-		// Draw title text
+		// Draw title text and note label
 		this.caption.draw(g2d);
+		this.noteLabel.draw(g2d);
 		
 		// Draw the input fields
 		for(TextInputField curTIF: this.fields) 
