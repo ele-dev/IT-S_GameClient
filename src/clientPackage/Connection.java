@@ -284,6 +284,11 @@ public class Connection extends Thread {
 		
 		// Then parse message into desired format and check the content 
 		MsgLoginStatus statusMsg = (MsgLoginStatus) recvBuffer;
+		
+		// Save the account verification status globally in the Game State class
+		GameState.userAccountVerified = statusMsg.isAccountVerified();
+		
+		// Evaluate success of the login request
 		if(statusMsg.success() == false) {
 			return false;
 		} else {

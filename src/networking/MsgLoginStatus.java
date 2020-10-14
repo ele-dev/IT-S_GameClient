@@ -51,3 +51,4 @@ public class MsgLoginStatus extends GenericMessage {
 		return this.assignedPlayerName;
 	}
 }
+
