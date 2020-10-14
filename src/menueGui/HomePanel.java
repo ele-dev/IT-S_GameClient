@@ -30,6 +30,7 @@ public class HomePanel extends GuiPanel {
 	private TextLabel caption = new TextLabel("Homescreen", 30);
 	private TextLabel welcomeMessage = new TextLabel("Welcome", 18);
 	private TextLabel gameSearchMessage = new TextLabel("Waiting for an opponent ...", 18);
+	private TextLabel accountVerificationMessage = new TextLabel("Account verified", 17);
 
 	// Constructor takes initial position
 	public HomePanel() {
@@ -56,6 +57,8 @@ public class HomePanel extends GuiPanel {
 		this.welcomeMessage.setRelativePosition(50, 28);
 		this.gameSearchMessage.setRelativePosition(75, 47);
 		this.gameSearchMessage.setTextColor(Color.ORANGE);
+		this.accountVerificationMessage.setRelativePosition(10, 10);
+		this.accountVerificationMessage.setTextColor(Color.GREEN);
 		
 		// Give the buttons relative screen positions
 		this.logoutButton.setRelativePosition(3, 95);
@@ -78,8 +81,9 @@ public class HomePanel extends GuiPanel {
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
 		
-		// Next draw some text
+		// Next caption text and account verification status label
 		this.caption.draw(g2d);
+		this.accountVerificationMessage.draw(g2d);
 		
 		this.welcomeMessage.setText("Welcome " + ProjectFrame.conn.getUsername());
 		this.welcomeMessage.draw(g2d);

@@ -83,13 +83,42 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		addMouseMotionListener(this);
 	}
 	
-	// Advanced Constructor for non-fullscreen panels
-	public GuiPanel(int posX, int posY, int width, int height) {
+	// Advanced Constructor for non-fullscreen panels (relative positioning)
+	public GuiPanel(int x, int y, int width, int height) {
 		
 		// Set the gui configs
 		this.width = width;
 		this.height = height;
-		setBounds(posX, posY, width, height);
+	
+		setRelativePosition(x, y);
+	}
+	
+	// Private method for relative positioning of non-fullscreen panels 
+	private void setRelativePosition(int x, int y) {
+		
+		// calculate the abosolute coordinates in the frame
+		float xFactor = 0.01f * x;
+		float yFactor = 0.01f * y;
+		int posX = Math.round(xFactor * ProjectFrame.width);
+		int posY = Math.round(yFactor * ProjectFrame.height);
+		
+		// Center the panel using the own dimensions
+		posX -= this.width / 2;
+		posY -= this.height / 2;
+		
+		// Dont exit the frame 
+		if(posX < 0)
+			posX = 0;
+		if(posY < 0)
+			posY = 0;
+		if(posX > ProjectFrame.width)
+			posX = ProjectFrame.width;
+		if(posY > ProjectFrame.height) 
+			posY = ProjectFrame.height;
+		
+		// Apply the coordinates to this Panel
+		this.setBounds(posX, posY, this.width, this.height);
+		
 	}
 	
 	// Main drawing method
@@ -100,7 +129,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		
 		// Draw the colored background
 		g2d.setColor(this.bgColor);
-		g2d.fillRect(0, 0, this.width, this.height);
+		g2d.fillRect(this.getX(), this.getY(), this.width, this.height);
 		
 		// Draw the rest of the GUI
 		drawPanelContent(g2d);
