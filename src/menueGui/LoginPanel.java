@@ -77,6 +77,14 @@ public class LoginPanel extends GuiPanel {
 		this.loginStatusStr = "";
 	}
 	
+	// Updating method
+	@Override 
+	protected void update() {
+		// Update the login status label
+		this.statusLabel.setTextColor(this.failedAttempt ? Color.RED : Color.WHITE);
+		this.statusLabel.setText(this.loginStatusStr);
+	}
+	
 	// Drawing method for GUI elements
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
@@ -96,8 +104,6 @@ public class LoginPanel extends GuiPanel {
 		}
 		
 		// Draw the status message directly under the input fields
-		this.statusLabel.setTextColor(this.failedAttempt ? Color.RED : Color.WHITE);
-		this.statusLabel.setText(this.loginStatusStr);
 		this.statusLabel.draw(g2d);
 	}
 	

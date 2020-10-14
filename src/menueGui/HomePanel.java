@@ -30,6 +30,7 @@ public class HomePanel extends GuiPanel {
 	private TextLabel caption = new TextLabel("Homescreen", 30);
 	private TextLabel welcomeMessage = new TextLabel("Welcome", 18);
 	private TextLabel gameSearchMessage = new TextLabel("Waiting for an opponent ...", 18);
+	private TextLabel accountVerificationMessage = new TextLabel("", 17);
 
 	// Constructor takes initial position
 	public HomePanel() {
@@ -56,7 +57,8 @@ public class HomePanel extends GuiPanel {
 		this.welcomeMessage.setRelativePosition(50, 28);
 		this.gameSearchMessage.setRelativePosition(75, 47);
 		this.gameSearchMessage.setTextColor(Color.ORANGE);
-		
+		this.accountVerificationMessage.setRelativePosition(10, 10);
+
 		// Give the buttons relative screen positions
 		this.logoutButton.setRelativePosition(3, 95);
 		this.quickMatchButton.setRelativePosition(75, 40);
@@ -74,16 +76,36 @@ public class HomePanel extends GuiPanel {
 		this.quickMatchButton.setEnabled(true);
 	}
 	
+	// Method for updating/processing stuff 
+	@Override
+	protected void update() {
+		// Update the account verification status label
+		if(GameState.userAccountVerified) {
+			this.accountVerificationMessage.setTextColor(Color.GREEN);
+			this.accountVerificationMessage.setText("Account is verified");
+		} else {
+			this.accountVerificationMessage.setTextColor(Color.YELLOW);
+			this.accountVerificationMessage.setText("Info: Account has not been verified yet!");
+		}
+		
+		// Update the welcome display label
+		this.welcomeMessage.setText("Welcome " + ProjectFrame.conn.getUsername());
+	}
+	
 	// Drawing method for GUI elements
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
 		
-		// Next draw some text
+		// Next caption text and account verification status label
 		this.caption.draw(g2d);
-		
-		this.welcomeMessage.setText("Welcome " + ProjectFrame.conn.getUsername());
+		if(!ProjectFrame.conn.isGuestPlayer()) {
+			this.accountVerificationMessage.draw(g2d);
+		}
+
+		// Draw the welcome message 
 		this.welcomeMessage.draw(g2d);
 		
+		// Draw the game search status message only when currently searching
 		if(this.abortMatchSearchButton.isEnabled) {
 			this.gameSearchMessage.draw(g2d);
 		}

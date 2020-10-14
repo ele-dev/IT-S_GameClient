@@ -16,5 +16,6 @@ public class GameState {
 	public static boolean isSearching = false;
 	
 	public static String registerStatusDescription = "";
+	public static boolean userAccountVerified = false;
 	// ...
 }
