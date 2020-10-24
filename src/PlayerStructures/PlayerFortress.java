@@ -27,7 +27,7 @@ public class PlayerFortress extends DestructibleObject {
 	
 	public boolean isHover() {
 		return isHover;
-	}
+	} 
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 	}
@@ -39,7 +39,7 @@ public class PlayerFortress extends DestructibleObject {
 	}
 	public boolean isRecruitingMode() {
 		return isRecruitingMode;
-	}
+	} 
 	
 	public ArrayList<BoardRectangle> getRecruitableBoardRectangles() {
 		return recruitableBoardRectangles;
@@ -77,6 +77,7 @@ public class PlayerFortress extends DestructibleObject {
 	}
 	@Override
 	public void drawDestructibleObject(Graphics2D g2d) {
+		
 		g2d.setColor(isEnemy?Commons.enemyColor:Commons.notEnemyColor);
 		g2d.fill(rectHitbox);
 		g2d.setStroke(new BasicStroke(8));
@@ -121,13 +122,15 @@ public class PlayerFortress extends DestructibleObject {
 			g2d.translate(-x, -y);
 		}
 		
+		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), 25);
+	}
+	
+	public void tryDrawRecruitableBoardRectangles(Graphics2D g2d) {
 		if(isRecruitingMode) {
 			for(BoardRectangle curBR : recruitableBoardRectangles) {
 				curBR.drawPossibleRecruitPlace(g2d);
 			}
 		}
-		
-		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), 25);
 	}
 	
 	public void update() {
@@ -139,7 +142,7 @@ public class PlayerFortress extends DestructibleObject {
 		fortressMenu.tryPresssButton();
 	}
 	@Override
-	public void getDamaged(float dmg, float attackAngle) {
+	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
 		health-=dmg;
 		if(health<=0) {
 			isDestroyed = true;

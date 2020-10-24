@@ -31,11 +31,13 @@ import Buttons.ButtonEndTurn;
 import Environment.DestructibleObject;
 import GamePieces.CommanderGamePiece;
 import GamePieces.DetonatorPiece;
+import GamePieces.EMPPiece;
 import GamePieces.FlamethrowerPiece;
 import GamePieces.GamePiece;
 import GamePieces.GamePieceBase;
 import GamePieces.GunnerPiece;
 import GamePieces.RocketLauncherPiece;
+import GamePieces.ShotgunPiece;
 import GamePieces.SniperPiece;
 import GamePieces.TazerPiece;
 import LevelDesignTools.LevelDesignTool;
@@ -44,6 +46,7 @@ import Lighting.LightingManager;
 import Particles.DestructionParticle;
 import Particles.EmptyShell;
 import Particles.Particle;
+import PlayerStructures.GoldMine;
 import PlayerStructures.PlayerFortress;
 
 // This is the main Panel where the Game is Happening
@@ -62,9 +65,11 @@ public class StagePanel extends JPanel {
 	// winnerIndex = 2 (notEnemy is winner)
 	private static byte winnerIndex = 0;
 	
-	// gGmeMap
+	// gameMap
 	public static ArrayList<BoardRectangle> boardRectangles = new ArrayList<BoardRectangle>();
 	public static ArrayList<DestructibleObject> destructibleObjects = new ArrayList<DestructibleObject>();
+	
+	public static ArrayList<GoldMine> goldMines = new ArrayList<GoldMine>();
 	
 	// GamePieces
 	public static ArrayList<GamePiece> gamePieces = new ArrayList<GamePiece>();
@@ -135,17 +140,19 @@ public class StagePanel extends JPanel {
 
 		turnInfoPanel = new TurnInfo();
 		
-		// makes Cursor invisible
+		// makes Cursor invisible 
 		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
 		    cursorImg, new Point(0, 0), "blank cursor");
 		setCursor(blankCursor);
 		
+		
+		
+		lightingManager = new LightingManager(w, h,camera);
+		
 		// Add the listeners
 		addMouseListener(new ML());
 		addMouseMotionListener(new MML());
-		lightingManager = new LightingManager(w, h,camera);
-		
 		tFrameRate.start();
 		tUpdateRate.start();
 	}
@@ -185,11 +192,12 @@ public class StagePanel extends JPanel {
 			levelDesignTool = new LevelDesignTool();
 			addMouseWheelListener(levelDesignTool.mwl);
 		}else {
-			levelinitializer.readFile(mapName, pf);
+			levelinitializer.readMapFromImage(mapName, pf);
 			gameMap = new GameMap(levelinitializer);
 		}
 		
 		boardRectangles = gameMap.getBoardRectangles();	
+		goldMines.add(new GoldMine(boardRectangles.get(251)));
 	}
 		
 	// initializes/creates all GamePieces
@@ -206,7 +214,8 @@ public class StagePanel extends JPanel {
 		gamePieces.add(new TazerPiece(true, boardRectangles.get(135)));
 		gamePieces.add(new DetonatorPiece(false, boardRectangles.get(91)));
 		gamePieces.add(new DetonatorPiece(true, boardRectangles.get(69)));
-		
+		gamePieces.add(new EMPPiece(false, boardRectangles.get(71)));
+		gamePieces.add(new ShotgunPiece(false, boardRectangles.get(101)));
 		for(GamePiece curGP : gamePieces) {
 			curGP.initPathFinder();
 			curGP.restoreMovesAndAttacks();
@@ -215,6 +224,14 @@ public class StagePanel extends JPanel {
 	private void initFortresses() {
 		enemyFortress = new PlayerFortress(boardRectangles.get(76),true);
 		notEnemyFortress = new PlayerFortress(boardRectangles.get(97),false);
+	}
+	
+	public static void tryCaptureGoldMine(GamePiece gamePiece) {
+		for(GoldMine curGM : StagePanel.goldMines) {
+			if(curGM.getCaptureState() == 0 && curGM.getNeighborBoardRectangles().contains(gamePiece.boardRect)) {
+				curGM.capture(gamePiece.getIsEnemy());
+			}
+		}
 	}
 	
 //같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같	
@@ -231,13 +248,14 @@ public class StagePanel extends JPanel {
 		
 		// Draw the background
 		g2d.setColor(this.cBackGround);
-		g2d.fillRect(0, 0, this.w, this.h);
+		g2d.fillRect(0, 0, w, h);
 		
 		g2d.translate(camera.getPos().x, camera.getPos().y);
 		
 		drawEveryBoardRectangle(g2d);
-//		drawEveryBoardRectangleIndex(g2d);
-		
+		drawEveryBoardRectangleIndex(g2d);
+		if(enemyFortress != null)enemyFortress.tryDrawRecruitableBoardRectangles(g2d);
+		if(notEnemyFortress != null)notEnemyFortress.tryDrawRecruitableBoardRectangles(g2d);
 		drawAllDestructionParticles(g2d);
 		drawAllEmptyShells(g2d);
 		drawEveryWall(g2d);
@@ -251,6 +269,7 @@ public class StagePanel extends JPanel {
 			curHoverBR.tryDrawHover(g2d);
 		}
 		drawFortresses(g2d);
+		drawGoldMines(g2d);
 		drawAllGamePieceHealth(g2d);
 		drawAllGamePieceAttacksAbilities(g2d);
 		drawParticles(g2d);
@@ -337,6 +356,14 @@ public class StagePanel extends JPanel {
 			notEnemyFortress.drawDestructibleObject(g2d);
 		}
 	}
+	private void drawGoldMines(Graphics2D g2d) {
+		if(levelDesignTool == null) {
+			for(GoldMine curGM : goldMines) {
+				curGM.drawDestructibleObject(g2d);
+			}
+				
+		}
+	}
 	
 	// draws all Particles
 	private void drawParticles(Graphics2D g2d) {
@@ -386,7 +413,7 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void drawCursor(Graphics2D g2d) {
-		if(this.mousePos != null) {
+		if(mousePos != null) {
 			g2d.setColor(Color.WHITE);
 			g2d.setStroke(new BasicStroke(5));
 			int x = mousePos.x;
@@ -486,8 +513,6 @@ public class StagePanel extends JPanel {
 		updateDestructibleObject();
 		updateParticles();
 		
-		
-		
 		camera.move(GameMap.mapRectangle);
 		if(mousePosUntranslated != null) {
 			mousePos = new Point((int)(mousePosUntranslated.x-camera.getPos().x), (int)(mousePosUntranslated.y-camera.getPos().y));
@@ -543,6 +568,7 @@ public class StagePanel extends JPanel {
 			if(curGP.isPerformingAction()) {
 				curActionPerformingGP = curGP;
 			}
+			curGP.updateMove();
 			curGP.update();
 			curGP.tryDie();
 			curGP.updateActionSelectionPanelPos(camera.getPos(), mousePos);
@@ -600,10 +626,10 @@ public class StagePanel extends JPanel {
 	private void updateAbilities() {
 		for(WallMine curWM : wallMines) {
 			curWM.update();
-			if(curWM.getIsDestroyed()) {
+			if(curWM.isDestroyed()) {
 				wallMines.remove(curWM);
 				break;
-			}
+			} 
 		}
 	}
 	
@@ -613,6 +639,8 @@ public class StagePanel extends JPanel {
 		turnInfoPanel.toggleTurn();
 		curSelectedGP = null;
 		for(GamePiece curGP : gamePieces) {
+			curGP.actionSelectionPanel.setAttackButtonActive(false);
+			curGP.actionSelectionPanel.setMoveButtonActive(false);
 			GamePieceBase curGPB = curGP.gamePieceBase;
 			if(turnInfoPanel.getIsEnemyTurn() == curGP.getIsEnemy()) {
 				curGPB.regenShield();
@@ -624,8 +652,10 @@ public class StagePanel extends JPanel {
 			curGP.restoreMovesAndAttacks();
 			
 			if(curGP instanceof DetonatorPiece) {
-				DetonatorPiece curDP = (DetonatorPiece)curGP;
-				curDP.decDetonaterTimers();
+				((DetonatorPiece)(curGP)).decDetonaterTimers();
+			}
+			if(curGP instanceof EMPPiece) {
+				((EMPPiece)(curGP)).decEMPTimers();
 			}
 		}
 	}
@@ -655,7 +685,7 @@ public class StagePanel extends JPanel {
 				}
 			}
 		}
-		 return curSelectedGP != null;
+		return curSelectedGP != null;
 	}
 
 	// presses button if it is clicked on a and not blocked and also a piece is selected
@@ -674,7 +704,6 @@ public class StagePanel extends JPanel {
 	private void tryPerformActionOnPressedPos() {
 		if(curSelectedGP != null && !curSelectedGP.getIsDead() && curHoverBR != null) {	
 			if(curHoverBR.isPossibleMove || curHoverBR.isPossibleAttack || curHoverBR.isPossibleAbility) {
-				
 				if(curHoverBR.isPossibleMove) {
 					curSelectedGP.startMove();
 				}else if(curHoverBR.isPossibleAttack) {
@@ -824,7 +853,7 @@ public class StagePanel extends JPanel {
 			if(e.getKeyCode() == KeyEvent.VK_K && levelDesignTool != null) {
 				String mapName = JOptionPane.showInputDialog("Type in mapName");
 				if(mapName != null && mapName.length() > 2) {
-					levelinitializer.writeFile(mapName,boardRectangles);
+					levelinitializer.saveMapAsImage(mapName,boardRectangles);
 				}
 				return;
 			}

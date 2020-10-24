@@ -71,6 +71,18 @@ public interface Commons {
 	final int baseTypeRocketLauncher = 0;
 	final float dmgRocketLauncher = 3;
 	final String nameRocketLauncher = "R";
+	// ShotgunPiece
+	final int baseTypeShotgun = 0;
+	final float dmgShotgun = 3;
+	final String nameShotgun = "S";
+	// EMPPiece
+	final int baseTypeEMP = 0;
+	final float dmgEMP = 2;
+	final String nameEMP = "E";
+	// SniperPiece
+	final int baseTypeSniper = 0;
+	final float dmgSniper = 5;
+	final String nameSniper = "SC";
 	
 	// creates two vectors. One Vector(Vector with Angle angle) gets scaled with the scalar(rotationDelay)
 	// the two Vectors get added together and the angle of the resulting Vector is the return-product

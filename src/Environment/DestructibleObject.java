@@ -24,9 +24,8 @@ public class DestructibleObject {
 	protected int impactFlashCounter;
 	protected BoardRectangle[] occupiedBRs;
 	
-	
 	public DestructibleObject(BoardRectangle boardRectangle,int occupiedRows,int occupiedColumns,float maxHealth,float rotation) {
-		this.health = maxHealth;
+		health = maxHealth;
 		rectHitbox = new Rectangle(boardRectangle.getX(),boardRectangle.getY(),Commons.boardRectSize*occupiedColumns,Commons.boardRectSize*occupiedRows);
 		this.rotation = rotation;
 		ArrayList<String> spriteLinks = new ArrayList<String>();
@@ -53,11 +52,9 @@ public class DestructibleObject {
 	public Point getPos() {
 		return new Point((int)rectHitbox.getCenterX(),(int)rectHitbox.getCenterY());
 	}
-	
 	public boolean isDestroyed() {
 		return isDestroyed;
 	}
-	
 	public boolean containsBR(BoardRectangle targetBR) {
 		for(BoardRectangle curBR : occupiedBRs) {
 			if(curBR == targetBR) {
@@ -121,8 +118,7 @@ public class DestructibleObject {
 		}
 		return false;
 	}
-	
-	public void getDamaged(float dmg, float attackAngle) {
+	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
 		health-=dmg;
 		if(health<=0) {
 			isDestroyed = true;

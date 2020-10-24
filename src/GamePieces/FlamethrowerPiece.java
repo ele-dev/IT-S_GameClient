@@ -21,7 +21,6 @@ public class FlamethrowerPiece extends GamePiece {
 	int burstBulletAmount = 200;
 	
 	double spreadAngle = 20;
-	boolean startedAttack = false;
 	
 	public FlamethrowerPiece(boolean isEnemy, BoardRectangle boardRect) {
 		super(isEnemy, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,Commons.baseTypeFlameThrower);
@@ -45,17 +44,6 @@ public class FlamethrowerPiece extends GamePiece {
 		burstTimer.setRepeats(false);
 	}
 	
-	public void update() {
-		if(targetGamePiece != null) {
-			updateAngle(targetGamePiece.getPos());
-		}else if(targetDestructibleObject != null){
-			updateAngle(targetDestructibleObject.getPos());
-		}
-		if(isMoving) {
-			updateMove();
-		}
-		updateAttack();
-	}
 
 	public void drawAttack(Graphics2D g2d) {
 		for(FlameThrowerFlame curFTF : flames) {
@@ -133,7 +121,7 @@ public class FlamethrowerPiece extends GamePiece {
 					targetGamePiece.gamePieceBase.getDamaged(getDmg());
 					targetGamePiece = null;
 				}else {
-					targetDestructibleObject.getDamaged(getDmg(),angle);
+					targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
 					targetDestructibleObject = null;
 				}
 				startedAttack = false;

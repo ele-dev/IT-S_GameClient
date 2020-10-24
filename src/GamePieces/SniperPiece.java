@@ -28,8 +28,8 @@ public class SniperPiece extends CommanderGamePiece{
 	byte rotationIndexNextWallMine;
 	
 	public SniperPiece(boolean isEnemy, BoardRectangle boardRect) {
-		super(isEnemy, "SC", boardRect, 5, 3, 1);
-		attackDelayTimer = new Timer(1500,new ActionListener() {
+		super(isEnemy, Commons.nameSniper, boardRect, Commons.dmgSniper, 3, Commons.baseTypeSniper);
+		attackDelayTimer = new Timer(1500,new ActionListener() { 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				angle = angleDesired;
@@ -42,22 +42,19 @@ public class SniperPiece extends CommanderGamePiece{
 		
 		abilityDelayTimer = new Timer(1500,new ActionListener() {
 			
-			@Override
+			@Override 
 			public void actionPerformed(ActionEvent e) {
-				shootWallMine();
+				shootWallMine(); 
 			} 
 		});
 		abilityDelayTimer.setRepeats(false);
 	}
-	
+	 
 	public void update() {
 		if(targetGamePiece != null) {
 			updateAngle(targetGamePiece.getPos());
 		}else if(targetDestructibleObject != null){
 			updateAngle(targetDestructibleObject.getPos());
-		}
-		if(isMoving) {
-			updateMove();
 		}
 		updateAttack();
 		
@@ -101,7 +98,7 @@ public class SniperPiece extends CommanderGamePiece{
 		}
 		if(curHoverBoardRectangle.isShowPossibleAbility) {
 			curHoverBoardRectangle.isPossibleAbility = true;
-		}
+		} 
 	}
 	
 	@Override 
@@ -186,7 +183,7 @@ public class SniperPiece extends CommanderGamePiece{
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());
 			targetGamePiece = null;
 		}else {
-			targetDestructibleObject.getDamaged(getDmg(),angle);
+			targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
 			targetDestructibleObject = null;
 		}
 		StagePanel.applyScreenShake(5, 30);

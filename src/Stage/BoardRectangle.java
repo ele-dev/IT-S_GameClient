@@ -30,6 +30,7 @@ public class BoardRectangle {
 	
 	private Sprite wallSprite;
 	private Sprite groundSprite;
+	private float spriteRotation;
 	
 	public BoardRectangle northBR,southBR,eastBR,westBR;
 	ArrayList<BoardRectangle> adjecantBoardRectangles = new ArrayList<BoardRectangle>();
@@ -48,24 +49,23 @@ public class BoardRectangle {
 		this.isHinderingTerrain = isHinderingTerrain;
 		
 		c = isTile1?new Color(10,10,10):new Color(200,200,200);
-		
-		
-		ArrayList<String> spriteLinks = new ArrayList<String>();
-		String spriteDirector = "";
-		String biomType = "Grass";
-		if(Math.random() < 0.3) {
-			spriteDirector = "Tiles/"+biomType+"Tile0.png";
-		}else if(Math.random() < 0.5){
-			spriteDirector = "Tiles/"+biomType+"Tile1.png";
-		}else {
-			spriteDirector = "Tiles/"+biomType+"Tile2.png";
-		}
-		if(isHinderingTerrain) {
-			spriteDirector = "Tiles/RockTile.png";
-		}
-		spriteLinks.add(Commons.pathToSpriteSource+spriteDirector);
-		groundSprite = new Sprite(spriteLinks, size,size, 0);
-		
+		 
+//		spriteRotation = (byte) (Math.random()*4)* 90;
+//		ArrayList<String> spriteLinks = new ArrayList<String>();
+//		String spriteDirector = "";
+//		String biomType = "Grass";
+//		if(Math.random() < 0.3) {
+//			spriteDirector = "Tiles/"+biomType+"Tile0.png";
+//		}else if(Math.random() < 0.5){
+//			spriteDirector = "Tiles/"+biomType+"Tile1.png";
+//		}else {
+//			spriteDirector = "Tiles/"+biomType+"Tile2.png";
+//		}
+//		if(isHinderingTerrain) {
+//			spriteDirector = "Tiles/MudTile.png";
+//		}
+//		spriteLinks.add(Commons.pathToSpriteSource+spriteDirector);
+//		groundSprite = new Sprite(spriteLinks, size,size, 0);
 	}
 	public int getSize() {
 		return (int) rect.getWidth();
@@ -138,7 +138,7 @@ public class BoardRectangle {
 	}
 	
 	
-	// initalizes what Sprite is needed depending on neighboring walls
+	// initializes what Sprite is needed depending on neighboring walls
 	public void initWallSprites() {
 		boolean rightConnected = false;
 		boolean leftConnected = false;
@@ -247,7 +247,7 @@ public class BoardRectangle {
 		g2d.fill(rect);
 			
 		if(groundSprite != null && !isGap && !isWall) {
-			groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
+			groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), spriteRotation, 1);
 		}
 		
 		g2d.setColor(new Color(0,0,0,100));
@@ -271,16 +271,10 @@ public class BoardRectangle {
 				isShowPossibleMove?new Color(cPossibleMove.getRed(),cPossibleMove.getGreen(),cPossibleMove.getBlue(),200):
 				new Color(cPossibleAttack.getRed(),cPossibleAttack.getGreen(),cPossibleAttack.getBlue(),200));
 			
-			g2d.drawLine(getX(), getY(), getX()+getSize(), getY());
-			g2d.drawLine(getX(), getY()+getSize(), getX()+getSize(), getY()+getSize());
-			g2d.drawLine(getX(), getY(), getX(), getY()+getSize());
-			g2d.drawLine(getX()+getSize(), getY(), getX()+getSize(), getY()+getSize());
-			for(int i = 0;i<getSize();i+=getSize()/6) {
-				g2d.drawLine(getX()+i, getY(), getX(), getY()+i);
-			}
-			for(int i = getSize()/6;i<getSize();i+=getSize()/6) {
-				g2d.drawLine(getX()+i, getY()+getSize(), getX()+getSize(), getY()+i);
-			}
+			
+			g2d.draw(rect);
+			for(int i = 0;i<getSize();i+=getSize()/6) g2d.drawLine(getX()+i, getY(), getX(), getY()+i);
+			for(int i = getSize()/6;i<getSize();i+=getSize()/6) g2d.drawLine(getX()+i, getY()+getSize(), getX()+getSize(), getY()+i);
 		}
 	}
 	
@@ -360,7 +354,7 @@ public class BoardRectangle {
 		if(isPossibleAttack || isPossibleAbility) {
 			if(so < 5) {
 				animationSpeed = 0.3;
-			}
+			}else
 			if(so > 10) {
 				animationSpeed = -0.3;
 			}
@@ -371,11 +365,7 @@ public class BoardRectangle {
 	}
 	// updates the Hover boolean to be Hover == true if the mouse is on the BoardRectangle
 	public void updateHover(Point mousePos) {
-		if(rect.contains(mousePos)) {
-			isHover = true;
-		}else {
-			isHover = false;
-		}
+		isHover = rect.contains(mousePos);
 	}
 	// draws wall but makes it transparent if it would overdraw a GamePiece
 	public void drawWall(Graphics2D g2d,ArrayList<GamePiece> gamePieces) {
@@ -391,18 +381,26 @@ public class BoardRectangle {
 	}
 	
 	public void drawPossibleRecruitPlace(Graphics2D g2d) {
-		g2d.setColor(Color.GREEN);
+		g2d.setColor(new Color(10,10,10,100));
+		g2d.fill(rect);
+		g2d.setColor(new Color(0,255,50,200));
 		g2d.setStroke(new BasicStroke(4));
-		g2d.draw(rect);
+		
+		if(StagePanel.curHoverBR != this) {
+			g2d.draw(rect);
+			for(int i = 0;i<getSize();i+=getSize()/6) g2d.drawLine(getX()+i, getY(), getX(), getY()+i);
+			for(int i = getSize()/6;i<getSize();i+=getSize()/6) g2d.drawLine(getX()+i, getY()+getSize(), getX()+getSize(), getY()+i);
+			
+		}else {
+			g2d.setColor(new Color(0,255,50,200));
+			g2d.fill(rect);
+		}
+		
 	}
 	
 	public void drawIndex(Graphics2D g2d) {
 		g2d.setFont(new Font("Arial",Font.PLAIN,15));
-		if(!isTile1) {
-			g2d.setColor(new Color(30,30,30));
-		}else {
-			g2d.setColor(new Color(200,200,200));
-		}
+		g2d.setColor(isTile1?new Color(200,200,200):new Color(30,30,30));
 		g2d.drawString(index+"", getCenterX(), getCenterY());
 	}
 	

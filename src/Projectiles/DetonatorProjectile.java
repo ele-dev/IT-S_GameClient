@@ -10,17 +10,17 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
-import Abilities.RadialShield;
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 import Particles.Explosion;
-import Stage.StagePanel;
+import Stage.Commons;
 
 
 
 public class DetonatorProjectile extends Projectile{
 	private float xRelTarget,yRelTarget;
 	private float dmg;
+	private boolean isEnemy;
 	
 	public Timer detonationTimer;
 	public Explosion detExplosion;
@@ -36,11 +36,12 @@ public class DetonatorProjectile extends Projectile{
 	private DestructibleObject targetDestructibleObject;
 	
 	
-	public DetonatorProjectile(int x, int y, int w, int h, Color c,float dmg,float angle,Shape targetShape
+	public DetonatorProjectile(int x, int y, int w, int h, boolean isEnemy,float dmg,float angle,Shape targetShape
 			,GamePiece targetGamePiece,DestructibleObject targetDestructibleObject) {
-		super(x, y, w, h, c, angle, 16, 0, targetShape, targetDestructibleObject);
+		super(x, y, w, h, isEnemy?Commons.enemyColor:Commons.notEnemyColor, angle, 16, 0, targetShape, targetDestructibleObject);
 		shapeShow = new Rectangle(-w/2,-h/2,w,h);
 		cBlink = Color.BLACK;
+		this.isEnemy = isEnemy;
 		this.dmg = dmg;
 		detonationTimer = new Timer(1500,new ActionListener() {
 			
@@ -72,11 +73,11 @@ public class DetonatorProjectile extends Projectile{
 		}else {
 			g2d.setColor(c);
 		}
-		g2d.translate(this.x, this.y);
-		g2d.rotate(Math.toRadians(this.angle));
+		g2d.translate(x, y);
+		g2d.rotate(Math.toRadians(angle));
 		g2d.fill(shapeShow);
-		g2d.rotate(Math.toRadians(-this.angle));
-		g2d.translate(-this.x, -this.y);
+		g2d.rotate(Math.toRadians(-angle));
+		g2d.translate(-x, -y);
 		
 		if(hasHitTarget) {
 			drawTTD(g2d);
@@ -109,12 +110,12 @@ public class DetonatorProjectile extends Projectile{
 			if(targetGamePiece != null) {
 				targetGamePiece.gamePieceBase.getDamaged(dmg);
 			}else if(targetDestructibleObject != null) {
-				targetDestructibleObject.getDamaged(dmg,angle);
+				targetDestructibleObject.getDamaged(dmg,angle,isEnemy);
 			}
 			
 		}
 	}
-	// checks if it has hit an Enemy and will set it to be Stuck (isStuckToTarget = true)
+	// checks if it has hit an Enemy and will set it to be Stuck
 	public void checkHitEnemy() {
 		if(targetGamePiece != null && rectHitbox.intersects(targetGamePiece.getRectHitbox())) {
 			hasHitTarget = true;
@@ -131,6 +132,7 @@ public class DetonatorProjectile extends Projectile{
 		}
 	}
 	public void stayStuck() {
+		
 		x = targetGamePiece.getCenterX() + xRelTarget; 
 		y = targetGamePiece.getCenterY() + yRelTarget;
 	}

@@ -10,17 +10,17 @@ public class TazerTrailParticle extends Particle{
 	private float fadeSpeed;
 	private float alpha = 255;
 	
-	public TazerTrailParticle(int x, int y) {
+	public TazerTrailParticle(int x, int y, float v, float fadeSpeed, float angle) {
 		super(x, y);
 		size = (int)(Math.random()*3+5);
-		fadeSpeed = (float) (Math.random()*4+6);
+		this.fadeSpeed = fadeSpeed;
 		rectShow = new Rectangle(-size/2,-size/2,size,size);
 		c = new Color(58, 100+(int)(Math.random()*130), 140+(int)(Math.random()*30),(int)alpha);
 		rotation = (float) (Math.random()*360);
 		
-		angle = (float) (Math.random()*360);
-		v = (float) (Math.random()*0.7);
-	}
+		this.angle = angle;
+		this.v = v;
+	} 
 	
 	private void updateFade() {
 		alpha -= fadeSpeed;

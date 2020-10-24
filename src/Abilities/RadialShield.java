@@ -81,7 +81,7 @@ public class RadialShield extends DestructibleObject{
 		return false;
 	}
 	@Override
-	public void getDamaged(float dmg,float attackAngle) {
+	public void getDamaged(float dmg,float attackAngle, boolean isEnemyAttack) {
 		StagePanel.addDmgLabel(occupiedBRs[4].getCenterX(),occupiedBRs[4].getCenterY(),dmg);
 		if(health-dmg > 0) {
 			health-=dmg;

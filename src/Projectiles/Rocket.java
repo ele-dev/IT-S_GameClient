@@ -20,7 +20,7 @@ public class Rocket extends Projectile {
 		super(x, y, w, h, c, angle, 0, 0.3f, targetShape, targetDestructibleObject);
 		poly = new Polygon();
 		poly.addPoint((int)(w/2),(int)(-h/2));
-		poly.addPoint((int)(w/2), (int)(h/4));
+		poly.addPoint((int)(w/2), (int)(h/4)); 
 		poly.addPoint((int)0,(int)(h*(3/4.0)));
 		poly.addPoint((int)(- w/2),(int)(h/4));
 		poly.addPoint((int)(- w/2),(int)(-h/2));
