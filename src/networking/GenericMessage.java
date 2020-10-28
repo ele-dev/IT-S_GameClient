@@ -36,6 +36,7 @@ public abstract class GenericMessage implements Serializable {
 	public static final int MSG_ABORT_MATCH_SEARCH = 3011;
 	public static final int MSG_FOUND_MATCH = 3012;
 	public static final int MSG_MATCH_INFO = 3013;
+	public static final int MSG_ENEMY_SURRENDER = 3014;
 	public static final int MSG_LEAVE_MATCH = 3015;
 	
 	
