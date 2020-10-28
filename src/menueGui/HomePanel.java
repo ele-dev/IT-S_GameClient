@@ -94,6 +94,8 @@ public class HomePanel extends GuiPanel {
 			this.gameSearchMessage.setText("Waiting for an opponent ...");
 		} else if (GameState.isIngame) {
 			this.gameSearchMessage.setText("Match found. Joining ...");
+			this.abortMatchSearchButton.setEnabled(false);
+			this.quickMatchButton.setEnabled(false);
 		}
 		
 		// Update the welcome display label
