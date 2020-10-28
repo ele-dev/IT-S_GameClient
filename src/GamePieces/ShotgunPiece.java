@@ -60,7 +60,7 @@ public class ShotgunPiece extends GamePiece {
 			curB.move();
 			curB.checkHitAnyTarget(); 
 			
-			if(curB.getHasHitTarget()) {
+			if(curB.hasHitTarget()) {
 				bullets.remove(i);
 			}
 		} 

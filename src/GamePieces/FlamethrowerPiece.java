@@ -52,7 +52,6 @@ public class FlamethrowerPiece extends GamePiece {
 	}
 
 	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
 				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
 					int dist = BoardRectangle.getDistanceBetweenBRs(boardRect, curBR);
@@ -74,7 +73,7 @@ public class FlamethrowerPiece extends GamePiece {
 	public void shootOnce() {
 		startedAttack = true;
 		burstCounter++;
-		if(burstCounter <burstBulletAmount) {
+		if(burstCounter<burstBulletAmount) {
 			burstTimer.start();
 		}else {
 			burstCounter = 0;
@@ -112,7 +111,7 @@ public class FlamethrowerPiece extends GamePiece {
 		if(startedAttack) {
 			boolean allHaveHit = true;
 			for(FlameThrowerFlame curFTF : flames) {
-				if(!curFTF.getHasHitTarget()) {
+				if(!curFTF.hasHitTarget()) {
 					allHaveHit = false;
 				}
 			}

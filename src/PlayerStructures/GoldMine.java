@@ -8,27 +8,43 @@ import java.util.ArrayList;
 
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
+import Particles.GoldParticle;
+import Particles.Particle;
+import Particles.TrailParticle;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
+import Stage.ValueLabel;
 
 public class GoldMine extends DestructibleObject {
 	
 	// nothing = 0
 	// enemy = 1
 	// notEnemy = 2
-	private byte captureState = 1;
+	private byte captureState = 0;
 	private float maxHealth;
 	
 	protected ArrayList<BoardRectangle> neighborBoardRectangles = new ArrayList<BoardRectangle>();
+	protected ArrayList<Particle> particles = new ArrayList<Particle>();
 
 	public GoldMine(BoardRectangle boardRectangle) {
-		super(boardRectangle, 1, 1, 3, 0);
-		maxHealth = 3;
+		super(boardRectangle, 1, 1, 0, 0);
+		maxHealth = Commons.goldMineHealth;
 		for(BoardRectangle curBR : StagePanel.boardRectangles) {
 			if(curBR != occupiedBRs[0] && Math.abs(curBR.row -occupiedBRs[0].row) <=1 && Math.abs(curBR.column -occupiedBRs[0].column) <=1) {
 				neighborBoardRectangles.add(curBR);
 			}
+		}
+		for(int i = 0;i<100;i++) {
+			int x =  (int) (neighborBoardRectangles.get(0).getX()+(Math.random())*Commons.boardRectSize*3);
+			int y =  (int) (neighborBoardRectangles.get(0).getY()+(Math.random())*Commons.boardRectSize*3);
+			int randomGreyScale = (int) (Math.random()*30+15);
+			particles.add(new TrailParticle(x, y, (int)(Math.random()*20+8), 0, new Color(randomGreyScale,randomGreyScale,randomGreyScale), 0, 0,0));
+		}
+		for(int i = 0;i<20;i++) {
+			int x =  (int) (neighborBoardRectangles.get(0).getX()+(Math.random())*Commons.boardRectSize*3);
+			int y =  (int) (neighborBoardRectangles.get(0).getY()+(Math.random())*Commons.boardRectSize*3);
+			particles.add(new TrailParticle(x, y, (int)(Math.random()*15+5), 0, new Color(204+(int)((Math.random()-0.5)*50),164+(int)((Math.random()-0.5)*50),61), 0, 0,0));
 		}
 	}
 	
@@ -48,11 +64,6 @@ public class GoldMine extends DestructibleObject {
 		g2d.setColor(new Color(10,10,10));
 		g2d.draw(rectHitbox);
 		
-		for(BoardRectangle curtBR : neighborBoardRectangles) {
-			g2d.setColor(Color.GREEN);
-			g2d.draw(curtBR.rect);
-		}
-		
 		if(impactFlashCounter > -100) { 
 			impactFlashCounter--;
 		}
@@ -66,7 +77,26 @@ public class GoldMine extends DestructibleObject {
 			g2d.rotate(Math.toRadians(-rotation));
 			g2d.translate(-rectHitbox.getCenterX(), -rectHitbox.getCenterY());
 		}
-		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), 25);
+		if(captureState != 0) {
+			drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), 25);
+		}	
+	}
+	
+	public void drawNeighborBRs(Graphics2D g2d) {
+		
+		g2d.setColor(new Color(20,20,20));
+		for(BoardRectangle curtBR : neighborBoardRectangles) {
+			if(!curtBR.isWall) {
+				g2d.fill(curtBR.rect);
+			}
+		}
+		g2d.setColor(new Color(10,10,10));
+		g2d.setStroke(new BasicStroke(8));
+		g2d.drawRect(neighborBoardRectangles.get(0).getX(), neighborBoardRectangles.get(0).getY(), Commons.boardRectSize*3, Commons.boardRectSize*3);
+		for(Particle curP : particles) {
+			curP.drawParticle(g2d);
+		}
+		
 	}
 	@Override
 	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
@@ -79,13 +109,23 @@ public class GoldMine extends DestructibleObject {
 				}
 			}
 		}
-		StagePanel.addDmgLabel((int)(rectHitbox.getCenterX()+(Math.random()-0.5)*rectHitbox.getWidth()),
-		(int)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.getWidth()), dmg);
+		StagePanel.addValueLabel((int)(rectHitbox.getCenterX()+(Math.random()-0.5)*rectHitbox.getWidth()),
+		(int)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.getWidth()), dmg,Commons.cAttack);
 	}
 	
 	public void capture(boolean isEnemy) {
 		captureState = (byte) (isEnemy?1:2);
 		health = maxHealth;
+		StagePanel.valueLabels.add(new ValueLabel(occupiedBRs[0].getCenterX(), occupiedBRs[0].getCenterY(), "Captured", isEnemy?Commons.enemyColor:Commons.notEnemyColor));
+	}
+	
+	public void tryGainGold() {
+		if(captureState != 0) {
+			for(int i = 0;i<10;i++) {
+				StagePanel.particles.add(new GoldParticle((float)occupiedBRs[0].getCenterX(),(float)occupiedBRs[0].getCenterY(),
+						(float)(Math.random()*360),(float)(Math.random()*360),(float)(Math.random()*2.5f)+2f,captureState == 1));
+			}
+		}
 	}
 
 }

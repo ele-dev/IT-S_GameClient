@@ -65,15 +65,15 @@ public class DetonatorPiece extends GamePiece{
 			
 		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), 10, 20, getIsEnemy(), 
 				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape,targetGamePiece,targetDestructibleObject));
+		targetDestructibleObject = null;
+		targetGamePiece = null;
 	}
 	// decreases the detonation counter and lets it explode if the timer <= 0
 	public void decDetonaterTimers() {
 		for(DetonatorProjectile curDP : detProjectiles) {
-			if(curDP.turnsTillDetonation>0) {
-				curDP.turnsTillDetonation--;
-			}
+			curDP.getDetonationCountDown().countDownOne();
 			
-			if(curDP.turnsTillDetonation<=0) {
+			if(curDP.getDetonationCountDown().getCounter()<=0) {
 				curDP.detonationTimer.start();
 				curDP.setBlinkeIntervall(5);
 			}
@@ -87,23 +87,20 @@ public class DetonatorPiece extends GamePiece{
 			return;
 		}
 		for(DetonatorProjectile curDP : detProjectiles) {
-			if(curDP.detonationTimer.isRunning() || !curDP.getHasHitTarget()) {
+			if(curDP.detonationTimer.isRunning() || !curDP.hasHitTarget()) {
 				isAttacking = true;
 				return;
 			}
-		}
-		if(!isAttacking) {
-			targetGamePiece = null;
 		}
 	}
 
 	public void updateAttack() { 
 		for(int i = 0;i<detProjectiles.size();i++) { 
 			DetonatorProjectile curDP = detProjectiles.get(i);
-			if(!curDP.getHasHitTarget()) {
+			if(!curDP.hasHitTarget()) {
 				curDP.move();
 				curDP.checkHitEnemy();
-				curDP.checkHitTargetShieldOrDestructibleObject();
+				curDP.checkHitDestructibleObject();
 			}else {
 				if(curDP.getTargetGamePiece() != null) {
 					curDP.stayStuck();

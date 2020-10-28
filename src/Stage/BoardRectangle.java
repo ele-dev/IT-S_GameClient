@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
+import PlayerStructures.GoldMine;
 
 public class BoardRectangle {
 	public int row,column;
@@ -102,6 +103,15 @@ public class BoardRectangle {
 		}
 		return false;
 	}
+	public boolean isGoldMine() {
+		for(GoldMine curGM : StagePanel.goldMines) {
+			if(curGM.containsBR(this)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean hasGamePieceOnIt() {
 		for(GamePiece curGP : StagePanel.gamePieces) {
 			if(curGP.boardRect == this) {
@@ -242,8 +252,8 @@ public class BoardRectangle {
 		}
 	}
 	// draws The Rectangle depending on if it is a Possible move/attack (draws another rectangle with another color over it)
-	public void drawBoardRectangle(Graphics2D g2d,ArrayList<BoardRectangle> boardRectangles) {
-		g2d.setColor(isGap?Color.BLUE:isHinderingTerrain?Color.MAGENTA:c);
+	public void drawBoardRectangle(Graphics2D g2d) {
+		g2d.setColor(isGap?new Color(35,137,218):isHinderingTerrain?Color.MAGENTA:c);
 		g2d.fill(rect);
 			
 		if(groundSprite != null && !isGap && !isWall) {
@@ -253,6 +263,9 @@ public class BoardRectangle {
 		g2d.setColor(new Color(0,0,0,100));
 		g2d.fill(rect);
 		
+	}
+	
+	public void drawState(Graphics2D g2d) {
 		g2d.setStroke(new BasicStroke(2));
 		if(isPossibleMove || isPossibleAttack || isPossibleAbility) {
 			g2d.setColor(new Color(10,10,10,100));
@@ -273,8 +286,8 @@ public class BoardRectangle {
 			
 			
 			g2d.draw(rect);
-			for(int i = 0;i<getSize();i+=getSize()/6) g2d.drawLine(getX()+i, getY(), getX(), getY()+i);
-			for(int i = getSize()/6;i<getSize();i+=getSize()/6) g2d.drawLine(getX()+i, getY()+getSize(), getX()+getSize(), getY()+i);
+			for(int i = 0;i<getSize();i+=getSize()/5) g2d.drawLine(getX()+i, getY(), getX(), getY()+i);
+			for(int i = 0;i<getSize();i+=getSize()/5) g2d.drawLine(getX()+i, getY()+getSize(), getX()+getSize(), getY()+i);
 		}
 	}
 	
@@ -372,9 +385,9 @@ public class BoardRectangle {
 		if(wallSprite != null) {
 			wallSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
 		}else {
-			g2d.setColor(new Color(10,10,10));
+			g2d.setColor(new Color(0,0,0));
 			g2d.fill(rect);
-			g2d.setColor(new Color(100,100,100));
+			g2d.setColor(new Color(10,10,10));
 			g2d.setStroke(new BasicStroke(6));
 			g2d.draw(rect);
 		}
@@ -385,17 +398,15 @@ public class BoardRectangle {
 		g2d.fill(rect);
 		g2d.setColor(new Color(0,255,50,200));
 		g2d.setStroke(new BasicStroke(4));
-		
 		if(StagePanel.curHoverBR != this) {
 			g2d.draw(rect);
-			for(int i = 0;i<getSize();i+=getSize()/6) g2d.drawLine(getX()+i, getY(), getX(), getY()+i);
-			for(int i = getSize()/6;i<getSize();i+=getSize()/6) g2d.drawLine(getX()+i, getY()+getSize(), getX()+getSize(), getY()+i);
+			for(int i = 0;i<getSize();i+=getSize()/5) g2d.drawLine(getX()+i, getY(), getX(), getY()+i);
+			for(int i = 0;i<getSize();i+=getSize()/5) g2d.drawLine(getX()+i, getY()+getSize(), getX()+getSize(), getY()+i);
 			
 		}else {
 			g2d.setColor(new Color(0,255,50,200));
 			g2d.fill(rect);
 		}
-		
 	}
 	
 	public void drawIndex(Graphics2D g2d) {

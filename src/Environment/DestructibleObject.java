@@ -55,6 +55,9 @@ public class DestructibleObject {
 	public boolean isDestroyed() {
 		return isDestroyed;
 	}
+	public float getHealth() {
+		return health;
+	}
 	public boolean containsBR(BoardRectangle targetBR) {
 		for(BoardRectangle curBR : occupiedBRs) {
 			if(curBR == targetBR) {
@@ -132,8 +135,8 @@ public class DestructibleObject {
 					sprite.getRandomPixelColor(),angle, (float)(Math.random()*4+dmg)));
 			}
 		}
-		StagePanel.addDmgLabel((int)(rectHitbox.getCenterX()+(Math.random()-0.5)*rectHitbox.getWidth()),
-		(int)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.getWidth()), dmg);
+		StagePanel.addValueLabel((int)(rectHitbox.getCenterX()+(Math.random()-0.5)*rectHitbox.getWidth()),
+		(int)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.getWidth()), dmg,Commons.cAttack);
 	}
 	
 	

@@ -7,7 +7,7 @@ import java.awt.Shape;
 
 import Environment.DestructibleObject;
 import Particles.Explosion;
-import Particles.RocketTrailParticle;
+import Particles.TrailParticle;
 import Stage.StagePanel;
 
 
@@ -28,7 +28,7 @@ public class Rocket extends Projectile {
 	
 	public void addTrailParticle() { 
 		int randomSize = (int)(Math.random() * 2) +4;
-		StagePanel.particles.add(new RocketTrailParticle(x, y, randomSize, randomSize, c, 0, 3));
+		StagePanel.particles.add(new TrailParticle(x, y, randomSize,0, c,0, 3,0));
 	}
 	
 	// draws the rocket

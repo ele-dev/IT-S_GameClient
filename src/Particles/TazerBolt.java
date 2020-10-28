@@ -41,4 +41,7 @@ public class TazerBolt extends Particle{
 		} 
 	}
 
+	@Override
+	public void move() {}
+
 }

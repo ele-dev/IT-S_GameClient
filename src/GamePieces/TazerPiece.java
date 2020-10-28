@@ -1,6 +1,7 @@
 package GamePieces;
 
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import javax.swing.Timer;
 
 import Particles.TazerBolt;
-import Particles.TazerTrailParticle;
+import Particles.TrailParticle;
 import Projectiles.Bullet;
 import Stage.BoardRectangle;
 import Stage.Commons;
@@ -21,7 +22,6 @@ import Stage.StagePanel;
 public class TazerPiece extends GamePiece{
 	
 	Bullet tazerBullet;
-	ArrayList<ArrayList<Point>> pointsArray = new ArrayList<ArrayList<Point>>();
 	
 	public TazerPiece(boolean isEnemy, BoardRectangle boardRect) {
 		super(isEnemy, "T", boardRect, 2, 1); 
@@ -75,6 +75,8 @@ public class TazerPiece extends GamePiece{
 		alreadyHitGPs.add(targetGamePiece);
 		int amountOfTazerBolts = 2;
 		
+		ArrayList<ArrayList<Point>> pointsArray = new ArrayList<ArrayList<Point>>();
+		
 			for(int k = 0;k<amountOfTazerBolts;k++) {
 				pointsArray.add(new ArrayList<Point>());
 				pointsArray.get(k).add(new Point((int)tazerBullet.getX(), (int)tazerBullet.getY()));
@@ -83,8 +85,11 @@ public class TazerPiece extends GamePiece{
 			while(true) { 
 				i++;
 				if(i%2==0) {
-					StagePanel.particles.add(new TazerTrailParticle((int)(tazerBullet.getX() + (Math.random()-0.5)*15), (int)(tazerBullet.getY() + (Math.random()-0.5)*15),
-							(float) (Math.random()*0.7),(float) (Math.random()*4+6),(float) (Math.random()*360)));
+					Color cTP =  new Color(58, 100+(int)(Math.random()*130), 140+(int)(Math.random()*30));
+					int x = (int)(tazerBullet.getX() + (Math.random()-0.5)*10);
+					int y = (int)(tazerBullet.getY() + (Math.random()-0.5)*10);
+					StagePanel.particles.add(new TrailParticle(x, y, (int)(Math.random()*5+6), 
+							(int)(Math.random()*360), cTP, (float)(Math.random()*0.1), 3,0.1f));
 				} 
 				
 				int j = (int)(Math.random()*20)+40;
@@ -96,7 +101,7 @@ public class TazerPiece extends GamePiece{
 				
 				tazerBullet.move();
 				tazerBullet.checkHitAnyTarget();
-				if(tazerBullet.getHasHitTarget() && targetGamePiece == null){
+				if(tazerBullet.hasHitTarget() && targetGamePiece == null){
 					for(int k = 0;k<amountOfTazerBolts;k++) {
 						pointsArray.get(k).add(new Point((int)tazerBullet.getX(), (int)tazerBullet.getY()));
 						StagePanel.particles.add(new TazerBolt(pointsArray.get(k)));
@@ -105,7 +110,7 @@ public class TazerPiece extends GamePiece{
 				}
 						
 				// checks if the bullet hit it's target
-				if(tazerBullet.getHasHitTarget() && targetGamePiece != null) {
+				if(tazerBullet.hasHitTarget() && targetGamePiece != null) {
 					boolean nearNoTarget = true;
 					// searches for a new target that is in a 1 BoardRectangle range around the target which it hit
 					// 1. new target must be not the same team as the GamePiece that shot

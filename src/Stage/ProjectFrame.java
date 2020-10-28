@@ -44,7 +44,7 @@ public class ProjectFrame extends JFrame {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		Container cp = getContentPane();
-		stagePanel = new StagePanel("SmallMap",this);
+		stagePanel = new StagePanel("LargeMap");
 
 		// Create and init the GUI panels (JPanel)
 		loginPanel = new LoginPanel();
@@ -69,17 +69,17 @@ public class ProjectFrame extends JFrame {
 		
 		// First create a connection instance
 		try {
-//			conn = new Connection();
+			conn = new Connection();
 		} catch (Exception e) {}
 		
 		// If the connection is established prompt the user to login
-//		if(conn.isConnected() == true) {
-//			// ...
-//		} else {
-//			// If theres no connection to the game server the exit
-//			System.out.println("\nApplication close up");
-//			System.exit(0);
-//		}
+		if(conn.isConnected() == true) {
+			// ...
+		} else {
+			// If theres no connection to the game server the exit
+			System.out.println("\nApplication close up");
+			System.exit(0);
+		}
 		
 		// Second create the main window and start the actual game
 		ProjectFrame f = new ProjectFrame();

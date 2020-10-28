@@ -14,6 +14,7 @@ import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 import Particles.Explosion;
 import Stage.Commons;
+import Stage.TurnCountDown;
 
 
 
@@ -25,7 +26,6 @@ public class DetonatorProjectile extends Projectile{
 	public Timer detonationTimer;
 	public Explosion detExplosion;
 	private boolean isDetonated = false;
-	public int turnsTillDetonation = 2;
 	
 	private Color cBlink;
 	private int blinkCounter = 0;
@@ -35,7 +35,7 @@ public class DetonatorProjectile extends Projectile{
 	private GamePiece targetGamePiece;
 	private DestructibleObject targetDestructibleObject;
 	
-	
+	private TurnCountDown detonationCountDown;
 	public DetonatorProjectile(int x, int y, int w, int h, boolean isEnemy,float dmg,float angle,Shape targetShape
 			,GamePiece targetGamePiece,DestructibleObject targetDestructibleObject) {
 		super(x, y, w, h, isEnemy?Commons.enemyColor:Commons.notEnemyColor, angle, 16, 0, targetShape, targetDestructibleObject);
@@ -54,6 +54,8 @@ public class DetonatorProjectile extends Projectile{
 		detonationTimer.setRepeats(false);
 		this.targetGamePiece = targetGamePiece;
 		this.targetDestructibleObject = targetDestructibleObject;
+		
+		detonationCountDown = new TurnCountDown(2,c);
 	}
 	
 	public GamePiece getTargetGamePiece() {
@@ -66,41 +68,28 @@ public class DetonatorProjectile extends Projectile{
 	public void setBlinkeIntervall(int blinkeIntervall) {
 		this.blinkeIntervall = blinkeIntervall;
 	}
+	
+	public TurnCountDown getDetonationCountDown() {
+		return detonationCountDown;
+	}
 	// draws the projectile
 	public void drawProjectile(Graphics2D g2d) {
-		if(hasHitTarget && !isColorBlink) {
-			g2d.setColor(cBlink);
-		}else {
-			g2d.setColor(c);
-		}
+		g2d.setColor(hasHitTarget && !isColorBlink?cBlink:c);
 		g2d.translate(x, y);
 		g2d.rotate(Math.toRadians(angle));
 		g2d.fill(shapeShow);
 		g2d.rotate(Math.toRadians(-angle));
 		g2d.translate(-x, -y);
 		
-		if(hasHitTarget) {
-			drawTTD(g2d);
-		}
+		if(hasHitTarget) detonationCountDown.drawCountDown(g2d, (int)x, (int)y-30);
 	}
 	
 	public void updateBlink() {
 		blinkCounter++;
-		if(blinkCounter>blinkeIntervall && !isColorBlink) {
-			isColorBlink = true;
-			blinkCounter = 0;
-		}else if(blinkCounter>blinkeIntervall && isColorBlink){
-			isColorBlink = false;
+		if(blinkCounter>blinkeIntervall) {
+			isColorBlink = !isColorBlink;
 			blinkCounter = 0;
 		}
-	}
-	// draws the turns it takes till the Bomb will Detonate
-	public void drawTTD(Graphics2D g2d) {
-		if(turnsTillDetonation > 0) {
-			g2d.setColor(Color.WHITE);
-		}
-		g2d.setFont(new Font("Arial",Font.PLAIN,25));
-		g2d.drawString(turnsTillDetonation+"", (int)x -5, (int)y -20);
 	}
 	// creates the explosion and damages the target
 	public void detonate() {
@@ -112,27 +101,20 @@ public class DetonatorProjectile extends Projectile{
 			}else if(targetDestructibleObject != null) {
 				targetDestructibleObject.getDamaged(dmg,angle,isEnemy);
 			}
-			
 		}
 	}
 	// checks if it has hit an Enemy and will set it to be Stuck
 	public void checkHitEnemy() {
 		if(targetGamePiece != null && rectHitbox.intersects(targetGamePiece.getRectHitbox())) {
 			hasHitTarget = true;
-			
 			xRelTarget = x - targetGamePiece.getCenterX();
 			yRelTarget = y - targetGamePiece.getCenterY();
 		}
 	}
-	
-	
-	public void checkHitTargetShieldOrDestructibleObject() {
-		if((targetDestructibleObject != null) && hasHitTarget) {
-			detonate();
-		}
+	public void checkHitDestructibleObject() {
+		if((targetDestructibleObject != null) && targetShape.intersects(rectHitbox)) detonate();
 	}
 	public void stayStuck() {
-		
 		x = targetGamePiece.getCenterX() + xRelTarget; 
 		y = targetGamePiece.getCenterY() + yRelTarget;
 	}

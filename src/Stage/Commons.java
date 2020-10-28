@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public interface Commons {
 	// Size of the Cells on the game board
-	final int boardRectSize = 80;
+	final int boardRectSize = 70;
 	
 	// window frame dimensions 
 	final int wf = 1800;
@@ -44,6 +44,11 @@ public interface Commons {
 	// Game Piece config variables //
 	final int dmgFlashCountDown = 5;
 	final int shieldRegen = 1;
+	
+	final int startCoinAmount = 100;
+	final float PlayerFortressHealth = 1;
+	
+	final float goldMineHealth = 5;
 	// BaseTypes
 	// type 0
 	final int maxHealthType0 = 8;

@@ -133,7 +133,7 @@ public abstract class GamePiece {
 			BoardRectangle curBR  = StagePanel.boardRectangles.get(i);
 			pathCells.add(new PathCell(curBR.getX(), curBR.getY(), Commons.boardRectSize, curBR.row, curBR.column,i));
 				
-			if(curBR.isWall || curBR.isDestructibleObject() || curBR.isGap) {
+			if(curBR.isWall || curBR.isDestructibleObject() || curBR.isGoldMine() || curBR.isGap) {
 				pathCells.get(i).setIsWall(true);
 			}else
 			for(GamePiece curGP : StagePanel.gamePieces) {
@@ -273,6 +273,8 @@ public abstract class GamePiece {
 	
 	// updates angle to face toward enemy and starts the attack (starts attackDelayTimer)
 	public void startAttack(BoardRectangle targetBoardRectangle) {
+		targetGamePiece = null;
+		targetDestructibleObject = null;
 		if(StagePanel.enemyFortress.containsBR(targetBoardRectangle) && !isEnemy) {
 			targetDestructibleObject = StagePanel.enemyFortress;
 			startAttackDelay();
@@ -314,7 +316,7 @@ public abstract class GamePiece {
 		}
 	}
 	
-	private void startAttackDelay() {
+	protected void startAttackDelay() {
 		isAttacking = true;
 		attackDelayTimer.start();
 		hasExecutedAttack = true;

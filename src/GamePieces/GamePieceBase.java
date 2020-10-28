@@ -207,7 +207,7 @@ public class GamePieceBase {
 	
 	// damages the Piece (health--)
 	public void getDamaged(float dmg) {
-		StagePanel.addDmgLabel(parentGP,dmg);
+		StagePanel.addValueLabel(parentGP,dmg,Commons.cAttack);
 		if(shield - dmg >= 0) {
 			shield-=dmg;
 			dmg = 0;
@@ -225,12 +225,12 @@ public class GamePieceBase {
 	public void regenShield() {
 		if(shield + Commons.shieldRegen >= maxShield) {
 			if(shield < maxShield) {
-				StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", 2,0.3f, Commons.cShield));
+				StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
 			}
 			shield = maxShield;
 		}else {
 			shield += Commons.shieldRegen;
-			StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", 2,0.3f, Commons.cShield));
+			StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
 		}
 	}
 	

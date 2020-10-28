@@ -62,14 +62,14 @@ public class EMPPiece extends GamePiece{
 			
 		empProjectiles.add(new EMPProjectile(getCenterX(), getCenterY(), 10, 20, c, 
 				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape,targetGamePiece,targetDestructibleObject));
+		targetDestructibleObject = null;
+		targetGamePiece = null;
 	}
 	// decreases the detonation counter and lets it explode if the timer <= 0
 	public void decEMPTimers() {
 		for(EMPProjectile curEMPP : empProjectiles) {
-			if(curEMPP.turnsTillDestruction>0) {
-				curEMPP.turnsTillDestruction--;
-			}
-			if(curEMPP.turnsTillDestruction <= 0) {
+			curEMPP.getDestroyCountDown().countDownOne();
+			if(curEMPP.getDestroyCountDown().getCounter() <= 0) {
 				curEMPP.destroy();
 			}
 		}
@@ -82,7 +82,7 @@ public class EMPPiece extends GamePiece{
 			return;
 		}
 		for(EMPProjectile curEMPP : empProjectiles) {
-			if(!curEMPP.getHasHitTarget()) {
+			if(!curEMPP.hasHitTarget()) {
 				isAttacking = true;
 				return;
 			}
@@ -93,14 +93,13 @@ public class EMPPiece extends GamePiece{
 		for(int i = 0;i<empProjectiles.size();i++) { 
 			EMPProjectile curEMPP = empProjectiles.get(i);
 			curEMPP.update();
-			if(!curEMPP.getHasHitTarget()) {
+			if(!curEMPP.hasHitTarget()) {
 				curEMPP.move();
 				curEMPP.checkHitEnemy();
-				curEMPP.checkHitTargetShieldOrDestructibleObject();
-				if(curEMPP.getHasHitTarget()) {
-					if(targetGamePiece != null) {
-						targetGamePiece.gamePieceBase.getDamaged(getDmg());
-						targetGamePiece = null;
+				curEMPP.checkHitDestructibleObject();
+				if(curEMPP.hasHitTarget()) {
+					if(curEMPP.getTargetGamePiece() != null) {
+						curEMPP.getTargetGamePiece().gamePieceBase.getDamaged(getDmg());
 					}else {
 						targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
 						targetDestructibleObject = null;

@@ -79,7 +79,7 @@ public class GunnerPiece extends CommanderGamePiece {
 			curB.move();
 			curB.checkHitAnyTarget(); 
 			
-			if(curB.getHasHitTarget()) {
+			if(curB.hasHitTarget()) {
 				bullets.remove(i);
 			}
 			
