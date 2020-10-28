@@ -1,5 +1,7 @@
 package clientPackage;
 
+import menueGui.GameState;
+
 /*
  * written by Elias Geiger
  * 
@@ -24,6 +26,7 @@ public class MessageHandler {
 		
 		switch(id)
 		{
+			// Message that contains game statistics about the player account
 			case GenericMessage.MSG_ACCOUNT_STATS:
 			{
 				// First parse the message into the right format
@@ -36,6 +39,40 @@ public class MessageHandler {
 				System.out.println("Received account stats from the server");
 				System.out.println("Played Matches: " + accountStats.getPlayedMatches());
 				System.out.println("Account Balance: " + accountStats.getAccountBalance());
+				
+				break;
+			}
+			
+			// A Signal Message that says a match was found
+			case GenericMessage.MSG_FOUND_MATCH:
+			{
+				// Ignore this message if the player wasn't searching for a match
+				if(!GameState.isSearching) {
+					System.err.println("Received invalid match found message from the server!");
+					break;
+				}
+				
+				// First update the players state flags
+				GameState.isSearching = false;
+				GameState.isIngame = true;
+				
+				break;
+			}
+			
+			// Message provides player with neccessary data before the match begins
+			case GenericMessage.MSG_MATCH_INFO:
+			{
+				// Ignore this message if the player isn't in game at the moment
+				if(!GameState.isIngame) {
+					System.err.println("Received invalid match info message from the server!");
+					break;
+				}
+				
+				// Store the match data from the message
+				// ...
+				
+				// Navigate to the game panel where the actual game happens
+				// ...
 				
 				break;
 			}
