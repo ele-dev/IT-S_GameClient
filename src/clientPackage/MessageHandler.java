@@ -1,5 +1,7 @@
 package clientPackage;
 
+import javax.swing.JOptionPane;
+
 import Stage.ProjectFrame;
 import menueGui.GameState;
 
@@ -79,6 +81,28 @@ public class MessageHandler {
 				// Navigate to the game panel where the actual game happens
 				ProjectFrame.homePanel.closePanel();
 				ProjectFrame.stagePanel.setVisible(true);
+				
+				break;
+			}
+			
+			case GenericMessage.MSG_ENEMY_SURRENDER:
+			{
+				// Ignore this message if the player isn't ingame at the moment
+				if(!GameState.isIngame) {
+					break;
+				}
+				
+				// show popup message informing that the match is over because the enemy left the game
+				JOptionPane.showMessageDialog(null, "Match is over. Enemy has left the game");
+				
+				// Update the player states
+				GameState.isIngame = false;
+				GameState.isSearching = false;
+				GameState.enemyName = "";
+				
+				// Navigate back to the home screen
+				ProjectFrame.stagePanel.setVisible(false);
+				ProjectFrame.homePanel.setVisible(true);
 				
 				break;
 			}
