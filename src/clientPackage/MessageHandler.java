@@ -85,10 +85,13 @@ public class MessageHandler {
 				break;
 			}
 			
+			// This message notifies the player that the match is over because the enemy has 
+			// left the game volunterally
 			case GenericMessage.MSG_ENEMY_SURRENDER:
 			{
 				// Ignore this message if the player isn't ingame at the moment
 				if(!GameState.isIngame) {
+					System.err.println("Received invalid enemy surrender message from the server!");
 					break;
 				}
 				
