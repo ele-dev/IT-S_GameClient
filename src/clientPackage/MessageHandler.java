@@ -1,5 +1,6 @@
 package clientPackage;
 
+import Stage.ProjectFrame;
 import menueGui.GameState;
 
 /*
@@ -68,11 +69,16 @@ public class MessageHandler {
 					break;
 				}
 				
+				// First parse the message into the right format
+				MsgMatchInfo matchInfo = (MsgMatchInfo) msg;
+				
 				// Store the match data from the message
+				GameState.enemyName = matchInfo.getEnemyPlayerName();
 				// ...
 				
 				// Navigate to the game panel where the actual game happens
-				// ...
+				ProjectFrame.homePanel.closePanel();
+				ProjectFrame.stagePanel.setVisible(true);
 				
 				break;
 			}
