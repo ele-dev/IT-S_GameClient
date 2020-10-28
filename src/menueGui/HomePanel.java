@@ -75,6 +75,7 @@ public class HomePanel extends GuiPanel {
 		
 		this.abortMatchSearchButton.setEnabled(false);
 		this.quickMatchButton.setEnabled(true);
+		this.gameSearchMessage.setEnabled(false);
 	}
 	
 	// Method for updating/processing stuff 
