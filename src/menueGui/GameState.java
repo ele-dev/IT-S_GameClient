@@ -20,4 +20,5 @@ public class GameState {
 	
 	// Ingame related variables //
 	public static String enemyName = "";
+	public static boolean myTurn = false;
 }

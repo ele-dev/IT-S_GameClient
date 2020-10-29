@@ -115,6 +115,20 @@ public class MessageHandler {
 				break;
 			}
 			
+			case GenericMessage.MSG_BEGIN_TURN:
+			{
+				// Ignore this message if the player isn't ingame at the moment
+				if(!GameState.isIngame) {
+					System.err.println("Received invalid begin turn message from the server!");
+					break;
+				}
+				
+				// Update the global state variable
+				GameState.myTurn = true;
+				
+				break;
+			}
+			
 			default:
 			{
 				System.err.println("Received message of unknown type!");
