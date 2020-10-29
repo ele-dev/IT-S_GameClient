@@ -90,13 +90,22 @@ public class HomePanel extends GuiPanel {
 			this.accountVerificationMessage.setText("Info: Account has not been verified yet!");
 		}
 		
-		// Update the matchmaking buttons and labels
-		if(this.abortMatchSearchButton.isEnabled && GameState.isSearching) {
-			this.gameSearchMessage.setText("Waiting for an opponent ...");
-		} else if (GameState.isIngame) {
+		// Update the matchmaking buttons and labels for the 3 different possible cases
+		// case 1: Currently searching but not ingame
+		if(GameState.isSearching) {
+			this.gameSearchMessage.setText("Waiting for an opponent ...");	
+		} 
+		// case 2: match found means ingame now and not searching anymore
+		else if (GameState.isIngame) {
 			this.gameSearchMessage.setText("Match found. Joining ...");
 			this.abortMatchSearchButton.setEnabled(false);
 			this.quickMatchButton.setEnabled(false);
+		} 
+		// case 3: Not ingame at the moment and also not searching
+		else {
+			this.quickMatchButton.setEnabled(true);
+			this.abortMatchSearchButton.setEnabled(false);
+			this.gameSearchMessage.setEnabled(false);
 		}
 		
 		// Update the welcome display label
@@ -137,11 +146,13 @@ public class HomePanel extends GuiPanel {
 				// Send the abortion message to the server
 				SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
 				ProjectFrame.conn.sendMessageToServer(abortMessage);
+				GameState.isSearching = false;
 			}
 			
-			// Run the logout routine and return to the login screen
+			// Run the network logout routine
 			ProjectFrame.conn.logout();
 			
+			// Navigate to the login panel
 			this.closePanel();
 			ProjectFrame.loginPanel.setVisible(true);
 		}
