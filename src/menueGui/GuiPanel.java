@@ -135,7 +135,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		drawPanelContent(g2d);
 	}
 	
-	// Main update/processing method (does nothing by default)
+	// Main update/processing method (does nothing by default, can be overwritten)
 	protected void update() {
 		// ...
 	}

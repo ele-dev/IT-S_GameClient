@@ -55,6 +55,8 @@ public class MessageHandler {
 					break;
 				}
 				
+				System.out.println("Match was found --> joining match ...");
+				
 				// First update the players state flags
 				GameState.isSearching = false;
 				GameState.isIngame = true;
@@ -78,6 +80,8 @@ public class MessageHandler {
 				GameState.enemyName = matchInfo.getEnemyPlayerName();
 				// ...
 				
+				System.out.println("Received Match data --> navigating to stage panel");
+				
 				// Navigate to the game panel where the actual game happens
 				ProjectFrame.homePanel.closePanel();
 				ProjectFrame.stagePanel.setVisible(true);
@@ -96,12 +100,13 @@ public class MessageHandler {
 				}
 				
 				// show popup message informing that the match is over because the enemy left the game
+				System.out.println("The enemy surrendered --> leaving match");
 				JOptionPane.showMessageDialog(null, "Match is over. Enemy has left the game");
 				
 				// Update the player states
 				GameState.isIngame = false;
 				GameState.isSearching = false;
-				GameState.enemyName = "";
+				GameState.enemyName = ""; 
 				
 				// Navigate back to the home screen
 				ProjectFrame.stagePanel.setVisible(false);
