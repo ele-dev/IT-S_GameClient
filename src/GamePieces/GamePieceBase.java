@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import javax.swing.Timer;
 
-import PlayerStructures.GoldMine;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
@@ -34,6 +33,7 @@ public class GamePieceBase {
 	int curTargetPathCellIndex = 0;
 	private GamePiece parentGP;
 	
+	@SuppressWarnings("unused")
 	private int baseTypeIndex;
 	private Point targetPoint;
 	

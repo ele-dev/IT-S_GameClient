@@ -3,25 +3,16 @@ package LevelDesignTools;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-import com.sun.prism.Image;
-
 import Environment.DestructibleObject;
 import PlayerStructures.GoldMine;
-import PlayerStructures.PlayerFortress;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
-import Stage.ProjectFrame;
 
 public class LevelInitializer {
 	private int mapRows = 0;

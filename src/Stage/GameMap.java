@@ -1,8 +1,6 @@
 package Stage;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
-
 import LevelDesignTools.LevelInitializer;
 
 public class GameMap {
