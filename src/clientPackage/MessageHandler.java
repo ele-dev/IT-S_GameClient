@@ -126,6 +126,9 @@ public class MessageHandler {
 				// Update the global state variable
 				GameState.myTurn = true;
 				
+				JOptionPane.showMessageDialog(null, "It's your turn now (" 
+						+ ProjectFrame.conn.getUsername() + ")");
+				
 				break;
 			}
 			
