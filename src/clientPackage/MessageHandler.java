@@ -115,6 +115,8 @@ public class MessageHandler {
 				break;
 			}
 			
+			// This message is received from the server as soon as the enemy has finished his turn
+			// When this message is received then our own turn begins 
 			case GenericMessage.MSG_BEGIN_TURN:
 			{
 				// Ignore this message if the player isn't ingame at the moment
@@ -123,9 +125,8 @@ public class MessageHandler {
 					break;
 				}
 				
-				// Update the global state variable
+				// Update the global state variable and show info box 
 				GameState.myTurn = true;
-				
 				JOptionPane.showMessageDialog(null, "It's your turn now (" 
 						+ ProjectFrame.conn.getUsername() + ")");
 				
