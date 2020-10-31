@@ -41,9 +41,6 @@ public class HomePanel extends GuiPanel {
 		// Set the desired background color for the panel
 		this.bgColor = Commons.homeScreenBackground;
 		
-		// disable the search abortion button at the beginning
-		this.abortMatchSearchButton.setEnabled(false);
-		
 		// init the gui elements 
 		initGuiElements();
 	}
@@ -63,6 +60,10 @@ public class HomePanel extends GuiPanel {
 		this.logoutButton.setRelativePosition(3, 95);
 		this.quickMatchButton.setRelativePosition(75, 40);
 		this.abortMatchSearchButton.setRelativePosition(75, 55);
+		
+		// disable the search abortion button and the status label at the beginning
+		this.abortMatchSearchButton.setEnabled(false);
+		this.gameSearchMessage.setEnabled(false);
 	}
 	
 	// Method for implementing clean up tasks before panel closure
@@ -74,6 +75,7 @@ public class HomePanel extends GuiPanel {
 		
 		this.abortMatchSearchButton.setEnabled(false);
 		this.quickMatchButton.setEnabled(true);
+		this.gameSearchMessage.setEnabled(false);
 	}
 	
 	// Method for updating/processing stuff 
@@ -86,6 +88,24 @@ public class HomePanel extends GuiPanel {
 		} else {
 			this.accountVerificationMessage.setTextColor(Color.YELLOW);
 			this.accountVerificationMessage.setText("Info: Account has not been verified yet!");
+		}
+		
+		// Update the matchmaking buttons and labels for the 3 different possible cases
+		// case 1: Currently searching but not ingame
+		if(GameState.isSearching) {
+			this.gameSearchMessage.setText("Waiting for an opponent ...");	
+		} 
+		// case 2: match found means ingame now and not searching anymore
+		else if (GameState.isIngame) {
+			this.gameSearchMessage.setText("Match found. Joining ...");
+			this.abortMatchSearchButton.setEnabled(false);
+			this.quickMatchButton.setEnabled(false);
+		} 
+		// case 3: Not ingame at the moment and also not searching
+		else {
+			this.quickMatchButton.setEnabled(true);
+			this.abortMatchSearchButton.setEnabled(false);
+			this.gameSearchMessage.setEnabled(false);
 		}
 		
 		// Update the welcome display label
@@ -105,10 +125,8 @@ public class HomePanel extends GuiPanel {
 		// Draw the welcome message 
 		this.welcomeMessage.draw(g2d);
 		
-		// Draw the game search status message only when currently searching
-		if(this.abortMatchSearchButton.isEnabled) {
-			this.gameSearchMessage.draw(g2d);
-		}
+		// Draw the game search/matchmaking status
+		this.gameSearchMessage.draw(g2d);
 		
 		// Draw the buttons
 		this.logoutButton.draw(g2d);
@@ -128,11 +146,13 @@ public class HomePanel extends GuiPanel {
 				// Send the abortion message to the server
 				SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
 				ProjectFrame.conn.sendMessageToServer(abortMessage);
+				GameState.isSearching = false;
 			}
 			
-			// Run the logout routine and return to the login screen
+			// Run the network logout routine
 			ProjectFrame.conn.logout();
 			
+			// Navigate to the login panel
 			this.closePanel();
 			ProjectFrame.loginPanel.setVisible(true);
 		}
@@ -153,6 +173,9 @@ public class HomePanel extends GuiPanel {
 			this.quickMatchButton.setEnabled(false);
 			this.abortMatchSearchButton.setEnabled(true);
 			
+			// Also enable the matchmaking status label
+			this.gameSearchMessage.setEnabled(true);
+			
 			// Update the state value that indicates, we are waiting for a player now
 			GameState.isSearching = true;
 		}
@@ -172,6 +195,9 @@ public class HomePanel extends GuiPanel {
 			// Enable the quick match search button and disable this one
 			this.abortMatchSearchButton.setEnabled(false);
 			this.quickMatchButton.setEnabled(true);
+			
+			// Also disable the matchmaking status label
+			this.gameSearchMessage.setEnabled(false);
 			
 			// update state value that indicates, we aren't waiting for a player anymore
 			GameState.isSearching = false;

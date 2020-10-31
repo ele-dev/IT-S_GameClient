@@ -17,5 +17,8 @@ public class GameState {
 	
 	public static String registerStatusDescription = "";
 	public static boolean userAccountVerified = false;
-	// ...
+	
+	// Ingame related variables //
+	public static String enemyName = "";
+	public static boolean myTurn = false;
 }
