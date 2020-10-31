@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import javax.swing.Timer;
 
-import Projectiles.DetonatorProjectile;
 import Projectiles.EMPProjectile;
 import Stage.BoardRectangle;
 import Stage.Commons;
