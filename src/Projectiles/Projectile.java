@@ -6,9 +6,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
-import Abilities.RadialShield;
 import Environment.DestructibleObject;
-import GamePieces.GamePiece;
 
 public abstract class Projectile {
 	protected float x,y;
@@ -26,7 +24,7 @@ public abstract class Projectile {
 	
 	public Projectile(int x, int y, int w, int h, Color c, float angle, float v, float acc, Shape targetShape,DestructibleObject targetDestructibleObject) {
 		this.x = x;
-		this.y = y;
+		this.y = y; 
 		this.c = c;
 		this.rectHitbox = new Rectangle(x-w/2,y-h/2,w,h);
 		this.angle = angle;
@@ -39,14 +37,14 @@ public abstract class Projectile {
 	public float getX() {
 		return x;
 	}
-	public float getY() {
+	public float getY() { 
 		return y;
 	}
-	public boolean getHasHitTarget() {
+	public boolean hasHitTarget() {
 		return hasHitTarget;
 	}
 	
-	public boolean getIsDestroyed() {
+	public boolean isDestroyed() {
 		return isDestroyed;
 	}
 	
@@ -65,7 +63,6 @@ public abstract class Projectile {
 		
 		ak = targetPoint.x - x;
 		gk = targetPoint.y - y;
-		
 		
 		float angleDesired = (float) Math.toDegrees(Math.atan2(ak*-1, gk));
 		angle = Stage.Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);

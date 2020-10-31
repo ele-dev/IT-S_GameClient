@@ -89,7 +89,7 @@ public class WallMine extends Projectile{
 	}
 	
 	public void update() {
-		if(!getHasHitTarget()) {
+		if(!hasHitTarget()) {
 			move();
 			checkHitTargetWall();
 			parentGP.isPerformingAbility = true;

@@ -1,6 +1,7 @@
 package GamePieces;
 
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import javax.swing.Timer;
 
 import Particles.TazerBolt;
-import Particles.TazerTrailParticle;
+import Particles.TrailParticle;
 import Projectiles.Bullet;
 import Stage.BoardRectangle;
 import Stage.Commons;
@@ -21,10 +22,9 @@ import Stage.StagePanel;
 public class TazerPiece extends GamePiece{
 	
 	Bullet tazerBullet;
-	ArrayList<ArrayList<Point>> pointsArray = new ArrayList<ArrayList<Point>>();
 	
 	public TazerPiece(boolean isEnemy, BoardRectangle boardRect) {
-		super(isEnemy, "T", boardRect, 2, 1);
+		super(isEnemy, "T", boardRect, 2, 1); 
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -36,18 +36,6 @@ public class TazerPiece extends GamePiece{
 		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2,boardRect.getCenterY()-Commons.boardRectSize/2,
 				Commons.boardRectSize,Commons.boardRectSize,0,0,Arc2D.PIE);
 		
-	}
-	
-	public void update() {
-		if(targetGamePiece != null) {
-			updateAngle(targetGamePiece.getPos());
-		}else if(targetDestructibleObject != null){
-			updateAngle(targetDestructibleObject.getPos());
-		}
-		if(isMoving) {
-			updateMove();
-		}
-		updateAttack();
 	}
 
 	@Override
@@ -80,26 +68,29 @@ public class TazerPiece extends GamePiece{
 		tazerBullet = new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 6, c,1,
 				angle, shape,targetDestructibleObject);	
 		StagePanel.applyScreenShake(5, 30);
-	}
-
-	@Override
-	public void updateAttack() {
+		 
 		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2,boardRect.getCenterY()-Commons.boardRectSize/2,
 				Commons.boardRectSize,Commons.boardRectSize,0,-angle-90,Arc2D.PIE);
 		ArrayList<GamePiece> alreadyHitGPs = new ArrayList<GamePiece>();
 		alreadyHitGPs.add(targetGamePiece);
 		int amountOfTazerBolts = 2;
-		if(tazerBullet != null) { 
+		
+		ArrayList<ArrayList<Point>> pointsArray = new ArrayList<ArrayList<Point>>();
+		
 			for(int k = 0;k<amountOfTazerBolts;k++) {
 				pointsArray.add(new ArrayList<Point>());
 				pointsArray.get(k).add(new Point((int)tazerBullet.getX(), (int)tazerBullet.getY()));
 			}
 			int i = 0;
-			while(true) {
+			while(true) { 
 				i++;
 				if(i%2==0) {
-					StagePanel.particles.add(new TazerTrailParticle((int)(tazerBullet.getX() + (Math.random()-0.5)*15), (int)(tazerBullet.getY() + (Math.random()-0.5)*15)));
-				}
+					Color cTP =  new Color(58, 100+(int)(Math.random()*130), 140+(int)(Math.random()*30));
+					int x = (int)(tazerBullet.getX() + (Math.random()-0.5)*10);
+					int y = (int)(tazerBullet.getY() + (Math.random()-0.5)*10);
+					StagePanel.particles.add(new TrailParticle(x, y, (int)(Math.random()*5+6), 
+							(int)(Math.random()*360), cTP, (float)(Math.random()*0.1), 3,0.1f));
+				} 
 				
 				int j = (int)(Math.random()*20)+40;
 				if(i%j==0) {
@@ -110,7 +101,7 @@ public class TazerPiece extends GamePiece{
 				
 				tazerBullet.move();
 				tazerBullet.checkHitAnyTarget();
-				if(tazerBullet.getHasHitTarget() && targetGamePiece == null){
+				if(tazerBullet.hasHitTarget() && targetGamePiece == null){
 					for(int k = 0;k<amountOfTazerBolts;k++) {
 						pointsArray.get(k).add(new Point((int)tazerBullet.getX(), (int)tazerBullet.getY()));
 						StagePanel.particles.add(new TazerBolt(pointsArray.get(k)));
@@ -119,7 +110,7 @@ public class TazerPiece extends GamePiece{
 				}
 						
 				// checks if the bullet hit it's target
-				if(tazerBullet.getHasHitTarget() && targetGamePiece != null) {
+				if(tazerBullet.hasHitTarget() && targetGamePiece != null) {
 					boolean nearNoTarget = true;
 					// searches for a new target that is in a 1 BoardRectangle range around the target which it hit
 					// 1. new target must be not the same team as the GamePiece that shot
@@ -140,7 +131,7 @@ public class TazerPiece extends GamePiece{
 							float ak = (float) (targetGamePiece.getCenterX() - tazerBullet.getX());
 							float gk = (float) (targetGamePiece.getCenterY() - tazerBullet.getY());						
 							float angleNew = (float) Math.toDegrees(Math.atan2(ak*-1, gk));
-							Shape shape = targetGamePiece.getRectHitbox();
+							shape = targetGamePiece.getRectHitbox();
 							tazerBullet = new Bullet((int)tazerBullet.getX(), (int)tazerBullet.getY(), 6, 6, c,1,
 									angleNew, shape, targetDestructibleObject);	
 							break;
@@ -162,17 +153,20 @@ public class TazerPiece extends GamePiece{
 			pointsArray.clear();
 			if(targetGamePiece != null) {
 				targetGamePiece = null;
-				
 				for(GamePiece curGP : alreadyHitGPs) {
 					curGP.gamePieceBase.getDamaged(getDmg());
 				}
 			}else {
-				targetDestructibleObject.getDamaged(getDmg(),tazerBullet.angle);
+				targetDestructibleObject.getDamaged(getDmg(),tazerBullet.angle,getIsEnemy());
 				targetDestructibleObject = null;
 			}
 			tazerBullet = null;
-			
-		}
+		
+	}
+
+	@Override
+	public void updateAttack() {
+		
 		
 	}
 }

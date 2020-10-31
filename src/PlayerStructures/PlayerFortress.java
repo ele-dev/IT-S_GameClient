@@ -10,6 +10,7 @@ import Environment.DestructibleObject;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
+import Stage.ValueLabel;
 
 public class PlayerFortress extends DestructibleObject {
 	private boolean isEnemy;
@@ -17,9 +18,14 @@ public class PlayerFortress extends DestructibleObject {
 	private PlayerFortressMenu fortressMenu;
 	
 	private ArrayList<BoardRectangle> recruitableBoardRectangles = new ArrayList<BoardRectangle>();
-		
+	private int coinAmount = Commons.startCoinAmount;
+	
+	
+	private ValueLabel goldCollectLabel;
+	private int lastCollectedGoldAmount = 0;
+	
 	public PlayerFortress(BoardRectangle boardRectangle, boolean isEnemy) {
-		super(boardRectangle, 3, 3, 3, 0);
+		super(boardRectangle, 3, 3, Commons.PlayerFortressHealth, 0);
 		this.isEnemy = isEnemy;
 		refreshRecruitableBoardRectangles();
 		fortressMenu = new PlayerFortressMenu(this);
@@ -27,7 +33,7 @@ public class PlayerFortress extends DestructibleObject {
 	
 	public boolean isHover() {
 		return isHover;
-	}
+	} 
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 	}
@@ -39,10 +45,19 @@ public class PlayerFortress extends DestructibleObject {
 	}
 	public boolean isRecruitingMode() {
 		return isRecruitingMode;
-	}
-	
+	} 
 	public ArrayList<BoardRectangle> getRecruitableBoardRectangles() {
 		return recruitableBoardRectangles;
+	}
+	
+	public void increaseCoinAmount(int incAmount, int x, int y) {
+		coinAmount += incAmount;
+		lastCollectedGoldAmount+=incAmount;
+		goldCollectLabel = new ValueLabel(x, y, "+"+lastCollectedGoldAmount, Commons.cCurrency);
+		
+	}
+	public int getCoinAmount() {
+		return coinAmount;
 	}
 	
 	public void tryGetBackToFortressMenu(){
@@ -55,6 +70,9 @@ public class PlayerFortress extends DestructibleObject {
 	public void tryPlaceRecruitedGP(BoardRectangle boardRectangle) {
 		if(isRecruitingMode() && getRecruitableBoardRectangles().contains(boardRectangle)) {
 			fortressMenu.lastPressedGamePieceInfoPanel.placeGamePiece(isEnemy, boardRectangle);
+			coinAmount-=fortressMenu.lastPressedGamePieceInfoPanel.getGamePieceCost();
+			String str = "-"+fortressMenu.lastPressedGamePieceInfoPanel.getGamePieceCost();
+			StagePanel.valueLabels.add(new ValueLabel((int)rectHitbox.getCenterX(),(int)rectHitbox.getCenterY(), str, Commons.cCurrency));
 			setRecruitingMode(false);
 		}
 	}
@@ -77,12 +95,13 @@ public class PlayerFortress extends DestructibleObject {
 	}
 	@Override
 	public void drawDestructibleObject(Graphics2D g2d) {
+		
 		g2d.setColor(isEnemy?Commons.enemyColor:Commons.notEnemyColor);
 		g2d.fill(rectHitbox);
 		g2d.setStroke(new BasicStroke(8));
 		for(int i = 0;i<occupiedBRs.length;i++) {
 			g2d.setColor(Color.WHITE);
-			g2d.draw(occupiedBRs[i].rect);
+			if(occupiedBRs[i] != null)g2d.draw(occupiedBRs[i].rect);
 		}
 		if(impactFlashCounter > -100) { 
 			impactFlashCounter--;
@@ -121,32 +140,45 @@ public class PlayerFortress extends DestructibleObject {
 			g2d.translate(-x, -y);
 		}
 		
+		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), 25);
+		
+		if(goldCollectLabel != null)goldCollectLabel.drawValueLabel(g2d);
+	}
+	
+	public void tryDrawRecruitableBoardRectangles(Graphics2D g2d) {
 		if(isRecruitingMode) {
 			for(BoardRectangle curBR : recruitableBoardRectangles) {
 				curBR.drawPossibleRecruitPlace(g2d);
 			}
 		}
-		
-		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), 25);
 	}
 	
 	public void update() {
 		fortressMenu.update();
 		updateHover();
+		if(goldCollectLabel != null) {
+			if(goldCollectLabel.getColor().getAlpha()>10) {
+				goldCollectLabel.updateFade();
+			}else {
+				lastCollectedGoldAmount = 0;
+				goldCollectLabel = null;
+			}
+		}
+		
 	}
 	
 	public void tryPresssButton() {
 		fortressMenu.tryPresssButton();
 	}
 	@Override
-	public void getDamaged(float dmg, float attackAngle) {
+	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
 		health-=dmg;
 		if(health<=0) {
 			isDestroyed = true;
 			StagePanel.checkIfSomeOneWon();
 		}
-		StagePanel.addDmgLabel((int)(rectHitbox.getCenterX()+(Math.random()-0.5)*rectHitbox.getWidth()),
-		(int)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.getWidth()), dmg);
+		StagePanel.addValueLabel((int)(rectHitbox.getCenterX()+(Math.random()-0.5)*rectHitbox.getWidth()),
+		(int)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.getWidth()), dmg,Commons.cAttack);
 	}
 	
 	private void updateHover() {

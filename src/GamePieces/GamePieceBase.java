@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
+
+import PlayerStructures.GoldMine;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
@@ -22,7 +24,7 @@ import Stage.ValueLabel;
 public class GamePieceBase {
 	private float x,y;
 	private Rectangle rectHitbox;
-	private float angle,angleDesired,v = 3f;
+	private float angle,angleDesired,v = 2f;
 	private float rotationDelay = 2.5f;
 	private Sprite spriteBase;
 	private float health,maxHealth,shield,maxShield;
@@ -30,14 +32,13 @@ public class GamePieceBase {
 	
 	ArrayList<BoardRectangle> pathBoardRectangles = new ArrayList<BoardRectangle>();
 	int curTargetPathCellIndex = 0;
-	GamePiece parentGP;
+	private GamePiece parentGP;
 	
-	int baseTypeIndex;
-	Point targetPoint;
+	private int baseTypeIndex;
+	private Point targetPoint;
 	
-	Timer tAutoDirectionCorrection;
-	
-	
+	private Timer tAutoDirectionCorrection;
+	 
 	public GamePieceBase(float x, float y, int w, int h, Color c,int baseTypeIndex, GamePiece parentGP) {
 		this.x = x;
 		this.y = y;
@@ -48,11 +49,9 @@ public class GamePieceBase {
 		initSprites(); 
 		
 		tAutoDirectionCorrection = new Timer(500, new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				angle = angleDesired;
-				
 			}
 		});
 		tAutoDirectionCorrection.setRepeats(false);
@@ -124,7 +123,6 @@ public class GamePieceBase {
 			g2d.drawLine(0, -10, 0, 10);
 			g2d.translate(-targetPoint.x, -targetPoint.y);
 		}
-		
 	}
 	
 	// draws a HealthBar and a String with The HealthAmount
@@ -209,7 +207,7 @@ public class GamePieceBase {
 	
 	// damages the Piece (health--)
 	public void getDamaged(float dmg) {
-		StagePanel.addDmgLabel(parentGP,dmg);
+		StagePanel.addValueLabel(parentGP,dmg,Commons.cAttack);
 		if(shield - dmg >= 0) {
 			shield-=dmg;
 			dmg = 0;
@@ -227,12 +225,12 @@ public class GamePieceBase {
 	public void regenShield() {
 		if(shield + Commons.shieldRegen >= maxShield) {
 			if(shield < maxShield) {
-				StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", 2,0.3f, Commons.cShield));
+				StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
 			}
 			shield = maxShield;
 		}else {
 			shield += Commons.shieldRegen;
-			StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", 2,0.3f, Commons.cShield));
+			StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
 		}
 	}
 	
@@ -263,6 +261,7 @@ public class GamePieceBase {
 				parentGP.boardRect = pathBoardRectangles.get(curTargetPathCellIndex);
 				pathBoardRectangles.clear();
 				tAutoDirectionCorrection.stop();
+				StagePanel.tryCaptureGoldMine(parentGP);
 			}
 		}
 	}

@@ -21,7 +21,7 @@ public abstract class Particle {
 	protected Timer tFadeDelayTimer;
 	protected Rectangle rectHitbox;
 	
-	protected Particle(float x, float y, float angle, float rotation, Color c, float v, float fadeSpeed) {
+	Particle(float x, float y, float angle, float rotation, Color c, float v, float fadeSpeed) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle; 
@@ -79,6 +79,8 @@ public abstract class Particle {
 	public abstract void drawParticle(Graphics2D g2d);
 	
 	public abstract void update();
+	
+	public abstract void move();
 	
 	
 }

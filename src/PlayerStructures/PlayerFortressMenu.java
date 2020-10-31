@@ -1,11 +1,13 @@
 package PlayerStructures;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
 import Buttons.GenericButton;
+import Stage.Commons;
 import Stage.StagePanel;
 
 public class PlayerFortressMenu {
@@ -18,11 +20,11 @@ public class PlayerFortressMenu {
 	RecruitGamePieceInfoPanel lastPressedGamePieceInfoPanel;
 	
 	public PlayerFortressMenu(PlayerFortress playerFortress) {
-		this.startx = 100;
-		this.starty = 100;
+		this.startx = 50;
+		this.starty = 50;
 		this.playerFortress = playerFortress;
-		rect = new Rectangle(startx,starty,StagePanel.w-200,StagePanel.h-200);
-		exitButton = new GenericButton(rect.x+rect.width-200, rect.y, 200, 100, "Exit", new Color(20,20,20), new Color(255,0,50), new Color(10,10,10),50);
+		rect = new Rectangle(startx,starty,StagePanel.w-startx*2,StagePanel.h-starty*2);
+		exitButton = new GenericButton(rect.x+rect.width-200, rect.y, 200, 100, "Exit", new Color(20,20,20), new Color(255,0,50), 50);
 		
 		int gap = 20;
 		for(byte i = 0;i<recruitGamePieceInfoPanels.length;i++) {
@@ -41,6 +43,12 @@ public class PlayerFortressMenu {
 		for(RecruitGamePieceInfoPanel curRGPIP : recruitGamePieceInfoPanels) {
 			curRGPIP.drawGamePieceInfo(g2d);
 		}
+		
+		g2d.translate(rect.x, rect.y);
+		g2d.setColor(Commons.cCurrency);
+		g2d.setFont(new Font("Arial",Font.BOLD,60));
+		g2d.drawString("Coins: "+playerFortress.getCoinAmount(), 100, 150);
+		g2d.translate(-rect.x, -rect.y);
 	}
 	
 	public void update() {

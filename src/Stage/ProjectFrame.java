@@ -13,8 +13,7 @@ import menueGui.LoginPanel;
 import menueGui.RegisterPanel;
 
 @SuppressWarnings("serial")
-public
-class ProjectFrame extends JFrame {
+public class ProjectFrame extends JFrame {
 	
 	// Network related
 	public static Connection conn;
@@ -27,7 +26,7 @@ class ProjectFrame extends JFrame {
 	public static LoginPanel loginPanel;
 	public static HomePanel homePanel;
 	public static RegisterPanel registerPanel;
-	
+	 
 	private ProjectFrame() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
@@ -45,9 +44,9 @@ class ProjectFrame extends JFrame {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		Container cp = getContentPane();
-		stagePanel = new StagePanel("TestMap",this);
-		
-		// Create and init the GUI panels (JPanels)
+		stagePanel = new StagePanel("LargeMap");
+
+		// Create and init the GUI panels (JPanel)
 		loginPanel = new LoginPanel();
 		registerPanel = new RegisterPanel();
 		homePanel = new HomePanel();
@@ -62,7 +61,7 @@ class ProjectFrame extends JFrame {
 		addKeyListener(loginPanel);
 		addKeyListener(registerPanel);
 		addKeyListener(stagePanel.kl);
-	}
+	} 
 	
 	// ------------------- MAIN Application Entry Point -------------------------- //
 	
@@ -96,7 +95,7 @@ class ProjectFrame extends JFrame {
 				f.setVisible(false);
 				System.out.println("window was closed --> cleanup routine");
 				
-				conn.finalize();
+//				conn.finalize();
 				
 				// Finally exit the application 
 				System.out.println("Application close up");
