@@ -1,24 +1,20 @@
 package Stage;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
-
-import LevelDesignTools.Levelinitializer;
+import LevelDesignTools.LevelInitializer;
 
 public class GameMap {
 
 	private int rows,columns;
-	private ArrayList<BoardRectangle> boardRectangles = new ArrayList<BoardRectangle>();
 	public static Rectangle mapRectangle;
 	
-	public GameMap(Levelinitializer levelinitializer) {
-		this.rows = levelinitializer.getMapRows();
-		this.columns = levelinitializer.getMapColumns();
-		this.boardRectangles = levelinitializer.getBoardRectangles();
+	public GameMap(LevelInitializer levelInitializer) {
+		this.rows = levelInitializer.getMapRows();
+		this.columns = levelInitializer.getMapColumns();
 		mapRectangle = new Rectangle(columns*Commons.boardRectSize,rows*Commons.boardRectSize);
 		
-		for(BoardRectangle curBR : boardRectangles) {
-			curBR.initAdjecantBRs(boardRectangles);
+		for(BoardRectangle curBR : StagePanel.boardRectangles) {
+			curBR.initAdjecantBRs(StagePanel.boardRectangles);
 			if(curBR.isWall) {
 				curBR.initWallSprites();
 			}
@@ -32,17 +28,13 @@ public class GameMap {
 		int index = 0;
 		for(int i = 0;i<rows;i++) {
 			for(int j = 0;j<columns;j++) {
-				if(i%2==0) {
-					boardRectangles.add(new BoardRectangle(i, j, j%2==0, index,false));
-				}else{
-					boardRectangles.add(new BoardRectangle(i, j, j%2==1, index,false));
-				}
+				StagePanel.boardRectangles.add(new BoardRectangle(i, j, false, index,false));
 				index++;
 			}
 		}
 		generateOuterWall();
-		for(BoardRectangle curBR : boardRectangles) {
-			curBR.initAdjecantBRs(boardRectangles);
+		for(BoardRectangle curBR : StagePanel.boardRectangles) {
+			curBR.initAdjecantBRs(StagePanel.boardRectangles);
 			if(curBR.isWall) {
 				curBR.initWallSprites();
 			}
@@ -50,7 +42,7 @@ public class GameMap {
 	}
 	
 	public void generateOuterWall() {
-		for(BoardRectangle curBR : boardRectangles) {
+		for(BoardRectangle curBR : StagePanel.boardRectangles) {
 			curBR.isWall = curBR.row == 0 || curBR.row == getRows()-1 || curBR.column == 0 || curBR.column == getColumns()-1;
 		}
 	}
@@ -60,9 +52,6 @@ public class GameMap {
 	}
 	public int getColumns() {
 		return columns;
-	}
-	public ArrayList<BoardRectangle> getBoardRectangles() {
-		return boardRectangles;
 	}
 	
 	

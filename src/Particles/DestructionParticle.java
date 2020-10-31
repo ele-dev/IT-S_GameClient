@@ -54,7 +54,7 @@ public class DestructionParticle extends Particle {
 		x += Math.cos(Math.toRadians(angle+90)) * v;
 		y += Math.sin(Math.toRadians(angle+90)) * v;
 			
-		v = v > 0?v-friction*2:0;
+		v = v-friction > 0?v-friction:0;
 		
 		rotation += vRotation;
 		rectHitbox.setBounds((int)x+w/2,(int)y+h/2,w,h);

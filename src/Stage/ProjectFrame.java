@@ -15,8 +15,7 @@ import menueGui.LoginPanel;
 import menueGui.RegisterPanel;
 
 @SuppressWarnings("serial")
-public
-class ProjectFrame extends JFrame {
+public class ProjectFrame extends JFrame {
 	
 	// Network related
 	public static Connection conn;
@@ -29,7 +28,7 @@ class ProjectFrame extends JFrame {
 	public static LoginPanel loginPanel;
 	public static HomePanel homePanel;
 	public static RegisterPanel registerPanel;
-	
+	 
 	private ProjectFrame() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
@@ -47,7 +46,8 @@ class ProjectFrame extends JFrame {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		Container cp = getContentPane();
-		stagePanel = new StagePanel("TestMap", this);
+		
+		stagePanel = new StagePanel("LargeMap");
 		
 		// Create and init the GUI panels (JPanels)
 		loginPanel = new LoginPanel();
@@ -64,7 +64,7 @@ class ProjectFrame extends JFrame {
 		addKeyListener(loginPanel);
 		addKeyListener(registerPanel);
 		addKeyListener(stagePanel.kl);
-	}
+	} 
 	
 	// ------------------- MAIN Application Entry Point -------------------------- //
 	

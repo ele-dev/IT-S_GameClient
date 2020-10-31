@@ -8,7 +8,7 @@ public interface Commons {
 	public final String gameTitle = "Game Title";
 	
 	// Size of the Cells on the game board
-	final int boardRectSize = 80;
+	final int boardRectSize = 70;
 	
 	// Refresh rates for timers 
 	public static final int frametime = 10;
@@ -44,6 +44,11 @@ public interface Commons {
 	// Game Piece config variables //
 	final int dmgFlashCountDown = 5;
 	final int shieldRegen = 1;
+	
+	final int startCoinAmount = 100;
+	final float PlayerFortressHealth = 1;
+	
+	final float goldMineHealth = 5;
 	// BaseTypes
 	// type 0
 	final int maxHealthType0 = 8;
@@ -71,6 +76,18 @@ public interface Commons {
 	final int baseTypeRocketLauncher = 0;
 	final float dmgRocketLauncher = 3;
 	final String nameRocketLauncher = "R";
+	// ShotgunPiece
+	final int baseTypeShotgun = 0;
+	final float dmgShotgun = 3;
+	final String nameShotgun = "S";
+	// EMPPiece
+	final int baseTypeEMP = 0;
+	final float dmgEMP = 2;
+	final String nameEMP = "E";
+	// SniperPiece
+	final int baseTypeSniper = 0;
+	final float dmgSniper = 5;
+	final String nameSniper = "SC";
 	
 	// creates two vectors. One Vector(Vector with Angle angle) gets scaled with the scalar(rotationDelay)
 	// the two Vectors get added together and the angle of the resulting Vector is the return-product

@@ -21,7 +21,6 @@ public class FlamethrowerPiece extends GamePiece {
 	int burstBulletAmount = 200;
 	
 	double spreadAngle = 20;
-	boolean startedAttack = false;
 	
 	public FlamethrowerPiece(boolean isEnemy, BoardRectangle boardRect) {
 		super(isEnemy, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,Commons.baseTypeFlameThrower);
@@ -45,17 +44,6 @@ public class FlamethrowerPiece extends GamePiece {
 		burstTimer.setRepeats(false);
 	}
 	
-	public void update() {
-		if(targetGamePiece != null) {
-			updateAngle(targetGamePiece.getPos());
-		}else if(targetDestructibleObject != null){
-			updateAngle(targetDestructibleObject.getPos());
-		}
-		if(isMoving) {
-			updateMove();
-		}
-		updateAttack();
-	}
 
 	public void drawAttack(Graphics2D g2d) {
 		for(FlameThrowerFlame curFTF : flames) {
@@ -64,7 +52,6 @@ public class FlamethrowerPiece extends GamePiece {
 	}
 
 	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
 				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
 					int dist = BoardRectangle.getDistanceBetweenBRs(boardRect, curBR);
@@ -86,7 +73,7 @@ public class FlamethrowerPiece extends GamePiece {
 	public void shootOnce() {
 		startedAttack = true;
 		burstCounter++;
-		if(burstCounter <burstBulletAmount) {
+		if(burstCounter<burstBulletAmount) {
 			burstTimer.start();
 		}else {
 			burstCounter = 0;
@@ -124,7 +111,7 @@ public class FlamethrowerPiece extends GamePiece {
 		if(startedAttack) {
 			boolean allHaveHit = true;
 			for(FlameThrowerFlame curFTF : flames) {
-				if(!curFTF.getHasHitTarget()) {
+				if(!curFTF.hasHitTarget()) {
 					allHaveHit = false;
 				}
 			}
@@ -133,7 +120,7 @@ public class FlamethrowerPiece extends GamePiece {
 					targetGamePiece.gamePieceBase.getDamaged(getDmg());
 					targetGamePiece = null;
 				}else {
-					targetDestructibleObject.getDamaged(getDmg(),angle);
+					targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
 					targetDestructibleObject = null;
 				}
 				startedAttack = false;

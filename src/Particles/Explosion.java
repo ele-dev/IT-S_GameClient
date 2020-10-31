@@ -98,4 +98,7 @@ public class Explosion extends Particle{
 			}
 		}
 	}
+
+	@Override
+	public void move() {}
 }

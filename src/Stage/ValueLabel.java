@@ -14,13 +14,13 @@ public class ValueLabel {
 	private Color c;
 	private float alpha;
 	
-	public ValueLabel(float x, float y, String str,float fadeSpeed, float riseSpeed,Color c) {
+	public ValueLabel(float x, float y, String str, Color c) {
 		this.x = x;
 		this.y = y;
 		this.str = str;
 		
-		this.fadeSpeed = fadeSpeed; 
-		this.riseSpeed = riseSpeed;
+		this.fadeSpeed = 2; 
+		this.riseSpeed = 1.5f;
 		this.c = c;
 		alpha = 255;
 	}
@@ -45,13 +45,19 @@ public class ValueLabel {
 		g2d.setColor(c);
 		
 		g2d.drawString(str,(int)this.x-textWidth/2,(int)this.y+textHeight/3);
-		
 	}
 	
 	// fades the color of the dmgLabel out and moves it up 
 	public void updateFade() {
-		alpha-= fadeSpeed;
+		
 		c = new Color(c.getRed(),c.getGreen(),c.getBlue(),(int)alpha);
 		y -= riseSpeed;
+		if(riseSpeed-0.03f > 0) {
+			riseSpeed-=0.03f ;	
+		}else {
+			riseSpeed = 0;
+			alpha-= fadeSpeed;
+		}
+		
 	}
 }

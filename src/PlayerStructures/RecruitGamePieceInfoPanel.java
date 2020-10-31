@@ -24,6 +24,8 @@ public class RecruitGamePieceInfoPanel{
 	private PlayerFortress playerFortress;
 	
 	// GamePiece related
+	private int gamePieceCost;
+	
 	private byte gamePieceType;
 	private String gamePieceName;
 	private float gamePieceDamage;
@@ -37,11 +39,15 @@ public class RecruitGamePieceInfoPanel{
 		rect = new Rectangle(startx,starty,w,h);
 		this.startx = startx;
 		this.starty = starty;
-		rectruitButton = new GenericButton(rect.x+rect.width-100, rect.y, 200, h, "recruit", new Color(20,20,20), Commons.cCurrency, new Color(10,10,10),40);
+		rectruitButton = new GenericButton(rect.x+rect.width-100, rect.y, 200, h, "recruit", new Color(20,20,20), Commons.cCurrency, 40);
 		
 		this.gamePieceType = (byte) gamePieceType;
 		initGamePieceInfos();
 		this.playerFortress = playerFortress;
+	}
+	
+	public int getGamePieceCost() {
+		return gamePieceCost;
 	}
 	
 	private void initGamePieceInfos() {
@@ -84,6 +90,9 @@ public class RecruitGamePieceInfoPanel{
 			gamePieceMovementRange = Commons.MovementRangeType1;
 			break;
 		}
+		
+		
+		gamePieceCost = (int) (Math.random()*5+1)*10;
 	}
 	
 	public void	placeGamePiece(boolean isEnemy, BoardRectangle boardRectangle) {
@@ -110,7 +119,7 @@ public class RecruitGamePieceInfoPanel{
 	}
 	
 	public boolean tryPressButton(){
-		if(rectruitButton.isHover()) {
+		if(rectruitButton.isHover() && rectruitButton.isActive()) {
 			playerFortress.refreshRecruitableBoardRectangles();
 			playerFortress.setRecruitingMode(true);
 			playerFortress.setSelected(false);
@@ -122,7 +131,10 @@ public class RecruitGamePieceInfoPanel{
 	public void update() {
 		updatePos(StagePanel.camera.getPos());
 		rectruitButton.updatePos(StagePanel.camera.getPos());
-		rectruitButton.updateHover(StagePanel.mousePos);
+		if(playerFortress.getCoinAmount() >= gamePieceCost) {
+			rectruitButton.updateHover(StagePanel.mousePos);
+		}
+		rectruitButton.setActive(playerFortress.getCoinAmount() >= gamePieceCost);
 	}
 	
 	public void updatePos(Point cameraPos) {
@@ -164,10 +176,17 @@ public class RecruitGamePieceInfoPanel{
 			String str = strs0[i];
 			textWidth = fontMetrics.stringWidth(str);
 			g2d.setColor(colors0[i]);
-			g2d.drawString(str, x+25+400, y+10+textHeight*(i+1));
+			g2d.drawString(str, x+25+350, y+10+textHeight*(i+1));
 			g2d.setColor(Color.WHITE);
-			g2d.drawString(strValues0[i], x+25+textWidth+400, y+10+textHeight*(i+1));
+			g2d.drawString(strValues0[i], x+25+textWidth+350, y+10+textHeight*(i+1));
 		}
+		
+		String str = "Cost: ";
+		textWidth = fontMetrics.stringWidth(str);
+		g2d.setColor(Commons.cCurrency);
+		g2d.drawString(str, x+25+700, y+10+textHeight);
+		g2d.setColor(Color.WHITE);
+		g2d.drawString(gamePieceCost+"", x+25+textWidth+700, y+10+textHeight);
 		
 		rectruitButton.drawButton(g2d);
 	}

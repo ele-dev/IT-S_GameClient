@@ -9,36 +9,32 @@ import java.util.ArrayList;
 
 import javax.swing.Timer;
 
-import Projectiles.DetonatorProjectile;
+import Projectiles.EMPProjectile;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
 
-public class DetonatorPiece extends GamePiece{
-	ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
+
+public class EMPPiece extends GamePiece{
+	ArrayList<EMPProjectile> empProjectiles = new ArrayList<EMPProjectile>();
 	
-	public DetonatorPiece(boolean isEnemy,BoardRectangle boardRect) {
-		super(isEnemy, Commons.nameDetonator, boardRect, Commons.dmgDetonator,Commons.baseTypeDetonator);
+	public EMPPiece(boolean isEnemy,BoardRectangle boardRect) {
+		super(isEnemy, Commons.nameEMP, boardRect, Commons.dmgEMP,Commons.baseTypeEMP);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				angle = angleDesired;
-				shootDetonator();
+				shootEMP();
 			} 
 		}); 
 		attackDelayTimer.setRepeats(false);
 	}
 	
 	public void drawAttack(Graphics2D g2d) {
-		for(int i = 0;i<detProjectiles.size();i++) {
-			DetonatorProjectile curDP = detProjectiles.get(i);
-			
-			if(curDP.isDetonated()) {
-				curDP.detExplosion.drawParticle(g2d);
-			} 
-			if(!curDP.isDetonated()) {
-				curDP.drawProjectile(g2d);	
+		for(EMPProjectile curEMPP : empProjectiles) {
+			if(!curEMPP.isDestroyed()) {
+				curEMPP.drawProjectile(g2d);	
 			}
 		}
 	}
@@ -59,23 +55,21 @@ public class DetonatorPiece extends GamePiece{
 	}
 
 	// creates/shoots the DetonatorProjectile
-	public void shootDetonator() {
+	public void shootEMP() {
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 			
-		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), 10, 20, getIsEnemy(), 
+		empProjectiles.add(new EMPProjectile(getCenterX(), getCenterY(), 10, 20, c, 
 				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape,targetGamePiece,targetDestructibleObject));
 		targetDestructibleObject = null;
 		targetGamePiece = null;
 	}
 	// decreases the detonation counter and lets it explode if the timer <= 0
-	public void decDetonaterTimers() {
-		for(DetonatorProjectile curDP : detProjectiles) {
-			curDP.getDetonationCountDown().countDownOne();
-			
-			if(curDP.getDetonationCountDown().getCounter()<=0) {
-				curDP.detonationTimer.start();
-				curDP.setBlinkeIntervall(5);
+	public void decEMPTimers() {
+		for(EMPProjectile curEMPP : empProjectiles) {
+			curEMPP.getDestroyCountDown().countDownOne();
+			if(curEMPP.getDestroyCountDown().getCounter() <= 0) {
+				curEMPP.destroy();
 			}
 		}
 	}
@@ -86,8 +80,8 @@ public class DetonatorPiece extends GamePiece{
 			isAttacking = true;
 			return;
 		}
-		for(DetonatorProjectile curDP : detProjectiles) {
-			if(curDP.detonationTimer.isRunning() || !curDP.hasHitTarget()) {
+		for(EMPProjectile curEMPP : empProjectiles) {
+			if(!curEMPP.hasHitTarget()) {
 				isAttacking = true;
 				return;
 			}
@@ -95,26 +89,29 @@ public class DetonatorPiece extends GamePiece{
 	}
 
 	public void updateAttack() { 
-		for(int i = 0;i<detProjectiles.size();i++) { 
-			DetonatorProjectile curDP = detProjectiles.get(i);
-			if(!curDP.hasHitTarget()) {
-				curDP.move();
-				curDP.checkHitEnemy();
-				curDP.checkHitDestructibleObject();
+		for(int i = 0;i<empProjectiles.size();i++) { 
+			EMPProjectile curEMPP = empProjectiles.get(i);
+			curEMPP.update();
+			if(!curEMPP.hasHitTarget()) {
+				curEMPP.move();
+				curEMPP.checkHitEnemy();
+				curEMPP.checkHitDestructibleObject();
+				if(curEMPP.hasHitTarget()) {
+					if(curEMPP.getTargetGamePiece() != null) {
+						curEMPP.getTargetGamePiece().gamePieceBase.getDamaged(getDmg());
+					}else {
+						targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
+						targetDestructibleObject = null;
+					}
+				}
 			}else {
-				if(curDP.getTargetGamePiece() != null) {
-					curDP.stayStuck();
-					curDP.updateBlink();
+				if(curEMPP.getTargetGamePiece() != null) {
+					curEMPP.stayStuck();
 				}
 			}
-			if(curDP.isDetonated()) {
-				curDP.detExplosion.updateExplosion();
-				curDP.detExplosion.moveAllFrags();
-				curDP.checkIfExplosionFaded();
-			}
 			
-			if(curDP.isDestroyed()) {
-				detProjectiles.remove(i);
+			if(curEMPP.isDestroyed()) {
+				empProjectiles.remove(i);
 			}
 		}
 		updateIsAttacking();

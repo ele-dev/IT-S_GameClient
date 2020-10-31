@@ -21,5 +21,5 @@ public class Bullet extends Projectile{
 		g2d.fill(shapeShow);
 		g2d.rotate(Math.toRadians(-angle));
 		g2d.translate(-x, -y);
-	}
+	} 
 }

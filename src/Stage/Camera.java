@@ -42,16 +42,10 @@ public class Camera {
 			screenShakeCountDown--;
 		}
 		x += vx;
-		if(!mapRectangle.contains(getCenterOfScreen())) {
-			x -= vx;
-		}
+		if(!mapRectangle.contains(getCenterOfScreen())) x -= vx;
 		y += vy;
-		if(!mapRectangle.contains(getCenterOfScreen())) {
-			y -= vy;
-		}
-		int w = StagePanel.w;
-		int h = StagePanel.h;
-		rectOfView = new Rectangle((int)-x-Commons.boardRectSize,(int)-y-Commons.boardRectSize,w+Commons.boardRectSize*2,h+Commons.boardRectSize*2);
+		if(!mapRectangle.contains(getCenterOfScreen())) y -= vy;
+		rectOfView = new Rectangle((int)-x-Commons.boardRectSize,(int)-y-Commons.boardRectSize,rectOfView.width,rectOfView.height);
 	}
 	
 	public void applyScreenShake(int screenShakeAmountOfFRames,int screenShakeMagnitude) {
