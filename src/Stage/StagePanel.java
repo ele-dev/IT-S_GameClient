@@ -54,6 +54,7 @@ import PlayerStructures.GoldMine;
 import PlayerStructures.PlayerFortress;
 
 // This is the main Panel where the Game is Happening
+@SuppressWarnings("serial")
 public class StagePanel extends JPanel {
 	public static int w;
 	public static int h;
@@ -94,6 +95,7 @@ public class StagePanel extends JPanel {
 	public static GamePiece curSelectedGP,curActionPerformingGP;
 	
 	private Color cBackGround;
+	@SuppressWarnings("unused")
 	private static LightingManager lightingManager;
 	private LevelInitializer levelInitializer;
 	public static GameMap gameMap;
@@ -269,7 +271,11 @@ public class StagePanel extends JPanel {
 		
 		// Draw the background
 		g2d.setColor(this.cBackGround);
+<<<<<<< HEAD
 		g2d.fillRect(0, 0, w, h);
+=======
+		g2d.fillRect(0, 0, StagePanel.w, StagePanel.h);
+>>>>>>> 77e5e9912e175b4ed402c2bec6f9420089cdb5f9
 		
 		g2d.translate(camera.getPos().x, camera.getPos().y);
 		
@@ -300,10 +306,15 @@ public class StagePanel extends JPanel {
 		
 		g2d.setStroke(new BasicStroke(80));
 		g2d.setColor(cBackGround);
-		g2d.draw(gameMap.mapRectangle);
+		g2d.draw(GameMap.mapRectangle);
 		drawValueLabels(g2d);
 		
+<<<<<<< HEAD
 //		lightingManager.drawLight(g2d);
+=======
+		// lightingManager.drawLight(g2d);
+		
+>>>>>>> 77e5e9912e175b4ed402c2bec6f9420089cdb5f9
 		drawMovesPanel(g2d);
 		
 		if(levelDesignTool != null) {
@@ -408,7 +419,11 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void drawCursor(Graphics2D g2d) {
+<<<<<<< HEAD
 		if(mousePos != null) {
+=======
+		if(StagePanel.mousePos != null) {
+>>>>>>> 77e5e9912e175b4ed402c2bec6f9420089cdb5f9
 			g2d.setColor(Color.WHITE);
 			g2d.setStroke(new BasicStroke(5));
 			int x = mousePos.x;
@@ -494,6 +509,7 @@ public class StagePanel extends JPanel {
 		}
 	}
 		
+	@SuppressWarnings("unused")
 	private void drawEveryBoardRectangleIndex(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			curBR.drawIndex(g2d);
@@ -572,7 +588,7 @@ public class StagePanel extends JPanel {
 	// also moves the ActionSelectionPanel relative to the camera position
 	private void updateGamePieces() {
 		StagePanel.curActionPerformingGP = null;
-		for(int i = 0;i<gamePieces.size();i++) {
+		for(int i = 0; i < gamePieces.size(); i++) {
 			GamePiece curGP = gamePieces.get(i);
 			if(curGP.isPerformingAction()) {
 				curActionPerformingGP = curGP;
@@ -622,11 +638,11 @@ public class StagePanel extends JPanel {
 	
 	// updates all the ValueLabels (fades them out)
 	private void updateDmgLabels() {
-		for(int i = 0;i<valueLabels.size();i++) {
+		for(int i = 0; i < valueLabels.size(); i++) {
 			ValueLabel curVL = valueLabels.get(i);
 			if(curVL.getColor().getAlpha()>10) {
 				curVL.updateFade();
-			}else {
+			} else {
 				valueLabels.remove(i);
 			}
 		}

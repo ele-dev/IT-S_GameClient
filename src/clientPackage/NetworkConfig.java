@@ -18,6 +18,7 @@ public interface NetworkConfig {
 	
 	// timing values
 	public static final int loginTimeout = 3000;
+	public static final int registerTimeout = 10000;
 	public static final int clientSocketTimeout = 1000;
 	public static final int threadSleepDelay = 30;
 	// ...

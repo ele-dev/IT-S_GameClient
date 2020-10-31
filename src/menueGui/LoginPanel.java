@@ -6,7 +6,6 @@ package menueGui;
  */
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -22,14 +21,13 @@ public class LoginPanel extends GuiPanel {
 	private Button loginButton = new Button(770, 510, 100, 50, "Login"); 
 	private Button playAsGuestButton = new Button(895, 510, 140, 50, "Play as Guest");
 	private Button goToRegisterButton = new Button(800, 700, 190, 50, "Register an account");
+	private TextLabel statusLabel = new TextLabel("", 17);
+	private TextLabel gameTitle = new TextLabel(Commons.gameTitle, 55);
+	private TextLabel noAccountYet = new TextLabel("You don't have an account yet?", 17);
 	
 	// Status message and success status
 	private String loginStatusStr = "";
 	private boolean failedAttempt = false;
-	
-	// Fonts 
-	private Font caption1 = new Font("Arial", Font.PLAIN, 30);
-	private Font statusMessage = new Font("Tahoma", Font.PLAIN, 17);
 	
 	// Constructor passing position info
 	public LoginPanel() {
@@ -46,9 +44,22 @@ public class LoginPanel extends GuiPanel {
 	
 	@Override
 	protected void initGuiElements() {
-		// init the list of text input fields 
-		fields[0] = new TextInputField("Username", 750, 350, 300, 50);
-		fields[1] = new TextInputField("Password", 750, 410, 300, 50);
+		
+		// give the labels relative screen positions 
+		this.gameTitle.setRelativePosition(50, 30);
+		this.statusLabel.setRelativePosition(46, 47);
+		this.noAccountYet.setRelativePosition(50, 60);
+		
+		// give the buttons relative screen positions
+		this.loginButton.setRelativePosition(47, 50);
+		this.playAsGuestButton.setRelativePosition(53, 50);
+		this.goToRegisterButton.setRelativePosition(50, 65);
+		
+		// create the input fields and place them at relative position
+		fields[0] = new TextInputField("Username", 750, 350, 400, 50);
+		fields[0].setRelativePosition(50, 37);
+		fields[1] = new TextInputField("Password", 750, 410, 400, 50);
+		fields[1].setRelativePosition(50, 42);
 		
 		// Set the text in the password field to hidden
 		fields[1].hideText(true);
@@ -61,18 +72,26 @@ public class LoginPanel extends GuiPanel {
 		// call the original method from the super class
 		super.onClose();
 		
-		// Empty the password input field before panel closes
+		// Empty the password input field and the status label before panel closes
 		this.fields[1].clearField();
+		this.loginStatusStr = "";
+	}
+	
+	// Updating method
+	@Override 
+	protected void update() {
+		// Update the login status label
+		this.statusLabel.setTextColor(this.failedAttempt ? Color.RED : Color.WHITE);
+		this.statusLabel.setText(this.loginStatusStr);
 	}
 	
 	// Drawing method for GUI elements
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
 		
-		// Draw title Text 
-		g2d.setColor(Color.WHITE);
-		g2d.setFont(this.caption1);
-		g2d.drawString("Game Title", 750, 300);
+		// Draw game title and other labels
+		this.gameTitle.draw(g2d);
+		this.noAccountYet.draw(g2d);
 		
 		// Draw Loginbutton and play as guest button
 		this.loginButton.draw(g2d);
@@ -85,9 +104,7 @@ public class LoginPanel extends GuiPanel {
 		}
 		
 		// Draw the status message directly under the input fields
-		g2d.setColor(this.failedAttempt ? Color.RED : Color.WHITE);
-		g2d.setFont(this.statusMessage);
-		g2d.drawString(this.loginStatusStr, 760, 485);
+		this.statusLabel.draw(g2d);
 	}
 	
 	// Method for changing focus by clicking somewhere

@@ -13,10 +13,13 @@ import javax.swing.Timer;
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 import Particles.Explosion;
+<<<<<<< HEAD
 import Stage.Commons;
 import Stage.TurnCountDown;
 
 
+=======
+>>>>>>> 77e5e9912e175b4ed402c2bec6f9420089cdb5f9
 
 public class DetonatorProjectile extends Projectile{
 	private float xRelTarget,yRelTarget;

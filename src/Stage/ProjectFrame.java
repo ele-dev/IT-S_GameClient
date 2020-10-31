@@ -19,7 +19,7 @@ public class ProjectFrame extends JFrame {
 	public static Connection conn;
 
 	// Windows related
-	public static int width,height;
+	public static int width, height;
 	
 	// GUI panels of the application (JPanels)
 	public static StagePanel stagePanel;
@@ -31,29 +31,35 @@ public class ProjectFrame extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
 		height = (int) screenSize.getHeight();
-		setSize(width,height);
+		setSize(width, height);
 		
 		// Create and init the Window (JFrame)
 		setLocationRelativeTo(null);
 		setLayout(null);
 		setResizable(false);
-		setTitle("IT PROJECT");
+		setTitle(Commons.gameTitle);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
 		
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		Container cp = getContentPane();
+<<<<<<< HEAD
 		stagePanel = new StagePanel("LargeMap");
 
 		// Create and init the GUI panels (JPanel)
+=======
+		stagePanel = new StagePanel("TestMap", this);
+		
+		// Create and init the GUI panels (JPanels)
+>>>>>>> 77e5e9912e175b4ed402c2bec6f9420089cdb5f9
 		loginPanel = new LoginPanel();
 		registerPanel = new RegisterPanel();
 		homePanel = new HomePanel();
-		stagePanel.setVisible(true);
+		stagePanel.setVisible(false);
 		homePanel.setVisible(false);
-		loginPanel.setVisible(false);		// Display the login screen first
-		registerPanel.setVisible(false);
+		loginPanel.setVisible(true);			// Display the login screen first
+		registerPanel.setVisible(false);		
 		cp.add(loginPanel);
 		cp.add(stagePanel);
 		cp.add(homePanel);
