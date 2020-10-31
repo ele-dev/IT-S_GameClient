@@ -48,6 +48,9 @@ import Particles.GoldParticle;
 import Particles.Particle;
 import PlayerStructures.GoldMine;
 import PlayerStructures.PlayerFortress;
+import menueGui.GameState;
+import networking.GenericMessage;
+import networking.SignalMessage;
 
 // This is the main Panel where the Game is Happening
 @SuppressWarnings("serial")
@@ -194,10 +197,19 @@ public class StagePanel extends JPanel {
 		}else {
 			notEnemyFortress.getDamaged(enemyFortress.getHealth(), 0, true);
 		}
+		
+		// Send leave match message to server to surrender 
+		SignalMessage surrenderMsg = new SignalMessage(GenericMessage.MSG_LEAVE_MATCH);
+		ProjectFrame.conn.sendMessageToServer(surrenderMsg);
 	}
 	
 	private void tryLeaveGame() {
 		if (winScreen.getLeaveButton().isHover()) {
+			
+			// Update game state
+			GameState.isIngame = false;
+			
+			// Navigate back to the homescreen panel 
 			ProjectFrame.stagePanel.setVisible(false);
 			ProjectFrame.homePanel.setVisible(true);
 		}
