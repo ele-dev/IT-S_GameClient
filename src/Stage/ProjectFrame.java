@@ -44,15 +44,10 @@ public class ProjectFrame extends JFrame {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		Container cp = getContentPane();
-<<<<<<< HEAD
+		
 		stagePanel = new StagePanel("LargeMap");
-
-		// Create and init the GUI panels (JPanel)
-=======
-		stagePanel = new StagePanel("TestMap", this);
 		
 		// Create and init the GUI panels (JPanels)
->>>>>>> 77e5e9912e175b4ed402c2bec6f9420089cdb5f9
 		loginPanel = new LoginPanel();
 		registerPanel = new RegisterPanel();
 		homePanel = new HomePanel();

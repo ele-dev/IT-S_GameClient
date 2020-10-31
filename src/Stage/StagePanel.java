@@ -3,12 +3,9 @@ package Stage;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,7 +24,6 @@ import javax.swing.Timer;
 
 import Abilities.RadialShield;
 import Abilities.WallMine;
-import Buttons.ButtonEndTurn;
 import Buttons.GenericButton;
 import Buttons.WinScreen;
 import Environment.DestructibleObject;
@@ -252,6 +248,7 @@ public class StagePanel extends JPanel {
 			curGP.restoreMovesAndAttacks();
 		}
 	}
+	@SuppressWarnings("unused")
 	private void initFortresses() {
 		enemyFortress = new PlayerFortress(boardRectangles.get(76),true);
 		notEnemyFortress = new PlayerFortress(boardRectangles.get(97),false);
@@ -271,11 +268,7 @@ public class StagePanel extends JPanel {
 		
 		// Draw the background
 		g2d.setColor(this.cBackGround);
-<<<<<<< HEAD
 		g2d.fillRect(0, 0, w, h);
-=======
-		g2d.fillRect(0, 0, StagePanel.w, StagePanel.h);
->>>>>>> 77e5e9912e175b4ed402c2bec6f9420089cdb5f9
 		
 		g2d.translate(camera.getPos().x, camera.getPos().y);
 		
@@ -308,13 +301,6 @@ public class StagePanel extends JPanel {
 		g2d.setColor(cBackGround);
 		g2d.draw(GameMap.mapRectangle);
 		drawValueLabels(g2d);
-		
-<<<<<<< HEAD
-//		lightingManager.drawLight(g2d);
-=======
-		// lightingManager.drawLight(g2d);
-		
->>>>>>> 77e5e9912e175b4ed402c2bec6f9420089cdb5f9
 		drawMovesPanel(g2d);
 		
 		if(levelDesignTool != null) {
@@ -419,11 +405,8 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void drawCursor(Graphics2D g2d) {
-<<<<<<< HEAD
+
 		if(mousePos != null) {
-=======
-		if(StagePanel.mousePos != null) {
->>>>>>> 77e5e9912e175b4ed402c2bec6f9420089cdb5f9
 			g2d.setColor(Color.WHITE);
 			g2d.setStroke(new BasicStroke(5));
 			int x = mousePos.x;
