@@ -199,7 +199,7 @@ public class StagePanel extends JPanel {
 	private void tryLeaveGame() {
 		if (winScreen.getLeaveButton().isHover()) {
 			ProjectFrame.stagePanel.setVisible(false);
-			ProjectFrame.loginPanel.setVisible(true);
+			ProjectFrame.homePanel.setVisible(true);
 		}
 	}
 	
