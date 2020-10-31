@@ -331,8 +331,6 @@ public class StagePanel extends JPanel {
 		
 		g2d.translate(-camera.getPos().x, -camera.getPos().y);
 		
-		
-		
 		g2d.dispose();
 	}
 	
@@ -536,7 +534,7 @@ public class StagePanel extends JPanel {
 		if(winScreen != null) winScreen.update();
 	}
 	
-	public static void checkIfSomeOneWon(){
+	public static void checkIfSomeOneWon() {
 		if(enemyFortress.isDestroyed()) {
 			winScreen = new WinScreen((byte)2, w, h);
 		}else if(notEnemyFortress.isDestroyed()){
@@ -761,7 +759,7 @@ public class StagePanel extends JPanel {
 			
 	}
 	
-	private class ML implements MouseListener{
+	private class ML implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {}
