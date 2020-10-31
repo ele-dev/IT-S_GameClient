@@ -96,7 +96,7 @@ public class ProjectFrame extends JFrame {
 				f.setVisible(false);
 				System.out.println("window was closed --> cleanup routine");
 				
-//				conn.finalize();
+				conn.finalize();
 				
 				// Finally exit the application 
 				System.out.println("Application close up");
