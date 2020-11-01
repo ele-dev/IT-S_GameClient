@@ -11,7 +11,6 @@ import javax.swing.Timer;
 
 import PlayerStructures.PlayerFortress;
 import Stage.StagePanel;
-import Stage.ValueLabel;
 
 public class GoldParticle extends Particle{
 	private float friction;
