@@ -220,7 +220,7 @@ public class StagePanel extends JPanel {
 		
 		if(levelInitializer.getEnemyFortressIndex() > -1)enemyFortress = new PlayerFortress(boardRectangles.get(levelInitializer.getEnemyFortressIndex()), true);
 		if(levelInitializer.getNotEnemyFortressIndex() > -1)notEnemyFortress = new PlayerFortress(boardRectangles.get(levelInitializer.getNotEnemyFortressIndex()), false);
-		levelInitializer.printLevelLAyout();
+//		levelInitializer.printLevelLAyout();
 	}
 		
 	// initializes/creates all GamePieces

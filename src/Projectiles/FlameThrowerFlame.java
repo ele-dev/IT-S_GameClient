@@ -7,6 +7,7 @@ import java.awt.Shape;
 
 import Environment.DestructibleObject;
 
+
 public class FlameThrowerFlame extends Projectile{
 	public boolean hasHitEnemy = false;
 	float w,h;
