@@ -21,5 +21,6 @@ public class GameState {
 	// Ingame related variables //
 	public static String enemyName = "";
 	public static boolean enemySurrender = false;
+	public static byte teamColor = 1;		// 1 -> blue  2 -> red
 	public static boolean myTurn = false;
 }

@@ -79,7 +79,7 @@ public class MessageHandler {
 				
 				// Store the match data from the message
 				GameState.enemyName = matchInfo.getEnemyPlayerName();
-				// ...
+				GameState.teamColor = matchInfo.getTeamColor();
 				
 				System.out.println("Received Match data --> navigating to stage panel");
 				
