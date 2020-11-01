@@ -66,6 +66,8 @@ public class ProjectFrame extends JFrame {
 		addKeyListener(stagePanel.kl);
 	} 
 	
+	public static ProjectFrame f;
+	
 	// ------------------- MAIN Application Entry Point -------------------------- //
 	
 	public static void main(String[] args) {
@@ -85,7 +87,7 @@ public class ProjectFrame extends JFrame {
 		}
 		
 		// Second create the main window and start the actual game
-		ProjectFrame f = new ProjectFrame();
+		f = new ProjectFrame();
 		
 		System.out.println("Main Window is now visible");
 		
