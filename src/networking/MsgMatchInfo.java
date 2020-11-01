@@ -17,6 +17,7 @@ public class MsgMatchInfo extends GenericMessage {
 	private static final long serialVersionUID = -2025417349888729111L;
 	
 	private String enemyPlayerName;
+	private byte yourTeamColor;			// 1 -> blue  2 -> red
 	// ...
 	
 	// Default Constructor
@@ -25,13 +26,15 @@ public class MsgMatchInfo extends GenericMessage {
 		super();
 		this.msgID = GenericMessage.MSG_MATCH_INFO;
 		this.enemyPlayerName = "";
+		this.yourTeamColor = 1;		// default team is blue (1)
 	}
 	
-	// Advanced Constructor taking the enemy's player name as argument
-	public MsgMatchInfo(String enemyPlayer) 
+	// Advanced Constructor taking the enemy's player name and team color id as arguments
+	public MsgMatchInfo(String enemyPlayer, byte teamColor) 
 	{
 		this();
 		this.enemyPlayerName = enemyPlayer;
+		this.yourTeamColor = teamColor;
 	}
 	
 	// Getters 
@@ -39,5 +42,10 @@ public class MsgMatchInfo extends GenericMessage {
 	public String getEnemyPlayerName() 
 	{
 		return this.enemyPlayerName;
+	}
+	
+	public byte getTeamColor() 
+	{
+		return this.yourTeamColor;
 	}
 }
