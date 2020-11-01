@@ -544,13 +544,14 @@ public class StagePanel extends JPanel {
 		
 		endTurnButton.updateHover(mousePos);
 		endTurnButton.updatePos(camera.getPos());
-		endTurnButton.setActive(curActionPerformingGP == null && levelDesignTool == null && noFortressSelected() && !goldUncollected());
+		endTurnButton.setActive(curActionPerformingGP == null && levelDesignTool == null && GameState.myTurn
+				&& noFortressSelected() && !goldUncollected());
 		
 		surrenderButton.updateHover(mousePos);
 		surrenderButton.updatePos(camera.getPos());
 		surrenderButton.setActive(curActionPerformingGP == null && levelDesignTool == null && noFortressSelected() && !goldUncollected());
 		
-		if(levelDesignTool == null)updateFortresses();
+		if(levelDesignTool == null) updateFortresses();
 		if(winScreen != null) winScreen.update();
 	}
 	
@@ -612,7 +613,7 @@ public class StagePanel extends JPanel {
 	// updates all Particles
 	private void updateParticles() {
 		int amountOfEmptyShells = 0;
-		for(int i = 0;i<particles.size();i++) {
+		for(int i = 0; i < particles.size(); i++) {
 			Particle curP = particles.get(i);
 			curP.update();
 			if(curP instanceof EmptyShell) {
@@ -623,7 +624,7 @@ public class StagePanel extends JPanel {
 			}
 		}
 		if(amountOfEmptyShells > 100) {
-			for(int i = 0; i<particles.size();i++) {
+			for(int i = 0; i < particles.size(); i++) {
 				Particle curP = particles.get(i);
 				if(curP instanceof EmptyShell) {
 					particles.remove(i);
@@ -635,7 +636,7 @@ public class StagePanel extends JPanel {
 	
 	// updates destructible objects (removes them if they are flagged as destroyed)
 	private void updateDestructibleObject() {
-		for(int i = 0;i<destructibleObjects.size();i++) {
+		for(int i = 0; i < destructibleObjects.size(); i++) {
 			if(destructibleObjects.get(i).isDestroyed()) {
 				destructibleObjects.remove(i);
 			}
@@ -664,9 +665,9 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
-
 	// updates/changes Turns
-	private void updateTurn() {
+	public void updateTurn() {
+		
 		turnInfoPanel.toggleTurn();
 		curSelectedGP = null;
 		for(GoldMine curGM : goldMines) {
@@ -709,7 +710,7 @@ public class StagePanel extends JPanel {
 	// selects a piece if it is clicked on and not dead
 	private boolean trySelectGamePiece() {
 		curSelectedGP = null;
-		if(curHoverBR != null) {
+		if(curHoverBR != null && GameState.myTurn) {
 			for(GamePiece curGP : gamePieces) {
 				if(curGP.boardRect == curHoverBR && checkIfHasTurn(curGP)) {
 					curSelectedGP = curGP;
@@ -736,7 +737,7 @@ public class StagePanel extends JPanel {
 	}
 	
 	private boolean goldUncollected() {
-		for(int i = 0;i<particles.size();i++) {
+		for(int i = 0; i < particles.size(); i++) {
 			if(particles.get(i) instanceof GoldParticle) {
 				return true;
 			}
@@ -745,7 +746,7 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void tryPerformActionOnPressedPos() {
-		if(curSelectedGP != null && !curSelectedGP.getIsDead() && curHoverBR != null) {	
+		if(curSelectedGP != null && !curSelectedGP.getIsDead() && curHoverBR != null && GameState.myTurn) {	
 			if(curHoverBR.isPossibleMove || curHoverBR.isPossibleAttack || curHoverBR.isPossibleAbility) {
 				if(curHoverBR.isPossibleMove) {
 					curSelectedGP.startMove();
@@ -801,7 +802,7 @@ public class StagePanel extends JPanel {
 				if(curHoverBR != null) {
 					if(SwingUtilities.isLeftMouseButton(e)) {
 						levelDesignTool.tryPlaceObject();
-					}else if(SwingUtilities.isRightMouseButton(e)){
+					} else if(SwingUtilities.isRightMouseButton(e)) {
 						levelDesignTool.tryRemoveObject();
 					}
 				}
@@ -827,10 +828,24 @@ public class StagePanel extends JPanel {
 						if(tryPressButton()) {
 							return;
 						}
+						
+						// End Turn Button click event
 						if(endTurnButton.isActive() && endTurnButton.isHover()) {
+			
+							// Update the global state variable
+							GameState.myTurn = false;
+							
+							// Send the signal message to the server
+							SignalMessage endTurn = new SignalMessage(GenericMessage.MSG_END_TURN);
+							ProjectFrame.conn.sendMessageToServer(endTurn);
+							
+							// process the game events for turn switch
 							updateTurn();
+							
 							return;
 						}
+						
+						// Surrender button click event
 						if(surrenderButton.isActive() && surrenderButton.isHover()) {
 							surrender();
 							return;

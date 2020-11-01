@@ -1,7 +1,5 @@
 package clientPackage;
 
-import javax.swing.JOptionPane;
-
 import Stage.ProjectFrame;
 import Stage.StagePanel;
 import menueGui.GameState;
@@ -81,6 +79,12 @@ public class MessageHandler {
 				GameState.enemyName = matchInfo.getEnemyPlayerName();
 				GameState.teamColor = matchInfo.getTeamColor();
 				
+				if(GameState.teamColor == 1) {
+					GameState.myTurn = true;
+				} else {
+					GameState.myTurn = false;
+				}
+				
 				System.out.println("Received Match data --> navigating to stage panel");
 				
 				// Navigate to the game panel where the actual game happens
@@ -127,8 +131,9 @@ public class MessageHandler {
 				
 				// Update the global state variable and show info box 
 				GameState.myTurn = true;
-				JOptionPane.showMessageDialog(null, "It's your turn now (" 
-						+ ProjectFrame.conn.getUsername() + ")");
+				
+				// Now update the GUI to switch the turn graphically and process all connected events
+				ProjectFrame.stagePanel.updateTurn();
 				
 				break;
 			}
