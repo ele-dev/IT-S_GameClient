@@ -25,8 +25,7 @@ public class GunnerPiece extends CommanderGamePiece {
 	int burstBulletAmount = 16;
 	
 	double spreadAngle = 10;
-	boolean startedAttack = false;
-
+ 
 	BoardRectangle targetBoardRectangleNextRadialShield;
 	
 	public GunnerPiece(boolean isEnemy, BoardRectangle boardRect) {
@@ -43,7 +42,7 @@ public class GunnerPiece extends CommanderGamePiece {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				createShield();
+				createShield(); 
 			}
 		});
 		abilityDelayTimer.setRepeats(false);
@@ -64,18 +63,6 @@ public class GunnerPiece extends CommanderGamePiece {
 				Commons.boardRectSize,Commons.boardRectSize,0,0,Arc2D.PIE);
 	}
 	
-	public void update() {
-		if(targetGamePiece != null) {
-			updateAngle(targetGamePiece.getPos());
-		} else if(targetDestructibleObject != null){
-			updateAngle(targetDestructibleObject.getPos());
-		}
-		if(isMoving) {
-			updateMove();
-		}
-		updateAttack();
-	}
-	
 	//draws every bullet in the bullets Array
 	public void drawAttack(Graphics2D g2d) {
 		for(Bullet curB:bullets) {
@@ -92,7 +79,7 @@ public class GunnerPiece extends CommanderGamePiece {
 			curB.move();
 			curB.checkHitAnyTarget(); 
 			
-			if(curB.getHasHitTarget()) {
+			if(curB.hasHitTarget()) {
 				bullets.remove(i);
 			}
 			
@@ -194,7 +181,7 @@ public class GunnerPiece extends CommanderGamePiece {
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
 			}else { 
-				targetDestructibleObject.getDamaged(getDmg(),angle);
+				targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
 				targetDestructibleObject = null;
 			}
 			

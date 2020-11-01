@@ -1,5 +1,6 @@
 package GamePieces;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
@@ -12,7 +13,7 @@ import javax.swing.Timer;
 
 import Abilities.WallMine;
 import Particles.EmptyShell;
-import Particles.SniperTrailParticle;
+import Particles.TrailParticle;
 import Projectiles.Bullet;
 import Stage.BoardRectangle;
 import Stage.Commons;
@@ -28,8 +29,8 @@ public class SniperPiece extends CommanderGamePiece{
 	byte rotationIndexNextWallMine;
 	
 	public SniperPiece(boolean isEnemy, BoardRectangle boardRect) {
-		super(isEnemy, "SC", boardRect, 5, 3, 1);
-		attackDelayTimer = new Timer(1500,new ActionListener() {
+		super(isEnemy, Commons.nameSniper, boardRect, Commons.dmgSniper, 3, Commons.baseTypeSniper);
+		attackDelayTimer = new Timer(1500,new ActionListener() { 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				angle = angleDesired;
@@ -42,22 +43,19 @@ public class SniperPiece extends CommanderGamePiece{
 		
 		abilityDelayTimer = new Timer(1500,new ActionListener() {
 			
-			@Override
+			@Override 
 			public void actionPerformed(ActionEvent e) {
-				shootWallMine();
+				shootWallMine(); 
 			} 
 		});
 		abilityDelayTimer.setRepeats(false);
 	}
-	
+	 
 	public void update() {
 		if(targetGamePiece != null) {
 			updateAngle(targetGamePiece.getPos());
 		}else if(targetDestructibleObject != null){
 			updateAngle(targetDestructibleObject.getPos());
-		}
-		if(isMoving) {
-			updateMove();
 		}
 		updateAttack();
 		
@@ -101,7 +99,7 @@ public class SniperPiece extends CommanderGamePiece{
 		}
 		if(curHoverBoardRectangle.isShowPossibleAbility) {
 			curHoverBoardRectangle.isPossibleAbility = true;
-		}
+		} 
 	}
 	
 	@Override 
@@ -170,11 +168,14 @@ public class SniperPiece extends CommanderGamePiece{
 		
 		for(int i = 0;i<1000;i++) {
 			if(i%2==0) {
-				StagePanel.particles.add(new SniperTrailParticle((int)(sniperBullet.getX() + (Math.random()-0.5)*10), (int)(sniperBullet.getY() + (Math.random()-0.5)*10)));
+				int greyTone = (int)(Math.random()*90+10);
+				StagePanel.particles.add(new TrailParticle((int)(sniperBullet.getX() + (Math.random()-0.5)*10), (int)(sniperBullet.getY() + (Math.random()-0.5)*10),
+						(int)(Math.random()*3+5),(float)(Math.random()*-180),new Color(greyTone,greyTone,greyTone),(float) (Math.random()*0.1),
+						(float)(Math.random()*0.2+0.6),0));
 			}
 			sniperBullet.move();
 			sniperBullet.checkHitAnyTarget();
-			if(sniperBullet.getHasHitTarget()) {
+			if(sniperBullet.hasHitTarget()) {
 				break;
 			}
 		}
@@ -186,7 +187,7 @@ public class SniperPiece extends CommanderGamePiece{
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());
 			targetGamePiece = null;
 		}else {
-			targetDestructibleObject.getDamaged(getDmg(),angle);
+			targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
 			targetDestructibleObject = null;
 		}
 		StagePanel.applyScreenShake(5, 30);

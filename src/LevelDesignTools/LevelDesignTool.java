@@ -9,12 +9,14 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import Environment.DestructibleObject;
+import PlayerStructures.GoldMine;
+import PlayerStructures.PlayerFortress;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
 
 public class LevelDesignTool {
-	private String[] buildObjects = {"Wall","Gap","Crate","HinderingTerrain"};
+	private String[] buildObjects = {"Wall","Gap","Crate","HinderingTerrain","GoldMine","EnemyFortress","NotEnemyFortress"};
 	private int index = 0;
 	private String equippedBuildObject = buildObjects[index];
 	public MWL mwl = new MWL();
@@ -35,10 +37,8 @@ public class LevelDesignTool {
 		for(int i = 0;i<buildObjects.length;i++) {
 			g2d.setColor(i==index ?Color.GREEN:Color.WHITE);
 			
-			g2d.drawString(i==index ?buildObjects[i]+" Selected":buildObjects[i], x +30, y+textHeight*i + textHeight + 30);
+			g2d.drawString(i==index ?buildObjects[i]+"":buildObjects[i], x +30, y+textHeight*i + textHeight + 30);
 		}
-		
-		
 	}
 	
 	public void drawRowsAndColumnLabels(Graphics2D g2d) {
@@ -61,48 +61,73 @@ public class LevelDesignTool {
 	}
 	
 	public void tryPlaceObject() {
-		BoardRectangle sbr =  StagePanel.curHoverBR;
-		switch (equippedBuildObject) {
-		case "Wall":
-			if(!sbr.isGap && !sbr.isWall && !sbr.isHinderingTerrain && !sbr.isDestructibleObject()) {
-				sbr.isWall = true;
+		BoardRectangle sBR =  StagePanel.curHoverBR;
+		
+		if(!sBR.isGap && !sBR.isWall && !sBR.isHinderingTerrain && !sBR.isDestructibleObject() && !sBR.isGoldMine()){
+			switch (equippedBuildObject) {
+			case "Wall":
+				sBR.isWall = true;
+				break;
+			case "Gap":
+				sBR.isGap = true;
+				break;
+			case "Crate":
+				StagePanel.destructibleObjects.add(new DestructibleObject(sBR, 1, 1, 1, 0));
+				break;
+			case "HinderingTerrain":
+				sBR.isHinderingTerrain = true;
+				break;
+			case "GoldMine":
+				StagePanel.goldMines.add(new GoldMine(sBR));
+				break;
+			case "EnemyFortress":
+				StagePanel.enemyFortress = new PlayerFortress(sBR, true);
+				break;
+			
+			case "NotEnemyFortress":
+				StagePanel.notEnemyFortress = new PlayerFortress(sBR, false);
+				break;
 			}
-			break;
-		case "Gap":
-			if(!sbr.isGap && !sbr.isWall && !sbr.isHinderingTerrain && !sbr.isDestructibleObject()) {
-				sbr.isGap = true;
-			}
-		case "Crate":
-			if(!sbr.isGap && !sbr.isWall  && !sbr.isHinderingTerrain && !sbr.isDestructibleObject()) {
-				StagePanel.destructibleObjects.add(new DestructibleObject(sbr, 1, 1, 1, 0));
-			}	
-		case "HinderingTerrain":
-			if(!sbr.isGap && !sbr.isWall && !sbr.isHinderingTerrain && !sbr.isDestructibleObject()) {
-				sbr.isHinderingTerrain = true;
-			}	
-			break;
 		}
 	}
 	
 	public void tryRemoveObject() {
-		BoardRectangle sbr =  StagePanel.curHoverBR;
+		BoardRectangle sBR =  StagePanel.curHoverBR;
 		switch (equippedBuildObject) {
 		case "Wall":
-			sbr.isWall = false;
+			sBR.isWall = false;
 			break;
 		case "Gap":
-			sbr.isGap = false;
+			sBR.isGap = false;
 			break;
 		case "Crate":
 			for(DestructibleObject curDO : StagePanel.destructibleObjects) {
-				if(curDO.containsBR(sbr)) {
+				if(curDO.containsBR(sBR)) {
 					 StagePanel.destructibleObjects.remove(curDO);
 					 return;
 				}
 			}
 			break;
 		case "HinderingTerrain":
-			sbr.isHinderingTerrain = false;
+			sBR.isHinderingTerrain = false;
+			break;
+		case "GoldMine":
+			for(GoldMine curGM : StagePanel.goldMines) {
+				if(curGM.containsBR(sBR)) {
+					 StagePanel.goldMines.remove(curGM);
+					 return;
+				}
+			}
+			break;
+		case "EnemyFortress":
+			if(StagePanel.enemyFortress != null && StagePanel.enemyFortress.containsBR(sBR)) {
+				StagePanel.enemyFortress = null;
+			}
+			break;
+		case "NotEnemyFortress":
+			if(StagePanel.notEnemyFortress != null && StagePanel.notEnemyFortress.containsBR(sBR)) {
+				StagePanel.notEnemyFortress = null;
+			}
 			break;
 		}
 	}

@@ -19,6 +19,7 @@ import Environment.DestructibleObject;
 import Particles.Explosion;
 import PathFinder.AStarPathFinder;
 import PathFinder.PathCell;
+import PlayerStructures.GoldMine;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
@@ -35,8 +36,8 @@ public abstract class GamePiece {
 	private float dmg;
 	
 	private boolean isEnemy;
-	protected boolean hasExecutedMove = true;
-	protected boolean hasExecutedAttack = true;
+	protected boolean hasExecutedMove = true;  
+	protected boolean hasExecutedAttack = true; 
 	
 	protected Timer attackDelayTimer,abilityDelayTimer,deathDelayTimer;
 	protected GamePiece targetGamePiece;
@@ -51,30 +52,71 @@ public abstract class GamePiece {
 	private int rotationDelay = 4;
 	protected Sprite spriteTurret;
 	
+	protected boolean startedAttack = false;;
 	
-	// pathfinding
+	
+	// pathfinding 
 	private AStarPathFinder pathFinder;
 	public GamePieceBase gamePieceBase;
 	
 	public GamePiece(boolean isEnemy,String name,BoardRectangle boardRect,float dmg,int baseTypeIndex) {
 		this.isEnemy = isEnemy;
 		this.boardRect = boardRect;
-		
-    
 		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
 		if(isEnemy) {
 			this.c = Commons.enemyColor;
 		}else {
 			this.c = Commons.notEnemyColor;
 		} 
-		gamePieceBase = new GamePieceBase(boardRect.getCenterX(), boardRect.getCenterY(), rectShowTurret.width+10, rectShowTurret.width+10,c,baseTypeIndex,this);
+		gamePieceBase = new GamePieceBase(boardRect.getCenterX(), boardRect.getCenterY(), boardRect.getSize(), boardRect.getSize(),c,baseTypeIndex,this);
 
 		this.name = name;
 		this.dmg = dmg;
 		this.actionSelectionPanel = new ActionSelectionPanel(this);
 	}
 	
-	public abstract void update();
+	public String getName() {
+		return name;
+	}
+	
+	public boolean getIsDead() {
+		return isDead;
+	}
+	
+	public boolean getIsEnemy() {
+		return isEnemy;
+	}
+	
+	public Rectangle getRectHitbox() {
+		return gamePieceBase.getRectHitbox();
+	}
+
+	public float getDmg() {
+		return dmg;
+	}
+	
+	public boolean getHasExecutedAttack() {
+		return hasExecutedAttack;
+	}
+
+	public boolean getHasExecutedMove() {
+		return hasExecutedMove;
+	}
+	
+	public void setHasExecutedMove(boolean hasExecutedMove) {
+		this.hasExecutedMove = hasExecutedMove;
+	}
+
+	public int getCenterX() {
+		return (int) getRectHitbox().getCenterX();
+	}
+	public int getCenterY() {
+		return (int) getRectHitbox().getCenterY();
+	}
+	
+	public Point getPos() {
+		return new Point(getCenterX(),getCenterY());
+	}
 	
 	public Color getColor() {
 		return c;
@@ -91,7 +133,7 @@ public abstract class GamePiece {
 			BoardRectangle curBR  = StagePanel.boardRectangles.get(i);
 			pathCells.add(new PathCell(curBR.getX(), curBR.getY(), Commons.boardRectSize, curBR.row, curBR.column,i));
 				
-			if(curBR.isWall || curBR.isDestructibleObject() || curBR.isGap) {
+			if(curBR.isWall || curBR.isDestructibleObject() || curBR.isGoldMine() || curBR.isGap) {
 				pathCells.get(i).setIsWall(true);
 			}else
 			for(GamePiece curGP : StagePanel.gamePieces) {
@@ -161,54 +203,22 @@ public abstract class GamePiece {
 		}
 	}
 	
-	public String getName() {
-		return name;
-	}
-	
-	public boolean getIsDead() {
-		return isDead;
-	}
-	
-	public boolean getIsEnemy() {
-		return isEnemy;
-	}
-	
-	public Rectangle getRectHitbox() {
-		return gamePieceBase.getRectHitbox();
-	}
-
-	public float getDmg() {
-		return dmg;
-	}
-	
-	public boolean getHasExecutedAttack() {
-		return hasExecutedAttack;
-	}
-
-	public boolean getHasExecutedMove() {
-		return hasExecutedMove;
-	}
-
-	public int getCenterX() {
-		return (int) getRectHitbox().getCenterX();
-	}
-	public int getCenterY() {
-		return (int) getRectHitbox().getCenterY();
-	}
-	
-	public Point getPos() {
-		return new Point(getCenterX(),getCenterY());
+	public void update() {
+		if(targetGamePiece != null) {
+			updateAngle(targetGamePiece.getPos());
+		}else if(targetDestructibleObject != null){
+			updateAngle(targetDestructibleObject.getPos());
+		}
+		updateAttack();
 	}
 	
 	public void tryDie() {
 		if(gamePieceBase.getHealth() <= 0 && !getIsDead()) {
-			
 			StagePanel.particles.add(new Explosion(getCenterX(), getCenterY(), 1.2f));
 			for(int i = 0;i<3;i++) {
 				StagePanel.particles.add(new Explosion(getCenterX()+(int)((Math.random()-0.5)*Commons.boardRectSize/2),
 						getCenterY()+(int)((Math.random()-0.5)*Commons.boardRectSize/2), 1f));
 			}
-			
 			isDead = true;
 			StagePanel.impactStop();
 		}
@@ -216,7 +226,6 @@ public abstract class GamePiece {
 	
 	// sets each BoardRectangle to being a possible attackPosition if it is(changes color accordingly)
 	public void showPossibleAttacks() {
-		
 		sightLines.clear(); 
 		for(BoardRectangle curBR : StagePanel.boardRectangles) {
 			if(checkAttacks(curBR.row, curBR.column) && !curBR.isWall) {
@@ -252,7 +261,6 @@ public abstract class GamePiece {
 	public abstract void drawAttack(Graphics2D g2d);
 	// draws all LinesOfSight (only for devs)
 	public void drawLinesOfSight(Graphics2D g2d) {
-		
 		for(Line2D line : sightLines) {
 			g2d.setColor(new Color(0,0,255,200));
 			g2d.draw(line);
@@ -265,6 +273,8 @@ public abstract class GamePiece {
 	
 	// updates angle to face toward enemy and starts the attack (starts attackDelayTimer)
 	public void startAttack(BoardRectangle targetBoardRectangle) {
+		targetGamePiece = null;
+		targetDestructibleObject = null;
 		if(StagePanel.enemyFortress.containsBR(targetBoardRectangle) && !isEnemy) {
 			targetDestructibleObject = StagePanel.enemyFortress;
 			startAttackDelay();
@@ -281,11 +291,18 @@ public abstract class GamePiece {
 				return;
 			}
 		}
+		for(GoldMine curGM : StagePanel.goldMines) {
+			if(curGM.containsBR(targetBoardRectangle) && checkIfEnemies(curGM)) {
+				targetDestructibleObject = curGM;
+				startAttackDelay();
+				return;
+			}
+		}
 		for(DestructibleObject curDO : StagePanel.destructibleObjects) {
 			if(curDO.containsBR(targetBoardRectangle)) {
-				System.out.println("confirmed");
 				targetDestructibleObject = curDO;
 				startAttackDelay();
+				return;
 			}
 		}
 		for(GamePiece curGP : StagePanel.gamePieces) {
@@ -299,7 +316,7 @@ public abstract class GamePiece {
 		}
 	}
 	
-	private void startAttackDelay() {
+	protected void startAttackDelay() {
 		isAttacking = true;
 		attackDelayTimer.start();
 		hasExecutedAttack = true;
@@ -386,6 +403,9 @@ public abstract class GamePiece {
 	public boolean checkIfEnemies(RadialShield rs) {
 		return rs.isEnemy == !this.isEnemy;
 	}
+	public boolean checkIfEnemies(GoldMine goldMine) {
+		return goldMine.getCaptureState() != 0 && (goldMine.getCaptureState()==1 && !isEnemy || goldMine.getCaptureState()==2 && isEnemy);
+	}
 	// moves the GamePiece to the parameter BoardRectangle and exhausts its moving ability
 	public void startMove() {
 		actionSelectionPanel.setMoveButtonActive(false);
@@ -395,7 +415,9 @@ public abstract class GamePiece {
 	}
 	
 	public void updateMove() {
-		gamePieceBase.updateAngle();
-		gamePieceBase.move();
+		if(isMoving) {
+			gamePieceBase.updateAngle();
+			gamePieceBase.move();
+		}
 	}
 }

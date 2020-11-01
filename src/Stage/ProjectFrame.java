@@ -6,15 +6,16 @@ import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import clientPackage.Connection;
+import menueGui.GameState;
 import menueGui.HomePanel;
 import menueGui.LoginPanel;
 import menueGui.RegisterPanel;
 
 @SuppressWarnings("serial")
-public
-class ProjectFrame extends JFrame {
+public class ProjectFrame extends JFrame {
 	
 	// Network related
 	public static Connection conn;
@@ -27,7 +28,7 @@ class ProjectFrame extends JFrame {
 	public static LoginPanel loginPanel;
 	public static HomePanel homePanel;
 	public static RegisterPanel registerPanel;
-	
+	 
 	private ProjectFrame() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
@@ -45,7 +46,8 @@ class ProjectFrame extends JFrame {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		Container cp = getContentPane();
-		stagePanel = new StagePanel("TestMap", this);
+		
+		stagePanel = new StagePanel("LargeMap");
 		
 		// Create and init the GUI panels (JPanels)
 		loginPanel = new LoginPanel();
@@ -62,7 +64,9 @@ class ProjectFrame extends JFrame {
 		addKeyListener(loginPanel);
 		addKeyListener(registerPanel);
 		addKeyListener(stagePanel.kl);
-	}
+	} 
+	
+	public static ProjectFrame f;
 	
 	// ------------------- MAIN Application Entry Point -------------------------- //
 	
@@ -83,7 +87,7 @@ class ProjectFrame extends JFrame {
 		}
 		
 		// Second create the main window and start the actual game
-		ProjectFrame f = new ProjectFrame();
+		f = new ProjectFrame();
 		
 		System.out.println("Main Window is now visible");
 		
@@ -93,6 +97,17 @@ class ProjectFrame extends JFrame {
 			// Define window close event
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
+				
+				// Check if the player is currently ingame
+				if(GameState.isIngame) {
+					int option = JOptionPane.showConfirmDialog(null, "Are you sure that you want to surrender?",
+													"Quit game?", JOptionPane.YES_NO_OPTION);
+					// If player clicked No then abort the close up procedure
+					if(option == JOptionPane.NO_OPTION) {
+						return;
+					}
+				}
+				
 				f.setVisible(false);
 				System.out.println("window was closed --> cleanup routine");
 				

@@ -13,7 +13,7 @@ public class GenericButton {
 	protected int startx,starty;
 	protected Rectangle rect;
 	protected boolean isHover = false;
-	protected boolean isActive = false;
+	protected boolean isActive = true;
 	
 	protected Color c;
 	protected Color cHover;
@@ -21,26 +21,41 @@ public class GenericButton {
 	
 	protected Font f;
 	
-	public GenericButton(int startx, int starty, int w, int h, String name, Color c, Color cHover, Color cInactive, int fontSize) {
+	public GenericButton(int startx, int starty, int w, int h, String name, Color c, Color cHover, int fontSize) {
 		this.startx = startx;
 		this.starty = starty;
 		rect = new Rectangle(startx,starty,w,h);
 		this.name = name;
 		this.c = c;
 		this.cHover = cHover;
-		this.cInactive = cInactive;
 		this.f = new Font("Arial",Font.BOLD,fontSize);
-		
+		cInactive = new Color(10,10,10);
 	}
 	
 	public boolean isHover() {
 		return isHover;
 	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+	
+	public boolean isActive() {
+		return isActive;
+	}
 	
 	public void drawButton(Graphics2D g2d) {
-		g2d.setColor(isHover?cHover:c);
+		if(isActive) {
+			g2d.setColor(isHover?cHover:c);
+		}else {
+			g2d.setColor(c);
+		}
 		g2d.fill(rect);
-		g2d.setColor(isHover?c:cHover);
+		
+		if(isActive) {
+			g2d.setColor(isHover?c:cHover);
+		}else {
+			g2d.setColor(cInactive);
+		}
 		
 		g2d.setStroke(new BasicStroke(8));
 		g2d.draw(rect);

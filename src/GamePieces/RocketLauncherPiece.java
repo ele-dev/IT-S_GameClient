@@ -20,9 +20,8 @@ public class RocketLauncherPiece extends GamePiece{
 	int burstCounter;
 	Timer burstTimer;
 	int burstRocketAmount = 8;
-	
+	 
 	double spreadAngle = 120;
-	boolean startedAttack = false;
 	
 	public RocketLauncherPiece(boolean isEnemy, BoardRectangle boardRect) {
 		super(isEnemy, Commons.nameRocketLauncher, boardRect, Commons.dmgRocketLauncher,Commons.baseTypeRocketLauncher);
@@ -32,12 +31,12 @@ public class RocketLauncherPiece extends GamePiece{
 			public void actionPerformed(ActionEvent e) { 
 				angle = angleDesired;
 				shootBurst();
-			}
+			} 
 		});
 		attackDelayTimer.setRepeats(false);
 		
 		burstTimer = new Timer(150, new ActionListener() {
-			
+			 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				shootOnce();
@@ -51,18 +50,6 @@ public class RocketLauncherPiece extends GamePiece{
 		
 		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/4,boardRect.getCenterY()-Commons.boardRectSize/4,
 				Commons.boardRectSize/2,Commons.boardRectSize/2,0,0,Arc2D.PIE);
-	}
-	
-	public void update() {
-		if(targetGamePiece != null) {
-			updateAngle(targetGamePiece.getPos());
-		}else if(targetDestructibleObject != null){ 
-			updateAngle(targetDestructibleObject.getPos());
-		}
-		if(isMoving) {
-			updateMove();
-		}
-		updateAttack();
 	}
 
 	public void drawAttack(Graphics2D g2d) {
@@ -125,7 +112,7 @@ public class RocketLauncherPiece extends GamePiece{
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
 			} else if(targetDestructibleObject != null) {
-				targetDestructibleObject.getDamaged(getDmg(), angle);
+				targetDestructibleObject.getDamaged(getDmg(), angle,getIsEnemy());
 				targetDestructibleObject = null;
 			}
 		}
@@ -147,7 +134,7 @@ public class RocketLauncherPiece extends GamePiece{
 			}
 			
 			curR.move();
-			if(curR.getIsDestroyed()) {
+			if(curR.isDestroyed()) {
 				rockets.remove(i);
 			}
 		}

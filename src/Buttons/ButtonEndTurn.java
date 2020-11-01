@@ -30,6 +30,10 @@ public class ButtonEndTurn {
 		return isHover; 
 	}
 	
+	public boolean isPressable() {
+		return isPressable;
+	}
+	
 	public void drawButton(Graphics2D g2d) {
 		g2d.setColor(c);
 		if(isHover) {
@@ -56,12 +60,8 @@ public class ButtonEndTurn {
 		g2d.drawString("End Turn",(int)(rect.x+rect.getWidth()/2 - textWidth/2),(int)(rect.y + rect.getHeight()/2 +textHeight/3));
 	}
 	
-	public void updatePressable(boolean isOngoingAttack) {
-		if(isOngoingAttack) {
-			isPressable = false;
-		}else {
-			isPressable = true;
-		}
+	public void updatePressable(boolean isPressable) {
+		this.isPressable = isPressable;
 	}
 	
 	public void updateHover(Point mousePos) {

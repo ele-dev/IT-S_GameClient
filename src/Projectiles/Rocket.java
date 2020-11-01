@@ -7,7 +7,7 @@ import java.awt.Shape;
 
 import Environment.DestructibleObject;
 import Particles.Explosion;
-import Particles.RocketTrailParticle;
+import Particles.TrailParticle;
 import Stage.StagePanel;
 
 
@@ -20,7 +20,7 @@ public class Rocket extends Projectile {
 		super(x, y, w, h, c, angle, 0, 0.3f, targetShape, targetDestructibleObject);
 		poly = new Polygon();
 		poly.addPoint((int)(w/2),(int)(-h/2));
-		poly.addPoint((int)(w/2), (int)(h/4));
+		poly.addPoint((int)(w/2), (int)(h/4)); 
 		poly.addPoint((int)0,(int)(h*(3/4.0)));
 		poly.addPoint((int)(- w/2),(int)(h/4));
 		poly.addPoint((int)(- w/2),(int)(-h/2));
@@ -28,7 +28,7 @@ public class Rocket extends Projectile {
 	
 	public void addTrailParticle() { 
 		int randomSize = (int)(Math.random() * 2) +4;
-		StagePanel.particles.add(new RocketTrailParticle(x, y, randomSize, randomSize, c, 0, 3));
+		StagePanel.particles.add(new TrailParticle(x, y, randomSize,0, c,0, 3,0));
 	}
 	
 	// draws the rocket
