@@ -1,5 +1,7 @@
 package menueGui;
 
+import java.awt.Color;
+
 /*
  * written by Elias Geiger
  * 
@@ -21,6 +23,8 @@ public class GameState {
 	// Ingame related variables //
 	public static String enemyName = "";
 	public static boolean enemySurrender = false;
-	public static byte teamColor = 1;		// 1 -> blue  2 -> red
+	// public static byte teamColor = 1;		// 1 -> blue  2 -> red
+	public static Color myTeamColor = Color.BLUE;
+	public static Color enemyTeamColor =  Color.RED;
 	public static boolean myTurn = false;
 }

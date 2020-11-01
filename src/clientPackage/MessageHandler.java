@@ -1,5 +1,7 @@
 package clientPackage;
 
+import java.awt.Color;
+
 import Stage.ProjectFrame;
 import Stage.StagePanel;
 import menueGui.GameState;
@@ -77,9 +79,31 @@ public class MessageHandler {
 				
 				// Store the match data from the message
 				GameState.enemyName = matchInfo.getEnemyPlayerName();
-				GameState.teamColor = matchInfo.getTeamColor();
+				switch(matchInfo.getTeamColor()) 
+				{
+					case 1:
+					{
+						GameState.myTeamColor = Color.BLUE;
+						GameState.enemyTeamColor = Color.RED;
+						break;
+					}
 				
-				if(GameState.teamColor == 1) {
+					case 2:
+					{
+						GameState.myTeamColor = Color.RED;
+						GameState.enemyTeamColor = Color.BLUE;
+						break;
+					}
+					
+					default:
+					{
+						GameState.myTeamColor = Color.GRAY;
+						break;
+					}
+				}
+				
+				// If your are team blue then it's your turn at first
+				if(GameState.myTeamColor == Color.BLUE) {
 					GameState.myTurn = true;
 				} else {
 					GameState.myTurn = false;

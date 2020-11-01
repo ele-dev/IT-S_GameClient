@@ -7,7 +7,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import Stage.Commons;
 import Stage.ProjectFrame;
 import Stage.StagePanel;
 import menueGui.GameState;
@@ -50,11 +49,11 @@ public class WinScreen {
 		
 		if(winnerIndex == 1) {
 			textWidth = fontMetrics.stringWidth(GameState.enemyName);
-			g2d.setColor(Commons.enemyColor);
+			g2d.setColor(GameState.enemyTeamColor);
 			g2d.drawString(GameState.enemyName, w/2-textWidth/2, h/2+textHeight/3+textHeight);
 		} else {
 			textWidth = fontMetrics.stringWidth(ProjectFrame.conn.getUsername());
-			g2d.setColor(Commons.notEnemyColor);
+			g2d.setColor(GameState.myTeamColor);
 			g2d.drawString(ProjectFrame.conn.getUsername(), w/2-textWidth/2, h/2+textHeight/3+textHeight);
 		}
 		
