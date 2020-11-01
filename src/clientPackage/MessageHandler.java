@@ -3,6 +3,7 @@ package clientPackage;
 import javax.swing.JOptionPane;
 
 import Stage.ProjectFrame;
+import Stage.StagePanel;
 import menueGui.GameState;
 
 /*
@@ -101,16 +102,15 @@ public class MessageHandler {
 				
 				// show popup message informing that the match is over because the enemy left the game
 				System.out.println("The enemy surrendered --> leaving match");
-				JOptionPane.showMessageDialog(null, "Match is over. Enemy has left the game");
+				// JOptionPane.showMessageDialog(null, "Match is over. Enemy has left the game");
 				
 				// Update the player states
+				GameState.enemySurrender = true;
 				GameState.isIngame = false;
 				GameState.isSearching = false;
-				GameState.enemyName = ""; 
 				
-				// Navigate back to the home screen
-				ProjectFrame.stagePanel.setVisible(false);
-				ProjectFrame.homePanel.setVisible(true);
+				// Run the winning detection
+				StagePanel.checkIfSomeOneWon();
 				
 				break;
 			}
