@@ -130,7 +130,7 @@ public class StagePanel extends JPanel {
 			}
 		});
 		
-		tUpdateRate = new Timer(10, new ActionListener() {
+		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateStage();
@@ -206,12 +206,20 @@ public class StagePanel extends JPanel {
 	private void tryLeaveGame() {
 		if (winScreen.getLeaveButton().isHover()) {
 			
-			// Update game state
+			// Reset game states for the next match
 			GameState.isIngame = false;
+			GameState.isSearching = false;
 			
 			// Navigate back to the homescreen panel 
 			ProjectFrame.stagePanel.setVisible(false);
 			ProjectFrame.homePanel.setVisible(true);
+			
+			// Terminate the winning screen since it's no longer needed
+			StagePanel.winScreen = null;
+			
+			// At last reset the enemy state data
+			GameState.enemySurrender = false;
+			GameState.enemyName = "";
 		}
 	}
 	
@@ -288,8 +296,8 @@ public class StagePanel extends JPanel {
 //		drawEveryBoardRectangleIndex(g2d);
 		drawGoldMines(g2d);
 		
-		if(enemyFortress != null)enemyFortress.tryDrawRecruitableBoardRectangles(g2d);
-		if(notEnemyFortress != null)notEnemyFortress.tryDrawRecruitableBoardRectangles(g2d);
+		if(enemyFortress != null) enemyFortress.tryDrawRecruitableBoardRectangles(g2d);
+		if(notEnemyFortress != null) notEnemyFortress.tryDrawRecruitableBoardRectangles(g2d);
 		drawAllDestructionParticles(g2d);
 		drawAllEmptyShells(g2d);
 		drawFortresses(g2d);
@@ -547,12 +555,17 @@ public class StagePanel extends JPanel {
 	}
 	
 	public static void checkIfSomeOneWon() {
-		if(enemyFortress.isDestroyed()) {
+		
+		// If the enemy has lost his fortress or surrendered then you have won
+		if(enemyFortress.isDestroyed() || GameState.enemySurrender == true) {
 			winScreen = new WinScreen((byte)2, w, h);
-		}else if(notEnemyFortress.isDestroyed()){
+		}
+		// Otherwise check if you have lost
+		else if(notEnemyFortress.isDestroyed()) {
 			winScreen = new WinScreen((byte)1, w, h);
 		}
 	}
+	
 	// updates all the BoardRectangles and the HoverBoardRectangle
 	private void updateBoardRectangles() {
 		BoardRectangle pHBR = curHoverBR;
