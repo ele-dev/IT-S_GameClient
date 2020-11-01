@@ -16,8 +16,7 @@ import Stage.Commons;
 import Stage.TurnCountDown;
 
 
-
-public class DetonatorProjectile extends Projectile{
+public class DetonatorProjectile extends Projectile {
 	private float xRelTarget,yRelTarget;
 	private float dmg;
 	private boolean isEnemy;
@@ -123,5 +122,4 @@ public class DetonatorProjectile extends Projectile{
 			isDestroyed = true;
 		}
 	}
-	
 }

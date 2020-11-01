@@ -15,6 +15,7 @@ import Stage.Commons;
 import Stage.StagePanel;
 
 public class LevelInitializer {
+	
 	private int mapRows = 0;
 	private int mapColumns = 0;
 	

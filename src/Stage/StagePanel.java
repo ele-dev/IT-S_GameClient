@@ -248,7 +248,13 @@ public class StagePanel extends JPanel {
 			curGP.restoreMovesAndAttacks();
 		}
 	}
-	//같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같	
+	@SuppressWarnings("unused")
+	private void initFortresses() {
+		enemyFortress = new PlayerFortress(boardRectangles.get(76),true);
+		notEnemyFortress = new PlayerFortress(boardRectangles.get(97),false);
+	}
+	
+//같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같	
 //----------------------------------------- Main Rendering Method --------------------------------------
 //______________________________________________________________________________________________________
 	// graphics methode does all the drawing of objects (renders everything)
@@ -295,8 +301,6 @@ public class StagePanel extends JPanel {
 		g2d.setColor(cBackGround);
 		g2d.draw(GameMap.mapRectangle);
 		drawValueLabels(g2d);
-		
-//		lightingManager.drawLight(g2d);
 		drawMovesPanel(g2d);
 		
 		if(levelDesignTool != null) {
@@ -401,6 +405,7 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void drawCursor(Graphics2D g2d) {
+
 		if(mousePos != null) {
 			g2d.setColor(Color.WHITE);
 			g2d.setStroke(new BasicStroke(5));
@@ -487,7 +492,12 @@ public class StagePanel extends JPanel {
 		}
 	}
 		
-	
+	@SuppressWarnings("unused")
+	private void drawEveryBoardRectangleIndex(Graphics2D g2d) {
+		for(BoardRectangle curBR : boardRectangles) {
+			curBR.drawIndex(g2d);
+		}
+	}
 	
 //같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같	
 //----------------------------------------- Main Update Method -----------------------------------------
@@ -561,7 +571,7 @@ public class StagePanel extends JPanel {
 	// also moves the ActionSelectionPanel relative to the camera position
 	private void updateGamePieces() {
 		StagePanel.curActionPerformingGP = null;
-		for(int i = 0;i<gamePieces.size();i++) {
+		for(int i = 0; i < gamePieces.size(); i++) {
 			GamePiece curGP = gamePieces.get(i);
 			if(curGP.isPerformingAction()) {
 				curActionPerformingGP = curGP;
@@ -611,11 +621,11 @@ public class StagePanel extends JPanel {
 	
 	// updates all the ValueLabels (fades them out)
 	private void updateDmgLabels() {
-		for(int i = 0;i<valueLabels.size();i++) {
+		for(int i = 0; i < valueLabels.size(); i++) {
 			ValueLabel curVL = valueLabels.get(i);
 			if(curVL.getColor().getAlpha()>10) {
 				curVL.updateFade();
-			}else {
+			} else {
 				valueLabels.remove(i);
 			}
 		}
