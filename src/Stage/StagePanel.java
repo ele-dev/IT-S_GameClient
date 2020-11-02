@@ -48,6 +48,9 @@ import Particles.GoldParticle;
 import Particles.Particle;
 import PlayerStructures.GoldMine;
 import PlayerStructures.PlayerFortress;
+import menueGui.GameState;
+import networking.GenericMessage;
+import networking.SignalMessage;
 
 // This is the main Panel where the Game is Happening
 @SuppressWarnings("serial")
@@ -127,7 +130,7 @@ public class StagePanel extends JPanel {
 			}
 		});
 		
-		tUpdateRate = new Timer(10, new ActionListener() {
+		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateStage();
@@ -194,12 +197,29 @@ public class StagePanel extends JPanel {
 		}else {
 			notEnemyFortress.getDamaged(enemyFortress.getHealth(), 0, true);
 		}
+		
+		// Send leave match message to server to surrender 
+		SignalMessage surrenderMsg = new SignalMessage(GenericMessage.MSG_LEAVE_MATCH);
+		ProjectFrame.conn.sendMessageToServer(surrenderMsg);
 	}
 	
 	private void tryLeaveGame() {
 		if (winScreen.getLeaveButton().isHover()) {
+			
+			// Reset game states for the next match
+			GameState.isIngame = false;
+			GameState.isSearching = false;
+			
+			// Navigate back to the homescreen panel 
 			ProjectFrame.stagePanel.setVisible(false);
-			ProjectFrame.loginPanel.setVisible(true);
+			ProjectFrame.homePanel.setVisible(true);
+			
+			// Terminate the winning screen since it's no longer needed
+			StagePanel.winScreen = null;
+			
+			// At last reset the enemy state data
+			GameState.enemySurrender = false;
+			GameState.enemyName = "";
 		}
 	}
 	
@@ -276,8 +296,8 @@ public class StagePanel extends JPanel {
 //		drawEveryBoardRectangleIndex(g2d);
 		drawGoldMines(g2d);
 		
-		if(enemyFortress != null)enemyFortress.tryDrawRecruitableBoardRectangles(g2d);
-		if(notEnemyFortress != null)notEnemyFortress.tryDrawRecruitableBoardRectangles(g2d);
+		if(enemyFortress != null) enemyFortress.tryDrawRecruitableBoardRectangles(g2d);
+		if(notEnemyFortress != null) notEnemyFortress.tryDrawRecruitableBoardRectangles(g2d);
 		drawAllDestructionParticles(g2d);
 		drawAllEmptyShells(g2d);
 		drawFortresses(g2d);
@@ -330,8 +350,6 @@ public class StagePanel extends JPanel {
 		
 		
 		g2d.translate(-camera.getPos().x, -camera.getPos().y);
-		
-		
 		
 		g2d.dispose();
 	}
@@ -526,23 +544,29 @@ public class StagePanel extends JPanel {
 		
 		endTurnButton.updateHover(mousePos);
 		endTurnButton.updatePos(camera.getPos());
-		endTurnButton.setActive(curActionPerformingGP == null && levelDesignTool == null && noFortressSelected() && !goldUncollected());
+		endTurnButton.setActive(curActionPerformingGP == null && levelDesignTool == null && GameState.myTurn
+				&& noFortressSelected() && !goldUncollected());
 		
 		surrenderButton.updateHover(mousePos);
 		surrenderButton.updatePos(camera.getPos());
 		surrenderButton.setActive(curActionPerformingGP == null && levelDesignTool == null && noFortressSelected() && !goldUncollected());
 		
-		if(levelDesignTool == null)updateFortresses();
+		if(levelDesignTool == null) updateFortresses();
 		if(winScreen != null) winScreen.update();
 	}
 	
-	public static void checkIfSomeOneWon(){
-		if(enemyFortress.isDestroyed()) {
+	public static void checkIfSomeOneWon() {
+		
+		// If the enemy has lost his fortress or surrendered then you have won
+		if(enemyFortress.isDestroyed() || GameState.enemySurrender == true) {
 			winScreen = new WinScreen((byte)2, w, h);
-		}else if(notEnemyFortress.isDestroyed()){
+		}
+		// Otherwise check if you have lost
+		else if(notEnemyFortress.isDestroyed()) {
 			winScreen = new WinScreen((byte)1, w, h);
 		}
 	}
+	
 	// updates all the BoardRectangles and the HoverBoardRectangle
 	private void updateBoardRectangles() {
 		BoardRectangle pHBR = curHoverBR;
@@ -589,7 +613,7 @@ public class StagePanel extends JPanel {
 	// updates all Particles
 	private void updateParticles() {
 		int amountOfEmptyShells = 0;
-		for(int i = 0;i<particles.size();i++) {
+		for(int i = 0; i < particles.size(); i++) {
 			Particle curP = particles.get(i);
 			curP.update();
 			if(curP instanceof EmptyShell) {
@@ -600,7 +624,7 @@ public class StagePanel extends JPanel {
 			}
 		}
 		if(amountOfEmptyShells > 100) {
-			for(int i = 0; i<particles.size();i++) {
+			for(int i = 0; i < particles.size(); i++) {
 				Particle curP = particles.get(i);
 				if(curP instanceof EmptyShell) {
 					particles.remove(i);
@@ -612,7 +636,7 @@ public class StagePanel extends JPanel {
 	
 	// updates destructible objects (removes them if they are flagged as destroyed)
 	private void updateDestructibleObject() {
-		for(int i = 0;i<destructibleObjects.size();i++) {
+		for(int i = 0; i < destructibleObjects.size(); i++) {
 			if(destructibleObjects.get(i).isDestroyed()) {
 				destructibleObjects.remove(i);
 			}
@@ -641,9 +665,9 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
-
 	// updates/changes Turns
-	private void updateTurn() {
+	public void updateTurn() {
+		
 		turnInfoPanel.toggleTurn();
 		curSelectedGP = null;
 		for(GoldMine curGM : goldMines) {
@@ -686,7 +710,7 @@ public class StagePanel extends JPanel {
 	// selects a piece if it is clicked on and not dead
 	private boolean trySelectGamePiece() {
 		curSelectedGP = null;
-		if(curHoverBR != null) {
+		if(curHoverBR != null && GameState.myTurn) {
 			for(GamePiece curGP : gamePieces) {
 				if(curGP.boardRect == curHoverBR && checkIfHasTurn(curGP)) {
 					curSelectedGP = curGP;
@@ -713,7 +737,7 @@ public class StagePanel extends JPanel {
 	}
 	
 	private boolean goldUncollected() {
-		for(int i = 0;i<particles.size();i++) {
+		for(int i = 0; i < particles.size(); i++) {
 			if(particles.get(i) instanceof GoldParticle) {
 				return true;
 			}
@@ -722,7 +746,7 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void tryPerformActionOnPressedPos() {
-		if(curSelectedGP != null && !curSelectedGP.getIsDead() && curHoverBR != null) {	
+		if(curSelectedGP != null && !curSelectedGP.getIsDead() && curHoverBR != null && GameState.myTurn) {	
 			if(curHoverBR.isPossibleMove || curHoverBR.isPossibleAttack || curHoverBR.isPossibleAbility) {
 				if(curHoverBR.isPossibleMove) {
 					curSelectedGP.startMove();
@@ -761,7 +785,7 @@ public class StagePanel extends JPanel {
 			
 	}
 	
-	private class ML implements MouseListener{
+	private class ML implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {}
@@ -778,7 +802,7 @@ public class StagePanel extends JPanel {
 				if(curHoverBR != null) {
 					if(SwingUtilities.isLeftMouseButton(e)) {
 						levelDesignTool.tryPlaceObject();
-					}else if(SwingUtilities.isRightMouseButton(e)){
+					} else if(SwingUtilities.isRightMouseButton(e)) {
 						levelDesignTool.tryRemoveObject();
 					}
 				}
@@ -804,10 +828,24 @@ public class StagePanel extends JPanel {
 						if(tryPressButton()) {
 							return;
 						}
+						
+						// End Turn Button click event
 						if(endTurnButton.isActive() && endTurnButton.isHover()) {
+			
+							// Update the global state variable
+							GameState.myTurn = false;
+							
+							// Send the signal message to the server
+							SignalMessage endTurn = new SignalMessage(GenericMessage.MSG_END_TURN);
+							ProjectFrame.conn.sendMessageToServer(endTurn);
+							
+							// process the game events for turn switch
 							updateTurn();
+							
 							return;
 						}
+						
+						// Surrender button click event
 						if(surrenderButton.isActive() && surrenderButton.isHover()) {
 							surrender();
 							return;

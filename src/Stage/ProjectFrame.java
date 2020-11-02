@@ -6,8 +6,10 @@ import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import clientPackage.Connection;
+import menueGui.GameState;
 import menueGui.HomePanel;
 import menueGui.LoginPanel;
 import menueGui.RegisterPanel;
@@ -64,6 +66,8 @@ public class ProjectFrame extends JFrame {
 		addKeyListener(stagePanel.kl);
 	} 
 	
+	public static ProjectFrame f;
+	
 	// ------------------- MAIN Application Entry Point -------------------------- //
 	
 	public static void main(String[] args) {
@@ -83,7 +87,7 @@ public class ProjectFrame extends JFrame {
 		}
 		
 		// Second create the main window and start the actual game
-		ProjectFrame f = new ProjectFrame();
+		f = new ProjectFrame();
 		
 		System.out.println("Main Window is now visible");
 		
@@ -93,10 +97,21 @@ public class ProjectFrame extends JFrame {
 			// Define window close event
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
+				
+				// Check if the player is currently ingame
+				if(GameState.isIngame) {
+					int option = JOptionPane.showConfirmDialog(null, "Are you sure that you want to surrender?",
+													"Quit game?", JOptionPane.YES_NO_OPTION);
+					// If player clicked No then abort the close up procedure
+					if(option == JOptionPane.NO_OPTION) {
+						return;
+					}
+				}
+				
 				f.setVisible(false);
 				System.out.println("window was closed --> cleanup routine");
 				
-//				conn.finalize();
+				conn.finalize();
 				
 				// Finally exit the application 
 				System.out.println("Application close up");

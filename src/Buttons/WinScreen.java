@@ -7,8 +7,9 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import Stage.Commons;
+import Stage.ProjectFrame;
 import Stage.StagePanel;
+import menueGui.GameState;
 
 public class WinScreen {
 	// winnerIndex = 0 (no winner)
@@ -47,13 +48,13 @@ public class WinScreen {
 		g2d.drawString("is", w/2-fontMetrics.stringWidth("is")/2, h/2+textHeight/3);
 		
 		if(winnerIndex == 1) {
-			textWidth = fontMetrics.stringWidth("Enemy");
-			g2d.setColor(Commons.enemyColor);
-			g2d.drawString("Enemy", w/2-textWidth/2, h/2+textHeight/3+textHeight);
-		}else {
-			textWidth = fontMetrics.stringWidth("NotEnemy");
-			g2d.setColor(Commons.notEnemyColor);
-			g2d.drawString("NotEnemy", w/2-textWidth/2, h/2+textHeight/3+textHeight);
+			textWidth = fontMetrics.stringWidth(GameState.enemyName);
+			g2d.setColor(GameState.enemyTeamColor);
+			g2d.drawString(GameState.enemyName, w/2-textWidth/2, h/2+textHeight/3+textHeight);
+		} else {
+			textWidth = fontMetrics.stringWidth(ProjectFrame.conn.getUsername());
+			g2d.setColor(GameState.myTeamColor);
+			g2d.drawString(ProjectFrame.conn.getUsername(), w/2-textWidth/2, h/2+textHeight/3+textHeight);
 		}
 		
 		

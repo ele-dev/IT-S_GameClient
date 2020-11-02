@@ -22,6 +22,8 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import javax.swing.JOptionPane;
 
+import Stage.Commons;
+import Stage.ProjectFrame;
 import menueGui.GameState;
 import networking.*;
 
@@ -305,6 +307,9 @@ public class Connection extends Thread {
 			this.setSleeping(false);
 		}
 		
+		// Update the caption of the JFrame and append the playername
+		ProjectFrame.f.setTitle(Commons.gameTitle + " - " + this.username);
+		
 		return true;
 	}
 	
@@ -373,6 +378,9 @@ public class Connection extends Thread {
 			this.setSleeping(false);
 		}
 		
+		// Update the caption of the JFrame and append the playername
+		ProjectFrame.f.setTitle(Commons.gameTitle + " - " + this.username);
+		
 		return true;
 	}
 	
@@ -391,6 +399,9 @@ public class Connection extends Thread {
 			// Put the client thread into sleep mode until the player gets logged in again
 			this.setSleeping(true);
 		}
+		
+		// Reset title of the JFrame to default
+		ProjectFrame.f.setTitle(Commons.gameTitle);
 	}
 	
 	// Method for sending Message objects to the server
