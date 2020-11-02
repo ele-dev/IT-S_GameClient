@@ -162,6 +162,54 @@ public class MessageHandler {
 				break;
 			}
 			
+			// This message is received when the enemy is acting and has moved one of his Game Pieces
+			// to a new position on the game board
+			case GenericMessage.MSG_MAKE_MOVE:
+			{
+				// Ignore message when we aren't ingame or if it's our turn at the moment
+				if(!GameState.isIngame || GameState.myTurn) {
+					System.err.println("Received invalid make move message from the server!");
+					break;
+				}
+				
+				// Coerce the message into the right format
+				MsgMakeMove moveMsg = (MsgMakeMove) msg;
+				
+				// check for all required attributes to be present (not null)
+				if(moveMsg.getMovingPlayerPos() == null || moveMsg.getTargetField() == null) {
+					System.err.println("Move message is missing required attributes!");
+					break;
+				}
+				
+				// ...
+				
+				break;
+			}
+			
+			// This message is received when the enemy is acting and has attacked one of our GamePieces
+			// with one of his 
+			case GenericMessage.MSG_ATTACK:
+			{
+				// Ignore message when we aren't ingame or if it's our turn at the moment
+				if(!GameState.isIngame || GameState.myTurn) {
+					System.err.println("Received invalid make move message from the server!");
+					break;
+				}
+				
+				// Coerce the message into the right format
+				MsgAttack attackMsg = (MsgAttack) msg;
+				
+				// check for all required attributes to be present (not null)
+				if(attackMsg.getAttackerPiece() == null || attackMsg.getVicitimPos() == null) {
+					System.err.println("Attack message is missing required parameters");
+					break;
+				}
+				
+				// ...
+				
+				break;
+			}
+			
 			default:
 			{
 				System.err.println("Received message of unknown type!");
