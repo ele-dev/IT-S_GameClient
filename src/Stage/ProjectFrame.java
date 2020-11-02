@@ -53,9 +53,9 @@ public class ProjectFrame extends JFrame {
 		loginPanel = new LoginPanel();
 		registerPanel = new RegisterPanel();
 		homePanel = new HomePanel();
-		stagePanel.setVisible(false);
+		stagePanel.setVisible(true);
 		homePanel.setVisible(false);
-		loginPanel.setVisible(true);			// Display the login screen first
+		loginPanel.setVisible(false);			// Display the login screen first
 		registerPanel.setVisible(false);		
 		cp.add(loginPanel);
 		cp.add(stagePanel);

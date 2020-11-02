@@ -157,6 +157,8 @@ public class StagePanel extends JPanel {
 		addMouseMotionListener(new MML());
 		tFrameRate.start();
 		tUpdateRate.start();
+		
+//		gamePieces.get(0).startMove(boardRectangles.get(31));
 	}
 	
 	public static boolean isEnemyTurn() {
@@ -240,7 +242,6 @@ public class StagePanel extends JPanel {
 		
 		if(levelInitializer.getEnemyFortressIndex() > -1)enemyFortress = new PlayerFortress(boardRectangles.get(levelInitializer.getEnemyFortressIndex()), true);
 		if(levelInitializer.getNotEnemyFortressIndex() > -1)notEnemyFortress = new PlayerFortress(boardRectangles.get(levelInitializer.getNotEnemyFortressIndex()), false);
-//		levelInitializer.printLevelLAyout();
 	}
 		
 	// initializes/creates all GamePieces
@@ -293,7 +294,7 @@ public class StagePanel extends JPanel {
 		g2d.translate(camera.getPos().x, camera.getPos().y);
 		
 		drawEveryBoardRectangle(g2d);
-//		drawEveryBoardRectangleIndex(g2d);
+		drawEveryBoardRectangleIndex(g2d);
 		drawGoldMines(g2d);
 		
 		if(enemyFortress != null) enemyFortress.tryDrawRecruitableBoardRectangles(g2d);
@@ -749,7 +750,7 @@ public class StagePanel extends JPanel {
 		if(curSelectedGP != null && !curSelectedGP.getIsDead() && curHoverBR != null && GameState.myTurn) {	
 			if(curHoverBR.isPossibleMove || curHoverBR.isPossibleAttack || curHoverBR.isPossibleAbility) {
 				if(curHoverBR.isPossibleMove) {
-					curSelectedGP.startMove();
+					curSelectedGP.startMove(curHoverBR);
 				}else if(curHoverBR.isPossibleAttack) {
 					curSelectedGP.startAttack(curHoverBR);
 				} else {
@@ -772,7 +773,8 @@ public class StagePanel extends JPanel {
 				curBR.isPossibleAttack = false;
 			}
 			if(curSelectedGP.actionSelectionPanel.getMoveButtonIsActive()) {
-				curSelectedGP.resetPathFinder(curSelectedGP.boardRect, curHoverBR);
+				curSelectedGP.resetPathFinder(curSelectedGP.boardRect, curHoverBR,false);
+				curSelectedGP.showPathBRs();
 			}else if(curSelectedGP instanceof CommanderGamePiece && curSelectedGP.actionSelectionPanel.getAbilityButtonIsActive()){
 				CommanderGamePiece curCGP = (CommanderGamePiece) curSelectedGP;
 				curCGP.showPossibleAbilities(curHoverBR);

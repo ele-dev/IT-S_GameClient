@@ -147,7 +147,7 @@ public abstract class GamePiece {
 	}
 	
 	// resets the Pathfinder and also finds a Path to the endBR
-	public void resetPathFinder(BoardRectangle startBR, BoardRectangle endBR) {
+	public void resetPathFinder(BoardRectangle startBR, BoardRectangle endBR, boolean unlimitedMoveRange) {
 		gamePieceBase.pathBoardRectangles.clear();
 		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
 			StagePanel.boardRectangles.get(i).isPossibleMove = false;
@@ -182,19 +182,32 @@ public abstract class GamePiece {
 			return;
 		}
 		
-		int movementRange = gamePieceBase.getMovementRange();
-		for(int j = pathFinder.getPathPathCells().size()-1;j>=pathFinder.getPathPathCells().size()-(movementRange+1) && j>= 0;j--) {
-			for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
-				if(pathFinder.getPathPathCells().get(j).getIndex() == i) {
-					gamePieceBase.pathBoardRectangles.add(StagePanel.boardRectangles.get(i));
-					if(StagePanel.boardRectangles.get(i).isHinderingTerrain) {
-						movementRange--;
+		if(!unlimitedMoveRange) {
+			int movementRange = gamePieceBase.getMovementRange();
+			for(int j = pathFinder.getPathPathCells().size()-1;j>=pathFinder.getPathPathCells().size()-(movementRange+1) && j>= 0;j--) {
+				for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+					if(pathFinder.getPathPathCells().get(j).getIndex() == i) {
+						gamePieceBase.pathBoardRectangles.add(StagePanel.boardRectangles.get(i));
+						if(StagePanel.boardRectangles.get(i).isHinderingTerrain) {
+							movementRange--;
+						}
+						break;
 					}
-					break;
+				}
+			}
+		}else {
+			for(int j = pathFinder.getPathPathCells().size()-1;j>=0 ;j--) {
+				for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+					if(pathFinder.getPathPathCells().get(j).getIndex() == i) {
+						gamePieceBase.pathBoardRectangles.add(StagePanel.boardRectangles.get(i));
+					}
 				}
 			}
 		}
 		
+	}
+	
+	public void showPathBRs() {
 		for(BoardRectangle curBr : gamePieceBase.pathBoardRectangles) {
 			if(curBr == StagePanel.curHoverBR) {
 				curBr.isPossibleMove = true;
@@ -407,11 +420,13 @@ public abstract class GamePiece {
 		return goldMine.getCaptureState() != 0 && (goldMine.getCaptureState()==1 && !isEnemy || goldMine.getCaptureState()==2 && isEnemy);
 	}
 	// moves the GamePiece to the parameter BoardRectangle and exhausts its moving ability
-	public void startMove() {
+	public void startMove(BoardRectangle targetBoardRectangle) {
 		actionSelectionPanel.setMoveButtonActive(false);
 		hasExecutedMove = true;
-		isMoving = true;
+		resetPathFinder(boardRect, targetBoardRectangle, true);
 		gamePieceBase.curTargetPathCellIndex = 0;	
+		isMoving = true;
+		
 	}
 	
 	public void updateMove() {
