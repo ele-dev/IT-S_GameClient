@@ -223,18 +223,28 @@ public class MessageHandler {
 				
 				// Find the attacker gmaePiece and the victim game piece on the local game map
 				GamePiece attackerGP = GamePiece.getGamePieceFromCoords(attackMsg.getAttackerPiece());
-				GamePiece victimGP = GamePiece.getGamePieceFromCoords(attackMsg.getVicitimPos());
+				// GamePiece victimGP = GamePiece.getGamePieceFromCoords(attackMsg.getVicitimPos());
+				BoardRectangle victimBR = BoardRectangle.getBoardRectFromCoords(attackMsg.getVicitimPos());
+				
+				// Check for invalid arguments 
+				if(attackerGP == null) {
+					System.err.println("Could not execute the enemy attack action!");
+					System.err.println("  --> invalid attacker");
+					break;
+				}
+				
+				if(victimBR == null) {
+					System.err.println("Could not execute the enemy attack action!");
+					System.err.println("  --> invalid target field");
+					break;
+				}
 				
 				// Execute the enemy's attack
-				if(attackerGP != null && victimGP != null) {
-					// ...
-				} else {
-					System.err.println("Could not execute the enemy attack action!");
-				}
+				attackerGP.startAttack(victimBR);
 				
 				// For debugging
 				System.out.println("attackerGP: row=" + attackerGP.boardRect.row + " column=" + attackerGP.boardRect.column);
-				System.out.println("victimGP: row=" + victimGP.boardRect.row + " column=" + victimGP.boardRect.column);
+				System.out.println("victimGP: row=" + victimBR.row + " column=" + victimBR.column);
 				
 				// Check if someone has won the game 
 				StagePanel.checkIfSomeOneWon();

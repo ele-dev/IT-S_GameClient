@@ -50,6 +50,7 @@ import PlayerStructures.GoldMine;
 import PlayerStructures.PlayerFortress;
 import menueGui.GameState;
 import networking.GenericMessage;
+import networking.MsgAttack;
 import networking.MsgMakeMove;
 import networking.SignalMessage;
 
@@ -772,6 +773,15 @@ public class StagePanel extends JPanel {
 				} 
 				// start an attack on an enemy player
 				else if(curHoverBR.isPossibleAttack) {
+					
+					// Get 2D coordinates of the attacker's game piece and the vicitim's game piece
+					Point attackerPos = new Point(curSelectedGP.boardRect.row, curSelectedGP.boardRect.column);
+					Point victimPos = new Point(curHoverBR.row, curHoverBR.column);
+					
+					// Send an attack message to the server passing the attacker's and victims positions
+					MsgAttack attackMessage = new MsgAttack(attackerPos, victimPos);
+					ProjectFrame.conn.sendMessageToServer(attackMessage);
+					System.out.println("Sent attack message to the server: attacker=" + attackerPos + " victim=" + victimPos);
 					
 					// Trigger the graphical animation for the attack
 					curSelectedGP.startAttack(curHoverBR);

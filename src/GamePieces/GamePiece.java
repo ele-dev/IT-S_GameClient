@@ -292,7 +292,7 @@ public abstract class GamePiece {
 			targetDestructibleObject = StagePanel.enemyFortress;
 			startAttackDelay();
 			return;
-		}else if(StagePanel.notEnemyFortress.containsBR(targetBoardRectangle) && isEnemy){
+		} else if(StagePanel.notEnemyFortress.containsBR(targetBoardRectangle) && isEnemy) {
 			targetDestructibleObject = StagePanel.notEnemyFortress;
 			startAttackDelay();
 			return;
