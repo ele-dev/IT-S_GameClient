@@ -48,7 +48,7 @@ public class LevelDesignTool {
 		FontMetrics fontMetrics = g2d.getFontMetrics();
 		int textHeight = fontMetrics.getHeight();
 		int textWidth = 0;
-		for(int i = 0;i<StagePanel.gameMap.getColumns();i++) {
+		for(int i = 0; i < StagePanel.gameMap.getColumns(); i++) {
 			String str= i+1+"";
 			textWidth = fontMetrics.stringWidth(str);
 			g2d.drawString(str, i*Commons.boardRectSize+textWidth/2, -Commons.boardRectSize/2+textHeight/3);

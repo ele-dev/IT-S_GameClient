@@ -24,9 +24,11 @@ import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
 import Stage.StagePanel;
+import menueGui.GameState;
 
 
 public abstract class GamePiece {
+	
 	public BoardRectangle boardRect;
 	private Rectangle rectShowTurret;
 	protected Color c;
@@ -62,14 +64,9 @@ public abstract class GamePiece {
 	public GamePiece(Color teamColor, String name,BoardRectangle boardRect,float dmg,int baseTypeIndex) {
 		
 		this.isEnemy = false;
+		this.c =  teamColor;
 		this.boardRect = boardRect;
 		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
-		
-		if(isEnemy) {
-			this.c = Commons.enemyColor;
-		}else {
-			this.c = Commons.notEnemyColor;
-		}
 		
 		gamePieceBase = new GamePieceBase(boardRect.getCenterX(), boardRect.getCenterY(), boardRect.getSize(), boardRect.getSize(),c,baseTypeIndex,this);
 
@@ -152,7 +149,7 @@ public abstract class GamePiece {
 	// resets the Pathfinder and also finds a Path to the endBR
 	public void resetPathFinder(BoardRectangle startBR, BoardRectangle endBR, boolean unlimitedMoveRange) {
 		gamePieceBase.pathBoardRectangles.clear();
-		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+		for(int i = 0; i < StagePanel.boardRectangles.size(); i++) {
 			StagePanel.boardRectangles.get(i).isPossibleMove = false;
 			StagePanel.boardRectangles.get(i).isShowPossibleMove = false;
 		}
@@ -168,7 +165,7 @@ public abstract class GamePiece {
 		initPathFinder();
 		// copies the end and startBR to the Pathfinders Grid
 		PathCell startPathCell = null, endPathCell =  null;
-		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+		for(int i = 0; i < StagePanel.boardRectangles.size(); i++) {
 			if(startBR == StagePanel.boardRectangles.get(i)) {
 				startPathCell = pathFinder.pathCells.get(i);
 			}
@@ -187,8 +184,8 @@ public abstract class GamePiece {
 		
 		if(!unlimitedMoveRange) {
 			int movementRange = gamePieceBase.getMovementRange();
-			for(int j = pathFinder.getPathPathCells().size()-1;j>=pathFinder.getPathPathCells().size()-(movementRange+1) && j>= 0;j--) {
-				for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+			for(int j = pathFinder.getPathPathCells().size()-1;j >= pathFinder.getPathPathCells().size()-(movementRange+1) && j >= 0; j--) {
+				for(int i = 0; i < StagePanel.boardRectangles.size(); i++) {
 					if(pathFinder.getPathPathCells().get(j).getIndex() == i) {
 						gamePieceBase.pathBoardRectangles.add(StagePanel.boardRectangles.get(i));
 						if(StagePanel.boardRectangles.get(i).isHinderingTerrain) {
@@ -198,16 +195,15 @@ public abstract class GamePiece {
 					}
 				}
 			}
-		}else {
-			for(int j = pathFinder.getPathPathCells().size()-1;j>=0 ;j--) {
-				for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+		} else {
+			for(int j = pathFinder.getPathPathCells().size()-1; j >= 0; j--) {
+				for(int i = 0; i < StagePanel.boardRectangles.size(); i++) {
 					if(pathFinder.getPathPathCells().get(j).getIndex() == i) {
 						gamePieceBase.pathBoardRectangles.add(StagePanel.boardRectangles.get(i));
 					}
 				}
 			}
 		}
-		
 	}
 	
 	public void showPathBRs() {
@@ -222,7 +218,7 @@ public abstract class GamePiece {
 	public void update() {
 		if(targetGamePiece != null) {
 			updateAngle(targetGamePiece.getPos());
-		}else if(targetDestructibleObject != null){
+		} else if(targetDestructibleObject != null){
 			updateAngle(targetDestructibleObject.getPos());
 		}
 		updateAttack();
@@ -231,7 +227,7 @@ public abstract class GamePiece {
 	public void tryDie() {
 		if(gamePieceBase.getHealth() <= 0 && !getIsDead()) {
 			StagePanel.particles.add(new Explosion(getCenterX(), getCenterY(), 1.2f));
-			for(int i = 0;i<3;i++) {
+			for(int i = 0; i < 3; i++) {
 				StagePanel.particles.add(new Explosion(getCenterX()+(int)((Math.random()-0.5)*Commons.boardRectSize/2),
 						getCenterY()+(int)((Math.random()-0.5)*Commons.boardRectSize/2), 1f));
 			}
@@ -257,7 +253,6 @@ public abstract class GamePiece {
 				}
 			}
 		}
-		
 	} 
 	
 	// returns true if the BoardRectangle is in sight of the GamePiece and return false if it is for example behind a wall
@@ -436,6 +431,20 @@ public abstract class GamePiece {
 		if(isMoving) {
 			gamePieceBase.updateAngle();
 			gamePieceBase.move();
+		}
+	}
+	
+	// Determine loyalty of GamePieces after Team color was assigned
+	public static void assignGamePiecesToSides() {
+		
+		// Go through the global list of the stage panel
+		for(GamePiece currGP: StagePanel.gamePieces)
+		{
+			if(currGP.c.equals(GameState.myTeamColor)) {
+				currGP.isEnemy = false;
+			} else {
+				currGP.isEnemy = true;
+			}
 		}
 	}
 	

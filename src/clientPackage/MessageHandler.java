@@ -111,6 +111,9 @@ public class MessageHandler {
 					GameState.myTurn = false;
 				}
 				
+				// Call method that assigns GamePieces and Fortress to your team or enemy team
+				GamePiece.assignGamePiecesToSides();
+				
 				System.out.println("Received Match data --> navigating to stage panel");
 				
 				// Navigate to the game panel where the actual game happens
