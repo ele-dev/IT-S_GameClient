@@ -415,4 +415,21 @@ public class BoardRectangle {
 		g2d.drawString(index+"", getCenterX(), getCenterY());
 	}
 	
+	
+	// Public helper function to get the BoardRectangle with certain coordinates
+	// on the game field that is stored in the stage panel class
+	public static BoardRectangle getBoardRectFromCoords(Point pos) {
+		BoardRectangle rect = null;
+		
+		// Go through the global list and search a match
+		for(BoardRectangle currRect: StagePanel.boardRectangles)
+		{
+			if(currRect.row == pos.x && currRect.column == pos.y) {
+				rect = currRect;
+				break;
+			}
+		}
+		
+		return rect;
+	}
 }

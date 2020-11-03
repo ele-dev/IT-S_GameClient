@@ -435,4 +435,22 @@ public abstract class GamePiece {
 			gamePieceBase.move();
 		}
 	}
+	
+	
+	// Public helper function to get the GamePiece from it's coordinates on the game Field
+	public static GamePiece getGamePieceFromCoords(Point pos) {
+		
+		GamePiece gp = null;
+		
+		// Go through the global list and find a match
+		for(GamePiece currGP: StagePanel.gamePieces)
+		{
+			if(currGP.boardRect.row == pos.x && currGP.boardRect.column == pos.y) {
+				gp = currGP;
+				break;
+			}
+		}
+		
+		return gp;
+	}
 }
