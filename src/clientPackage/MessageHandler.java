@@ -3,6 +3,7 @@ package clientPackage;
 import java.awt.Color;
 
 import GamePieces.GamePiece;
+import PlayerStructures.PlayerFortress;
 import Stage.BoardRectangle;
 import Stage.ProjectFrame;
 import Stage.StagePanel;
@@ -111,8 +112,9 @@ public class MessageHandler {
 					GameState.myTurn = false;
 				}
 				
-				// Call method that assigns GamePieces and Fortress to your team or enemy team
+				// Call methods that assign GamePieces and Fortresses to your team or enemy team
 				GamePiece.assignGamePiecesToSides();
+				PlayerFortress.assignFortressesToSides();
 				
 				System.out.println("Received Match data --> navigating to stage panel");
 				

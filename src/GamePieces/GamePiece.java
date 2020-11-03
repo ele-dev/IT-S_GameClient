@@ -284,8 +284,10 @@ public abstract class GamePiece {
 	
 	// updates angle to face toward enemy and starts the attack (starts attackDelayTimer)
 	public void startAttack(BoardRectangle targetBoardRectangle) {
+		
 		targetGamePiece = null;
 		targetDestructibleObject = null;
+		
 		if(StagePanel.enemyFortress.containsBR(targetBoardRectangle) && !isEnemy) {
 			targetDestructibleObject = StagePanel.enemyFortress;
 			startAttackDelay();

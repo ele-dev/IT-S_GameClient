@@ -72,7 +72,7 @@ public class StagePanel extends JPanel {
 	public static ArrayList<DestructibleObject> destructibleObjects = new ArrayList<DestructibleObject>();
 	
 	public static ArrayList<GoldMine> goldMines = new ArrayList<GoldMine>();
-	public static PlayerFortress enemyFortress,notEnemyFortress;
+	public static PlayerFortress enemyFortress, notEnemyFortress;
 	// GamePieces
 	public static ArrayList<GamePiece> gamePieces = new ArrayList<GamePiece>();
 	

@@ -11,6 +11,7 @@ import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
 import Stage.ValueLabel;
+import menueGui.GameState;
 
 public class PlayerFortress extends DestructibleObject {
 	private boolean isEnemy;
@@ -27,12 +28,15 @@ public class PlayerFortress extends DestructibleObject {
 	
 	public PlayerFortress(BoardRectangle boardRectangle, Color teamColor) {
 		super(boardRectangle, 3, 3, Commons.PlayerFortressHealth, 0);
-		// this.isEnemy = isEnemy;
+		this.isEnemy = false;
 		this.teamColor = teamColor;
 		refreshRecruitableBoardRectangles();
 		fortressMenu = new PlayerFortressMenu(this);
 	}
 	
+	public Color getTeamColor() {
+		return this.teamColor;
+	}
 	public boolean isHover() {
 		return isHover;
 	} 
@@ -161,12 +165,11 @@ public class PlayerFortress extends DestructibleObject {
 		if(goldCollectLabel != null) {
 			if(goldCollectLabel.getColor().getAlpha()>10) {
 				goldCollectLabel.updateFade();
-			}else {
+			} else {
 				lastCollectedGoldAmount = 0;
 				goldCollectLabel = null;
 			}
-		}
-		
+		}	
 	}
 	
 	public void tryPresssButton() {
@@ -186,5 +189,13 @@ public class PlayerFortress extends DestructibleObject {
 	private void updateHover() {
 		isHover = containsBR(StagePanel.curHoverBR);
 	}
-
+	
+	// public method to assign fortresses to their side after team colors have been assigned
+	public static void assignFortressesToSides() {
+		
+		StagePanel.enemyFortress.teamColor = GameState.enemyTeamColor;
+		StagePanel.enemyFortress.isEnemy = true;
+		StagePanel.notEnemyFortress.teamColor = GameState.myTeamColor;
+		StagePanel.notEnemyFortress.isEnemy = false;
+	}
 }
