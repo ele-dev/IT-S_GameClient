@@ -183,7 +183,7 @@ public class MessageHandler {
 					break;
 				}
 				
-				// Find the moving GamePiece and the it's destination Field on the local game map 
+				// Find the moving GamePiece and it's destination Field on the local game map 
 				GamePiece movingGP = GamePiece.getGamePieceFromCoords(moveMsg.getMovingPlayerPos());
 				BoardRectangle destinationBR = BoardRectangle.getBoardRectFromCoords(moveMsg.getTargetField());
 				
@@ -235,6 +235,9 @@ public class MessageHandler {
 				// For debugging
 				System.out.println("attackerGP: row=" + attackerGP.boardRect.row + " column=" + attackerGP.boardRect.column);
 				System.out.println("victimGP: row=" + victimGP.boardRect.row + " column=" + victimGP.boardRect.column);
+				
+				// Check if someone has won the game 
+				StagePanel.checkIfSomeOneWon();
 				
 				break;
 			}
