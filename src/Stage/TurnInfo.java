@@ -10,15 +10,16 @@ import java.awt.Rectangle;
 import menueGui.GameState;
 
 public class TurnInfo {
-	private Rectangle rect;
 	
+	private Rectangle rect;
 	private int turnCounter = 0;
+	
 	// is drawn after translation of graphics so it does not need to be moved with the camera
 	public TurnInfo() {
 		rect = new Rectangle(20, 20, 400, 175);
 	}
 	
-	// toggles the isEnemyTurn variable and counts how often it was toggled
+	// counts how often it was toggled
 	public void toggleTurn() {
 		turnCounter++;
 	}
