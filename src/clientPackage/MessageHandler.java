@@ -1,7 +1,10 @@
 package clientPackage;
 
 import java.awt.Color;
+import java.awt.Point;
 
+import GamePieces.GamePiece;
+import Stage.BoardRectangle;
 import Stage.ProjectFrame;
 import Stage.StagePanel;
 import menueGui.GameState;
@@ -181,7 +184,23 @@ public class MessageHandler {
 					break;
 				}
 				
-				// ...
+				// Store both attributes playerPos and destination and find the player and the BR 
+ 				Point gamePiecePos = moveMsg.getMovingPlayerPos();
+				Point destination = moveMsg.getTargetField();
+				GamePiece movingGP = GamePiece.getGamePieceFromCoords(gamePiecePos);
+				BoardRectangle destinationBR = BoardRectangle.getBoardRectFromCoords(destination);
+				
+				// Execute the move of the enemy game piece 
+				if(destinationBR != null && movingGP != null) {
+					movingGP.startMove(destinationBR);
+					System.out.println("Executed enemy move action");
+				} else {
+					System.err.println("Could not execute enemy move action!");
+				}
+				
+				// For debugging
+				System.out.println("movingGP: row=" + movingGP.boardRect.row + "column=" + movingGP.boardRect.column);
+				System.out.println("destinationBR: row=" + destinationBR.row + "column="+ destinationBR.column);
 				
 				break;
 			}
