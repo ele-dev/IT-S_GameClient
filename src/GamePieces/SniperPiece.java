@@ -28,8 +28,8 @@ public class SniperPiece extends CommanderGamePiece{
 	float lockedRotationNextWallMine;
 	byte rotationIndexNextWallMine;
 	
-	public SniperPiece(boolean isEnemy, BoardRectangle boardRect) {
-		super(isEnemy, Commons.nameSniper, boardRect, Commons.dmgSniper, 3, Commons.baseTypeSniper);
+	public SniperPiece(Color teamColor, BoardRectangle boardRect) {
+		super(teamColor, Commons.nameSniper, boardRect, Commons.dmgSniper, 3, Commons.baseTypeSniper);
 		attackDelayTimer = new Timer(1500,new ActionListener() { 
 			@Override
 			public void actionPerformed(ActionEvent e) {

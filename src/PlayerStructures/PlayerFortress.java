@@ -14,6 +14,7 @@ import Stage.ValueLabel;
 
 public class PlayerFortress extends DestructibleObject {
 	private boolean isEnemy;
+	private Color teamColor;
 	private boolean isHover,isSelected,isRecruitingMode;
 	private PlayerFortressMenu fortressMenu;
 	
@@ -24,9 +25,10 @@ public class PlayerFortress extends DestructibleObject {
 	private ValueLabel goldCollectLabel;
 	private int lastCollectedGoldAmount = 0;
 	
-	public PlayerFortress(BoardRectangle boardRectangle, boolean isEnemy) {
+	public PlayerFortress(BoardRectangle boardRectangle, Color teamColor) {
 		super(boardRectangle, 3, 3, Commons.PlayerFortressHealth, 0);
-		this.isEnemy = isEnemy;
+		// this.isEnemy = isEnemy;
+		this.teamColor = teamColor;
 		refreshRecruitableBoardRectangles();
 		fortressMenu = new PlayerFortressMenu(this);
 	}
@@ -69,7 +71,7 @@ public class PlayerFortress extends DestructibleObject {
 	
 	public void tryPlaceRecruitedGP(BoardRectangle boardRectangle) {
 		if(isRecruitingMode() && getRecruitableBoardRectangles().contains(boardRectangle)) {
-			fortressMenu.lastPressedGamePieceInfoPanel.placeGamePiece(isEnemy, boardRectangle);
+			fortressMenu.lastPressedGamePieceInfoPanel.placeGamePiece(teamColor, boardRectangle);
 			coinAmount-=fortressMenu.lastPressedGamePieceInfoPanel.getGamePieceCost();
 			String str = "-"+fortressMenu.lastPressedGamePieceInfoPanel.getGamePieceCost();
 			StagePanel.valueLabels.add(new ValueLabel((int)rectHitbox.getCenterX(),(int)rectHitbox.getCenterY(), str, Commons.cCurrency));

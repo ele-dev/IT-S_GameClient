@@ -81,11 +81,11 @@ public class LevelDesignTool {
 				StagePanel.goldMines.add(new GoldMine(sBR));
 				break;
 			case "EnemyFortress":
-				StagePanel.enemyFortress = new PlayerFortress(sBR, true);
+				StagePanel.enemyFortress = new PlayerFortress(sBR, Color.RED);
 				break;
 			
 			case "NotEnemyFortress":
-				StagePanel.notEnemyFortress = new PlayerFortress(sBR, false);
+				StagePanel.notEnemyFortress = new PlayerFortress(sBR, Color.BLUE);
 				break;
 			}
 		}

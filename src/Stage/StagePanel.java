@@ -163,10 +163,6 @@ public class StagePanel extends JPanel {
 //		gamePieces.get(0).startMove(boardRectangles.get(31));
 	}
 	
-	public static boolean isEnemyTurn() {
-		return turnInfoPanel.getIsEnemyTurn();
-	}
-	
 	// sets an impact-stop countdown (frame freezes)
 	public static void impactStop() {
 		timeStopCounter = 25;
@@ -196,9 +192,9 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void surrender() {
-		if(isEnemyTurn()) {
+		if(!GameState.myTurn) {
 			enemyFortress.getDamaged(enemyFortress.getHealth(), 0, true);
-		}else {
+		} else {
 			notEnemyFortress.getDamaged(enemyFortress.getHealth(), 0, true);
 		}
 		
@@ -238,35 +234,35 @@ public class StagePanel extends JPanel {
 			gameMap = new GameMap(25,25);
 			levelDesignTool = new LevelDesignTool();
 			addMouseWheelListener(levelDesignTool.mwl);
-		}else {
+		} else {
 			levelInitializer.readMapFromImage(mapName);
 			gameMap = new GameMap(levelInitializer);
 		}
 		
-		if(levelInitializer.getEnemyFortressIndex() > -1)enemyFortress = new PlayerFortress(boardRectangles.get(levelInitializer.getEnemyFortressIndex()), true);
-		if(levelInitializer.getNotEnemyFortressIndex() > -1)notEnemyFortress = new PlayerFortress(boardRectangles.get(levelInitializer.getNotEnemyFortressIndex()), false);
+		if(levelInitializer.getEnemyFortressIndex() > -1)enemyFortress = new PlayerFortress(boardRectangles.get(levelInitializer.getEnemyFortressIndex()), Color.RED);
+		if(levelInitializer.getNotEnemyFortressIndex() > -1)notEnemyFortress = new PlayerFortress(boardRectangles.get(levelInitializer.getNotEnemyFortressIndex()), Color.BLUE);
 	}
 		
 	// initializes/creates all GamePieces
 	private void initGamePieces() {
-		gamePieces.add(new SniperPiece(false, boardRectangles.get(58)));
-		gamePieces.add(new SniperPiece(true, boardRectangles.get(105)));
-		gamePieces.add(new GunnerPiece(false, boardRectangles.get(100)));
-		gamePieces.add(new GunnerPiece(true, boardRectangles.get(103)));
-		gamePieces.add(new RocketLauncherPiece(false, boardRectangles.get(137)));
-		gamePieces.add(new RocketLauncherPiece(true, boardRectangles.get(120)));
-		gamePieces.add(new FlamethrowerPiece(false, boardRectangles.get(145)));
-		gamePieces.add(new FlamethrowerPiece(true, boardRectangles.get(171)));
-		gamePieces.add(new TazerPiece(false, boardRectangles.get(133)));
-		gamePieces.add(new TazerPiece(true, boardRectangles.get(135)));
-		gamePieces.add(new DetonatorPiece(false, boardRectangles.get(91)));
-		gamePieces.add(new DetonatorPiece(true, boardRectangles.get(69)));
-		gamePieces.add(new EMPPiece(false, boardRectangles.get(139)));
-		gamePieces.add(new ShotgunPiece(false, boardRectangles.get(101)));
-		gamePieces.add(new RapidElectroPiece(true, boardRectangles.get(110)));
-		gamePieces.add(new RapidElectroPiece(false, boardRectangles.get(59)));
-		gamePieces.add(new RapidElectroPiece(false, boardRectangles.get(60)));
-		gamePieces.add(new RapidElectroPiece(false, boardRectangles.get(61)));
+		gamePieces.add(new SniperPiece(Color.BLUE, boardRectangles.get(58)));
+		gamePieces.add(new SniperPiece(Color.RED, boardRectangles.get(105)));
+		gamePieces.add(new GunnerPiece(Color.BLUE, boardRectangles.get(100)));
+		gamePieces.add(new GunnerPiece(Color.RED, boardRectangles.get(103)));
+		gamePieces.add(new RocketLauncherPiece(Color.BLUE, boardRectangles.get(137)));
+		gamePieces.add(new RocketLauncherPiece(Color.RED, boardRectangles.get(120)));
+		gamePieces.add(new FlamethrowerPiece(Color.BLUE, boardRectangles.get(145)));
+		gamePieces.add(new FlamethrowerPiece(Color.RED, boardRectangles.get(171)));
+		gamePieces.add(new TazerPiece(Color.BLUE, boardRectangles.get(133)));
+		gamePieces.add(new TazerPiece(Color.RED, boardRectangles.get(135)));
+		gamePieces.add(new DetonatorPiece(Color.BLUE, boardRectangles.get(91)));
+		gamePieces.add(new DetonatorPiece(Color.RED, boardRectangles.get(69)));
+		gamePieces.add(new EMPPiece(Color.BLUE, boardRectangles.get(139)));
+		gamePieces.add(new ShotgunPiece(Color.BLUE, boardRectangles.get(101)));
+		gamePieces.add(new RapidElectroPiece(Color.RED, boardRectangles.get(110)));
+		gamePieces.add(new RapidElectroPiece(Color.BLUE, boardRectangles.get(59)));
+		gamePieces.add(new RapidElectroPiece(Color.BLUE, boardRectangles.get(60)));
+		gamePieces.add(new RapidElectroPiece(Color.BLUE, boardRectangles.get(61)));
 		for(GamePiece curGP : gamePieces) {
 			curGP.initPathFinder();
 			curGP.restoreMovesAndAttacks();
@@ -274,8 +270,8 @@ public class StagePanel extends JPanel {
 	}
 	@SuppressWarnings("unused")
 	private void initFortresses() {
-		enemyFortress = new PlayerFortress(boardRectangles.get(76),true);
-		notEnemyFortress = new PlayerFortress(boardRectangles.get(97),false);
+		enemyFortress = new PlayerFortress(boardRectangles.get(76), Color.RED);
+		notEnemyFortress = new PlayerFortress(boardRectangles.get(97), Color.BLUE);
 	}
 	
 //같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같	
@@ -416,10 +412,10 @@ public class StagePanel extends JPanel {
 	private void drawAllGamePiecePointers(Graphics2D g2d) {
 		for(GamePiece curGP : gamePieces) {
 			if(camera.isInView(curGP.getPos())) {
-				if(curGP.getIsEnemy() && turnInfoPanel.getIsEnemyTurn()) {
+				if(curGP.getIsEnemy() && !GameState.myTurn) {
 					curGP.drawPointer(g2d);
 				}else 
-				if(!curGP.getIsEnemy() && !turnInfoPanel.getIsEnemyTurn()) {
+				if(!curGP.getIsEnemy() && GameState.myTurn) {
 					curGP.drawPointer(g2d);
 				}
 			}
@@ -680,7 +676,7 @@ public class StagePanel extends JPanel {
 			curGP.actionSelectionPanel.setAttackButtonActive(false);
 			curGP.actionSelectionPanel.setMoveButtonActive(false);
 			GamePieceBase curGPB = curGP.gamePieceBase;
-			if(turnInfoPanel.getIsEnemyTurn() == curGP.getIsEnemy()) {
+			if(!GameState.myTurn == curGP.getIsEnemy()) {
 				curGPB.regenShield();
 				if(curGP instanceof CommanderGamePiece) {
 					CommanderGamePiece curCGP = (CommanderGamePiece) curGP;
@@ -798,7 +794,7 @@ public class StagePanel extends JPanel {
 	}
 	
 	private boolean checkIfHasTurn(GamePiece gamePiece) {
-		return gamePiece.getIsEnemy() == turnInfoPanel.getIsEnemyTurn();
+		return gamePiece.getIsEnemy() == !GameState.myTurn;
 	}
 	
 	private void changedHoverBR() { 
@@ -894,14 +890,14 @@ public class StagePanel extends JPanel {
 					
 					if(levelDesignTool == null && noFortressRecruiting()) {
 						if(!enemyFortress.isSelected()) {
-							enemyFortress.setSelected(enemyFortress.isHover() && isEnemyTurn());
+							enemyFortress.setSelected(enemyFortress.isHover() && !GameState.myTurn);
 							curSelectedGP = null;
 						}else {
 							enemyFortress.tryPresssButton();
 							return;
 						}
 						if(!notEnemyFortress.isSelected()) {
-							notEnemyFortress.setSelected(notEnemyFortress.isHover() && !isEnemyTurn());	
+							notEnemyFortress.setSelected(notEnemyFortress.isHover() && GameState.myTurn);	
 							curSelectedGP = null;
 						}else {
 							notEnemyFortress.tryPresssButton();

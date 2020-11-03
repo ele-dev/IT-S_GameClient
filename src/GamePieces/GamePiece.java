@@ -52,22 +52,25 @@ public abstract class GamePiece {
 	private int rotationDelay = 4;
 	protected Sprite spriteTurret;
 	
-	protected boolean startedAttack = false;;
+	protected boolean startedAttack = false;
 	
 	
 	// pathfinding 
 	private AStarPathFinder pathFinder;
 	public GamePieceBase gamePieceBase;
 	
-	public GamePiece(boolean isEnemy,String name,BoardRectangle boardRect,float dmg,int baseTypeIndex) {
-		this.isEnemy = isEnemy;
+	public GamePiece(Color teamColor, String name,BoardRectangle boardRect,float dmg,int baseTypeIndex) {
+		
+		this.isEnemy = false;
 		this.boardRect = boardRect;
 		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
+		
 		if(isEnemy) {
 			this.c = Commons.enemyColor;
 		}else {
 			this.c = Commons.notEnemyColor;
-		} 
+		}
+		
 		gamePieceBase = new GamePieceBase(boardRect.getCenterX(), boardRect.getCenterY(), boardRect.getSize(), boardRect.getSize(),c,baseTypeIndex,this);
 
 		this.name = name;
@@ -351,7 +354,7 @@ public abstract class GamePiece {
 		}
 		if(spriteTurret != null) {
 			spriteTurret.drawSprite(g2d, cx, cy, angle+90, 1);
-		}else {
+		} else {
 			g2d.setColor(c);
 			g2d.translate(cx, cy);
 			g2d.rotate(Math.toRadians(angle));
