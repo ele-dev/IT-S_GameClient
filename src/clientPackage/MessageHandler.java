@@ -137,7 +137,6 @@ public class MessageHandler {
 				
 				// show popup message informing that the match is over because the enemy left the game
 				System.out.println("The enemy surrendered --> leaving match");
-				// JOptionPane.showMessageDialog(null, "Match is over. Enemy has left the game");
 				
 				// Update the player states
 				GameState.enemySurrender = true;

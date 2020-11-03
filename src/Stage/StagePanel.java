@@ -106,31 +106,31 @@ public class StagePanel extends JPanel {
 	
 	
 	public StagePanel(String mapName) {
+		
+		// Init the dimensions
 		w = ProjectFrame.width; 
 		h = ProjectFrame.height;
 		setBounds(0, 0, w, h);
-
-		setVisible(true);
+		// setVisible(true);
 		cBackGround = new Color(28,26,36);
 		
-		// create camera and listener(s)
+		// create camera and timers
 		camera = new Camera();
 		levelInitializer = new LevelInitializer();
 		initGameMap(mapName);
 		
 		if(levelDesignTool == null) {
-//			initFortresses();
+			// initFortresses();
 			initGamePieces();
 		}
 		
 		tFrameRate = new Timer(16, new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				repaint();
-				
 			}
 		});
+		tFrameRate.setRepeats(true);
 		
 		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
 			@Override
@@ -138,12 +138,13 @@ public class StagePanel extends JPanel {
 				updateStage();
 			}
 		});
-		tFrameRate.setRepeats(true);
 		tUpdateRate.setRepeats(true);
 		
+		// create and init the buttons 
 		endTurnButton = new GenericButton(w-300, h -150, 250, 100, "End Turn", new Color(20,20,20), new Color(50,255,0), 30);
 		surrenderButton = new GenericButton(w-200, 50, 150, 75, "Surrender", new Color(20,20,20), new Color(255,0,50), 20);
-				
+		
+		// create and init the TurnInfo display
 		turnInfoPanel = new TurnInfo();
 		
 		// makes Cursor invisible 
@@ -154,13 +155,13 @@ public class StagePanel extends JPanel {
 		
 		lightingManager = new LightingManager(w, h,camera);
 		
-		// Add the listeners
+		// Add the listeners and start the timers
 		addMouseListener(new ML());
 		addMouseMotionListener(new MML());
 		tFrameRate.start();
 		tUpdateRate.start();
 		
-//		gamePieces.get(0).startMove(boardRectangles.get(31));
+		// gamePieces.get(0).startMove(boardRectangles.get(31));
 	}
 	
 	// sets an impact-stop countdown (frame freezes)
@@ -192,11 +193,9 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void surrender() {
-		if(!GameState.myTurn) {
-			enemyFortress.getDamaged(enemyFortress.getHealth(), 0, true);
-		} else {
-			notEnemyFortress.getDamaged(enemyFortress.getHealth(), 0, true);
-		}
+		
+		// Destroy the own fortress to trigger the winnin screen
+		notEnemyFortress.getDamaged(enemyFortress.getHealth(), 0, true);
 		
 		// Send leave match message to server to surrender 
 		SignalMessage surrenderMsg = new SignalMessage(GenericMessage.MSG_LEAVE_MATCH);
@@ -557,7 +556,7 @@ public class StagePanel extends JPanel {
 	public static void checkIfSomeOneWon() {
 		
 		// If the enemy has lost his fortress or surrendered then you have won
-		if(enemyFortress.isDestroyed() || GameState.enemySurrender == true) {
+		if(enemyFortress.isDestroyed() || GameState.enemySurrender) {
 			winScreen = new WinScreen((byte)2, w, h);
 		}
 		// Otherwise check if you have lost
@@ -711,14 +710,15 @@ public class StagePanel extends JPanel {
 		curSelectedGP = null;
 		if(curHoverBR != null && GameState.myTurn) {
 			for(GamePiece curGP : gamePieces) {
-				if(curGP.boardRect == curHoverBR && checkIfHasTurn(curGP)) {
+				if(curGP.boardRect.equals(curHoverBR) && checkIfHasTurn(curGP)) {
 					curSelectedGP = curGP;
-				}else {
+				} else {
 					curGP.actionSelectionPanel.setAttackButtonActive(false);
 					curGP.actionSelectionPanel.setMoveButtonActive(false);
 				}
 			}
 		}
+		
 		return curSelectedGP != null;
 	}
 
@@ -727,7 +727,6 @@ public class StagePanel extends JPanel {
 		resetShowPossibleActivities();
 		return curSelectedGP != null && (curSelectedGP.actionSelectionPanel.tryPressButton() || curSelectedGP.actionSelectionPanel.containsMousePos(StagePanel.mousePos));
 	}
-	
 	private boolean noFortressSelected() {
 		return !enemyFortress.isSelected() && !notEnemyFortress.isSelected();
 	}
