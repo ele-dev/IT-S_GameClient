@@ -753,7 +753,7 @@ public class StagePanel extends JPanel {
 				
 				// Make a move
 				if(curHoverBR.isPossibleMove) {
-					
+						
 					// Get 2D coordinates of the game piece's position and the destination field 
 					Point destination = new Point(curHoverBR.row, curHoverBR.column);
 					Point piecePos = new Point(curSelectedGP.boardRect.row, curSelectedGP.boardRect.column);
@@ -768,6 +768,13 @@ public class StagePanel extends JPanel {
 				} 
 				// start an attack on an enemy player
 				else if(curHoverBR.isPossibleAttack) {
+					
+					// Avoid attacks against the own fortress (they don't make sense and cause trouble additionally)
+					if(StagePanel.notEnemyFortress.containsBR(curHoverBR)) {
+						curSelectedGP = null;
+						resetShowPossibleActivities();
+						return;
+					}
 					
 					// Get 2D coordinates of the attacker's game piece and the vicitim's game piece
 					Point attackerPos = new Point(curSelectedGP.boardRect.row, curSelectedGP.boardRect.column);
@@ -786,6 +793,7 @@ public class StagePanel extends JPanel {
 					CommanderGamePiece curCGP = (CommanderGamePiece) curSelectedGP;
 					curCGP.startAbility(curHoverBR);
 				}
+				
 				curSelectedGP = null;
 				resetShowPossibleActivities();
 			}

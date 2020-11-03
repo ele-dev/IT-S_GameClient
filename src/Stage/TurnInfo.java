@@ -11,7 +11,6 @@ import menueGui.GameState;
 
 public class TurnInfo {
 	private Rectangle rect;
-	private boolean isEnemyTurn = false;
 	
 	private int turnCounter = 0;
 	// is drawn after translation of graphics so it does not need to be moved with the camera
@@ -21,7 +20,6 @@ public class TurnInfo {
 	
 	// toggles the isEnemyTurn variable and counts how often it was toggled
 	public void toggleTurn() {
-		isEnemyTurn = !isEnemyTurn;
 		turnCounter++;
 	}
 	
@@ -30,7 +28,7 @@ public class TurnInfo {
 		g2d.setColor(new Color(20,20,20,240)); 
 		g2d.fill(rect);
 		g2d.setStroke(new BasicStroke(4));
-		g2d.setColor(isEnemyTurn ? GameState.enemyTeamColor : GameState.myTeamColor);
+		g2d.setColor(!GameState.myTurn ? GameState.enemyTeamColor : GameState.myTeamColor);
 		g2d.draw(rect);
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(new Font("Arial",Font.BOLD,30));
@@ -49,6 +47,4 @@ public class TurnInfo {
 		g2d.setColor(Color.WHITE);
 		g2d.drawString("Turns: " + turnCounter, rect.x+ 30, rect.y+60 + 60);
 	}
-	
-	
 }
