@@ -50,6 +50,7 @@ import PlayerStructures.GoldMine;
 import PlayerStructures.PlayerFortress;
 import menueGui.GameState;
 import networking.GenericMessage;
+import networking.MsgMakeMove;
 import networking.SignalMessage;
 
 // This is the main Panel where the Game is Happening
@@ -203,6 +204,7 @@ public class StagePanel extends JPanel {
 		// Send leave match message to server to surrender 
 		SignalMessage surrenderMsg = new SignalMessage(GenericMessage.MSG_LEAVE_MATCH);
 		ProjectFrame.conn.sendMessageToServer(surrenderMsg);
+		System.out.println("Sent surrender/leave message to the server");
 	}
 	
 	private void tryLeaveGame() {
@@ -510,8 +512,7 @@ public class StagePanel extends JPanel {
 			}
 		}
 	}
-		
-	@SuppressWarnings("unused")
+	
 	private void drawEveryBoardRectangleIndex(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			curBR.drawIndex(g2d);
@@ -747,13 +748,36 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void tryPerformActionOnPressedPos() {
-		if(curSelectedGP != null && !curSelectedGP.getIsDead() && curHoverBR != null && GameState.myTurn) {	
+		
+		// First checked if the the move is possible and allowed at the moment
+		if(curSelectedGP != null && !curSelectedGP.getIsDead() && curHoverBR != null && GameState.myTurn) {
+			
+			// check additional preconditions for performing any action
 			if(curHoverBR.isPossibleMove || curHoverBR.isPossibleAttack || curHoverBR.isPossibleAbility) {
+				
+				// Make a move
 				if(curHoverBR.isPossibleMove) {
+					
+					// Get 2D coordinates of the game piece's position and the destination field 
+					Point destination = new Point(curHoverBR.row, curHoverBR.column);
+					Point piecePos = new Point(curSelectedGP.boardRect.row, curSelectedGP.boardRect.column);
+					
+					// Send a make move message to the server passing player position and movement vector 
+					MsgMakeMove moveMessage = new MsgMakeMove(piecePos, destination);
+					ProjectFrame.conn.sendMessageToServer(moveMessage);
+					System.out.println("Sent move message to server: pos=" + piecePos + " dest=" + destination);
+					
+					// Trigger the graphical animation for the move
 					curSelectedGP.startMove(curHoverBR);
-				}else if(curHoverBR.isPossibleAttack) {
+				} 
+				// start an attack on an enemy player
+				else if(curHoverBR.isPossibleAttack) {
+					
+					// Trigger the graphical animation for the attack
 					curSelectedGP.startAttack(curHoverBR);
-				} else {
+				} 
+				// Use ability of a GamePiece/Figure
+				else {
 					CommanderGamePiece curCGP = (CommanderGamePiece) curSelectedGP;
 					curCGP.startAbility(curHoverBR);
 				}
