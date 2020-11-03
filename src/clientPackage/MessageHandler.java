@@ -1,7 +1,6 @@
 package clientPackage;
 
 import java.awt.Color;
-import java.awt.Point;
 
 import GamePieces.GamePiece;
 import Stage.BoardRectangle;
@@ -184,11 +183,9 @@ public class MessageHandler {
 					break;
 				}
 				
-				// Store both attributes playerPos and destination and find the player and the BR 
- 				Point gamePiecePos = moveMsg.getMovingPlayerPos();
-				Point destination = moveMsg.getTargetField();
-				GamePiece movingGP = GamePiece.getGamePieceFromCoords(gamePiecePos);
-				BoardRectangle destinationBR = BoardRectangle.getBoardRectFromCoords(destination);
+				// Find the moving GamePiece and the it's destination Field on the local game map 
+				GamePiece movingGP = GamePiece.getGamePieceFromCoords(moveMsg.getMovingPlayerPos());
+				BoardRectangle destinationBR = BoardRectangle.getBoardRectFromCoords(moveMsg.getTargetField());
 				
 				// Execute the move of the enemy game piece 
 				if(destinationBR != null && movingGP != null) {
@@ -224,7 +221,20 @@ public class MessageHandler {
 					break;
 				}
 				
-				// ...
+				// Find the attacker gmaePiece and the victim game piece on the local game map
+				GamePiece attackerGP = GamePiece.getGamePieceFromCoords(attackMsg.getAttackerPiece());
+				GamePiece victimGP = GamePiece.getGamePieceFromCoords(attackMsg.getVicitimPos());
+				
+				// Execute the enemy's attack
+				if(attackerGP != null && victimGP != null) {
+					// ...
+				} else {
+					System.err.println("Could not execute the enemy attack action!");
+				}
+				
+				// For debugging
+				System.out.println("attackerGP: row=" + attackerGP.boardRect.row + " column=" + attackerGP.boardRect.column);
+				System.out.println("victimGP: row=" + victimGP.boardRect.row + " column=" + victimGP.boardRect.column);
 				
 				break;
 			}

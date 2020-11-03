@@ -436,7 +436,6 @@ public abstract class GamePiece {
 		}
 	}
 	
-	
 	// Public helper function to get the GamePiece from it's coordinates on the game Field
 	public static GamePiece getGamePieceFromCoords(Point pos) {
 		
