@@ -402,7 +402,7 @@ public class BoardRectangle {
 			for(int i = 0;i<getSize();i+=getSize()/5) g2d.drawLine(getX()+i, getY(), getX(), getY()+i);
 			for(int i = 0;i<getSize();i+=getSize()/5) g2d.drawLine(getX()+i, getY()+getSize(), getX()+getSize(), getY()+i);
 			
-		}else {
+		} else {
 			g2d.setColor(new Color(0,255,50,200));
 			g2d.fill(rect);
 		}

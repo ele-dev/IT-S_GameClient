@@ -72,7 +72,7 @@ public class StagePanel extends JPanel {
 	public static ArrayList<DestructibleObject> destructibleObjects = new ArrayList<DestructibleObject>();
 	
 	public static ArrayList<GoldMine> goldMines = new ArrayList<GoldMine>();
-	public static PlayerFortress enemyFortress, notEnemyFortress;
+	public static PlayerFortress enemyFortress, notEnemyFortress, blueBase, redBase;
 	// GamePieces
 	public static ArrayList<GamePiece> gamePieces = new ArrayList<GamePiece>();
 	
@@ -238,8 +238,7 @@ public class StagePanel extends JPanel {
 			gameMap = new GameMap(levelInitializer);
 		}
 		
-		if(levelInitializer.getEnemyFortressIndex() > -1)enemyFortress = new PlayerFortress(boardRectangles.get(levelInitializer.getEnemyFortressIndex()), Color.RED);
-		if(levelInitializer.getNotEnemyFortressIndex() > -1)notEnemyFortress = new PlayerFortress(boardRectangles.get(levelInitializer.getNotEnemyFortressIndex()), Color.BLUE);
+		this.initFortresses();
 	}
 		
 	// initializes/creates all GamePieces
@@ -267,10 +266,24 @@ public class StagePanel extends JPanel {
 			curGP.restoreMovesAndAttacks();
 		}
 	}
-	@SuppressWarnings("unused")
+	
 	private void initFortresses() {
-		enemyFortress = new PlayerFortress(boardRectangles.get(76), Color.RED);
-		notEnemyFortress = new PlayerFortress(boardRectangles.get(97), Color.BLUE);
+		// Initialize empty, they will be assigned when a match starts
+		enemyFortress = null;
+		notEnemyFortress = null;
+		
+		if(levelInitializer.getEnemyFortressIndex() > -1) {
+			redBase = new PlayerFortress(boardRectangles.get(levelInitializer.getEnemyFortressIndex()), Color.RED);
+		}
+		
+		if(levelInitializer.getNotEnemyFortressIndex() > -1) {
+			blueBase = new PlayerFortress(boardRectangles.get(levelInitializer.getNotEnemyFortressIndex()), Color.BLUE);
+		}
+		
+		/*
+		StagePanel.redBase = new PlayerFortress(boardRectangles.get(76), Color.RED);
+		StagePanel.blueBase = new PlayerFortress(boardRectangles.get(97), Color.BLUE);
+		*/
 	}
 	
 //같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같	
@@ -504,7 +517,7 @@ public class StagePanel extends JPanel {
 	}
 	
 	// draws all the Walls including destructible walls
-	private void drawEveryWall(Graphics2D g2d){
+	private void drawEveryWall(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			if(curBR.isWall) {
 				if(camera.isInView(curBR.getPos())) {
@@ -593,9 +606,12 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void updateFortresses() {
-		enemyFortress.update();
-		notEnemyFortress.update();
+		if(StagePanel.enemyFortress != null && StagePanel.notEnemyFortress != null) {
+			enemyFortress.update();
+			notEnemyFortress.update();
+		}
 	}
+	
 	// updates all the GamePieces (checks if they are performing an action,are dead
 	// also moves the ActionSelectionPanel relative to the camera position
 	private void updateGamePieces() {
@@ -735,10 +751,23 @@ public class StagePanel extends JPanel {
 		return curSelectedGP != null && (curSelectedGP.actionSelectionPanel.tryPressButton() || curSelectedGP.actionSelectionPanel.containsMousePos(StagePanel.mousePos));
 	}
 	private boolean noFortressSelected() {
-		return !enemyFortress.isSelected() && !notEnemyFortress.isSelected();
+		boolean status = true;
+		
+		if(StagePanel.enemyFortress != null && StagePanel.notEnemyFortress != null) {
+			status = !enemyFortress.isSelected() && !notEnemyFortress.isSelected();
+		}
+		
+		return status;
 	}
+	
 	private boolean noFortressRecruiting() {
-		return !enemyFortress.isRecruitingMode() && !notEnemyFortress.isRecruitingMode();
+		boolean status = true;
+		
+		if(StagePanel.enemyFortress != null && StagePanel.notEnemyFortress != null) {
+			status = !enemyFortress.isRecruitingMode() && !notEnemyFortress.isRecruitingMode();
+		}
+		
+		return status;
 	}
 	
 	private boolean goldUncollected() {
@@ -817,18 +846,17 @@ public class StagePanel extends JPanel {
 				curBR.isPossibleAttack = false;
 			}
 			if(curSelectedGP.actionSelectionPanel.getMoveButtonIsActive()) {
-				curSelectedGP.resetPathFinder(curSelectedGP.boardRect, curHoverBR,false);
+				curSelectedGP.resetPathFinder(curSelectedGP.boardRect, curHoverBR, false);
 				curSelectedGP.showPathBRs();
-			}else if(curSelectedGP instanceof CommanderGamePiece && curSelectedGP.actionSelectionPanel.getAbilityButtonIsActive()){
+			} else if(curSelectedGP instanceof CommanderGamePiece && curSelectedGP.actionSelectionPanel.getAbilityButtonIsActive()){
 				CommanderGamePiece curCGP = (CommanderGamePiece) curSelectedGP;
 				curCGP.showPossibleAbilities(curHoverBR);
-			}else if(curSelectedGP.actionSelectionPanel.getAttackButtonIsActive()){
+			} else if(curSelectedGP.actionSelectionPanel.getAttackButtonIsActive()) {
 				if(curHoverBR.isShowPossibleAttack) {
 					curHoverBR.isPossibleAttack = true;
 				}
 			}
 		}
-			
 	}
 	
 	private class ML implements MouseListener {
@@ -903,16 +931,18 @@ public class StagePanel extends JPanel {
 					notEnemyFortress.tryPlaceRecruitedGP(curHoverBR);
 				
 					
-					if(levelDesignTool == null && noFortressRecruiting()) {
+					if(levelDesignTool == null && noFortressRecruiting() && GameState.myTurn) {
+						/*
 						if(!enemyFortress.isSelected()) {
-							enemyFortress.setSelected(enemyFortress.isHover() && !GameState.myTurn);
+							enemyFortress.setSelected(enemyFortress.isHover());
 							curSelectedGP = null;
 						} else {
 							enemyFortress.tryPresssButton();
 							return;
 						}
+						*/
 						if(!notEnemyFortress.isSelected()) {
-							notEnemyFortress.setSelected(notEnemyFortress.isHover() && GameState.myTurn);	
+							notEnemyFortress.setSelected(notEnemyFortress.isHover());	
 							curSelectedGP = null;
 						} else {
 							notEnemyFortress.tryPresssButton();
