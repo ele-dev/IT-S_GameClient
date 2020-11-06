@@ -256,6 +256,21 @@ public class MessageHandler {
 				break;
 			}
 			
+			case GenericMessage.MSG_SPAWN_GAMEPIECE:
+			{
+				// Ignore message when we aren't ingame 
+				if(!GameState.isIngame) {
+					System.err.println("Received invalid spawn gamepiece message from the server!");
+					break;
+				}
+				
+				// Coerce the message into the right format
+				// ...
+				
+				// Add the gamepiece to the global list
+				// ...
+			}
+			
 			default:
 			{
 				System.err.println("Received message of unknown type!");
