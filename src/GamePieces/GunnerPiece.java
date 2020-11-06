@@ -1,5 +1,6 @@
 package GamePieces;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -28,8 +29,8 @@ public class GunnerPiece extends CommanderGamePiece {
  
 	BoardRectangle targetBoardRectangleNextRadialShield;
 	
-	public GunnerPiece(boolean isEnemy, BoardRectangle boardRect) {
-		super(isEnemy, Commons.nameGunner, boardRect, Commons.dmgGunner,6,Commons.baseTypeGunner);
+	public GunnerPiece(Color teamColor, BoardRectangle boardRect) {
+		super(teamColor, Commons.nameGunner, boardRect, Commons.dmgGunner,6,Commons.baseTypeGunner);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

@@ -1,5 +1,6 @@
 package GamePieces;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import java.awt.Shape;
@@ -18,8 +19,8 @@ import Stage.StagePanel;
 public class EMPPiece extends GamePiece{
 	ArrayList<EMPProjectile> empProjectiles = new ArrayList<EMPProjectile>();
 	
-	public EMPPiece(boolean isEnemy,BoardRectangle boardRect) {
-		super(isEnemy, Commons.nameEMP, boardRect, Commons.dmgEMP,Commons.baseTypeEMP);
+	public EMPPiece(Color teamColor, BoardRectangle boardRect) {
+		super(teamColor, Commons.nameEMP, boardRect, Commons.dmgEMP,Commons.baseTypeEMP);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override

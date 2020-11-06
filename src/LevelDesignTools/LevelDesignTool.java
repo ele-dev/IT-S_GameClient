@@ -48,7 +48,7 @@ public class LevelDesignTool {
 		FontMetrics fontMetrics = g2d.getFontMetrics();
 		int textHeight = fontMetrics.getHeight();
 		int textWidth = 0;
-		for(int i = 0;i<StagePanel.gameMap.getColumns();i++) {
+		for(int i = 0; i < StagePanel.gameMap.getColumns(); i++) {
 			String str= i+1+"";
 			textWidth = fontMetrics.stringWidth(str);
 			g2d.drawString(str, i*Commons.boardRectSize+textWidth/2, -Commons.boardRectSize/2+textHeight/3);
@@ -81,11 +81,11 @@ public class LevelDesignTool {
 				StagePanel.goldMines.add(new GoldMine(sBR));
 				break;
 			case "EnemyFortress":
-				StagePanel.enemyFortress = new PlayerFortress(sBR, true);
+				StagePanel.enemyFortress = new PlayerFortress(sBR, Color.RED);
 				break;
 			
 			case "NotEnemyFortress":
-				StagePanel.notEnemyFortress = new PlayerFortress(sBR, false);
+				StagePanel.notEnemyFortress = new PlayerFortress(sBR, Color.BLUE);
 				break;
 			}
 		}

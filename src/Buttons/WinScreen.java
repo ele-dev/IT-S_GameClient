@@ -18,6 +18,7 @@ public class WinScreen {
 	private byte winnerIndex;
 	private int w,h;
 	
+	// Gui elements in the Winscreen
 	private GenericButton leaveButton;
 	
 	public WinScreen(byte winnerIndex, int w, int h) {
@@ -47,17 +48,22 @@ public class WinScreen {
 		g2d.drawString("The winner", w/2-fontMetrics.stringWidth("The winner")/2, h/2+textHeight/3-textHeight);
 		g2d.drawString("is", w/2-fontMetrics.stringWidth("is")/2, h/2+textHeight/3);
 		
+		// If the enemy has won
 		if(winnerIndex == 1) {
 			textWidth = fontMetrics.stringWidth(GameState.enemyName);
 			g2d.setColor(GameState.enemyTeamColor);
 			g2d.drawString(GameState.enemyName, w/2-textWidth/2, h/2+textHeight/3+textHeight);
-		} else {
+		}
+		// If we have won
+		else if(this.winnerIndex == 2) {
 			textWidth = fontMetrics.stringWidth(ProjectFrame.conn.getUsername());
 			g2d.setColor(GameState.myTeamColor);
 			g2d.drawString(ProjectFrame.conn.getUsername(), w/2-textWidth/2, h/2+textHeight/3+textHeight);
+		} 
+		// If nobody has won
+		else {
+			// ...
 		}
-		
-		
 	}
 	
 	public void drawButtons(Graphics2D g2d) {
@@ -67,6 +73,5 @@ public class WinScreen {
 	public void update() {
 		leaveButton.updatePos(StagePanel.camera.getPos());
 		leaveButton.updateHover(StagePanel.mousePos);
-		
 	}
 }

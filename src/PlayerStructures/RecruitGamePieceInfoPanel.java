@@ -95,19 +95,19 @@ public class RecruitGamePieceInfoPanel{
 		gamePieceCost = (int) (Math.random()*5+1)*10;
 	}
 	
-	public void	placeGamePiece(boolean isEnemy, BoardRectangle boardRectangle) {
+	public void	placeGamePiece(Color teamColor, BoardRectangle boardRectangle) {
 		switch (gamePieceType) {
 		case 0:
-			StagePanel.gamePieces.add(new GunnerPiece(isEnemy, boardRectangle));
+			StagePanel.gamePieces.add(new GunnerPiece(teamColor, boardRectangle));
 			break;
 		case 1:
-			StagePanel.gamePieces.add(new FlamethrowerPiece(isEnemy, boardRectangle));
+			StagePanel.gamePieces.add(new FlamethrowerPiece(teamColor, boardRectangle));
 			break;
 		case 2:
-			StagePanel.gamePieces.add(new DetonatorPiece(isEnemy, boardRectangle));
+			StagePanel.gamePieces.add(new DetonatorPiece(teamColor, boardRectangle));
 			break;
 		case 3:
-			StagePanel.gamePieces.add(new RocketLauncherPiece(isEnemy, boardRectangle));
+			StagePanel.gamePieces.add(new RocketLauncherPiece(teamColor, boardRectangle));
 			break;
 		default:
 			break;

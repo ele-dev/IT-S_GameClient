@@ -29,7 +29,7 @@ public class DestructibleObject {
 		rectHitbox = new Rectangle(boardRectangle.getX(),boardRectangle.getY(),Commons.boardRectSize*occupiedColumns,Commons.boardRectSize*occupiedRows);
 		this.rotation = rotation;
 		ArrayList<String> spriteLinks = new ArrayList<String>();
-		spriteLinks.add(Commons.pathToSpriteSource+"Environment/crate.png");
+		spriteLinks.add(Commons.pathToSpriteSource + "Environment/crate.png");
 		sprite = new Sprite(spriteLinks, rectHitbox.width,rectHitbox.height, 0);
 		occupiedBRs = new BoardRectangle[occupiedRows*occupiedColumns];
 		if(occupiedRows*occupiedColumns > 1) {
@@ -50,7 +50,7 @@ public class DestructibleObject {
 		return rectHitbox;
 	}
 	public Point getPos() {
-		return new Point((int)rectHitbox.getCenterX(),(int)rectHitbox.getCenterY());
+		return new Point((int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY());
 	}
 	public boolean isDestroyed() {
 		return isDestroyed;
@@ -60,7 +60,7 @@ public class DestructibleObject {
 	}
 	public boolean containsBR(BoardRectangle targetBR) {
 		for(BoardRectangle curBR : occupiedBRs) {
-			if(curBR == targetBR) {
+			if(curBR.equals(targetBR)) {
 				return true;
 			}
 		}
@@ -117,15 +117,18 @@ public class DestructibleObject {
 						(int)(Math.random()*Commons.boardRectSize/10)+Commons.boardRectSize/8, 
 						sprite.getRandomPixelColor(),angle, 3));
 			}
+			
 			return true;
 		}
+		
 		return false;
 	}
+	
 	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
-		health-=dmg;
-		if(health<=0) {
+		health -= dmg;
+		if(health <= 0) {
 			isDestroyed = true;
-			for(int i = 0;i<8*occupiedBRs.length;i++) {
+			for(int i = 0; i < 8 * occupiedBRs.length; i++) {
 				float x = (float)(rectHitbox.getCenterX()+(Math.random()-0.5)*rectHitbox.width);
 				float y = (float)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.height);
 				float angle = attackAngle + (float)((Math.random()-0.5)*50);
@@ -138,6 +141,4 @@ public class DestructibleObject {
 		StagePanel.addValueLabel((int)(rectHitbox.getCenterX()+(Math.random()-0.5)*rectHitbox.getWidth()),
 		(int)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.getWidth()), dmg,Commons.cAttack);
 	}
-	
-	
 }

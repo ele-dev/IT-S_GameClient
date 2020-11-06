@@ -1,5 +1,6 @@
 package GamePieces;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -20,8 +21,8 @@ public class ShotgunPiece extends GamePiece {
 	private float spreadAngle = 30;
 	private byte bulletAmount = 10;
 
-	public ShotgunPiece(boolean isEnemy,BoardRectangle boardRect) {
-		super(isEnemy, Commons.nameShotgun, boardRect, Commons.dmgShotgun, Commons.baseTypeShotgun);
+	public ShotgunPiece(Color teamColor, BoardRectangle boardRect) {
+		super(teamColor, Commons.nameShotgun, boardRect, Commons.dmgShotgun, Commons.baseTypeShotgun);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

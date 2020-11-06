@@ -367,12 +367,11 @@ public class BoardRectangle {
 		if(isPossibleAttack || isPossibleAbility) {
 			if(so < 5) {
 				animationSpeed = 0.3;
-			}else
-			if(so > 10) {
+			} else if(so > 10) {
 				animationSpeed = -0.3;
 			}
 			so+=animationSpeed;
-		}else {
+		} else {
 			so = 4;
 		}
 	}
@@ -384,7 +383,7 @@ public class BoardRectangle {
 	public void drawWall(Graphics2D g2d,ArrayList<GamePiece> gamePieces) {
 		if(wallSprite != null) {
 			wallSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
-		}else {
+		} else {
 			g2d.setColor(new Color(0,0,0));
 			g2d.fill(rect);
 			g2d.setColor(new Color(10,10,10));
@@ -403,7 +402,7 @@ public class BoardRectangle {
 			for(int i = 0;i<getSize();i+=getSize()/5) g2d.drawLine(getX()+i, getY(), getX(), getY()+i);
 			for(int i = 0;i<getSize();i+=getSize()/5) g2d.drawLine(getX()+i, getY()+getSize(), getX()+getSize(), getY()+i);
 			
-		}else {
+		} else {
 			g2d.setColor(new Color(0,255,50,200));
 			g2d.fill(rect);
 		}
@@ -415,4 +414,21 @@ public class BoardRectangle {
 		g2d.drawString(index+"", getCenterX(), getCenterY());
 	}
 	
+	
+	// Public helper function to get the BoardRectangle with certain coordinates
+	// on the game field that is stored in the stage panel class
+	public static BoardRectangle getBoardRectFromCoords(Point pos) {
+		BoardRectangle rect = null;
+		
+		// Go through the global list and search a match
+		for(BoardRectangle currRect: StagePanel.boardRectangles)
+		{
+			if(currRect.row == pos.x && currRect.column == pos.y) {
+				rect = currRect;
+				break;
+			}
+		}
+		
+		return rect;
+	}
 }

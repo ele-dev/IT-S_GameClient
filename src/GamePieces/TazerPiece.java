@@ -23,8 +23,8 @@ public class TazerPiece extends GamePiece{
 	
 	Bullet tazerBullet;
 	
-	public TazerPiece(boolean isEnemy, BoardRectangle boardRect) {
-		super(isEnemy, "T", boardRect, 2, 1); 
+	public TazerPiece(Color teamColor, BoardRectangle boardRect) {
+		super(teamColor, "T", boardRect, 2, 1); 
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

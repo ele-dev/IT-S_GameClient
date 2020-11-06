@@ -1,5 +1,6 @@
 package GamePieces;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import java.awt.Shape;
@@ -17,8 +18,8 @@ import Stage.StagePanel;
 public class DetonatorPiece extends GamePiece{
 	ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
 	
-	public DetonatorPiece(boolean isEnemy,BoardRectangle boardRect) {
-		super(isEnemy, Commons.nameDetonator, boardRect, Commons.dmgDetonator,Commons.baseTypeDetonator);
+	public DetonatorPiece(Color teamColor, BoardRectangle boardRect) {
+		super(teamColor, Commons.nameDetonator, boardRect, Commons.dmgDetonator,Commons.baseTypeDetonator);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override

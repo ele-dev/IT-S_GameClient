@@ -24,9 +24,11 @@ import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
 import Stage.StagePanel;
+import menueGui.GameState;
 
 
 public abstract class GamePiece {
+	
 	public BoardRectangle boardRect;
 	private Rectangle rectShowTurret;
 	protected Color c;
@@ -52,22 +54,20 @@ public abstract class GamePiece {
 	private int rotationDelay = 4;
 	protected Sprite spriteTurret;
 	
-	protected boolean startedAttack = false;;
+	protected boolean startedAttack = false;
 	
 	
 	// pathfinding 
 	private AStarPathFinder pathFinder;
 	public GamePieceBase gamePieceBase;
 	
-	public GamePiece(boolean isEnemy,String name,BoardRectangle boardRect,float dmg,int baseTypeIndex) {
-		this.isEnemy = isEnemy;
+	public GamePiece(Color teamColor, String name,BoardRectangle boardRect,float dmg,int baseTypeIndex) {
+		
+		this.isEnemy = false;
+		this.c =  teamColor;
 		this.boardRect = boardRect;
 		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
-		if(isEnemy) {
-			this.c = Commons.enemyColor;
-		}else {
-			this.c = Commons.notEnemyColor;
-		} 
+		
 		gamePieceBase = new GamePieceBase(boardRect.getCenterX(), boardRect.getCenterY(), boardRect.getSize(), boardRect.getSize(),c,baseTypeIndex,this);
 
 		this.name = name;
@@ -147,9 +147,9 @@ public abstract class GamePiece {
 	}
 	
 	// resets the Pathfinder and also finds a Path to the endBR
-	public void resetPathFinder(BoardRectangle startBR, BoardRectangle endBR) {
+	public void resetPathFinder(BoardRectangle startBR, BoardRectangle endBR, boolean unlimitedMoveRange) {
 		gamePieceBase.pathBoardRectangles.clear();
-		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+		for(int i = 0; i < StagePanel.boardRectangles.size(); i++) {
 			StagePanel.boardRectangles.get(i).isPossibleMove = false;
 			StagePanel.boardRectangles.get(i).isShowPossibleMove = false;
 		}
@@ -165,7 +165,7 @@ public abstract class GamePiece {
 		initPathFinder();
 		// copies the end and startBR to the Pathfinders Grid
 		PathCell startPathCell = null, endPathCell =  null;
-		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
+		for(int i = 0; i < StagePanel.boardRectangles.size(); i++) {
 			if(startBR == StagePanel.boardRectangles.get(i)) {
 				startPathCell = pathFinder.pathCells.get(i);
 			}
@@ -182,19 +182,31 @@ public abstract class GamePiece {
 			return;
 		}
 		
-		int movementRange = gamePieceBase.getMovementRange();
-		for(int j = pathFinder.getPathPathCells().size()-1;j>=pathFinder.getPathPathCells().size()-(movementRange+1) && j>= 0;j--) {
-			for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
-				if(pathFinder.getPathPathCells().get(j).getIndex() == i) {
-					gamePieceBase.pathBoardRectangles.add(StagePanel.boardRectangles.get(i));
-					if(StagePanel.boardRectangles.get(i).isHinderingTerrain) {
-						movementRange--;
+		if(!unlimitedMoveRange) {
+			int movementRange = gamePieceBase.getMovementRange();
+			for(int j = pathFinder.getPathPathCells().size()-1;j >= pathFinder.getPathPathCells().size()-(movementRange+1) && j >= 0; j--) {
+				for(int i = 0; i < StagePanel.boardRectangles.size(); i++) {
+					if(pathFinder.getPathPathCells().get(j).getIndex() == i) {
+						gamePieceBase.pathBoardRectangles.add(StagePanel.boardRectangles.get(i));
+						if(StagePanel.boardRectangles.get(i).isHinderingTerrain) {
+							movementRange--;
+						}
+						break;
 					}
-					break;
+				}
+			}
+		} else {
+			for(int j = pathFinder.getPathPathCells().size()-1; j >= 0; j--) {
+				for(int i = 0; i < StagePanel.boardRectangles.size(); i++) {
+					if(pathFinder.getPathPathCells().get(j).getIndex() == i) {
+						gamePieceBase.pathBoardRectangles.add(StagePanel.boardRectangles.get(i));
+					}
 				}
 			}
 		}
-		
+	}
+	
+	public void showPathBRs() {
 		for(BoardRectangle curBr : gamePieceBase.pathBoardRectangles) {
 			if(curBr == StagePanel.curHoverBR) {
 				curBr.isPossibleMove = true;
@@ -206,7 +218,7 @@ public abstract class GamePiece {
 	public void update() {
 		if(targetGamePiece != null) {
 			updateAngle(targetGamePiece.getPos());
-		}else if(targetDestructibleObject != null){
+		} else if(targetDestructibleObject != null){
 			updateAngle(targetDestructibleObject.getPos());
 		}
 		updateAttack();
@@ -215,7 +227,7 @@ public abstract class GamePiece {
 	public void tryDie() {
 		if(gamePieceBase.getHealth() <= 0 && !getIsDead()) {
 			StagePanel.particles.add(new Explosion(getCenterX(), getCenterY(), 1.2f));
-			for(int i = 0;i<3;i++) {
+			for(int i = 0; i < 3; i++) {
 				StagePanel.particles.add(new Explosion(getCenterX()+(int)((Math.random()-0.5)*Commons.boardRectSize/2),
 						getCenterY()+(int)((Math.random()-0.5)*Commons.boardRectSize/2), 1f));
 			}
@@ -241,7 +253,6 @@ public abstract class GamePiece {
 				}
 			}
 		}
-		
 	} 
 	
 	// returns true if the BoardRectangle is in sight of the GamePiece and return false if it is for example behind a wall
@@ -273,13 +284,15 @@ public abstract class GamePiece {
 	
 	// updates angle to face toward enemy and starts the attack (starts attackDelayTimer)
 	public void startAttack(BoardRectangle targetBoardRectangle) {
+		
 		targetGamePiece = null;
 		targetDestructibleObject = null;
+		
 		if(StagePanel.enemyFortress.containsBR(targetBoardRectangle) && !isEnemy) {
 			targetDestructibleObject = StagePanel.enemyFortress;
 			startAttackDelay();
 			return;
-		}else if(StagePanel.notEnemyFortress.containsBR(targetBoardRectangle) && isEnemy){
+		} else if(StagePanel.notEnemyFortress.containsBR(targetBoardRectangle) && isEnemy) {
 			targetDestructibleObject = StagePanel.notEnemyFortress;
 			startAttackDelay();
 			return;
@@ -338,7 +351,7 @@ public abstract class GamePiece {
 		}
 		if(spriteTurret != null) {
 			spriteTurret.drawSprite(g2d, cx, cy, angle+90, 1);
-		}else {
+		} else {
 			g2d.setColor(c);
 			g2d.translate(cx, cy);
 			g2d.rotate(Math.toRadians(angle));
@@ -407,11 +420,13 @@ public abstract class GamePiece {
 		return goldMine.getCaptureState() != 0 && (goldMine.getCaptureState()==1 && !isEnemy || goldMine.getCaptureState()==2 && isEnemy);
 	}
 	// moves the GamePiece to the parameter BoardRectangle and exhausts its moving ability
-	public void startMove() {
+	public void startMove(BoardRectangle targetBoardRectangle) {
 		actionSelectionPanel.setMoveButtonActive(false);
 		hasExecutedMove = true;
-		isMoving = true;
+		resetPathFinder(boardRect, targetBoardRectangle, true);
 		gamePieceBase.curTargetPathCellIndex = 0;	
+		isMoving = true;
+		
 	}
 	
 	public void updateMove() {
@@ -419,5 +434,36 @@ public abstract class GamePiece {
 			gamePieceBase.updateAngle();
 			gamePieceBase.move();
 		}
+	}
+	
+	// Determine loyalty of GamePieces after Team color was assigned
+	public static void assignGamePiecesToSides() {
+		
+		// Go through the global list of the stage panel
+		for(GamePiece currGP: StagePanel.gamePieces)
+		{
+			if(currGP.c.equals(GameState.myTeamColor)) {
+				currGP.isEnemy = false;
+			} else {
+				currGP.isEnemy = true;
+			}
+		}
+	}
+	
+	// Public helper function to get the GamePiece from it's coordinates on the game Field
+	public static GamePiece getGamePieceFromCoords(Point pos) {
+		
+		GamePiece gp = null;
+		
+		// Go through the global list and find a match
+		for(GamePiece currGP: StagePanel.gamePieces)
+		{
+			if(currGP.boardRect.row == pos.x && currGP.boardRect.column == pos.y) {
+				gp = currGP;
+				break;
+			}
+		}
+		
+		return gp;
 	}
 }

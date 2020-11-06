@@ -2,6 +2,9 @@ package clientPackage;
 
 import java.awt.Color;
 
+import GamePieces.GamePiece;
+import PlayerStructures.PlayerFortress;
+import Stage.BoardRectangle;
 import Stage.ProjectFrame;
 import Stage.StagePanel;
 import menueGui.GameState;
@@ -109,6 +112,10 @@ public class MessageHandler {
 					GameState.myTurn = false;
 				}
 				
+				// Call methods that assign GamePieces and Fortresses to your team or enemy team
+				GamePiece.assignGamePiecesToSides();
+				PlayerFortress.assignFortressesToSides();
+				
 				System.out.println("Received Match data --> navigating to stage panel");
 				
 				// Navigate to the game panel where the actual game happens
@@ -130,7 +137,6 @@ public class MessageHandler {
 				
 				// show popup message informing that the match is over because the enemy left the game
 				System.out.println("The enemy surrendered --> leaving match");
-				// JOptionPane.showMessageDialog(null, "Match is over. Enemy has left the game");
 				
 				// Update the player states
 				GameState.enemySurrender = true;
@@ -160,6 +166,109 @@ public class MessageHandler {
 				ProjectFrame.stagePanel.updateTurn();
 				
 				break;
+			}
+			
+			// This message is received when the enemy is acting and has moved one of his Game Pieces
+			// to a new position on the game board
+			case GenericMessage.MSG_MAKE_MOVE:
+			{
+				// Ignore message when we aren't ingame or if it's our turn at the moment
+				if(!GameState.isIngame || GameState.myTurn) {
+					System.err.println("Received invalid make move message from the server!");
+					break;
+				}
+				
+				// Coerce the message into the right format
+				MsgMakeMove moveMsg = (MsgMakeMove) msg;
+				
+				// check for all required attributes to be present (not null)
+				if(moveMsg.getMovingPlayerPos() == null || moveMsg.getTargetField() == null) {
+					System.err.println("Move message is missing required attributes!");
+					break;
+				}
+				
+				// Find the moving GamePiece and it's destination Field on the local game map 
+				GamePiece movingGP = GamePiece.getGamePieceFromCoords(moveMsg.getMovingPlayerPos());
+				BoardRectangle destinationBR = BoardRectangle.getBoardRectFromCoords(moveMsg.getTargetField());
+				
+				// Execute the move of the enemy game piece 
+				if(destinationBR != null && movingGP != null) {
+					movingGP.startMove(destinationBR);
+					System.out.println("Executed enemy move action");
+				} else {
+					System.err.println("Could not execute enemy move action!");
+				}
+				
+				// For debugging
+				System.out.println("movingGP: row=" + movingGP.boardRect.row + "column=" + movingGP.boardRect.column);
+				System.out.println("destinationBR: row=" + destinationBR.row + "column="+ destinationBR.column);
+				
+				break;
+			}
+			
+			// This message is received when the enemy is acting and has attacked one of our GamePieces
+			// with one of his 
+			case GenericMessage.MSG_ATTACK:
+			{
+				// Ignore message when we aren't ingame or if it's our turn at the moment
+				if(!GameState.isIngame || GameState.myTurn) {
+					System.err.println("Received invalid make move message from the server!");
+					break;
+				}
+				
+				// Coerce the message into the right format
+				MsgAttack attackMsg = (MsgAttack) msg;
+				
+				// check for all required attributes to be present (not null)
+				if(attackMsg.getAttackerPiece() == null || attackMsg.getVicitimPos() == null) {
+					System.err.println("Attack message is missing required parameters");
+					break;
+				}
+				
+				// Find the attacker gmaePiece and the victim game piece on the local game map
+				GamePiece attackerGP = GamePiece.getGamePieceFromCoords(attackMsg.getAttackerPiece());
+				// GamePiece victimGP = GamePiece.getGamePieceFromCoords(attackMsg.getVicitimPos());
+				BoardRectangle victimBR = BoardRectangle.getBoardRectFromCoords(attackMsg.getVicitimPos());
+				
+				// Check for invalid arguments 
+				if(attackerGP == null) {
+					System.err.println("Could not execute the enemy attack action!");
+					System.err.println("  --> invalid attacker");
+					break;
+				}
+				
+				if(victimBR == null) {
+					System.err.println("Could not execute the enemy attack action!");
+					System.err.println("  --> invalid target field");
+					break;
+				}
+				
+				// Execute the enemy's attack
+				attackerGP.startAttack(victimBR);
+				
+				// For debugging
+				System.out.println("attackerGP: row=" + attackerGP.boardRect.row + " column=" + attackerGP.boardRect.column);
+				System.out.println("victimGP: row=" + victimBR.row + " column=" + victimBR.column);
+				
+				// Check if someone has won the game 
+				StagePanel.checkIfSomeOneWon();
+				
+				break;
+			}
+			
+			case GenericMessage.MSG_SPAWN_GAMEPIECE:
+			{
+				// Ignore message when we aren't ingame 
+				if(!GameState.isIngame) {
+					System.err.println("Received invalid spawn gamepiece message from the server!");
+					break;
+				}
+				
+				// Coerce the message into the right format
+				// ...
+				
+				// Add the gamepiece to the global list
+				// ...
 			}
 			
 			default:

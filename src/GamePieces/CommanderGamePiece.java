@@ -1,12 +1,14 @@
 package GamePieces;
 
+import java.awt.Color;
+
 import Stage.BoardRectangle;
 import Stage.StagePanel;
 
 public abstract class CommanderGamePiece extends GamePiece{
 	protected int maxAbilityCharge,abilityCharge;
-	public CommanderGamePiece(boolean isEnemy, String name, BoardRectangle boardRect, float dmg, int maxAbilityCharge, int baseTypeIndex) {
-		super(isEnemy, name, boardRect, dmg, baseTypeIndex);
+	public CommanderGamePiece(Color teamColor, String name, BoardRectangle boardRect, float dmg, int maxAbilityCharge, int baseTypeIndex) {
+		super(teamColor, name, boardRect, dmg, baseTypeIndex);
 		this.maxAbilityCharge = maxAbilityCharge;
 		this.abilityCharge = maxAbilityCharge;
 		
