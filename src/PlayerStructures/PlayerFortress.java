@@ -175,6 +175,7 @@ public class PlayerFortress extends DestructibleObject {
 	public void tryPresssButton() {
 		fortressMenu.tryPresssButton();
 	}
+	
 	@Override
 	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
 		health-=dmg;
@@ -183,7 +184,7 @@ public class PlayerFortress extends DestructibleObject {
 			StagePanel.checkIfSomeOneWon();
 		}
 		StagePanel.addValueLabel((int)(rectHitbox.getCenterX()+(Math.random()-0.5)*rectHitbox.getWidth()),
-		(int)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.getWidth()), dmg,Commons.cAttack);
+		(int)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.getWidth()), dmg, Commons.cAttack);
 	}
 	
 	private void updateHover() {

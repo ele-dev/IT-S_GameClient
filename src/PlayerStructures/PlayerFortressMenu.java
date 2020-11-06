@@ -27,7 +27,7 @@ public class PlayerFortressMenu {
 		exitButton = new GenericButton(rect.x+rect.width-200, rect.y, 200, 100, "Exit", new Color(20,20,20), new Color(255,0,50), 50);
 		
 		int gap = 20;
-		for(byte i = 0;i<recruitGamePieceInfoPanels.length;i++) {
+		for(byte i = 0; i < recruitGamePieceInfoPanels.length; i++) {
 			if(i == 0) {
 				recruitGamePieceInfoPanels[i] = new RecruitGamePieceInfoPanel(startx+100, starty+200, 1000, 150,i,playerFortress);
 			}else {

@@ -365,13 +365,19 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void drawFortresses(Graphics2D g2d) {
-		if(enemyFortress != null)enemyFortress.drawDestructibleObject(g2d);
-		if(notEnemyFortress != null)notEnemyFortress.drawDestructibleObject(g2d);
+		if(enemyFortress != null)
+			enemyFortress.drawDestructibleObject(g2d);
+		
+		if(notEnemyFortress != null)
+			notEnemyFortress.drawDestructibleObject(g2d);
 		
 	}
 	private void drawGoldMines(Graphics2D g2d) {
-		for(GoldMine curGM : goldMines) curGM.drawNeighborBRs(g2d);
-		for(GoldMine curGM : goldMines) curGM.drawDestructibleObject(g2d);
+		for(GoldMine curGM : goldMines) 
+			curGM.drawNeighborBRs(g2d);
+		
+		for(GoldMine curGM : goldMines) 
+			curGM.drawDestructibleObject(g2d);
 	}
 	
 	// draws all Particles
@@ -381,7 +387,6 @@ public class StagePanel extends JPanel {
 				if(camera.isInView(curP.getPos())) {
 					curP.drawParticle(g2d);
 				}
-					
 			}
 		}
 	}
@@ -525,7 +530,10 @@ public class StagePanel extends JPanel {
 			timeStopCounter--;
 			return;
 		}
-		if(levelDesignTool != null || noFortressSelected()) updateBoardRectangles();
+		
+		if(levelDesignTool != null || noFortressSelected()) {
+			updateBoardRectangles();
+		}
 		
 		updateDestructibleObject();
 		updateParticles();
@@ -537,7 +545,6 @@ public class StagePanel extends JPanel {
 		
 		updateDmgLabels();
 		updateGamePieces();
-		
 		updateAbilities();
 		
 		endTurnButton.updateHover(mousePos);
@@ -852,6 +859,7 @@ public class StagePanel extends JPanel {
 				if(SwingUtilities.isLeftMouseButton(e)) {
 					
 					if(levelDesignTool != null || (noFortressSelected() && noFortressRecruiting())) {
+						
 						tryPerformActionOnPressedPos();
 						for(GamePiece curGP : gamePieces) {
 							if(curGP.isPerformingAction()) {
@@ -899,20 +907,20 @@ public class StagePanel extends JPanel {
 						if(!enemyFortress.isSelected()) {
 							enemyFortress.setSelected(enemyFortress.isHover() && !GameState.myTurn);
 							curSelectedGP = null;
-						}else {
+						} else {
 							enemyFortress.tryPresssButton();
 							return;
 						}
 						if(!notEnemyFortress.isSelected()) {
 							notEnemyFortress.setSelected(notEnemyFortress.isHover() && GameState.myTurn);	
 							curSelectedGP = null;
-						}else {
+						} else {
 							notEnemyFortress.tryPresssButton();
 							return;
 						}
 					}
 				}
-			}else {
+			} else {
 				if(SwingUtilities.isLeftMouseButton(e)) {
 					tryLeaveGame();
 				}
@@ -933,7 +941,7 @@ public class StagePanel extends JPanel {
 				if(curHoverBR != null) {
 					if(SwingUtilities.isLeftMouseButton(e)) {
 						levelDesignTool.tryPlaceObject();
-					}else if(SwingUtilities.isRightMouseButton(e)){
+					} else if(SwingUtilities.isRightMouseButton(e)){
 						levelDesignTool.tryRemoveObject();
 					}
 				}
