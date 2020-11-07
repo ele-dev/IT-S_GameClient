@@ -394,6 +394,7 @@ public class Connection extends Thread {
 			
 			// Change the login status and reset player account info
 			this.loggedIn = false;
+			this.playAsGuest = false;
 			this.username = "";
 			
 			// Put the client thread into sleep mode until the player gets logged in again
