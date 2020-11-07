@@ -265,10 +265,14 @@ public class MessageHandler {
 				}
 				
 				// Coerce the message into the right format
+				MsgSpawnGamepiece spawnGPMsg = (MsgSpawnGamepiece) msg;
+				
+				// Check if the contained game piece is real and valid
 				// ...
 				
 				// Add the gamepiece to the global list
-				// ...
+				StagePanel.gamePieces.add(spawnGPMsg.getSpawnedPiece());
+				System.out.println("Received spawn game piece message. Added Piece to the global list");
 			}
 			
 			default:
