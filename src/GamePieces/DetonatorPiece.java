@@ -15,11 +15,12 @@ import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
 
-public class DetonatorPiece extends GamePiece{
+public class DetonatorPiece extends GamePiece {
+	
 	ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
 	
 	public DetonatorPiece(Color teamColor, BoardRectangle boardRect) {
-		super(teamColor, Commons.nameDetonator, boardRect, Commons.dmgDetonator,Commons.baseTypeDetonator);
+		super(teamColor, Commons.nameDetonator, boardRect, Commons.dmgDetonator, Commons.baseTypeDetonator);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -32,7 +33,7 @@ public class DetonatorPiece extends GamePiece{
 	}
 	
 	public void drawAttack(Graphics2D g2d) {
-		for(int i = 0;i<detProjectiles.size();i++) {
+		for(int i = 0; i < detProjectiles.size(); i++) {
 			DetonatorProjectile curDP = detProjectiles.get(i);
 			
 			if(curDP.isDetonated()) {
@@ -61,11 +62,10 @@ public class DetonatorPiece extends GamePiece{
 
 	// creates/shoots the DetonatorProjectile
 	public void shootDetonator() {
-		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
-			targetDestructibleObject.getRectHitbox();
+		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 			
 		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), 10, 20, getIsEnemy(), 
-				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape,targetGamePiece,targetDestructibleObject));
+				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape, targetGamePiece, targetDestructibleObject));
 		targetDestructibleObject = null;
 		targetGamePiece = null;
 	}
@@ -74,7 +74,7 @@ public class DetonatorPiece extends GamePiece{
 		for(DetonatorProjectile curDP : detProjectiles) {
 			curDP.getDetonationCountDown().countDownOne();
 			
-			if(curDP.getDetonationCountDown().getCounter()<=0) {
+			if(curDP.getDetonationCountDown().getCounter() <= 0) {
 				curDP.detonationTimer.start();
 				curDP.setBlinkeIntervall(5);
 			}
@@ -96,13 +96,13 @@ public class DetonatorPiece extends GamePiece{
 	}
 
 	public void updateAttack() { 
-		for(int i = 0;i<detProjectiles.size();i++) { 
+		for(int i = 0; i < detProjectiles.size(); i++) { 
 			DetonatorProjectile curDP = detProjectiles.get(i);
 			if(!curDP.hasHitTarget()) {
 				curDP.move();
 				curDP.checkHitEnemy();
 				curDP.checkHitDestructibleObject();
-			}else {
+			} else {
 				if(curDP.getTargetGamePiece() != null) {
 					curDP.stayStuck();
 					curDP.updateBlink();
@@ -119,6 +119,5 @@ public class DetonatorPiece extends GamePiece{
 			}
 		}
 		updateIsAttacking();
-		
 	}
 }
