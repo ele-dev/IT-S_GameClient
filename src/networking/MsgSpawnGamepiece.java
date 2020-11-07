@@ -39,6 +39,13 @@ public class MsgSpawnGamepiece extends GenericMessage {
 		this.gamePieceClass = gpClass;
 	}
 	
+	// Setters
+	
+	public void setGamePieceClass(String gpClass) 
+	{
+		this.gamePieceClass = gpClass;
+	}
+	
 	// Getters 
 	
 	public String getGamePieceClass() 

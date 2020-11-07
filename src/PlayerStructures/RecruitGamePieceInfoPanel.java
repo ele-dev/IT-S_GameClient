@@ -15,7 +15,9 @@ import GamePieces.GunnerPiece;
 import GamePieces.RocketLauncherPiece;
 import Stage.BoardRectangle;
 import Stage.Commons;
+import Stage.ProjectFrame;
 import Stage.StagePanel;
+import networking.MsgSpawnGamepiece;
 
 public class RecruitGamePieceInfoPanel{
 	private int startx,starty;;
@@ -35,8 +37,8 @@ public class RecruitGamePieceInfoPanel{
 	private float gamePieceHealth,gamePieceShield;
 	private int gamePieceMovementRange;
 	
-	public RecruitGamePieceInfoPanel(int startx, int starty, int w, int h, int gamePieceType,PlayerFortress playerFortress) {
-		rect = new Rectangle(startx,starty,w,h);
+	public RecruitGamePieceInfoPanel(int startx, int starty, int w, int h, int gamePieceType, PlayerFortress playerFortress) {
+		rect = new Rectangle(startx, starty, w, h);
 		this.startx = startx;
 		this.starty = starty;
 		rectruitButton = new GenericButton(rect.x+rect.width-100, rect.y, 200, h, "recruit", new Color(20,20,20), Commons.cCurrency, 40);
@@ -96,22 +98,34 @@ public class RecruitGamePieceInfoPanel{
 	}
 	
 	public void	placeGamePiece(Color teamColor, BoardRectangle boardRectangle) {
+		
+		// Place the game piece on the field and send message to the server
+		Point coordinates = new Point(boardRectangle.row, boardRectangle.column);
+		MsgSpawnGamepiece spawnGPmessage = new MsgSpawnGamepiece("undefined", coordinates, teamColor);
+		
 		switch (gamePieceType) {
 		case 0:
 			StagePanel.gamePieces.add(new GunnerPiece(teamColor, boardRectangle));
+			spawnGPmessage.setGamePieceClass("GunnerPiece");
 			break;
 		case 1:
 			StagePanel.gamePieces.add(new FlamethrowerPiece(teamColor, boardRectangle));
+			spawnGPmessage.setGamePieceClass("FlamethrowerPiece");
 			break;
 		case 2:
 			StagePanel.gamePieces.add(new DetonatorPiece(teamColor, boardRectangle));
+			spawnGPmessage.setGamePieceClass("DetonatorPiece");
 			break;
 		case 3:
 			StagePanel.gamePieces.add(new RocketLauncherPiece(teamColor, boardRectangle));
+			spawnGPmessage.setGamePieceClass("RocketLauncherPiece");
 			break;
 		default:
 			break;
 		}
+		
+		// send the message
+		ProjectFrame.conn.sendMessageToServer(spawnGPmessage);
 	}
 	
 	public int getStarty() {
