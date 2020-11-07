@@ -2,7 +2,16 @@ package clientPackage;
 
 import java.awt.Color;
 
+import GamePieces.DetonatorPiece;
+import GamePieces.EMPPiece;
+import GamePieces.FlamethrowerPiece;
 import GamePieces.GamePiece;
+import GamePieces.GunnerPiece;
+import GamePieces.RapidElectroPiece;
+import GamePieces.RocketLauncherPiece;
+import GamePieces.ShotgunPiece;
+import GamePieces.SniperPiece;
+import GamePieces.TazerPiece;
 import PlayerStructures.PlayerFortress;
 import Stage.BoardRectangle;
 import Stage.ProjectFrame;
@@ -268,11 +277,88 @@ public class MessageHandler {
 				MsgSpawnGamepiece spawnGPMsg = (MsgSpawnGamepiece) msg;
 				
 				// Check if the contained game piece is real and valid
-				// ...
+				String gpClass = spawnGPMsg.getGamePieceClass();
+				Color teamColor = spawnGPMsg.getTeamColor();
+				BoardRectangle spawnPoint = BoardRectangle.getBoardRectFromCoords(spawnGPMsg.getFieldCoordinates());
+				if(gpClass.equals("undefined") || !(teamColor.equals(Color.BLUE) || teamColor.equals(Color.RED))
+						|| spawnPoint == null) {
+					System.err.println("Received spawn gamepiece message with invalid gamePiece data!");
+					break;
+				}
 				
-				// Add the gamepiece to the global list
-				StagePanel.gamePieces.add(spawnGPMsg.getSpawnedPiece());
-				System.out.println("Received spawn game piece message. Added Piece to the global list");
+				// create and add the gamepiece to the global list
+				GamePiece spawnedGP = null;
+				switch(gpClass) 
+				{
+					case "GunnerPiece":
+					{
+						spawnedGP = new GunnerPiece(teamColor, spawnPoint);
+						break;
+					}
+					
+					case "SniperPiece":
+					{
+						spawnedGP = new SniperPiece(teamColor, spawnPoint);
+						break;
+					}
+					
+					case "FlamethrowerPiece":
+					{
+						spawnedGP = new FlamethrowerPiece(teamColor, spawnPoint);
+						break;
+					}
+					
+					case "DetonatorPiece":
+					{
+						spawnedGP = new DetonatorPiece(teamColor, spawnPoint);
+						break;
+					}
+					
+					case "TazerPiece":
+					{
+						spawnedGP = new TazerPiece(teamColor, spawnPoint);
+						break;
+					}
+					
+					case "RocketLauncherPiece":
+					{
+						spawnedGP = new RocketLauncherPiece(teamColor, spawnPoint);
+						break;
+					}
+					
+					case "EMPPiece":
+					{
+						spawnedGP = new EMPPiece(teamColor, spawnPoint);
+						break;
+					}
+					
+					case "RapidElectroPiece":
+					{
+						spawnedGP = new RapidElectroPiece(teamColor, spawnPoint);
+						break;
+					}
+					
+					case "ShotgunPiece":
+					{
+						spawnedGP = new ShotgunPiece(teamColor, spawnPoint);
+						break;
+					}
+					
+					default:
+					{
+						break;
+					}
+				}
+				
+				if(spawnedGP != null) {
+					spawnedGP.assignToSide();
+					StagePanel.gamePieces.add(spawnedGP);
+					System.out.println("Received spawn game piece message. Added Piece to the global list");
+				} else {
+					System.err.println("Invalid game piece class: " + gpClass);
+				}
+				
+				break;
 			}
 			
 			default:

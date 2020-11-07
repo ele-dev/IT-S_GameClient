@@ -1,6 +1,7 @@
 package networking;
 
-import GamePieces.GamePiece;
+import java.awt.Color;
+import java.awt.Point;
 
 /*
  * written by Elias Geiger
@@ -15,7 +16,9 @@ public class MsgSpawnGamepiece extends GenericMessage {
 	private static final long serialVersionUID = 7499639481913568506L;
 	
 	// Attributes 
-	private GamePiece spawnedGamePiece;
+	private String gamePieceClass;
+	private Point fieldCoordinates;
+	private Color teamColor;
 	
 	// Constructor
 	public MsgSpawnGamepiece()
@@ -23,19 +26,33 @@ public class MsgSpawnGamepiece extends GenericMessage {
 		// call the super class constuctor
 		super();
 		this.msgID = GenericMessage.MSG_SPAWN_GAMEPIECE;
-		this.spawnedGamePiece = null;
+		this.fieldCoordinates = new Point(1, 1);		// default field coords
+		this.teamColor = Color.BLUE;					// default team color
+		this.gamePieceClass = "undefined";				// default GP class 
 	}
 	
-	public MsgSpawnGamepiece(GamePiece newPiece) 
+	public MsgSpawnGamepiece(String gpClass, Point spawnPoint, Color teamColor) 
 	{
 		this();
-		this.spawnedGamePiece = newPiece;
+		this.fieldCoordinates = spawnPoint;
+		this.teamColor = teamColor;
+		this.gamePieceClass = gpClass;
 	}
 	
 	// Getters 
 	
-	public GamePiece getSpawnedPiece() 
+	public String getGamePieceClass() 
 	{
-		return this.spawnedGamePiece;
+		return this.gamePieceClass;
+	}
+	
+	public Point getFieldCoordinates() 
+	{
+		return this.fieldCoordinates;
+	}
+	
+	public Color getTeamColor() 
+	{
+		return this.teamColor;
 	}
 }
