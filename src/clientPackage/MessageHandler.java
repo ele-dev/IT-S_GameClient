@@ -1,5 +1,18 @@
 package clientPackage;
 
+/*
+ * written by Elias Geiger
+ * 
+ * This class is intented do message handling and is only used in a static context
+ * Every time the listener thread receives a new message the method inside this class 
+ * is called to identify the message type and to decide how to react or what to do with
+ * the data insided the newly received message.
+ * 
+ * This class was mainly introduced to outsource the message handling and not to overload other classes
+ * since the handleMessage() Method is relatively long and was freqently extended during development
+ * 
+ */
+
 import java.awt.Color;
 
 import GamePieces.DetonatorPiece;
@@ -17,19 +30,6 @@ import Stage.BoardRectangle;
 import Stage.ProjectFrame;
 import Stage.StagePanel;
 import menueGui.GameState;
-
-/*
- * written by Elias Geiger
- * 
- * This class is intented do message handling and is only used in a static context
- * Every time the listener thread receives a new message the method inside this class 
- * is called to identify the message type and to decide how to react or what to do with
- * the data insided the newly received message.
- * 
- * This class was mainly introduced to outsource the message handling and not to overload other classes
- * since the handleMessage() Method is relatively long and was freqently extended during development
- * 
- */
 
 import networking.*;
 
@@ -265,6 +265,7 @@ public class MessageHandler {
 				break;
 			}
 			
+			// This message is received when a new game piece was has spawned on the game map
 			case GenericMessage.MSG_SPAWN_GAMEPIECE:
 			{
 				// Ignore message when we aren't ingame 
@@ -361,6 +362,7 @@ public class MessageHandler {
 				break;
 			}
 			
+			// If the message type didn't match any of these types
 			default:
 			{
 				System.err.println("Received message of unknown type!");

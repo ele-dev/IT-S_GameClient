@@ -250,7 +250,7 @@ public class StagePanel extends JPanel {
 		gamePieces.add(new RocketLauncherPiece(Color.BLUE, boardRectangles.get(137)));
 		gamePieces.add(new RocketLauncherPiece(Color.RED, boardRectangles.get(120)));
 		gamePieces.add(new FlamethrowerPiece(Color.BLUE, boardRectangles.get(145)));
-		gamePieces.add(new FlamethrowerPiece(Color.RED, boardRectangles.get(171)));
+		gamePieces.add(new FlamethrowerPiece(Color.RED, boardRectangles.get(172)));
 		gamePieces.add(new TazerPiece(Color.BLUE, boardRectangles.get(133)));
 		gamePieces.add(new TazerPiece(Color.RED, boardRectangles.get(135)));
 		gamePieces.add(new DetonatorPiece(Color.BLUE, boardRectangles.get(91)));
