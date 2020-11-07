@@ -112,7 +112,7 @@ public class StagePanel extends JPanel {
 		h = ProjectFrame.height;
 		setBounds(0, 0, w, h);
 		// setVisible(true);
-		cBackGround = new Color(28,26,36);
+		cBackGround = new Color(28, 26, 36);
 		
 		// create camera and timers
 		camera = new Camera();
@@ -149,11 +149,10 @@ public class StagePanel extends JPanel {
 		
 		// makes Cursor invisible 
 		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-		    cursorImg, new Point(0, 0), "blank cursor");
+		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
 		setCursor(blankCursor);
 		
-		lightingManager = new LightingManager(w, h,camera);
+		lightingManager = new LightingManager(w, h, camera);
 		
 		// Add the listeners and start the timers
 		addMouseListener(new ML());
@@ -170,13 +169,13 @@ public class StagePanel extends JPanel {
 	}
 	
 	// sets a screen shake so that the camera will shake for "screenShakeAmountOfFRames" of Frames
-	public static void applyScreenShake(int screenShakeAmountOfFRames,int screenShakeMagnitude) {
-		camera.applyScreenShake(screenShakeAmountOfFRames,screenShakeMagnitude);
+	public static void applyScreenShake(int screenShakeAmountOfFRames, int screenShakeMagnitude) {
+		camera.applyScreenShake(screenShakeAmountOfFRames, screenShakeMagnitude);
 	}
 	// adds a dmgLabel (shows the dmg that was taken)
 	public static void addValueLabel(GamePiece targetGP,float value, Color c) {
 		if(!targetGP.isDead) {
-			StagePanel.valueLabels.add(new ValueLabel((float)(targetGP.getCenterX()+((Math.random()-0.5)*60)),(float)(targetGP.getCenterY()+((Math.random()-0.5)*60)),"-"+Math.round(value),c));
+			StagePanel.valueLabels.add(new ValueLabel((float)(targetGP.getCenterX()+((Math.random()-0.5)*60)),(float)(targetGP.getCenterY()+((Math.random()-0.5)*60)),"-"+Math.round(value), c));
 		}	
 	}
 	// adds a dmgLabel (shows the dmg that was taken)
@@ -309,8 +308,9 @@ public class StagePanel extends JPanel {
 		drawEveryBoardRectangleIndex(g2d);
 		drawGoldMines(g2d);
 		
-		if(enemyFortress != null) enemyFortress.tryDrawRecruitableBoardRectangles(g2d);
-		if(notEnemyFortress != null) notEnemyFortress.tryDrawRecruitableBoardRectangles(g2d);
+		if(enemyFortress != null) { enemyFortress.tryDrawRecruitableBoardRectangles(g2d); }
+		if(notEnemyFortress != null) { notEnemyFortress.tryDrawRecruitableBoardRectangles(g2d); }
+		
 		drawAllDestructionParticles(g2d);
 		drawAllEmptyShells(g2d);
 		drawFortresses(g2d);
@@ -350,17 +350,17 @@ public class StagePanel extends JPanel {
 			g2d.translate(camera.getPos().x, camera.getPos().y);
 		}
 		if(levelDesignTool == null) {
-			if(enemyFortress.isSelected()) enemyFortress.drawFortressMenu(g2d);
-			if(notEnemyFortress.isSelected()) notEnemyFortress.drawFortressMenu(g2d);
+			if(enemyFortress.isSelected()) { enemyFortress.drawFortressMenu(g2d); }
+			if(notEnemyFortress.isSelected()) { notEnemyFortress.drawFortressMenu(g2d); }
 		}
-//		g2d.setStroke(new BasicStroke(3));
-//		g2d.setColor(Color.WHITE);
-//		g2d.draw(GameMap.mapRectangle);
-//		g2d.fillOval((int)camera.getCenterOfScreen().x-5, (int)camera.getCenterOfScreen().y-5, 10, 10);
-//		camera.drawRectOfView(g2d);
+		// g2d.setStroke(new BasicStroke(3));
+		// g2d.setColor(Color.WHITE);
+		// g2d.draw(GameMap.mapRectangle);
+		// g2d.fillOval((int)camera.getCenterOfScreen().x-5, (int)camera.getCenterOfScreen().y-5, 10, 10);
+		// camera.drawRectOfView(g2d);
+		
 		if(winScreen != null) winScreen.drawButtons(g2d);
 		drawCursor(g2d);
-		
 		
 		g2d.translate(-camera.getPos().x, -camera.getPos().y);
 		
@@ -570,8 +570,8 @@ public class StagePanel extends JPanel {
 		surrenderButton.updatePos(camera.getPos());
 		surrenderButton.setActive(curActionPerformingGP == null && levelDesignTool == null && noFortressSelected() && !goldUncollected());
 		
-		if(levelDesignTool == null) updateFortresses();
-		if(winScreen != null) winScreen.update();
+		if(levelDesignTool == null) { updateFortresses(); }
+		if(winScreen != null) { winScreen.update(); }
 	}
 	
 	public static void checkIfSomeOneWon() {
