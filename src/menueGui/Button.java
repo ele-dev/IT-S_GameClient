@@ -29,7 +29,7 @@ public class Button extends GuiElement {
 	// Constructor for Button with default specs
 	public Button() {
 		// call constructor from super class
-		super(0, 0, 200, 100);
+		super(200, 100);
 		
 		// Set default values
 		this.isHover = false;
@@ -38,13 +38,13 @@ public class Button extends GuiElement {
 	}
 	
 	// Constructor for creating button with desired dimensions and textlabel
-	public Button(int posX, int posY, int width, int height, String label) {
+	public Button(int width, int height, String label) {
 		
 		// call default constructor
 		this();
 		
 		// Set the parameters
-		this.rect = new Rectangle(posX, posY, width, height);
+		this.rect = new Rectangle(0, 0, width, height);
 		this.buttonLabel = label;
 		
 		// enable the button from the beginning

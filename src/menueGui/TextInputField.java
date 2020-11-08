@@ -33,7 +33,7 @@ public class TextInputField extends GuiElement {
 	// Constructor for text input field with default specs
 	public TextInputField() {
 		// call consructor from super class
-		super(0, 0, 400, 100);
+		super(400, 100);
 		
 		// set default values
 		this.isFlash = false;
@@ -43,13 +43,13 @@ public class TextInputField extends GuiElement {
 	}
 	
 	// Constructor, taking hint text, color and dimension
-	public TextInputField(String hint, int posX, int posY, int width, int height) {
+	public TextInputField(String hint, int width, int height) {
 		// Call default constructor
 		this();
 		
 		// Set the parameters
 		this.hint = hint;
-		this.rect = new Rectangle(posX, posY, width, height);
+		this.rect = new Rectangle(0, 0, width, height);
 		
 		// enable the text field from the beginning
 		this.isEnabled = true;

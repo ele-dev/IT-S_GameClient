@@ -29,9 +29,9 @@ public abstract class GuiElement {
 	}
 	
 	// advanced constructor
-	public GuiElement(int posX, int posY, int width, int height) {
+	public GuiElement(int width, int height) {
 		this();
-		this.rect = new Rectangle(posX, posY, width, height);
+		this.rect = new Rectangle(0, 0, width, height);
 	}
 	
 	// Drawing method

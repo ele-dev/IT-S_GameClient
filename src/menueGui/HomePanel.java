@@ -24,9 +24,9 @@ import networking.SignalMessage;
 public class HomePanel extends GuiPanel {
 	
 	// Gui elements inside this panel (buttons, text fields, etc.)
-	private Button logoutButton = new Button(800, 500, 100, 50, "Logout");
-	private Button quickMatchButton = new Button(1200, 200, 130, 50, "Quickmatch");
-	private Button abortMatchSearchButton = new Button(1200, 300, 130, 50, "Abort Search");
+	private Button logoutButton = new Button(100, 50, "Logout");
+	private Button quickMatchButton = new Button(130, 50, "Quickmatch");
+	private Button abortMatchSearchButton = new Button(130, 50, "Abort Search");
 	private TextLabel caption = new TextLabel("Homescreen", 30);
 	private TextLabel welcomeMessage = new TextLabel("Welcome", 18);
 	private TextLabel gameSearchMessage = new TextLabel("Waiting for an opponent ...", 18);

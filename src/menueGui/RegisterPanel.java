@@ -12,8 +12,8 @@ import Stage.ProjectFrame;
 public class RegisterPanel extends GuiPanel {
 
 	// GUI elements inside this panel
-	private Button goToLoginButton = new Button(0, 0, 180, 50, "Back to Login");
-	private Button registerAccountButton = new Button(750, 600, 170, 50, "Register");
+	private Button goToLoginButton = new Button(180, 50, "Back to Login");
+	private Button registerAccountButton = new Button(170, 50, "Register");
 	private TextInputField[] fields = new TextInputField[4];
 	private TextLabel caption = new TextLabel("Create new Account", 40);
 	private TextLabel statusLabel = new TextLabel("", 17);
@@ -45,13 +45,13 @@ public class RegisterPanel extends GuiPanel {
 		this.noteLabel.setRelativePosition(50, 34);
 		
 		// init the list of textfields and give them relative positions
-		this.fields[0] = new TextInputField("Username", 750, 300, 450, 50);
+		this.fields[0] = new TextInputField("Username", 450, 50);
 		this.fields[0].setRelativePosition(50, 37);
-		this.fields[1] = new TextInputField("Email address", 750, 360, 450, 50);
+		this.fields[1] = new TextInputField("Email address", 450, 50);
 		this.fields[1].setRelativePosition(50, 42);
-		this.fields[2] = new TextInputField("Password", 750, 420, 450, 50);
+		this.fields[2] = new TextInputField("Password", 450, 50);
 		this.fields[2].setRelativePosition(50, 47);
-		this.fields[3] = new TextInputField("Repeat password", 750, 480, 450, 50);
+		this.fields[3] = new TextInputField("Repeat password", 450, 50);
 		this.fields[3].setRelativePosition(50, 52);
 
 		// Configure parameters of the input fields
