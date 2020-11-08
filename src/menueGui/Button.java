@@ -18,6 +18,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
 import Stage.Commons;
+import Stage.ProjectFrame;
 
 public class Button extends GuiElement {
 
@@ -26,25 +27,27 @@ public class Button extends GuiElement {
 	private String buttonLabel;
 	private int textSize;
 	
+	private static int defaultTextSize = (int) Math.round(Math.sqrt((double)ProjectFrame.height) / 2.0);
+	
 	// Constructor for Button with default specs
-	public Button() {
+	public Button(int width, int height) {
 		// call constructor from super class
-		super(200, 100);
+		super(width, height);
 		
 		// Set default values
 		this.isHover = false;
 		this.buttonLabel = "Button";
-		this.textSize = 20;
+		this.textSize = defaultTextSize;
 	}
 	
 	// Constructor for creating button with desired dimensions and textlabel
 	public Button(int width, int height, String label) {
 		
 		// call default constructor
-		this();
+		this(width, height);
 		
 		// Set the parameters
-		this.rect = new Rectangle(0, 0, width, height);
+		// this.rect = new Rectangle(0, 0, width, height);
 		this.buttonLabel = label;
 		
 		// enable the button from the beginning
@@ -68,7 +71,7 @@ public class Button extends GuiElement {
 	}
 	
 	private void drawButtonBox(Graphics2D g2d) {
-		g2d.setColor(isHover? Commons.buttonHover : new Color(20,20,20));
+		g2d.setColor(isHover ? Commons.buttonHover : new Color(20, 20, 20));
 		g2d.fill(this.rect);
 	}
 	

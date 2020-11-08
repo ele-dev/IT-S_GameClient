@@ -18,9 +18,9 @@ public class LoginPanel extends GuiPanel {
 	
 	// GUI elements inside this panel
 	private TextInputField[] fields = new TextInputField[2];
-	private Button loginButton = new Button(100, 50, "Login"); 
-	private Button playAsGuestButton = new Button(140, 50, "Play as Guest");
-	private Button goToRegisterButton = new Button(190, 50, "Register an account");
+	private Button loginButton = new Button(60, 40, "Login"); 
+	private Button playAsGuestButton = new Button(85, 40, "Play as Guest");
+	private Button goToRegisterButton = new Button(150, 40, "Register an account");
 	private TextLabel statusLabel = new TextLabel("", 17);
 	private TextLabel gameTitle = new TextLabel(Commons.gameTitle, 55);
 	private TextLabel noAccountYet = new TextLabel("You don't have an account yet?", 17);
@@ -51,14 +51,14 @@ public class LoginPanel extends GuiPanel {
 		this.noAccountYet.setRelativePosition(50, 60);
 		
 		// give the buttons relative screen positions
-		this.loginButton.setRelativePosition(47, 50);
-		this.playAsGuestButton.setRelativePosition(53, 50);
+		this.loginButton.setRelativePosition(43, 50);
+		this.playAsGuestButton.setRelativePosition(56, 50);
 		this.goToRegisterButton.setRelativePosition(50, 65);
 		
 		// create the input fields and place them at relative position
-		fields[0] = new TextInputField("Username", 400, 50);
-		fields[0].setRelativePosition(50, 37);
-		fields[1] = new TextInputField("Password", 400, 50);
+		fields[0] = new TextInputField("Username", Commons.textFieldWidth, Commons.textFieldHeight);
+		fields[0].setRelativePosition(50, 36);
+		fields[1] = new TextInputField("Password", Commons.textFieldWidth, Commons.textFieldHeight);
 		fields[1].setRelativePosition(50, 42);
 		
 		// Set the text in the password field to hidden

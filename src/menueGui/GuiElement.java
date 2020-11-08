@@ -32,10 +32,29 @@ public abstract class GuiElement {
 	public GuiElement(int width, int height) {
 		this();
 		this.rect = new Rectangle(0, 0, width, height);
+		
+		// Calculate absolute pixel size of gui element 
+		// important: must be done before setRelativePosition()
+		this.setRelativeSize(width, height);
 	}
 	
 	// Drawing method
 	public abstract void draw(Graphics2D g2d);
+	
+	// Function for determining the size absolute size (pixels) for a relative size (promille)
+	// using the screen resolution of the device
+	public void setRelativeSize(int relWidth, int relHeight) {
+		
+		// calculate the the absolute width and height
+		float wFactor = 0.001f * relWidth;
+		float hFactor = 0.001f * relHeight;
+		int width = Math.round(wFactor * ProjectFrame.width);
+		int height = Math.round(hFactor * ProjectFrame.height);
+		
+		// Apply the calculated absolute size to the GUIs rectangle
+		this.rect.width = width;
+		this.rect.height = height;
+	}
 	
 	// Function for positioning a gui element relatively to the window frame
 	public void setRelativePosition(int x, int y) {
@@ -46,7 +65,7 @@ public abstract class GuiElement {
 		int posX = Math.round(xFactor * ProjectFrame.width);
 		int posY = Math.round(yFactor * ProjectFrame.height);
 		
-		// Center the gui element using the own dimensions
+		// Center the gui element using the own dimensions (width & height in pixels)
 		posX -= this.rect.width / 2;
 		posY -= this.rect.height / 2;
 		

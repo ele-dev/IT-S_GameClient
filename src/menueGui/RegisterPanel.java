@@ -12,8 +12,8 @@ import Stage.ProjectFrame;
 public class RegisterPanel extends GuiPanel {
 
 	// GUI elements inside this panel
-	private Button goToLoginButton = new Button(180, 50, "Back to Login");
-	private Button registerAccountButton = new Button(170, 50, "Register");
+	private Button goToLoginButton = new Button(70, 50, "Back to Login");
+	private Button registerAccountButton = new Button(60, 50, "Register");
 	private TextInputField[] fields = new TextInputField[4];
 	private TextLabel caption = new TextLabel("Create new Account", 40);
 	private TextLabel statusLabel = new TextLabel("", 17);
@@ -40,19 +40,19 @@ public class RegisterPanel extends GuiPanel {
 	protected void initGuiElements() {
 		
 		// Give the text label relative positions
-		this.caption.setRelativePosition(50, 30);
-		this.statusLabel.setRelativePosition(45, 57);
-		this.noteLabel.setRelativePosition(50, 34);
+		this.caption.setRelativePosition(50, 27);
+		this.statusLabel.setRelativePosition(40, 62);
+		this.noteLabel.setRelativePosition(50, 30);
 		
 		// init the list of textfields and give them relative positions
-		this.fields[0] = new TextInputField("Username", 450, 50);
+		this.fields[0] = new TextInputField("Username", Commons.textFieldWidth + 100, Commons.textFieldHeight);
 		this.fields[0].setRelativePosition(50, 37);
-		this.fields[1] = new TextInputField("Email address", 450, 50);
-		this.fields[1].setRelativePosition(50, 42);
-		this.fields[2] = new TextInputField("Password", 450, 50);
-		this.fields[2].setRelativePosition(50, 47);
-		this.fields[3] = new TextInputField("Repeat password", 450, 50);
-		this.fields[3].setRelativePosition(50, 52);
+		this.fields[1] = new TextInputField("Email address", Commons.textFieldWidth + 100, Commons.textFieldHeight);
+		this.fields[1].setRelativePosition(50, 43);
+		this.fields[2] = new TextInputField("Password", Commons.textFieldWidth + 100, Commons.textFieldHeight);
+		this.fields[2].setRelativePosition(50, 49);
+		this.fields[3] = new TextInputField("Repeat password", Commons.textFieldWidth + 100, Commons.textFieldHeight);
+		this.fields[3].setRelativePosition(50, 55);
 
 		// Configure parameters of the input fields
 		this.fields[2].hideText(true);
@@ -63,7 +63,7 @@ public class RegisterPanel extends GuiPanel {
 		
 		// Give the buttons relative position
 		this.goToLoginButton.setRelativePosition(5, 95);
-		this.registerAccountButton.setRelativePosition(50, 61);
+		this.registerAccountButton.setRelativePosition(62, 62);
 		
 		// set the initial state and according message
 		this.failedAttempt = false;

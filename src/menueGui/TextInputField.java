@@ -9,13 +9,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
 import Stage.Commons;
+import Stage.ProjectFrame;
 
 public class TextInputField extends GuiElement {
 	
@@ -27,13 +27,15 @@ public class TextInputField extends GuiElement {
 	private final short flashIntervall = 10;
 	private boolean hiddenText;
 	
+	private static final int defaultTextSize = (int) Math.round(Math.sqrt((double)ProjectFrame.height) / 2.0);
+	
 	private String validChars = "abcdefghijklmnopqrstuvwxyz1234567890!?_ ";
 	private short maxLength = Commons.maxInputLength;
 	
 	// Constructor for text input field with default specs
-	public TextInputField() {
+	public TextInputField(int width, int height) {
 		// call consructor from super class
-		super(400, 100);
+		super(width, height);
 		
 		// set default values
 		this.isFlash = false;
@@ -45,11 +47,11 @@ public class TextInputField extends GuiElement {
 	// Constructor, taking hint text, color and dimension
 	public TextInputField(String hint, int width, int height) {
 		// Call default constructor
-		this();
+		this(width, height);
 		
 		// Set the parameters
 		this.hint = hint;
-		this.rect = new Rectangle(0, 0, width, height);
+		// this.rect = new Rectangle(0, 0, width, height);
 		
 		// enable the text field from the beginning
 		this.isEnabled = true;
@@ -100,14 +102,14 @@ public class TextInputField extends GuiElement {
 	
 	// Private method that draws the box of the text field
 	private void drawBox(Graphics2D g2d) {
-		g2d.setColor(isSelected? Commons.textFieldSelected : Color.DARK_GRAY);
+		g2d.setColor(isSelected ? Commons.textFieldSelected : Color.DARK_GRAY);
 		g2d.fill(rect);
 	}
 
 	// Private method that draws the typed text inside the text field
 	private void drawText(Graphics2D g2d) {
 		g2d.setColor(Color.WHITE);
-		g2d.setFont(new Font("Arial", Font.PLAIN, 20));
+		g2d.setFont(new Font("Arial", Font.PLAIN, defaultTextSize));
 		FontMetrics metrics = g2d.getFontMetrics();
 		String str = "";
 		if(isSelected) {
@@ -141,7 +143,7 @@ public class TextInputField extends GuiElement {
 		
 		// Set the text color to dark grey and get the metrics of the hint text
 		g2d.setColor(Color.GRAY);
-		g2d.setFont(new Font("Arial", Font.PLAIN, 20));
+		g2d.setFont(new Font("Arial", Font.PLAIN, defaultTextSize));
 		FontMetrics metrics = g2d.getFontMetrics();
 		
 		// Estimate coordinates of the text inside the box of the text field

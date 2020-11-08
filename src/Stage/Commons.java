@@ -13,6 +13,10 @@ public interface Commons {
 	// Refresh rates for timers 
 	public static final int frametime = 10;
 	
+	// Menue gui elements dimensions
+	public static final int textFieldHeight = 46;
+	public static final int textFieldWidth = 210;
+	
 	// Important colors
 	final Color loginScreenBackground = new Color(28, 26, 36);
 	final Color homeScreenBackground = new Color(28, 26, 36);
