@@ -19,7 +19,7 @@ public class LevelInitializer {
 	private int mapRows = 0;
 	private int mapColumns = 0;
 	
-	private int enemyFortressIndex = -1,notEnemyFortressIndex = -1;
+	private int redBaseIndex = -1,blueBaseIndex = -1;
 	
 	public int getMapRows() {
 		return mapRows;
@@ -27,11 +27,11 @@ public class LevelInitializer {
 	public int getMapColumns() {
 		return mapColumns;
 	}
-	public int getEnemyFortressIndex() {
-		return enemyFortressIndex;
+	public int getRedBaseIndex() {
+		return redBaseIndex;
 	}
-	public int getNotEnemyFortressIndex() {
-		return notEnemyFortressIndex;
+	public int getBlueBaseIndex() {
+		return blueBaseIndex;
 	}
 	
 	public void printLevelLAyout() {
@@ -51,7 +51,7 @@ public class LevelInitializer {
 			}
 			if(curBR.isWall) {
 				System.out.print("[]");
-			}else if(StagePanel.enemyFortress.containsBR(curBR) || StagePanel.notEnemyFortress.containsBR(curBR)){
+			}else if(StagePanel.redBase.containsBR(curBR) || StagePanel.blueBase.containsBR(curBR)){
 				System.out.print("~~");
 			}else if(curBR.isDestructibleObject()){
 				System.out.print("<>");
@@ -87,10 +87,10 @@ public class LevelInitializer {
 			index = 0;
 			for(int i = 0; i < mapRows; i++) {
 				for(int j = 0; j < mapColumns; j++) {
-					if(enemyFortressIndex < 0 && mapImage.getRGB(j, i) == Commons.enemyColor.getRGB()) {
-						enemyFortressIndex = index;
-					} else if(notEnemyFortressIndex < 0 && mapImage.getRGB(j, i) == Commons.notEnemyColor.getRGB()) {
-						notEnemyFortressIndex = index;
+					if(redBaseIndex < 0 && mapImage.getRGB(j, i) == Commons.enemyColor.getRGB()) {
+						redBaseIndex = index;
+					} else if(blueBaseIndex < 0 && mapImage.getRGB(j, i) == Commons.notEnemyColor.getRGB()) {
+						blueBaseIndex = index;
 					} 
 					if(mapImage.getRGB(j, i) == Color.BLACK.getRGB()) {
 						StagePanel.boardRectangles.get(index).isWall = true;
@@ -106,6 +106,13 @@ public class LevelInitializer {
 					index++;
 				}
 			}
+			
+			for(BoardRectangle curBR : StagePanel.boardRectangles) {
+				curBR.initAdjecantBRs(StagePanel.boardRectangles);
+				if(curBR.isWall) {
+					curBR.initWallSprites();
+				}
+			}
 		} catch (IOException e1) {
 			JOptionPane.showMessageDialog(null, "Given map does not exist!");
 			e1.printStackTrace();
@@ -116,16 +123,16 @@ public class LevelInitializer {
 		try {
 			File outputFile = new File("src/LevelDesignTools/"+mapName+".png");
 			if(mapColumns == 0 || mapRows == 0) {
-				mapColumns = StagePanel.gameMap.getColumns();
-				mapRows = StagePanel.gameMap.getRows();
+				mapColumns = StagePanel.mapColumns;
+				mapRows = StagePanel.mapRows;
 			}
 			BufferedImage mapImage = new BufferedImage(mapColumns, mapRows, BufferedImage.TYPE_INT_ARGB); 
 			int index = 0;
 			for(int i = 0;i<mapRows;i++) {
 				for(int j = 0; j < mapColumns; j++) {
-					if(StagePanel.enemyFortress.containsBR(boardRectangles.get(index))) {
+					if(StagePanel.redBase.containsBR(boardRectangles.get(index))) {
 						mapImage.setRGB(j, i, Commons.notEnemyColor.getRGB());
-					} else if(StagePanel.notEnemyFortress.containsBR(boardRectangles.get(index))) {
+					} else if(StagePanel.blueBase.containsBR(boardRectangles.get(index))) {
 						mapImage.setRGB(j, i, Commons.enemyColor.getRGB());
 					} else if(boardRectangles.get(index).isWall) {
 						mapImage.setRGB(j, i, Color.BLACK.getRGB());

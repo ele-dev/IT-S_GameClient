@@ -94,8 +94,8 @@ public class BoardRectangle {
 		return adjecantBoardRectangles;
 	}
 	public boolean isDestructibleObject() {
-		if(StagePanel.enemyFortress != null && StagePanel.enemyFortress.containsBR(this)) return true;
-		if(StagePanel.notEnemyFortress != null && StagePanel.notEnemyFortress.containsBR(this)) return true;
+		if(StagePanel.redBase != null && StagePanel.redBase.containsBR(this)) return true;
+		if(StagePanel.blueBase != null && StagePanel.blueBase.containsBR(this)) return true;
 		for(DestructibleObject curDO : StagePanel.destructibleObjects) {
 			if(curDO.containsBR(this)) {
 				return true;

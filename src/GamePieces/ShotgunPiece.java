@@ -1,6 +1,5 @@
 package GamePieces;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -21,8 +20,8 @@ public class ShotgunPiece extends GamePiece {
 	private float spreadAngle = 30;
 	private byte bulletAmount = 10;
 
-	public ShotgunPiece(Color teamColor, BoardRectangle boardRect) {
-		super(teamColor, Commons.nameShotgun, boardRect, Commons.dmgShotgun, Commons.baseTypeShotgun);
+	public ShotgunPiece(boolean isRed, BoardRectangle boardRect) {
+		super(isRed, Commons.nameShotgun, boardRect, Commons.dmgShotgun, Commons.baseTypeShotgun);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -73,7 +72,7 @@ public class ShotgunPiece extends GamePiece {
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 		for(int i = 0;i<bulletAmount;i++) {
-			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c,16, 
+			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, getIsRed(),16, 
 					(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));	
 		}
 		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),8,20, (float)angle -90, c,(float)(Math.random()*3+2)));
@@ -97,7 +96,7 @@ public class ShotgunPiece extends GamePiece {
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
 			}else { 
-				targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
+				targetDestructibleObject.getDamaged(getDmg(),angle,getIsRed());
 				targetDestructibleObject = null;
 			}
 			startedAttack = false;

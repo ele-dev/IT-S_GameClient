@@ -1,6 +1,5 @@
 package GamePieces;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -24,8 +23,8 @@ public class RocketLauncherPiece extends GamePiece{
 	 
 	double spreadAngle = 120;
 	
-	public RocketLauncherPiece(Color teamColor, BoardRectangle boardRect) {
-		super(teamColor, Commons.nameRocketLauncher, boardRect, Commons.dmgRocketLauncher,Commons.baseTypeRocketLauncher);
+	public RocketLauncherPiece(boolean isRed, BoardRectangle boardRect) {
+		super(isRed, Commons.nameRocketLauncher, boardRect, Commons.dmgRocketLauncher,Commons.baseTypeRocketLauncher);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			 
 			@Override
@@ -113,7 +112,7 @@ public class RocketLauncherPiece extends GamePiece{
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
 			} else if(targetDestructibleObject != null) {
-				targetDestructibleObject.getDamaged(getDmg(), angle,getIsEnemy());
+				targetDestructibleObject.getDamaged(getDmg(), angle,getIsRed());
 				targetDestructibleObject = null;
 			}
 		}

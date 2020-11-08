@@ -16,7 +16,7 @@ import Stage.Commons;
 import Stage.StagePanel;
 
 public class LevelDesignTool {
-	private String[] buildObjects = {"Wall","Gap","Crate","HinderingTerrain","GoldMine","EnemyFortress","NotEnemyFortress"};
+	private String[] buildObjects = {"Wall","Gap","Crate","HinderingTerrain","GoldMine","RedFortress","BlueFortress"};
 	private int index = 0;
 	private String equippedBuildObject = buildObjects[index];
 	public MWL mwl = new MWL();
@@ -48,12 +48,12 @@ public class LevelDesignTool {
 		FontMetrics fontMetrics = g2d.getFontMetrics();
 		int textHeight = fontMetrics.getHeight();
 		int textWidth = 0;
-		for(int i = 0; i < StagePanel.gameMap.getColumns(); i++) {
+		for(int i = 0; i < StagePanel.mapColumns; i++) {
 			String str= i+1+"";
 			textWidth = fontMetrics.stringWidth(str);
 			g2d.drawString(str, i*Commons.boardRectSize+textWidth/2, -Commons.boardRectSize/2+textHeight/3);
 		}
-		for(int i = 0;i<StagePanel.gameMap.getRows();i++) {
+		for(int i = 0;i<StagePanel.mapRows;i++) {
 			String str= i+1+"";
 			textWidth = fontMetrics.stringWidth(str);
 			g2d.drawString(str, textWidth/2-Commons.boardRectSize, i*Commons.boardRectSize+Commons.boardRectSize/2+textHeight/3);
@@ -80,12 +80,12 @@ public class LevelDesignTool {
 			case "GoldMine":
 				StagePanel.goldMines.add(new GoldMine(sBR));
 				break;
-			case "EnemyFortress":
-				StagePanel.enemyFortress = new PlayerFortress(sBR, Color.RED);
+			case "RedFortress":
+				StagePanel.redBase = new PlayerFortress(sBR, Color.RED);
 				break;
 			
-			case "NotEnemyFortress":
-				StagePanel.notEnemyFortress = new PlayerFortress(sBR, Color.BLUE);
+			case "BlueFortress":
+				StagePanel.blueBase = new PlayerFortress(sBR, Color.BLUE);
 				break;
 			}
 		}
@@ -119,14 +119,14 @@ public class LevelDesignTool {
 				}
 			}
 			break;
-		case "EnemyFortress":
-			if(StagePanel.enemyFortress != null && StagePanel.enemyFortress.containsBR(sBR)) {
-				StagePanel.enemyFortress = null;
+		case "RedFortress":
+			if(StagePanel.redBase != null && StagePanel.redBase.containsBR(sBR)) {
+				StagePanel.redBase = null;
 			}
 			break;
-		case "NotEnemyFortress":
-			if(StagePanel.notEnemyFortress != null && StagePanel.notEnemyFortress.containsBR(sBR)) {
-				StagePanel.notEnemyFortress = null;
+		case "BlueFortress":
+			if(StagePanel.blueBase != null && StagePanel.blueBase.containsBR(sBR)) {
+				StagePanel.blueBase = null;
 			}
 			break;
 		}

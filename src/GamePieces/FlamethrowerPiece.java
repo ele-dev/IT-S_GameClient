@@ -1,6 +1,5 @@
 package GamePieces;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -23,8 +22,8 @@ public class FlamethrowerPiece extends GamePiece {
 	
 	double spreadAngle = 20;
 	
-	public FlamethrowerPiece(Color teamColor, BoardRectangle boardRect) {
-		super(teamColor, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,Commons.baseTypeFlameThrower);
+	public FlamethrowerPiece(boolean isRed, BoardRectangle boardRect) {
+		super(isRed, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,Commons.baseTypeFlameThrower);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -121,7 +120,7 @@ public class FlamethrowerPiece extends GamePiece {
 					targetGamePiece.gamePieceBase.getDamaged(getDmg());
 					targetGamePiece = null;
 				}else {
-					targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
+					targetDestructibleObject.getDamaged(getDmg(),angle,getIsRed());
 					targetDestructibleObject = null;
 				}
 				startedAttack = false;
