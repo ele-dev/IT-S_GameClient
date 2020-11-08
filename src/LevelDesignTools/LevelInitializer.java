@@ -66,7 +66,8 @@ public class LevelInitializer {
 	}
 	
 	public void readMapFromImage(String mapName) {
-		File inputFile = new File("src/LevelDesignTools/"+mapName+".png");
+		// File inputFile = new File("src/LevelDesignTools/"+mapName+".png");
+		File inputFile = new File("sprites/"+mapName+".png");
 		BufferedImage mapImage; 
 		try {
 			mapImage = ImageIO.read(inputFile);
