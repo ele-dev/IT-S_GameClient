@@ -25,7 +25,6 @@ import GamePieces.RocketLauncherPiece;
 import GamePieces.ShotgunPiece;
 import GamePieces.SniperPiece;
 import GamePieces.TazerPiece;
-import PlayerStructures.PlayerFortress;
 import Stage.BoardRectangle;
 import Stage.ProjectFrame;
 import Stage.StagePanel;
@@ -124,8 +123,6 @@ public class MessageHandler {
 				}
 				
 				// Call methods that assign GamePieces and Fortresses to your team or enemy team
-				
-				
 				System.out.println("Received Match data --> navigating to stage panel");
 				
 				// Navigate to the game panel where the actual game happens

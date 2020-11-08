@@ -8,8 +8,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import com.sun.xml.internal.bind.v2.runtime.Coordinator;
-
 import Buttons.GenericButton;
 import GamePieces.DetonatorPiece;
 import GamePieces.FlamethrowerPiece;

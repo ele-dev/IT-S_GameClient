@@ -15,7 +15,6 @@ import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
 import Stage.ValueLabel;
-import menueGui.GameState;
 
 public class GoldMine extends DestructibleObject {
 	

@@ -13,8 +13,6 @@ import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 import Particles.Explosion;
 import Stage.TurnCountDown;
-import menueGui.GameState;
-
 
 public class DetonatorProjectile extends Projectile {
 	

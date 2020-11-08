@@ -23,8 +23,6 @@ import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
 import Stage.StagePanel;
-import menueGui.GameState;
-
 
 public abstract class GamePiece {
 	
