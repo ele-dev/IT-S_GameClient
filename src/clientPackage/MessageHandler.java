@@ -97,6 +97,7 @@ public class MessageHandler {
 					{
 						GameState.myTeamColor = Color.BLUE;
 						GameState.enemyTeamColor = Color.RED;
+						GameState.myTeamIsRed = false;
 						break;
 					}
 				
@@ -104,6 +105,7 @@ public class MessageHandler {
 					{
 						GameState.myTeamColor = Color.RED;
 						GameState.enemyTeamColor = Color.BLUE;
+						GameState.myTeamIsRed = true;
 						break;
 					}
 					
@@ -115,20 +117,20 @@ public class MessageHandler {
 				}
 				
 				// If your are team blue then it's your turn at first
-				if(GameState.myTeamColor == Color.BLUE) {
+				if(!GameState.myTeamIsRed) {
 					GameState.myTurn = true;
 				} else {
 					GameState.myTurn = false;
 				}
 				
 				// Call methods that assign GamePieces and Fortresses to your team or enemy team
-				GamePiece.assignGamePiecesToSides();
-				PlayerFortress.assignFortressesToSides();
+				
 				
 				System.out.println("Received Match data --> navigating to stage panel");
 				
 				// Navigate to the game panel where the actual game happens
 				ProjectFrame.homePanel.closePanel();
+				StagePanel.resetMatch("LargeMap");
 				ProjectFrame.stagePanel.setVisible(true);
 				
 				break;
@@ -149,6 +151,11 @@ public class MessageHandler {
 				
 				// Update the player states
 				GameState.enemySurrender = true;
+				if(!GameState.myTeamIsRed) {
+					StagePanel.redBase.getDamaged(StagePanel.redBase.getHealth(), 0, true);
+				}else {
+					StagePanel.blueBase.getDamaged(StagePanel.blueBase.getHealth(), 0, true);
+				}
 				GameState.isIngame = false;
 				GameState.isSearching = false;
 				
@@ -280,6 +287,10 @@ public class MessageHandler {
 				// Check if the contained game piece is real and valid
 				String gpClass = spawnGPMsg.getGamePieceClass();
 				Color teamColor = spawnGPMsg.getTeamColor();
+				boolean isRed = false;
+				if(teamColor.equals(Color.RED)) {
+					isRed = true;
+				}
 				BoardRectangle spawnPoint = BoardRectangle.getBoardRectFromCoords(spawnGPMsg.getFieldCoordinates());
 				if(gpClass.equals("undefined") || !(teamColor.equals(Color.BLUE) || teamColor.equals(Color.RED))
 						|| spawnPoint == null) {
@@ -293,55 +304,55 @@ public class MessageHandler {
 				{
 					case "GunnerPiece":
 					{
-						spawnedGP = new GunnerPiece(teamColor, spawnPoint);
+						spawnedGP = new GunnerPiece(isRed, spawnPoint);
 						break;
 					}
 					
 					case "SniperPiece":
 					{
-						spawnedGP = new SniperPiece(teamColor, spawnPoint);
+						spawnedGP = new SniperPiece(isRed, spawnPoint);
 						break;
 					}
 					
 					case "FlamethrowerPiece":
 					{
-						spawnedGP = new FlamethrowerPiece(teamColor, spawnPoint);
+						spawnedGP = new FlamethrowerPiece(isRed, spawnPoint);
 						break;
 					}
 					
 					case "DetonatorPiece":
 					{
-						spawnedGP = new DetonatorPiece(teamColor, spawnPoint);
+						spawnedGP = new DetonatorPiece(isRed, spawnPoint);
 						break;
 					}
 					
 					case "TazerPiece":
 					{
-						spawnedGP = new TazerPiece(teamColor, spawnPoint);
+						spawnedGP = new TazerPiece(isRed, spawnPoint);
 						break;
 					}
 					
 					case "RocketLauncherPiece":
 					{
-						spawnedGP = new RocketLauncherPiece(teamColor, spawnPoint);
+						spawnedGP = new RocketLauncherPiece(isRed, spawnPoint);
 						break;
 					}
 					
 					case "EMPPiece":
 					{
-						spawnedGP = new EMPPiece(teamColor, spawnPoint);
+						spawnedGP = new EMPPiece(isRed, spawnPoint);
 						break;
 					}
 					
 					case "RapidElectroPiece":
 					{
-						spawnedGP = new RapidElectroPiece(teamColor, spawnPoint);
+						spawnedGP = new RapidElectroPiece(isRed, spawnPoint);
 						break;
 					}
 					
 					case "ShotgunPiece":
 					{
-						spawnedGP = new ShotgunPiece(teamColor, spawnPoint);
+						spawnedGP = new ShotgunPiece(isRed, spawnPoint);
 						break;
 					}
 					
@@ -352,7 +363,6 @@ public class MessageHandler {
 				}
 				
 				if(spawnedGP != null) {
-					spawnedGP.assignToSide();
 					StagePanel.gamePieces.add(spawnedGP);
 					System.out.println("Received spawn game piece message. Added Piece to the global list");
 				} else {

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import javax.swing.Timer;
 
-import Abilities.RadialShield;
 import Buttons.ActionSelectionPanel;
 import Environment.DestructibleObject;
 import Particles.Explosion;
@@ -37,17 +36,17 @@ public abstract class GamePiece {
 	public boolean isDead = false;
 	private float dmg;
 	
-	private boolean isEnemy;
+	private boolean isRed;
 	protected boolean hasExecutedMove = true;  
 	protected boolean hasExecutedAttack = true; 
 	
-	protected Timer attackDelayTimer,abilityDelayTimer,deathDelayTimer;
+	protected Timer attackDelayTimer,deathDelayTimer;
 	protected GamePiece targetGamePiece;
 	protected DestructibleObject targetDestructibleObject;
 	
 	protected Arc2D aimArc;
 	
-	public boolean isMoving,isAttacking,isPerformingAbility;
+	public boolean isMoving,isAttacking;
 	public ActionSelectionPanel actionSelectionPanel;
 	private ArrayList<Line2D> sightLines = new ArrayList<Line2D>();
 	
@@ -61,10 +60,13 @@ public abstract class GamePiece {
 	private AStarPathFinder pathFinder;
 	public GamePieceBase gamePieceBase;
 	
-	public GamePiece(Color teamColor, String name, BoardRectangle boardRect, float dmg, int baseTypeIndex) {
-		
-		this.isEnemy = false;
-		this.c =  teamColor;
+	public GamePiece(boolean isRed, String name, BoardRectangle boardRect, float dmg, int baseTypeIndex) {
+		if(isRed) {
+			this.c = Color.RED;
+		}else {
+			this.c = Color.BLUE;
+		}
+		this.isRed = isRed;
 		this.boardRect = boardRect;
 		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
 		
@@ -83,8 +85,8 @@ public abstract class GamePiece {
 		return isDead;
 	}
 	
-	public boolean getIsEnemy() {
-		return isEnemy;
+	public boolean getIsRed() {
+		return isRed;
 	}
 	
 	public Rectangle getRectHitbox() {
@@ -123,7 +125,7 @@ public abstract class GamePiece {
 	} 
 	
 	public boolean isPerformingAction() {
-		return isAttacking || isMoving || isPerformingAbility;
+		return isAttacking || isMoving;
 	}
 	
 	// initializes the Pathfinding Grid (!!Does not start the Pathfinder!!)
@@ -243,7 +245,7 @@ public abstract class GamePiece {
 			if(checkAttacks(curBR.row, curBR.column) && !curBR.isWall) {
 				boolean success = true;
 				for(GamePiece curGP : StagePanel.gamePieces) {
-					if(curGP.boardRect == curBR && !this.checkIfEnemies(curGP)) {
+					if(curGP.boardRect == curBR && !checkIfEnemies(curGP)) {
 						success = false;
 						break;
 					}
@@ -288,21 +290,14 @@ public abstract class GamePiece {
 		targetGamePiece = null;
 		targetDestructibleObject = null;
 		
-		if(StagePanel.enemyFortress.containsBR(targetBoardRectangle) && !isEnemy) {
-			targetDestructibleObject = StagePanel.enemyFortress;
+		if(StagePanel.redBase.containsBR(targetBoardRectangle) && !isRed) {
+			targetDestructibleObject = StagePanel.redBase;
 			startAttackDelay();
 			return;
-		} else if(StagePanel.notEnemyFortress.containsBR(targetBoardRectangle) && isEnemy) {
-			targetDestructibleObject = StagePanel.notEnemyFortress;
+		} else if(StagePanel.blueBase.containsBR(targetBoardRectangle) && isRed) {
+			targetDestructibleObject = StagePanel.blueBase;
 			startAttackDelay();
 			return;
-		}
-		for(RadialShield curRS : StagePanel.radialShields) {
-			if(curRS.contains(targetBoardRectangle) && checkIfEnemies(curRS)) {
-				targetDestructibleObject = curRS;
-				startAttackDelay();
-				return;
-			}
 		}
 		for(GoldMine curGM : StagePanel.goldMines) {
 			if(curGM.containsBR(targetBoardRectangle) && checkIfEnemies(curGM)) {
@@ -411,13 +406,10 @@ public abstract class GamePiece {
 	}
 	// checks if two pieces are enemies and returns true if they are enemies
 	public boolean checkIfEnemies(GamePiece gP) {
-		return gP.isEnemy == !this.isEnemy;
-	}
-	public boolean checkIfEnemies(RadialShield rs) {
-		return rs.isEnemy == !this.isEnemy;
+		return gP.isRed == !isRed;
 	}
 	public boolean checkIfEnemies(GoldMine goldMine) {
-		return goldMine.getCaptureState() != 0 && (goldMine.getCaptureState()==1 && !isEnemy || goldMine.getCaptureState()==2 && isEnemy);
+		return goldMine.getCaptureState() != 0 && (goldMine.getCaptureState()==1 && !isRed || goldMine.getCaptureState()==2 && isRed);
 	}
 	// moves the GamePiece to the parameter BoardRectangle and exhausts its moving ability
 	public void startMove(BoardRectangle targetBoardRectangle) {
@@ -433,26 +425,6 @@ public abstract class GamePiece {
 		if(isMoving) {
 			gamePieceBase.updateAngle();
 			gamePieceBase.move();
-		}
-	}
-	
-	// Determine the team loyalty of the GamePiece by comparing it's color with 
-	// the assigned team color of the player
-	public void assignToSide() {
-		if(this.c.equals(GameState.myTeamColor)) {
-			this.isEnemy = false;
-		} else {
-			this.isEnemy = true;
-		}
-	}
-	
-	// Determine loyalty of all GamePieces after Team color was assigned
-	public static void assignGamePiecesToSides() {
-		
-		// Go through the global list of the stage panel
-		for(GamePiece currGP: StagePanel.gamePieces)
-		{
-			currGP.assignToSide();
 		}
 	}
 	

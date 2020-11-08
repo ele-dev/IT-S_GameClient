@@ -20,7 +20,7 @@ public class DetonatorProjectile extends Projectile {
 	
 	private float xRelTarget,yRelTarget;
 	private float dmg;
-	private boolean isEnemy;
+	private boolean isRed;
 	
 	public Timer detonationTimer;
 	public Explosion detExplosion;
@@ -35,12 +35,12 @@ public class DetonatorProjectile extends Projectile {
 	private DestructibleObject targetDestructibleObject;
 	
 	private TurnCountDown detonationCountDown;
-	public DetonatorProjectile(int x, int y, int w, int h, boolean isEnemy, float dmg, float angle, Shape targetShape
+	public DetonatorProjectile(int x, int y, int w, int h, boolean isRed, float dmg, float angle, Shape targetShape
 			, GamePiece targetGamePiece, DestructibleObject targetDestructibleObject) {
-		super(x, y, w, h, isEnemy ? GameState.enemyTeamColor : GameState.myTeamColor, angle, 16, 0, targetShape, targetDestructibleObject);
+		super(x, y, w, h, isRed ? Color.RED : Color.BLUE, angle, 16, 0, targetShape, targetDestructibleObject);
 		shapeShow = new Rectangle(-w/2,-h/2,w,h);
 		cBlink = Color.BLACK;
-		this.isEnemy = isEnemy;
+		this.isRed = isRed;
 		this.dmg = dmg;
 		detonationTimer = new Timer(1500, new ActionListener() {
 			
@@ -99,7 +99,7 @@ public class DetonatorProjectile extends Projectile {
 			if(targetGamePiece != null) {
 				targetGamePiece.gamePieceBase.getDamaged(dmg);
 			}else if(targetDestructibleObject != null) {
-				targetDestructibleObject.getDamaged(dmg,angle,isEnemy);
+				targetDestructibleObject.getDamaged(dmg,angle,isRed);
 			}
 		}
 	}

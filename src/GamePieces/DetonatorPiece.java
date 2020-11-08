@@ -19,8 +19,8 @@ public class DetonatorPiece extends GamePiece {
 	
 	ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
 	
-	public DetonatorPiece(Color teamColor, BoardRectangle boardRect) {
-		super(teamColor, Commons.nameDetonator, boardRect, Commons.dmgDetonator, Commons.baseTypeDetonator);
+	public DetonatorPiece(boolean isRed, BoardRectangle boardRect) {
+		super(isRed, Commons.nameDetonator, boardRect, Commons.dmgDetonator, Commons.baseTypeDetonator);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -64,7 +64,7 @@ public class DetonatorPiece extends GamePiece {
 	public void shootDetonator() {
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 			
-		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), 10, 20, getIsEnemy(), 
+		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), 10, 20, getIsRed(), 
 				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape, targetGamePiece, targetDestructibleObject));
 		targetDestructibleObject = null;
 		targetGamePiece = null;

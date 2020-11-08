@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import com.sun.xml.internal.bind.v2.runtime.Coordinator;
+
 import Buttons.GenericButton;
 import GamePieces.DetonatorPiece;
 import GamePieces.FlamethrowerPiece;
@@ -97,27 +99,27 @@ public class RecruitGamePieceInfoPanel{
 		gamePieceCost = (int) (Math.random()*5+1)*10;
 	}
 	
-	public void	placeGamePiece(Color teamColor, BoardRectangle boardRectangle) {
+	public void	placeGamePiece(boolean isRed, BoardRectangle boardRectangle) {
 		
 		// Place the game piece on the field and send message to the server
 		Point coordinates = new Point(boardRectangle.row, boardRectangle.column);
-		MsgSpawnGamepiece spawnGPmessage = new MsgSpawnGamepiece("undefined", coordinates, teamColor);
+		MsgSpawnGamepiece spawnGPmessage = new MsgSpawnGamepiece("undefined", coordinates, isRed?Color.RED:Color.BLUE);
 		
 		switch (gamePieceType) {
 		case 0:
-			StagePanel.gamePieces.add(new GunnerPiece(teamColor, boardRectangle));
+			StagePanel.gamePieces.add(new GunnerPiece(isRed, boardRectangle));
 			spawnGPmessage.setGamePieceClass("GunnerPiece");
 			break;
 		case 1:
-			StagePanel.gamePieces.add(new FlamethrowerPiece(teamColor, boardRectangle));
+			StagePanel.gamePieces.add(new FlamethrowerPiece(isRed, boardRectangle));
 			spawnGPmessage.setGamePieceClass("FlamethrowerPiece");
 			break;
 		case 2:
-			StagePanel.gamePieces.add(new DetonatorPiece(teamColor, boardRectangle));
+			StagePanel.gamePieces.add(new DetonatorPiece(isRed, boardRectangle));
 			spawnGPmessage.setGamePieceClass("DetonatorPiece");
 			break;
 		case 3:
-			StagePanel.gamePieces.add(new RocketLauncherPiece(teamColor, boardRectangle));
+			StagePanel.gamePieces.add(new RocketLauncherPiece(isRed, boardRectangle));
 			spawnGPmessage.setGamePieceClass("RocketLauncherPiece");
 			break;
 		default:

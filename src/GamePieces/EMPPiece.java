@@ -19,8 +19,8 @@ import Stage.StagePanel;
 public class EMPPiece extends GamePiece{
 	ArrayList<EMPProjectile> empProjectiles = new ArrayList<EMPProjectile>();
 	
-	public EMPPiece(Color teamColor, BoardRectangle boardRect) {
-		super(teamColor, Commons.nameEMP, boardRect, Commons.dmgEMP, Commons.baseTypeEMP);
+	public EMPPiece(boolean isRed, BoardRectangle boardRect) {
+		super(isRed, Commons.nameEMP, boardRect, Commons.dmgEMP, Commons.baseTypeEMP);
 		
 		attackDelayTimer = new Timer(1500, new ActionListener() {
 			
@@ -101,7 +101,7 @@ public class EMPPiece extends GamePiece{
 					if(curEMPP.getTargetGamePiece() != null) {
 						curEMPP.getTargetGamePiece().gamePieceBase.getDamaged(getDmg());
 					} else {
-						targetDestructibleObject.getDamaged(getDmg(), angle, getIsEnemy());
+						targetDestructibleObject.getDamaged(getDmg(), angle, getIsRed());
 						targetDestructibleObject = null;
 					}
 				}

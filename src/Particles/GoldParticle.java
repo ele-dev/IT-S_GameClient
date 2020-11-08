@@ -23,7 +23,7 @@ public class GoldParticle extends Particle{
 	
 	private byte spawnTrailParticleCounter = 0,spawnTrailParticleIntervall = 2;
 	
-	public GoldParticle(float x, float y,float angle, float rotation, float v,boolean isEnemy) {
+	public GoldParticle(float x, float y,float angle, float rotation, float v,boolean isRed) {
 		super(x, y,angle,rotation,new Color(204+(int)((Math.random()-0.5)*50),164+(int)((Math.random()-0.5)*50),61),v,0);
 		int size = (int) (Math.random() * 15+15);
 		rectHitbox = new Rectangle((int)x-size/2,(int)y-size/2,size,size);
@@ -39,7 +39,7 @@ public class GoldParticle extends Particle{
 		tAutoCollectCountdown.setRepeats(false);
 		tAutoCollectCountdown.start();
 		
-		playerFortress = isEnemy?StagePanel.enemyFortress:StagePanel.notEnemyFortress;
+		playerFortress = isRed?StagePanel.redBase:StagePanel.blueBase;
 		targetRectangle = playerFortress.getRectHitbox();
 		vY = -v/2;
 		capVY= -vY;

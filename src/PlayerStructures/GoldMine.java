@@ -20,8 +20,8 @@ import menueGui.GameState;
 public class GoldMine extends DestructibleObject {
 	
 	// nothing = 0
-	// enemy = 1
-	// notEnemy = 2
+	// red = 1
+	// blue = 2
 	private byte captureState = 0;
 	private float maxHealth;
 	
@@ -58,8 +58,7 @@ public class GoldMine extends DestructibleObject {
 	}
 	
 	public void drawDestructibleObject(Graphics2D g2d) {
-		// g2d.setColor(captureState == 0 ? new Color(20, 20, 20) : captureState == 1 ? Commons.enemyColor : Commons.notEnemyColor);
-		g2d.setColor(captureState == 0 ? new Color(20, 20, 20) : captureState == 1 ? GameState.enemyTeamColor : GameState.myTeamColor);
+		g2d.setColor(captureState == 0 ? new Color(20, 20, 20) : captureState == 1 ? Color.RED : Color.BLUE);
 		g2d.fill(rectHitbox);
 		
 		g2d.setStroke(new BasicStroke(8));
@@ -101,12 +100,12 @@ public class GoldMine extends DestructibleObject {
 	}
 	
 	@Override
-	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
+	public void getDamaged(float dmg, float attackAngle, boolean isRedAttack) {
 		health -= dmg;
 		if(health <= 0) {
 			captureState = 0;
 			for(GamePiece curGP : StagePanel.gamePieces) {
-				if(curGP.getIsEnemy() == isEnemyAttack) {
+				if(curGP.getIsRed() == isRedAttack) {
 					StagePanel.tryCaptureGoldMine(curGP);
 				}
 			}
@@ -115,10 +114,10 @@ public class GoldMine extends DestructibleObject {
 		(int)(rectHitbox.getCenterY() + (Math.random() - 0.5) * rectHitbox.getWidth()), dmg, Commons.cAttack);
 	}
 	
-	public void capture(boolean isEnemy) {
-		captureState = (byte) (isEnemy ? 1 : 2);
+	public void capture(boolean isRed) {
+		captureState = (byte) (isRed ? 1 : 2);
 		health = maxHealth;
-		StagePanel.valueLabels.add(new ValueLabel(occupiedBRs[0].getCenterX(), occupiedBRs[0].getCenterY(), "Captured", isEnemy ? GameState.enemyTeamColor : GameState.myTeamColor));
+		StagePanel.valueLabels.add(new ValueLabel(occupiedBRs[0].getCenterX(), occupiedBRs[0].getCenterY(), "Captured", isRed ? Color.RED : Color.BLUE));
 	}
 	
 	public void tryGainGold() {

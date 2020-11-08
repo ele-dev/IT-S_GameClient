@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import javax.swing.Timer;
 
-import Abilities.RadialShield;
 import Particles.EmptyShell;
 import Projectiles.Bullet;
 import Stage.BoardRectangle;
@@ -19,7 +18,7 @@ import Stage.Sprite;
 import Stage.StagePanel;
 
 
-public class GunnerPiece extends CommanderGamePiece {
+public class GunnerPiece extends GamePiece {
 	
 	ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	int burstCounter;
@@ -27,11 +26,9 @@ public class GunnerPiece extends CommanderGamePiece {
 	int burstBulletAmount = 16;
 	
 	double spreadAngle = 10;
- 
-	BoardRectangle targetBoardRectangleNextRadialShield;
 	
-	public GunnerPiece(Color teamColor, BoardRectangle boardRect) {
-		super(teamColor, Commons.nameGunner, boardRect, Commons.dmgGunner, 6, Commons.baseTypeGunner);
+	public GunnerPiece(boolean isRed, BoardRectangle boardRect) {
+		super(isRed, Commons.nameGunner, boardRect, Commons.dmgGunner, Commons.baseTypeGunner);
 		attackDelayTimer = new Timer(1500, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -41,14 +38,6 @@ public class GunnerPiece extends CommanderGamePiece {
 		});
 		attackDelayTimer.setRepeats(false);
 		
-		abilityDelayTimer = new Timer(1500, new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				createShield(); 
-			}
-		});
-		abilityDelayTimer.setRepeats(false);
 		
 		burstTimer = new Timer(50, new ActionListener() {
 			
@@ -92,42 +81,6 @@ public class GunnerPiece extends CommanderGamePiece {
 		updateIsAttacking();
 	}
 
-	@Override
-	public void updatePossibleAbilities(BoardRectangle curHoverBoardRectangle) {
-		for(BoardRectangle curBR : StagePanel.boardRectangles) {
-			if(!curBR.isDestructibleObject()) {
-				if(curBR != boardRect && Math.abs(curBR.row - boardRect.row) <= 1 && Math.abs(curBR.column - boardRect.column) <= 1) {
-					curBR.isShowPossibleAbility = true;
-				}
-			}
-			
-		}
-		if(curHoverBoardRectangle == null) {
-			return;
-		}
-		if(curHoverBoardRectangle.isShowPossibleAbility) {
-			curHoverBoardRectangle.isPossibleAbility = true;
-		}
-	}
-	
-	@Override
-	public void startAbility(BoardRectangle targetBoardRectangle) {
-		isPerformingAbility = true;
-		abilityCharge = 0;
-		abilityDelayTimer.start();
-		targetBoardRectangleNextRadialShield = targetBoardRectangle;
-	}
-	
-	public void createShield() { 
-		for(BoardRectangle curBR : StagePanel.boardRectangles) {
-			if(curBR.row == targetBoardRectangleNextRadialShield.row-1 && curBR.column == targetBoardRectangleNextRadialShield.column-1) {
-				StagePanel.radialShields.add(new RadialShield(curBR, getIsEnemy()));
-				break;
-			}
-		}
-		isPerformingAbility = false;
-	}
-
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
 	public boolean checkAttacks(int selectedRow, int selectedColumn) {
 		
@@ -163,7 +116,7 @@ public class GunnerPiece extends CommanderGamePiece {
 		
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 			
-		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c, 16, 
+		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, getIsRed(), 16, 
 				(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));	
 		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(), 8, 12, (float)angle -90, c, (float)(Math.random()*2+3)));
 	}
@@ -184,7 +137,7 @@ public class GunnerPiece extends CommanderGamePiece {
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
 			}else { 
-				targetDestructibleObject.getDamaged(getDmg(), angle, getIsEnemy());
+				targetDestructibleObject.getDamaged(getDmg(), angle, getIsRed());
 				targetDestructibleObject = null;
 			}
 			
