@@ -19,15 +19,15 @@ public class EMPProjectile extends Projectile{
 	private DestructibleObject targetDestructibleObject;
 	private TurnCountDown destroyCountDown;
 	
-	private int particleSpawnIntervall = 50,particleSpawnCounter = 0;
+	private int particleSpawnIntervall = 50, particleSpawnCounter = 0;
 	
-	public EMPProjectile(int x, int y, int w, int h, Color c,float dmg,float angle,Shape targetShape
-			,GamePiece targetGamePiece,DestructibleObject targetDestructibleObject) {
+	public EMPProjectile(int x, int y, int w, int h, Color c, float dmg, float angle, Shape targetShape, 
+			GamePiece targetGamePiece, DestructibleObject targetDestructibleObject) {
 		super(x, y, w, h, c, angle, 16, 0, targetShape, targetDestructibleObject);
-		shapeShow = new Rectangle(-w/2,-h/2,w,h);
+		shapeShow = new Rectangle(-w/2, -h/2, w, h);
 		this.targetGamePiece = targetGamePiece;
 		this.targetDestructibleObject = targetDestructibleObject;
-		destroyCountDown = new TurnCountDown(2,c);
+		destroyCountDown = new TurnCountDown(2, c);
 	}
 	
 	public GamePiece getTargetGamePiece() {
@@ -56,10 +56,10 @@ public class EMPProjectile extends Projectile{
 		particleSpawnCounter--;
 		if(particleSpawnCounter <= 0) {
 			particleSpawnCounter = particleSpawnIntervall;
-			for(int i = 0;i<10;i++) {
+			for(int i = 0; i < 10; i++) {
 				Color cTP =  new Color(58, 100+(int)(Math.random()*130), 140+(int)(Math.random()*30));
-				StagePanel.particles.add(new TrailParticle((int)x, (int)y,(int) (Math.random()*5+5),(float) ((Math.random()-0.5)*60)+angle+90,cTP,
-						(float) (Math.random()*0.5)+0.5f,(float) (Math.random()*2+4),0));
+				StagePanel.particles.add(new TrailParticle((int)x, (int)y,(int) (Math.random()*5+5), (float) ((Math.random()-0.5)*60)+ angle + 90, cTP,
+						(float) (Math.random()*0.5)+0.5f, (float) (Math.random()*2+4), 0));
 			}
 		}
 	}

@@ -79,7 +79,7 @@ public class PlayerFortress extends DestructibleObject {
 			fortressMenu.lastPressedGamePieceInfoPanel.placeGamePiece(teamColor, boardRectangle);
 			coinAmount -= fortressMenu.lastPressedGamePieceInfoPanel.getGamePieceCost();
 			String str = "-" + fortressMenu.lastPressedGamePieceInfoPanel.getGamePieceCost();
-			StagePanel.valueLabels.add(new ValueLabel((int)rectHitbox.getCenterX(),(int)rectHitbox.getCenterY(), str, Commons.cCurrency));
+			StagePanel.valueLabels.add(new ValueLabel((int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), str, Commons.cCurrency));
 			setRecruitingMode(false);
 		}
 	}

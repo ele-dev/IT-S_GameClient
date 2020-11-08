@@ -22,7 +22,7 @@ public abstract class Projectile {
 	protected Shape targetShape;
 	protected DestructibleObject targetDestructibleObject;
 	
-	public Projectile(int x, int y, int w, int h, Color c, float angle, float v, float acc, Shape targetShape,DestructibleObject targetDestructibleObject) {
+	public Projectile(int x, int y, int w, int h, Color c, float angle, float v, float acc, Shape targetShape, DestructibleObject targetDestructibleObject) {
 		this.x = x;
 		this.y = y; 
 		this.c = c;
@@ -50,11 +50,11 @@ public abstract class Projectile {
 	
 	public void move() {
 		// adds on acceleration only if the result velocity is greater than 0 else v = 0
-		v = acc+v > 0?v+acc:0;
+		v = acc + v > 0 ? v + acc : 0;
 				
 		x += Math.cos(Math.toRadians(angle + 90)) * v;
 		y += Math.sin(Math.toRadians(angle + 90)) * v;	
-		rectHitbox.setBounds((int)(x-rectHitbox.width/2),(int)(y-rectHitbox.height/2),rectHitbox.width,rectHitbox.height);
+		rectHitbox.setBounds((int)(x-rectHitbox.width/2), (int)(y-rectHitbox.height/2), rectHitbox.width, rectHitbox.height);
 	}
 	
 	public void homeInOnTarget(Point targetPoint, float rotationDelay) {
@@ -64,7 +64,7 @@ public abstract class Projectile {
 		ak = targetPoint.x - x;
 		gk = targetPoint.y - y;
 		
-		float angleDesired = (float) Math.toDegrees(Math.atan2(ak*-1, gk));
+		float angleDesired = (float) Math.toDegrees(Math.atan2(ak * -1, gk));
 		angle = Stage.Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
 	}
 	

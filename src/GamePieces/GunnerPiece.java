@@ -20,6 +20,7 @@ import Stage.StagePanel;
 
 
 public class GunnerPiece extends CommanderGamePiece {
+	
 	ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	int burstCounter;
 	Timer burstTimer;
@@ -30,16 +31,17 @@ public class GunnerPiece extends CommanderGamePiece {
 	BoardRectangle targetBoardRectangleNextRadialShield;
 	
 	public GunnerPiece(Color teamColor, BoardRectangle boardRect) {
-		super(teamColor, Commons.nameGunner, boardRect, Commons.dmgGunner,6,Commons.baseTypeGunner);
-		attackDelayTimer = new Timer(1500,new ActionListener() {
+		super(teamColor, Commons.nameGunner, boardRect, Commons.dmgGunner, 6, Commons.baseTypeGunner);
+		attackDelayTimer = new Timer(1500, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				angle = angleDesired;
 				shootBurst();
 			}
 		});
-		attackDelayTimer.setRepeats(false); 
-		abilityDelayTimer = new Timer(1500,new ActionListener() {
+		attackDelayTimer.setRepeats(false);
+		
+		abilityDelayTimer = new Timer(1500, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -56,26 +58,27 @@ public class GunnerPiece extends CommanderGamePiece {
 			}
 		});
 		burstTimer.setRepeats(false);
+		
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		spriteLinks.add(Commons.pathToSpriteSource+"Turrets/Minigun.png");
-		spriteTurret = new Sprite(spriteLinks, Commons.boardRectSize,Commons.boardRectSize, 0);
+		spriteTurret = new Sprite(spriteLinks, Commons.boardRectSize, Commons.boardRectSize, 0);
 		
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2,boardRect.getCenterY()-Commons.boardRectSize/2,
-				Commons.boardRectSize,Commons.boardRectSize,0,0,Arc2D.PIE);
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2, boardRect.getCenterY()-Commons.boardRectSize/2,
+				Commons.boardRectSize, Commons.boardRectSize, 0, 0, Arc2D.PIE);
 	}
 	
 	//draws every bullet in the bullets Array
 	public void drawAttack(Graphics2D g2d) {
-		for(Bullet curB:bullets) {
+		for(Bullet curB: bullets) {
 			curB.drawProjectile(g2d);
 		}
 	}
 
 	// updates the attack (moves bullets,checks if they hit something and so forth)
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2,boardRect.getCenterY()-Commons.boardRectSize/2,
-				Commons.boardRectSize,Commons.boardRectSize,0,-angle-90,Arc2D.PIE);
-		for(int i = 0;i<bullets.size();i++) {
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2, boardRect.getCenterY()-Commons.boardRectSize/2,
+				Commons.boardRectSize, Commons.boardRectSize, 0, -angle-90, Arc2D.PIE);
+		for(int i = 0; i < bullets.size(); i++) {
 			Bullet curB = bullets.get(i);
 			curB.move();
 			curB.checkHitAnyTarget(); 
@@ -145,6 +148,7 @@ public class GunnerPiece extends CommanderGamePiece {
 	public void shootBurst() { 
 		burstTimer.start();
 	}
+	
 	// shoots one shot every timer the burstTimer activates and starts the burstTimer again if it still has shots left to shoot
 	// shots are counted by burstCounter (stops shooting if burstCounter >= burstBulletAmount)
 	public void shootOnce() {
@@ -157,14 +161,12 @@ public class GunnerPiece extends CommanderGamePiece {
 		}
 		startedAttack = true;
 		
-		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
-			targetDestructibleObject.getRectHitbox();
+		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 			
-		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c,16, 
+		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, c, 16, 
 				(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));	
-		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),8,12, (float)angle -90, c,(float)(Math.random()*2+3)));
+		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(), 8, 12, (float)angle -90, c, (float)(Math.random()*2+3)));
 	}
-	
 	
 	// updates the isAttacking state
 	public void updateIsAttacking() {
@@ -173,7 +175,7 @@ public class GunnerPiece extends CommanderGamePiece {
 			isAttacking = true;
 			return;
 		}
-		if(burstCounter > 0 || bullets.size() >0) {
+		if(burstCounter > 0 || bullets.size() > 0) {
 			isAttacking = true;
 			return;
 		}
@@ -182,15 +184,13 @@ public class GunnerPiece extends CommanderGamePiece {
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
 			}else { 
-				targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
+				targetDestructibleObject.getDamaged(getDmg(), angle, getIsEnemy());
 				targetDestructibleObject = null;
 			}
 			
 			startedAttack = false;
 			return;
 		}
-		
 	}
 	
-
 }

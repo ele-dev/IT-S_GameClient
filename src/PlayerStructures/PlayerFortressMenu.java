@@ -29,9 +29,9 @@ public class PlayerFortressMenu {
 		int gap = 20;
 		for(byte i = 0; i < recruitGamePieceInfoPanels.length; i++) {
 			if(i == 0) {
-				recruitGamePieceInfoPanels[i] = new RecruitGamePieceInfoPanel(startx+100, starty+200, 1000, 150,i,playerFortress);
-			}else {
-				recruitGamePieceInfoPanels[i] = new RecruitGamePieceInfoPanel(startx+100, recruitGamePieceInfoPanels[i-1].getStarty()+150+gap, 1000, 150,i,playerFortress);
+				recruitGamePieceInfoPanels[i] = new RecruitGamePieceInfoPanel(startx+100, starty+200, 1000, 150, i, playerFortress);
+			} else {
+				recruitGamePieceInfoPanels[i] = new RecruitGamePieceInfoPanel(startx+100, recruitGamePieceInfoPanels[i-1].getStarty()+150+gap, 1000, 150, i, playerFortress);
 			}
 		}
 	}
@@ -46,8 +46,8 @@ public class PlayerFortressMenu {
 		
 		g2d.translate(rect.x, rect.y);
 		g2d.setColor(Commons.cCurrency);
-		g2d.setFont(new Font("Arial",Font.BOLD,60));
-		g2d.drawString("Coins: "+playerFortress.getCoinAmount(), 100, 150);
+		g2d.setFont(new Font("Arial", Font.BOLD, 60));
+		g2d.drawString("Coins: " + playerFortress.getCoinAmount(), 100, 150);
 		g2d.translate(-rect.x, -rect.y);
 	}
 	
@@ -71,12 +71,10 @@ public class PlayerFortressMenu {
 			playerFortress.setSelected(false);
 		}
 		for(RecruitGamePieceInfoPanel curRGPIP : recruitGamePieceInfoPanels) {
-			if(curRGPIP.tryPressButton()){
+			if(curRGPIP.tryPressButton()) {
 				lastPressedGamePieceInfoPanel = curRGPIP;
 				return;
 			}
 		}
 	}
-	
-	
 }
