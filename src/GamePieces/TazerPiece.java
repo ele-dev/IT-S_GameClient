@@ -23,8 +23,8 @@ public class TazerPiece extends GamePiece{
 	
 	Bullet tazerBullet;
 	
-	public TazerPiece(Color teamColor, BoardRectangle boardRect) {
-		super(teamColor, "T", boardRect, 2, 1); 
+	public TazerPiece(boolean isRed, BoardRectangle boardRect) {
+		super(isRed, "T", boardRect, 2, 1); 
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -65,7 +65,7 @@ public class TazerPiece extends GamePiece{
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 			
-		tazerBullet = new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 6, c,1,
+		tazerBullet = new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 6, getIsRed(),1,
 				angle, shape,targetDestructibleObject);	
 		StagePanel.applyScreenShake(5, 30);
 		 
@@ -132,7 +132,7 @@ public class TazerPiece extends GamePiece{
 							float gk = (float) (targetGamePiece.getCenterY() - tazerBullet.getY());						
 							float angleNew = (float) Math.toDegrees(Math.atan2(ak*-1, gk));
 							shape = targetGamePiece.getRectHitbox();
-							tazerBullet = new Bullet((int)tazerBullet.getX(), (int)tazerBullet.getY(), 6, 6, c,1,
+							tazerBullet = new Bullet((int)tazerBullet.getX(), (int)tazerBullet.getY(), 6, 6, getIsRed(),1,
 									angleNew, shape, targetDestructibleObject);	
 							break;
 						}
@@ -157,7 +157,7 @@ public class TazerPiece extends GamePiece{
 					curGP.gamePieceBase.getDamaged(getDmg());
 				}
 			}else {
-				targetDestructibleObject.getDamaged(getDmg(),tazerBullet.angle,getIsEnemy());
+				targetDestructibleObject.getDamaged(getDmg(),tazerBullet.angle,getIsRed());
 				targetDestructibleObject = null;
 			}
 			tazerBullet = null;

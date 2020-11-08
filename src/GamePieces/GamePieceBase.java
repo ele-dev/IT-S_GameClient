@@ -79,7 +79,7 @@ public class GamePieceBase {
 	
 	private void initSprites() {
 		ArrayList<String> spriteLinks = new ArrayList<String>();
-		if(parentGP.getIsEnemy()) {
+		if(parentGP.getIsRed()) {
 			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseE0.png");
 			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseE1.png");
 		}else {

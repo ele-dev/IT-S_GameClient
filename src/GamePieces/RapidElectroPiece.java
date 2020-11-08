@@ -27,8 +27,8 @@ public class RapidElectroPiece extends GamePiece {
 	
 	private ArrayList<GamePiece> targetGamePieces = new ArrayList<GamePiece>();
 
-	public RapidElectroPiece(Color teamColor, BoardRectangle boardRect) {
-		super(teamColor, "RE", boardRect, 2, 1);
+	public RapidElectroPiece(boolean isRed, BoardRectangle boardRect) {
+		super(isRed, "RE", boardRect, 2, 1);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -118,7 +118,7 @@ public class RapidElectroPiece extends GamePiece {
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 		
-		bullet = new Bullet(getCenterX(), getCenterY(), 10, 20, c, 2, angle, shape, targetDestructibleObject);
+		bullet = new Bullet(getCenterX(), getCenterY(), 10, 20, getIsRed(), 2, angle, shape, targetDestructibleObject);
 		
 		ArrayList<Point> points = new ArrayList<Point>();
 		points.add(new Point((int)bullet.getX(), (int)bullet.getY()));
@@ -150,7 +150,7 @@ public class RapidElectroPiece extends GamePiece {
 		
 		bullet = null;
 		if(targetDestructibleObject != null) {
-			targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
+			targetDestructibleObject.getDamaged(getDmg(),angle,getIsRed());
 			targetDestructibleObject = null;
 		}else { 
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());

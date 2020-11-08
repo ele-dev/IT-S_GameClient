@@ -13,8 +13,8 @@ import menueGui.GameState;
 
 public class WinScreen {
 	// winnerIndex = 0 (no winner)
-	// winnerIndex = 1 (enemy is winner)
-	// winnerIndex = 2 (notEnemy is winner)
+	// winnerIndex = 1 (red is winner)
+	// winnerIndex = 2 (blue is winner)
 	private byte winnerIndex;
 	private int w,h;
 	
@@ -47,18 +47,20 @@ public class WinScreen {
 		g2d.setColor(Color.WHITE);
 		g2d.drawString("The winner", w/2-fontMetrics.stringWidth("The winner")/2, h/2+textHeight/3-textHeight);
 		g2d.drawString("is", w/2-fontMetrics.stringWidth("is")/2, h/2+textHeight/3);
-		
-		// If the enemy has won
+		String winnerName = "";
+		// If the red has won
 		if(winnerIndex == 1) {
-			textWidth = fontMetrics.stringWidth(GameState.enemyName);
-			g2d.setColor(GameState.enemyTeamColor);
-			g2d.drawString(GameState.enemyName, w/2-textWidth/2, h/2+textHeight/3+textHeight);
+			winnerName = GameState.myTeamIsRed?ProjectFrame.conn.getUsername():GameState.enemyName;
+			textWidth = fontMetrics.stringWidth(winnerName);
+			g2d.setColor(Color.RED);
+			g2d.drawString(winnerName, w/2-textWidth/2, h/2+textHeight/3+textHeight);
 		}
-		// If we have won
+		// If blue has won
 		else if(this.winnerIndex == 2) {
-			textWidth = fontMetrics.stringWidth(ProjectFrame.conn.getUsername());
-			g2d.setColor(GameState.myTeamColor);
-			g2d.drawString(ProjectFrame.conn.getUsername(), w/2-textWidth/2, h/2+textHeight/3+textHeight);
+			winnerName = !GameState.myTeamIsRed?ProjectFrame.conn.getUsername():GameState.enemyName;
+			textWidth = fontMetrics.stringWidth(winnerName);
+			g2d.setColor(Color.BLUE);
+			g2d.drawString(winnerName, w/2-textWidth/2, h/2+textHeight/3+textHeight);
 		} 
 		// If nobody has won
 		else {

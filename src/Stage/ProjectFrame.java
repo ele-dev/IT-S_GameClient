@@ -47,7 +47,7 @@ public class ProjectFrame extends JFrame {
 		
 		Container cp = getContentPane();
 		
-		stagePanel = new StagePanel("LargeMap");
+		stagePanel = new StagePanel();
 		
 		// Create and init the GUI panels (JPanels)
 		loginPanel = new LoginPanel();

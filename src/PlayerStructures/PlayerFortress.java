@@ -76,7 +76,7 @@ public class PlayerFortress extends DestructibleObject {
 	
 	public void tryPlaceRecruitedGP(BoardRectangle boardRectangle) {
 		if(isRecruitingMode() && getRecruitableBoardRectangles().contains(boardRectangle)) {
-			fortressMenu.lastPressedGamePieceInfoPanel.placeGamePiece(teamColor, boardRectangle);
+			fortressMenu.lastPressedGamePieceInfoPanel.placeGamePiece(GameState.myTeamIsRed, boardRectangle);
 			coinAmount -= fortressMenu.lastPressedGamePieceInfoPanel.getGamePieceCost();
 			String str = "-" + fortressMenu.lastPressedGamePieceInfoPanel.getGamePieceCost();
 			StagePanel.valueLabels.add(new ValueLabel((int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), str, Commons.cCurrency));
@@ -195,18 +195,5 @@ public class PlayerFortress extends DestructibleObject {
 	
 	private void updateHover() {
 		isHover = containsBR(StagePanel.curHoverBR);
-	}
-	
-	// public method to assign fortresses to their side after team colors have been assigned
-	public static void assignFortressesToSides() {
-		
-		// Assign the fortresses to the sides
-		if(GameState.myTeamColor.equals(Color.BLUE)) {
-			StagePanel.notEnemyFortress = StagePanel.blueBase;
-			StagePanel.enemyFortress = StagePanel.redBase;
-		} else {
-			StagePanel.notEnemyFortress = StagePanel.redBase;
-			StagePanel.enemyFortress = StagePanel.blueBase;
-		}
 	}
 }
