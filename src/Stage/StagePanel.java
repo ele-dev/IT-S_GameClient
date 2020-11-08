@@ -240,10 +240,10 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
-//같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같	
+//째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째	
 //----------------------------------------- Initializer Methods --------------------------------------
 //______________________________________________________________________________________________________	
-		
+  
 	// initializes/creates all GamePieces
 	private static void initGamePieces() {
 		gamePieces.add(new SniperPiece(false, boardRectangles.get(58)));
@@ -278,16 +278,11 @@ public class StagePanel extends JPanel {
 		if(levelInitializer.getBlueBaseIndex() > -1) {
 			blueBase = new PlayerFortress(boardRectangles.get(levelInitializer.getBlueBaseIndex()), Color.BLUE);
 		}
-		
-		/*
-		StagePanel.redBase = new PlayerFortress(boardRectangles.get(76), Color.RED);
-		StagePanel.blueBase = new PlayerFortress(boardRectangles.get(97), Color.BLUE);
-		*/
 	}
 	
-//같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같	
-//----------------------------------------- Main Rendering Method --------------------------------------
-//______________________________________________________________________________________________________
+	//째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째	
+	//----------------------------------------- Main Rendering Method --------------------------------------
+	//______________________________________________________________________________________________________
 	// graphics methode does all the drawing of objects (renders everything)
 	public void paintComponent(Graphics g) {
 		if(timeStopCounter > 0) {
@@ -319,7 +314,7 @@ public class StagePanel extends JPanel {
 		
 		drawAllGamePiecePointers(g2d);
 		
-		// Draw the game pieces/actors, particles, 
+		// Draw the game pieces/actors, particles
 		drawAllGamePieces(g2d);
 		if(curHoverBR != null && (levelDesignTool != null || !redBase.containsBR(curHoverBR) && !blueBase.containsBR(curHoverBR))) {
 			curHoverBR.tryDrawHover(g2d);
@@ -337,7 +332,7 @@ public class StagePanel extends JPanel {
 		
 		if(levelDesignTool != null) {
 			levelDesignTool.drawEquippedBuildObject(g2d);
-		}else {
+		} else {
 			endTurnButton.drawButton(g2d);
 			surrenderButton.drawButton(g2d);
 			
@@ -358,7 +353,7 @@ public class StagePanel extends JPanel {
 		// g2d.fillOval((int)camera.getCenterOfScreen().x-5, (int)camera.getCenterOfScreen().y-5, 10, 10);
 		// camera.drawRectOfView(g2d);
 		
-		if(winScreen != null) winScreen.drawButtons(g2d);
+		if(winScreen != null) { winScreen.drawButtons(g2d); }
 		drawCursor(g2d);
 		
 		g2d.translate(-camera.getPos().x, -camera.getPos().y);
@@ -513,7 +508,7 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
-//같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같	
+//째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째	
 //----------------------------------------- Main Update Method -----------------------------------------
 //______________________________________________________________________________________________________
 	
