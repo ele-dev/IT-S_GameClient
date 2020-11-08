@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
+import Stage.ProjectFrame;
+
 public class TextLabel extends GuiElement {
 
 	// class members 
@@ -12,15 +14,18 @@ public class TextLabel extends GuiElement {
 	private Color textColor;
 	private int textSize;
 	
+	private static final int defaultTextSize = 16;
+	private static final int defaultRenderingTextSize = (int) Math.round(Math.sqrt((double)ProjectFrame.height) / 2.0) - 1;
+	
 	// Constructor for Label with default specs
 	public TextLabel() {
 		// call constructor from super class
-		super(600, 400);
+		super(300, 400);
 		
 		// Set the default values
 		this.labelText = "Just a label";
 		this.textColor = Color.WHITE;
-		this.textSize = 16;
+		this.textSize = defaultTextSize;
 	}
 	
 	// Constructor for creating a label with initial text
@@ -45,7 +50,7 @@ public class TextLabel extends GuiElement {
 		}
 		
 		// Draw the text of the label
-		g2d.setFont(new Font("Arial", Font.PLAIN, this.textSize));
+		g2d.setFont(new Font("Arial", Font.PLAIN, this.getRenderingTextSize(this.textSize)));
 		FontMetrics metrics = g2d.getFontMetrics();
 		int posX = this.rect.x + this.rect.width / 2 - metrics.stringWidth(labelText) / 2;
 		int posY = this.rect.y + this.rect.height / 2 - metrics.getHeight() / 3;
@@ -77,5 +82,13 @@ public class TextLabel extends GuiElement {
 	
 	public int getTextSize() {
 		return this.textSize;
+	}
+	
+	// Helper function to calculate actual text size for rendering from realtive size
+	private int  getRenderingTextSize(int relativeTextSize) {
+		
+		int size = defaultRenderingTextSize + (relativeTextSize - defaultTextSize);
+		
+		return size;
 	}
 }

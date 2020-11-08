@@ -47,13 +47,13 @@ public class LoginPanel extends GuiPanel {
 		
 		// give the labels relative screen positions 
 		this.gameTitle.setRelativePosition(50, 30);
-		this.statusLabel.setRelativePosition(46, 47);
-		this.noAccountYet.setRelativePosition(50, 60);
+		this.statusLabel.setRelativePosition(46, 57);
+		this.noAccountYet.setRelativePosition(50, 65);
 		
 		// give the buttons relative screen positions
 		this.loginButton.setRelativePosition(43, 50);
 		this.playAsGuestButton.setRelativePosition(56, 50);
-		this.goToRegisterButton.setRelativePosition(50, 65);
+		this.goToRegisterButton.setRelativePosition(50, 70);
 		
 		// create the input fields and place them at relative position
 		fields[0] = new TextInputField("Username", Commons.textFieldWidth, Commons.textFieldHeight);
