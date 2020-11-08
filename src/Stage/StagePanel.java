@@ -229,7 +229,7 @@ public class StagePanel extends JPanel {
 	// initializes a map depending on the name (mapName can be null in that case it will load empty map to edit)
 	private void initGameMap(String mapName) {
 		if(mapName == null) {
-			gameMap = new GameMap(25,25);
+			gameMap = new GameMap(25, 25);
 			levelDesignTool = new LevelDesignTool();
 			addMouseWheelListener(levelDesignTool.mwl);
 		} else {
@@ -279,16 +279,11 @@ public class StagePanel extends JPanel {
 		if(levelInitializer.getNotEnemyFortressIndex() > -1) {
 			blueBase = new PlayerFortress(boardRectangles.get(levelInitializer.getNotEnemyFortressIndex()), Color.BLUE);
 		}
-		
-		/*
-		StagePanel.redBase = new PlayerFortress(boardRectangles.get(76), Color.RED);
-		StagePanel.blueBase = new PlayerFortress(boardRectangles.get(97), Color.BLUE);
-		*/
 	}
 	
-//같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같	
-//----------------------------------------- Main Rendering Method --------------------------------------
-//______________________________________________________________________________________________________
+	//같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같같	
+	//----------------------------------------- Main Rendering Method --------------------------------------
+	//______________________________________________________________________________________________________
 	// graphics methode does all the drawing of objects (renders everything)
 	public void paintComponent(Graphics g) {
 		if(timeStopCounter > 0) {
@@ -320,7 +315,7 @@ public class StagePanel extends JPanel {
 		
 		drawAllGamePiecePointers(g2d);
 		
-		// Draw the game pieces/actors, particles, 
+		// Draw the game pieces/actors, particles
 		drawAllGamePieces(g2d);
 		if(curHoverBR != null && (levelDesignTool != null || !enemyFortress.containsBR(curHoverBR) && !notEnemyFortress.containsBR(curHoverBR))) {
 			curHoverBR.tryDrawHover(g2d);
@@ -338,7 +333,7 @@ public class StagePanel extends JPanel {
 		
 		if(levelDesignTool != null) {
 			levelDesignTool.drawEquippedBuildObject(g2d);
-		}else {
+		} else {
 			endTurnButton.drawButton(g2d);
 			surrenderButton.drawButton(g2d);
 			
@@ -359,7 +354,7 @@ public class StagePanel extends JPanel {
 		// g2d.fillOval((int)camera.getCenterOfScreen().x-5, (int)camera.getCenterOfScreen().y-5, 10, 10);
 		// camera.drawRectOfView(g2d);
 		
-		if(winScreen != null) winScreen.drawButtons(g2d);
+		if(winScreen != null) { winScreen.drawButtons(g2d); }
 		drawCursor(g2d);
 		
 		g2d.translate(-camera.getPos().x, -camera.getPos().y);
