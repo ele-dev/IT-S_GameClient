@@ -61,7 +61,7 @@ public abstract class GamePiece {
 	private AStarPathFinder pathFinder;
 	public GamePieceBase gamePieceBase;
 	
-	public GamePiece(Color teamColor, String name,BoardRectangle boardRect,float dmg,int baseTypeIndex) {
+	public GamePiece(Color teamColor, String name, BoardRectangle boardRect, float dmg, int baseTypeIndex) {
 		
 		this.isEnemy = false;
 		this.c =  teamColor;
@@ -436,17 +436,23 @@ public abstract class GamePiece {
 		}
 	}
 	
-	// Determine loyalty of GamePieces after Team color was assigned
+	// Determine the team loyalty of the GamePiece by comparing it's color with 
+	// the assigned team color of the player
+	public void assignToSide() {
+		if(this.c.equals(GameState.myTeamColor)) {
+			this.isEnemy = false;
+		} else {
+			this.isEnemy = true;
+		}
+	}
+	
+	// Determine loyalty of all GamePieces after Team color was assigned
 	public static void assignGamePiecesToSides() {
 		
 		// Go through the global list of the stage panel
 		for(GamePiece currGP: StagePanel.gamePieces)
 		{
-			if(currGP.c.equals(GameState.myTeamColor)) {
-				currGP.isEnemy = false;
-			} else {
-				currGP.isEnemy = true;
-			}
+			currGP.assignToSide();
 		}
 	}
 	

@@ -16,7 +16,7 @@ public class Rocket extends Projectile {
 	public float rotationDelay = 4;
 
 	
-	public Rocket(int x, int y, int w, int h, Color c,float angle, Shape targetShape, DestructibleObject targetDestructibleObject) {
+	public Rocket(int x, int y, int w, int h, Color c, float angle, Shape targetShape, DestructibleObject targetDestructibleObject) {
 		super(x, y, w, h, c, angle, 0, 0.3f, targetShape, targetDestructibleObject);
 		poly = new Polygon();
 		poly.addPoint((int)(w/2),(int)(-h/2));
@@ -27,8 +27,8 @@ public class Rocket extends Projectile {
 	}
 	
 	public void addTrailParticle() { 
-		int randomSize = (int)(Math.random() * 2) +4;
-		StagePanel.particles.add(new TrailParticle(x, y, randomSize,0, c,0, 3,0));
+		int randomSize = (int)(Math.random() * 2) + 4;
+		StagePanel.particles.add(new TrailParticle(x, y, randomSize, 0, c, 0, 3, 0));
 	}
 	
 	// draws the rocket
@@ -53,5 +53,4 @@ public class Rocket extends Projectile {
 		StagePanel.particles.add(new Explosion((float)x, (float)y,1, (float)(Math.random()*360)));
 		isDestroyed = true;
 	}
-	
 }

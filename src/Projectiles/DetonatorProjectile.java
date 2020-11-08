@@ -12,11 +12,12 @@ import javax.swing.Timer;
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 import Particles.Explosion;
-import Stage.Commons;
 import Stage.TurnCountDown;
+import menueGui.GameState;
 
 
 public class DetonatorProjectile extends Projectile {
+	
 	private float xRelTarget,yRelTarget;
 	private float dmg;
 	private boolean isEnemy;
@@ -34,26 +35,25 @@ public class DetonatorProjectile extends Projectile {
 	private DestructibleObject targetDestructibleObject;
 	
 	private TurnCountDown detonationCountDown;
-	public DetonatorProjectile(int x, int y, int w, int h, boolean isEnemy,float dmg,float angle,Shape targetShape
-			,GamePiece targetGamePiece,DestructibleObject targetDestructibleObject) {
-		super(x, y, w, h, isEnemy?Commons.enemyColor:Commons.notEnemyColor, angle, 16, 0, targetShape, targetDestructibleObject);
+	public DetonatorProjectile(int x, int y, int w, int h, boolean isEnemy, float dmg, float angle, Shape targetShape
+			, GamePiece targetGamePiece, DestructibleObject targetDestructibleObject) {
+		super(x, y, w, h, isEnemy ? GameState.enemyTeamColor : GameState.myTeamColor, angle, 16, 0, targetShape, targetDestructibleObject);
 		shapeShow = new Rectangle(-w/2,-h/2,w,h);
 		cBlink = Color.BLACK;
 		this.isEnemy = isEnemy;
 		this.dmg = dmg;
-		detonationTimer = new Timer(1500,new ActionListener() {
+		detonationTimer = new Timer(1500, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				detonate();
-				
 			}
 		});
 		detonationTimer.setRepeats(false);
 		this.targetGamePiece = targetGamePiece;
 		this.targetDestructibleObject = targetDestructibleObject;
 		
-		detonationCountDown = new TurnCountDown(2,c);
+		detonationCountDown = new TurnCountDown(2, c);
 	}
 	
 	public GamePiece getTargetGamePiece() {
@@ -72,14 +72,16 @@ public class DetonatorProjectile extends Projectile {
 	}
 	// draws the projectile
 	public void drawProjectile(Graphics2D g2d) {
-		g2d.setColor(hasHitTarget && !isColorBlink?cBlink:c);
+		g2d.setColor(hasHitTarget && !isColorBlink ? cBlink : c);
 		g2d.translate(x, y);
 		g2d.rotate(Math.toRadians(angle));
 		g2d.fill(shapeShow);
 		g2d.rotate(Math.toRadians(-angle));
 		g2d.translate(-x, -y);
 		
-		if(hasHitTarget) detonationCountDown.drawCountDown(g2d, (int)x, (int)y-30);
+		if(hasHitTarget) {
+			detonationCountDown.drawCountDown(g2d, (int)x, (int)y-30);
+		}
 	}
 	
 	public void updateBlink() {

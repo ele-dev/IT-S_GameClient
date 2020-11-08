@@ -20,8 +20,9 @@ public class EMPPiece extends GamePiece{
 	ArrayList<EMPProjectile> empProjectiles = new ArrayList<EMPProjectile>();
 	
 	public EMPPiece(Color teamColor, BoardRectangle boardRect) {
-		super(teamColor, Commons.nameEMP, boardRect, Commons.dmgEMP,Commons.baseTypeEMP);
-		attackDelayTimer = new Timer(1500,new ActionListener() {
+		super(teamColor, Commons.nameEMP, boardRect, Commons.dmgEMP, Commons.baseTypeEMP);
+		
+		attackDelayTimer = new Timer(1500, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -42,8 +43,8 @@ public class EMPPiece extends GamePiece{
  
 
 	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(((selectedRow == boardRect.row+2 || selectedRow == boardRect.row-2) && selectedColumn < boardRect.column+2 && selectedColumn > boardRect.column-2) ||
-				((selectedColumn == boardRect.column+2 || selectedColumn == boardRect.column-2) && selectedRow <=boardRect.row+2 && selectedRow >= boardRect.row-2)) {
+		if(((selectedRow == boardRect.row + 2 || selectedRow == boardRect.row - 2) && selectedColumn < boardRect.column + 2 && selectedColumn > boardRect.column - 2) ||
+				((selectedColumn == boardRect.column + 2 || selectedColumn == boardRect.column - 2) && selectedRow <= boardRect.row + 2 && selectedRow >= boardRect.row - 2)) {
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
 				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
 					if(checkIfBoardRectangleInSight(curBR)) {
@@ -57,11 +58,10 @@ public class EMPPiece extends GamePiece{
 
 	// creates/shoots the DetonatorProjectile
 	public void shootEMP() {
-		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
-			targetDestructibleObject.getRectHitbox();
+		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 			
-		empProjectiles.add(new EMPProjectile(getCenterX(), getCenterY(), 10, 20, c, 
-				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape,targetGamePiece,targetDestructibleObject));
+		empProjectiles.add(new EMPProjectile(getCenterX(), getCenterY(), 10, 20, c, getDmg(), 
+				(float)(angle + (Math.random()-0.5)*10), shape,targetGamePiece,targetDestructibleObject));
 		targetDestructibleObject = null;
 		targetGamePiece = null;
 	}
@@ -90,7 +90,7 @@ public class EMPPiece extends GamePiece{
 	}
 
 	public void updateAttack() { 
-		for(int i = 0;i<empProjectiles.size();i++) { 
+		for(int i = 0; i < empProjectiles.size(); i++) { 
 			EMPProjectile curEMPP = empProjectiles.get(i);
 			curEMPP.update();
 			if(!curEMPP.hasHitTarget()) {
@@ -100,12 +100,12 @@ public class EMPPiece extends GamePiece{
 				if(curEMPP.hasHitTarget()) {
 					if(curEMPP.getTargetGamePiece() != null) {
 						curEMPP.getTargetGamePiece().gamePieceBase.getDamaged(getDmg());
-					}else {
-						targetDestructibleObject.getDamaged(getDmg(),angle,getIsEnemy());
+					} else {
+						targetDestructibleObject.getDamaged(getDmg(), angle, getIsEnemy());
 						targetDestructibleObject = null;
 					}
 				}
-			}else {
+			} else {
 				if(curEMPP.getTargetGamePiece() != null) {
 					curEMPP.stayStuck();
 				}
@@ -116,6 +116,5 @@ public class EMPPiece extends GamePiece{
 			}
 		}
 		updateIsAttacking();
-		
 	}
 }

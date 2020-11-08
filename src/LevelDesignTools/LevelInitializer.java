@@ -74,32 +74,33 @@ public class LevelInitializer {
 			mapColumns = mapImage.getWidth();
 			
 			int index = 0;
-			for(int i = 0;i<mapRows;i++) {
-				for(int j = 0;j<mapColumns;j++) {
-					if(i%2==0) {
-						StagePanel.boardRectangles.add(new BoardRectangle(i, j, j%2==0, index,false));
+			for(int i = 0; i < mapRows; i++) {
+				for(int j = 0; j < mapColumns; j++) {
+					if(i % 2 == 0) {
+						StagePanel.boardRectangles.add(new BoardRectangle(i, j, j % 2 == 0, index,false));
 					}else{
-						StagePanel.boardRectangles.add(new BoardRectangle(i, j, j%2==1, index,false));
+						StagePanel.boardRectangles.add(new BoardRectangle(i, j, j % 2 == 1, index,false));
 					}
 					index++;
 				}
 			}
 			index = 0;
-			for(int i = 0;i<mapRows;i++) {
-				for(int j = 0;j<mapColumns;j++) {
-					if(enemyFortressIndex<0 && mapImage.getRGB(j, i) == Commons.enemyColor.getRGB()) {
+			for(int i = 0; i < mapRows; i++) {
+				for(int j = 0; j < mapColumns; j++) {
+					if(enemyFortressIndex < 0 && mapImage.getRGB(j, i) == Commons.enemyColor.getRGB()) {
 						enemyFortressIndex = index;
-					}else if(notEnemyFortressIndex<0 && mapImage.getRGB(j, i) == Commons.notEnemyColor.getRGB()) {
+					} else if(notEnemyFortressIndex < 0 && mapImage.getRGB(j, i) == Commons.notEnemyColor.getRGB()) {
 						notEnemyFortressIndex = index;
-					}if(mapImage.getRGB(j, i) == Color.BLACK.getRGB()) {
+					} 
+					if(mapImage.getRGB(j, i) == Color.BLACK.getRGB()) {
 						StagePanel.boardRectangles.get(index).isWall = true;
-					}else if(mapImage.getRGB(j, i) == Color.BLUE.getRGB()) {
+					} else if(mapImage.getRGB(j, i) == Color.BLUE.getRGB()) {
 						StagePanel.boardRectangles.get(index).isGap = true;
-					}else if(mapImage.getRGB(j, i) == Color.MAGENTA.getRGB()) {
+					} else if(mapImage.getRGB(j, i) == Color.MAGENTA.getRGB()) {
 						StagePanel.boardRectangles.get(index).isHinderingTerrain = true;
-					}else if(mapImage.getRGB(j, i) == Color.ORANGE.getRGB()) {
+					} else if(mapImage.getRGB(j, i) == Color.ORANGE.getRGB()) {
 						StagePanel.destructibleObjects.add(new DestructibleObject(StagePanel.boardRectangles.get(index),1,1, 1,0));
-					}else if(mapImage.getRGB(j, i) == Color.YELLOW.getRGB()) {
+					} else if(mapImage.getRGB(j, i) == Color.YELLOW.getRGB()) {
 						StagePanel.goldMines.add(new GoldMine(StagePanel.boardRectangles.get(index)));
 					}
 					index++;
@@ -121,22 +122,22 @@ public class LevelInitializer {
 			BufferedImage mapImage = new BufferedImage(mapColumns, mapRows, BufferedImage.TYPE_INT_ARGB); 
 			int index = 0;
 			for(int i = 0;i<mapRows;i++) {
-				for(int j = 0;j<mapColumns;j++) {
+				for(int j = 0; j < mapColumns; j++) {
 					if(StagePanel.enemyFortress.containsBR(boardRectangles.get(index))) {
 						mapImage.setRGB(j, i, Commons.notEnemyColor.getRGB());
-					}else if(StagePanel.notEnemyFortress.containsBR(boardRectangles.get(index))) {
+					} else if(StagePanel.notEnemyFortress.containsBR(boardRectangles.get(index))) {
 						mapImage.setRGB(j, i, Commons.enemyColor.getRGB());
-					}else if(boardRectangles.get(index).isWall) {
+					} else if(boardRectangles.get(index).isWall) {
 						mapImage.setRGB(j, i, Color.BLACK.getRGB());
-					}else if(boardRectangles.get(index).isGap) {
+					} else if(boardRectangles.get(index).isGap) {
 						mapImage.setRGB(j, i, Color.BLUE.getRGB());
-					}else if(boardRectangles.get(index).isHinderingTerrain) {
+					} else if(boardRectangles.get(index).isHinderingTerrain) {
 						mapImage.setRGB(j, i, Color.MAGENTA.getRGB());
-					}else if(boardRectangles.get(index).isDestructibleObject()) {
+					} else if(boardRectangles.get(index).isDestructibleObject()) {
 						mapImage.setRGB(j, i, Color.ORANGE.getRGB());
-					}else if(boardRectangles.get(index).isGoldMine()) {
+					} else if(boardRectangles.get(index).isGoldMine()) {
 						mapImage.setRGB(j, i, Color.YELLOW.getRGB());
-					}else {
+					} else {
 						mapImage.setRGB(j, i, Color.WHITE.getRGB());
 					}
 					index++;
@@ -145,7 +146,6 @@ public class LevelInitializer {
 			
 			ImageIO.write(mapImage, "png", outputFile);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
