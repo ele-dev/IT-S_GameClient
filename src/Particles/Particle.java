@@ -33,6 +33,9 @@ public abstract class Particle {
 			alpha = c.getAlpha();
 		}
 	} 
+	public void setCNoAlpha(Color c) {
+		this.c = new Color(c.getRed(),c.getGreen(),c.getBlue(),this.c.getAlpha());
+	}
 	
 	public boolean isDestroyed() {
 		return isDestroyed;
@@ -47,7 +50,7 @@ public abstract class Particle {
 		if(tFadeDelayTimer != null && tFadeDelayTimer.isRunning()) {
 			return;
 		}
-		if(alpha > 10) {
+		if(alpha > fadeSpeed+1) {
 			alpha-=fadeSpeed;
 			c = new Color(c.getRed(),c.getGreen(),c.getBlue(),(int)alpha);
 		}else {

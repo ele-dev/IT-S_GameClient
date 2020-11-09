@@ -12,6 +12,7 @@ import javax.swing.Timer;
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 import Particles.Explosion;
+import Stage.Commons;
 import Stage.TurnCountDown;
 
 public class DetonatorProjectile extends Projectile {
@@ -35,7 +36,7 @@ public class DetonatorProjectile extends Projectile {
 	private TurnCountDown detonationCountDown;
 	public DetonatorProjectile(int x, int y, int w, int h, boolean isRed, float dmg, float angle, Shape targetShape
 			, GamePiece targetGamePiece, DestructibleObject targetDestructibleObject) {
-		super(x, y, w, h, isRed ? Color.RED : Color.BLUE, angle, 16, 0, targetShape, targetDestructibleObject);
+		super(x, y, w, h, isRed ? Commons.cRed : Commons.cBlue, angle, 16, 0, targetShape, targetDestructibleObject);
 		shapeShow = new Rectangle(-w/2,-h/2,w,h);
 		cBlink = Color.BLACK;
 		this.isRed = isRed;

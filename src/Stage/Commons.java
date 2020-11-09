@@ -30,8 +30,8 @@ public interface Commons {
 	final Color cAttack = new Color(255,0,50);
 	final Color cAbility = new Color(50, 255, 150);
 	
-	final Color enemyColor = new Color(255,0,43);
-	final Color notEnemyColor = new Color(16,68,255);
+	final Color cRed = new Color(255,0,43);
+	final Color cBlue = new Color(16,68,255);
 	
 	final Color cHealth = new Color(85,255,80);
 	final Color cShield = new Color(39,86,155);

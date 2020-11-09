@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import Buttons.ButtonEndTurn;
 import Buttons.GenericButton;
 import Buttons.WinScreen;
 import Environment.DestructibleObject;
@@ -81,7 +82,8 @@ public class StagePanel extends JPanel {
 	public static ArrayList<Particle> particles = new ArrayList<Particle>();
 	
 	// game Info
-	private GenericButton endTurnButton,surrenderButton;
+	private GenericButton surrenderButton;
+	private ButtonEndTurn endTurnButton;
 	private static TurnInfo turnInfoPanel;
 	
 	public static Camera camera;
@@ -130,7 +132,7 @@ public class StagePanel extends JPanel {
 		tUpdateRate.setRepeats(true);
 		
 		// create and init the buttons 
-		endTurnButton = new GenericButton(w-300, h -150, 250, 100, "End Turn", new Color(20,20,20), new Color(50,255,0), 30);
+		endTurnButton = new ButtonEndTurn(w,h);
 		surrenderButton = new GenericButton(w-200, 50, 150, 75, "Surrender", new Color(20,20,20), new Color(255,0,50), 20);
 		
 		// create and init the TurnInfo display
@@ -273,10 +275,10 @@ public class StagePanel extends JPanel {
 	
 	private static void initFortresses() {
 		if(levelInitializer.getRedBaseIndex() > -1) {
-			redBase = new PlayerFortress(boardRectangles.get(levelInitializer.getRedBaseIndex()), Color.RED);
+			redBase = new PlayerFortress(boardRectangles.get(levelInitializer.getRedBaseIndex()), Commons.cRed);
 		}
 		if(levelInitializer.getBlueBaseIndex() > -1) {
-			blueBase = new PlayerFortress(boardRectangles.get(levelInitializer.getBlueBaseIndex()), Color.BLUE);
+			blueBase = new PlayerFortress(boardRectangles.get(levelInitializer.getBlueBaseIndex()), Commons.cBlue);
 		}
 	}
 	
@@ -338,6 +340,7 @@ public class StagePanel extends JPanel {
 			
 			g2d.translate(-camera.getPos().x, -camera.getPos().y);
 			turnInfoPanel.drawTurnInfo(g2d);
+			endTurnButton.drawParticles(g2d);
 			if(winScreen != null) {
 				winScreen.drawWinScreen(g2d);
 			}

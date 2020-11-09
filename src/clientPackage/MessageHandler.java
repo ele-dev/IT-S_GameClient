@@ -26,6 +26,7 @@ import GamePieces.ShotgunPiece;
 import GamePieces.SniperPiece;
 import GamePieces.TazerPiece;
 import Stage.BoardRectangle;
+import Stage.Commons;
 import Stage.ProjectFrame;
 import Stage.StagePanel;
 import menueGui.GameState;
@@ -94,16 +95,16 @@ public class MessageHandler {
 				{
 					case 1:
 					{
-						GameState.myTeamColor = Color.BLUE;
-						GameState.enemyTeamColor = Color.RED;
+						GameState.myTeamColor = Commons.cBlue;
+						GameState.enemyTeamColor = Commons.cRed;
 						GameState.myTeamIsRed = false;
 						break;
 					}
 				
 					case 2:
 					{
-						GameState.myTeamColor = Color.RED;
-						GameState.enemyTeamColor = Color.BLUE;
+						GameState.myTeamColor = Commons.cRed;
+						GameState.enemyTeamColor = Commons.cBlue;
 						GameState.myTeamIsRed = true;
 						break;
 					}

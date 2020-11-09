@@ -2,78 +2,107 @@ package Buttons;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.util.ArrayList;
 
-public class ButtonEndTurn {
-	private int startx,starty;
-	private Color c;
-	private Color cHover;
-	private Color cIsNotPressable;
-	private Rectangle rect;
-	private boolean isHover = false;
-	private boolean isPressable = true;
-	 
-	public ButtonEndTurn(int startx, int starty) {
-		this.startx = startx;
-		this.starty = starty;
-		this.c = new Color(20,20,20);
-		this.cHover = new Color(60,60,60);
-		this.cIsNotPressable = new Color(10,10,10);
-		this.rect = new Rectangle(startx,starty,250,100);
+import Particles.TrailParticle;
+
+public class ButtonEndTurn extends GenericButton{
+
+	ArrayList<TrailParticle> trailParticles = new ArrayList<TrailParticle>();
+	float length = 0;
+	float[] counters = new float[6];
+	
+	public ButtonEndTurn(int wFrame , int hFrame) {
+		super(wFrame-300, hFrame -150, 250, 100, "End Turn", new Color(20,20,20), new Color(50,255,0), 30);
+		length = (rect.width+rect.height) *2;
+		for(int i = 0;i<counters.length;i++) {
+			counters[i] = length* i/counters.length;
+		}
 	}
 	
-	public boolean getIsHover() {
-		return isHover; 
-	}
-	
-	public boolean isPressable() {
-		return isPressable;
-	}
-	
+	@Override
 	public void drawButton(Graphics2D g2d) {
-		g2d.setColor(c);
-		if(isHover) {
-			g2d.setColor(cHover);
-		}
-		if(!isPressable) {
-			g2d.setColor(cIsNotPressable);
-		}
-		g2d.fill(rect);
-		g2d.setStroke(new BasicStroke(3));
-		
-		g2d.setColor(new Color(80,80,80));
-		if(isHover) {
+		if(isActive) {
+			g2d.setColor(isHover?cHover:c);
+		}else {
 			g2d.setColor(c);
 		}
-		if(!isPressable) {
-			g2d.setColor(new Color(20,20,20));
-		}
+		g2d.fill(rect);
+		
+		g2d.setColor(cInactive);
+		
+		
+		g2d.setStroke(new BasicStroke(8));
 		g2d.draw(rect);
-		g2d.setFont(new Font("Arial",Font.BOLD,30));
+		
+		if(isActive) {
+			g2d.setColor(isHover?c:cHover);
+		}else {
+			g2d.setColor(cInactive);
+		}
+		g2d.setFont(f);
 		FontMetrics fMetrics = g2d.getFontMetrics();
 		int textHeight = fMetrics.getHeight();
-		int textWidth = fMetrics.stringWidth("End Turn");
-		g2d.drawString("End Turn",(int)(rect.x+rect.getWidth()/2 - textWidth/2),(int)(rect.y + rect.getHeight()/2 +textHeight/3));
+		int textWidth = fMetrics.stringWidth(name);
+		g2d.drawString(name,(int)(rect.x+rect.getWidth()/2 - textWidth/2),(int)(rect.y + rect.getHeight()/2 +textHeight/3));
 	}
 	
-	public void updatePressable(boolean isPressable) {
-		this.isPressable = isPressable;
-	}
-	
-	public void updateHover(Point mousePos) {
-		if(mousePos != null) {
-			isHover = rect.contains(mousePos);
-		}
+	public void drawParticles(Graphics2D g2d) {
 		
+		addParticle();
+		
+		Color c = new Color(10,10,10);
+		if(isActive) {
+			c = new Color(50,255,0);
+		}
+		for(int i = 0;i<trailParticles.size();i++) {
+			TrailParticle curTP = trailParticles.get(i);
+			curTP.drawParticle(g2d);
+			curTP.update();
+			curTP.setCNoAlpha(c);
+			if(curTP.isDestroyed()) {
+				trailParticles.remove(i);
+			}
+		}
 	}
 	
-	public void updatePos(Point CameraPos) {
-		rect.setBounds(startx-CameraPos.x,starty-CameraPos.y,250,100);
+	private void addParticle() {
+		for(int i = 0;i<counters.length;i++) {
+			
+			int x = startx;
+			int y = starty;
+			if(counters[i]<length) {
+				counters[i]+= 0.3f;
+			}else {
+				counters[i] = 0;
+			}
+			float counter = counters[i];
+			if(counter > rect.width) {
+				if(counter > rect.width+rect.height) {
+					if(counter > rect.width*2+rect.height) {
+						y += rect.height -(counter-rect.height-rect.width*2);
+					}else {
+						x += rect.width-(counter-rect.width-rect.height);
+						y += rect.height;
+					}
+				}else {
+					y += counter-rect.width;
+					x += rect.width;
+				}
+			}else {
+				x += counter;
+			}
+			
+			Color c = new Color(10,10,10);
+			if(isActive) {
+				c = new Color(50,255,0);
+			}
+			trailParticles.add(new TrailParticle((int)(x+(Math.random()-0.5)*10), (int)(y+(Math.random()-0.5)*10),(int)(Math.random()*3+3), (float)Math.random()*360, c, 0, 1, 0));
+		}
 	}
+	
 	
 	
 }

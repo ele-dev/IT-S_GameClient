@@ -88,9 +88,9 @@ public class LevelInitializer {
 			index = 0;
 			for(int i = 0; i < mapRows; i++) {
 				for(int j = 0; j < mapColumns; j++) {
-					if(redBaseIndex < 0 && mapImage.getRGB(j, i) == Commons.enemyColor.getRGB()) {
+					if(redBaseIndex < 0 && mapImage.getRGB(j, i) == Commons.cRed.getRGB()) {
 						redBaseIndex = index;
-					} else if(blueBaseIndex < 0 && mapImage.getRGB(j, i) == Commons.notEnemyColor.getRGB()) {
+					} else if(blueBaseIndex < 0 && mapImage.getRGB(j, i) == Commons.cBlue.getRGB()) {
 						blueBaseIndex = index;
 					} 
 					if(mapImage.getRGB(j, i) == Color.BLACK.getRGB()) {
@@ -132,9 +132,9 @@ public class LevelInitializer {
 			for(int i = 0;i<mapRows;i++) {
 				for(int j = 0; j < mapColumns; j++) {
 					if(StagePanel.redBase.containsBR(boardRectangles.get(index))) {
-						mapImage.setRGB(j, i, Commons.notEnemyColor.getRGB());
+						mapImage.setRGB(j, i, Commons.cBlue.getRGB());
 					} else if(StagePanel.blueBase.containsBR(boardRectangles.get(index))) {
-						mapImage.setRGB(j, i, Commons.enemyColor.getRGB());
+						mapImage.setRGB(j, i, Commons.cRed.getRGB());
 					} else if(boardRectangles.get(index).isWall) {
 						mapImage.setRGB(j, i, Color.BLACK.getRGB());
 					} else if(boardRectangles.get(index).isGap) {

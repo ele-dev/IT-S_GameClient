@@ -57,7 +57,7 @@ public class GoldMine extends DestructibleObject {
 	}
 	
 	public void drawDestructibleObject(Graphics2D g2d) {
-		g2d.setColor(captureState == 0 ? new Color(20, 20, 20) : captureState == 1 ? Color.RED : Color.BLUE);
+		g2d.setColor(captureState == 0 ? new Color(20, 20, 20) : captureState == 1 ? Commons.cRed : Commons.cBlue);
 		g2d.fill(rectHitbox);
 		
 		g2d.setStroke(new BasicStroke(8));
@@ -83,7 +83,6 @@ public class GoldMine extends DestructibleObject {
 	}
 	
 	public void drawNeighborBRs(Graphics2D g2d) {
-		
 		g2d.setColor(new Color(20, 20, 20));
 		for(BoardRectangle curtBR : neighborBoardRectangles) {
 			if(!curtBR.isWall) {
@@ -116,7 +115,7 @@ public class GoldMine extends DestructibleObject {
 	public void capture(boolean isRed) {
 		captureState = (byte) (isRed ? 1 : 2);
 		health = maxHealth;
-		StagePanel.valueLabels.add(new ValueLabel(occupiedBRs[0].getCenterX(), occupiedBRs[0].getCenterY(), "Captured", isRed ? Color.RED : Color.BLUE));
+		StagePanel.valueLabels.add(new ValueLabel(occupiedBRs[0].getCenterX(), occupiedBRs[0].getCenterY(), "Captured", isRed ? Commons.cRed : Commons.cBlue));
 	}
 	
 	public void tryGainGold() {

@@ -60,9 +60,9 @@ public abstract class GamePiece {
 	
 	public GamePiece(boolean isRed, String name, BoardRectangle boardRect, float dmg, int baseTypeIndex) {
 		if(isRed) {
-			this.c = Color.RED;
+			this.c = Commons.cRed;
 		}else {
-			this.c = Color.BLUE;
+			this.c = Commons.cBlue;
 		}
 		this.isRed = isRed;
 		this.boardRect = boardRect;

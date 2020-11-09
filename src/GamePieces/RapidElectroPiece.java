@@ -107,7 +107,6 @@ public class RapidElectroPiece extends GamePiece {
 						targetGamePiece = null;
 					}
 				}
-				
 			}
 		}
 		updateIsAttacking();
