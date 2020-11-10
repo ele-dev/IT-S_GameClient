@@ -26,7 +26,7 @@ public class DestructibleObject {
 	
 	public DestructibleObject(BoardRectangle boardRectangle,int occupiedRows,int occupiedColumns,float maxHealth,float rotation) {
 		health = maxHealth;
-		rectHitbox = new Rectangle(boardRectangle.getX(),boardRectangle.getY(),Commons.boardRectSize*occupiedColumns,Commons.boardRectSize*occupiedRows);
+		rectHitbox = new Rectangle(boardRectangle.getX(),boardRectangle.getY(),StagePanel.boardRectSize*occupiedColumns,StagePanel.boardRectSize*occupiedRows);
 		this.rotation = rotation;
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		spriteLinks.add(Commons.pathToSpriteSource + "Environment/crate.png");
@@ -113,8 +113,8 @@ public class DestructibleObject {
 				float y = (float)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.height);
 				float angle = (float)(Math.random()*360);
 				StagePanel.particles.add(new DestructionParticle(x,y,
-						(int)(Math.random()*Commons.boardRectSize/3)+Commons.boardRectSize/6,
-						(int)(Math.random()*Commons.boardRectSize/10)+Commons.boardRectSize/8, 
+						(int)(Math.random()*StagePanel.boardRectSize/3)+StagePanel.boardRectSize/6,
+						(int)(Math.random()*StagePanel.boardRectSize/10)+StagePanel.boardRectSize/8, 
 						sprite.getRandomPixelColor(),angle, 3));
 			}
 			
@@ -133,8 +133,8 @@ public class DestructibleObject {
 				float y = (float)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.height);
 				float angle = attackAngle + (float)((Math.random()-0.5)*50);
 				StagePanel.particles.add(new DestructionParticle(x,y,
-					(int)(Math.random()*Commons.boardRectSize/2)+Commons.boardRectSize/3,
-					(int)(Math.random()*Commons.boardRectSize/8)+Commons.boardRectSize/8, 
+					(int)(Math.random()*StagePanel.boardRectSize/2)+StagePanel.boardRectSize/3,
+					(int)(Math.random()*StagePanel.boardRectSize/8)+StagePanel.boardRectSize/8, 
 					sprite.getRandomPixelColor(),angle, (float)(Math.random()*4+dmg)));
 			}
 		}

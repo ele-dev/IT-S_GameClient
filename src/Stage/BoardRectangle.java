@@ -39,7 +39,7 @@ public class BoardRectangle {
 	public BoardRectangle(int row, int column,boolean isTile1,int index,boolean isHinderingTerrain) {
 		this.row = row;
 		this.column = column;
-		int size = Commons.boardRectSize;
+		int size = StagePanel.boardRectSize;
 		rect = new Rectangle(column*size,row*size,size,size);
 		int alpha = 200;
 		cPossibleMove = new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),alpha);

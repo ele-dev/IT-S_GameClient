@@ -131,7 +131,7 @@ public abstract class GamePiece {
 		ArrayList<PathCell> pathCells = new ArrayList<PathCell>();
 		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
 			BoardRectangle curBR  = StagePanel.boardRectangles.get(i);
-			pathCells.add(new PathCell(curBR.getX(), curBR.getY(), Commons.boardRectSize, curBR.row, curBR.column,i));
+			pathCells.add(new PathCell(curBR.getX(), curBR.getY(), StagePanel.boardRectSize, curBR.row, curBR.column,i));
 				
 			if(curBR.isWall || curBR.isDestructibleObject() || curBR.isGoldMine() || curBR.isGap) {
 				pathCells.get(i).setIsWall(true);
@@ -228,8 +228,8 @@ public abstract class GamePiece {
 		if(gamePieceBase.getHealth() <= 0 && !getIsDead()) {
 			StagePanel.particles.add(new Explosion(getCenterX(), getCenterY(), 1.2f));
 			for(int i = 0; i < 3; i++) {
-				StagePanel.particles.add(new Explosion(getCenterX()+(int)((Math.random()-0.5)*Commons.boardRectSize/2),
-						getCenterY()+(int)((Math.random()-0.5)*Commons.boardRectSize/2), 1f));
+				StagePanel.particles.add(new Explosion(getCenterX()+(int)((Math.random()-0.5)*StagePanel.boardRectSize/2),
+						getCenterY()+(int)((Math.random()-0.5)*StagePanel.boardRectSize/2), 1f));
 			}
 			isDead = true;
 			StagePanel.impactStop();

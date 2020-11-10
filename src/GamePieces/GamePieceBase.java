@@ -86,7 +86,7 @@ public class GamePieceBase {
 			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseNE0.png");
 			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseNE1.png");
 		}
-		spriteBase = new Sprite(spriteLinks, Commons.boardRectSize,Commons.boardRectSize, 10);
+		spriteBase = new Sprite(spriteLinks, StagePanel.boardRectSize,StagePanel.boardRectSize, 10);
 	}
 	
 	// getters
@@ -225,12 +225,12 @@ public class GamePieceBase {
 	public void regenShield() {
 		if(shield + Commons.shieldRegen >= maxShield) {
 			if(shield < maxShield) {
-				StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
+				StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*StagePanel.boardRectSize), y+(int)((Math.random()-0.5)*StagePanel.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
 			}
 			shield = maxShield;
 		}else {
 			shield += Commons.shieldRegen;
-			StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
+			StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*StagePanel.boardRectSize), y+(int)((Math.random()-0.5)*StagePanel.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
 		}
 	}
 	

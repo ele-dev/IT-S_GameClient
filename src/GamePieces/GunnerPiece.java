@@ -49,10 +49,10 @@ public class GunnerPiece extends GamePiece {
 		
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		spriteLinks.add(Commons.pathToSpriteSource+"Turrets/Minigun.png");
-		spriteTurret = new Sprite(spriteLinks, Commons.boardRectSize, Commons.boardRectSize, 0);
+		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize, StagePanel.boardRectSize, 0);
 		
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2, boardRect.getCenterY()-Commons.boardRectSize/2,
-				Commons.boardRectSize, Commons.boardRectSize, 0, 0, Arc2D.PIE);
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, 0, Arc2D.PIE);
 	}
 	
 	//draws every bullet in the bullets Array
@@ -64,8 +64,8 @@ public class GunnerPiece extends GamePiece {
 
 	// updates the attack (moves bullets,checks if they hit something and so forth)
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2, boardRect.getCenterY()-Commons.boardRectSize/2,
-				Commons.boardRectSize, Commons.boardRectSize, 0, -angle-90, Arc2D.PIE);
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		for(int i = 0; i < bullets.size(); i++) {
 			Bullet curB = bullets.get(i);
 			curB.move();

@@ -36,14 +36,14 @@ public class GoldMine extends DestructibleObject {
 			}
 		}
 		for(int i = 0; i < 100; i++) {
-			int x =  (int) (neighborBoardRectangles.get(0).getX()+(Math.random())*Commons.boardRectSize*3);
-			int y =  (int) (neighborBoardRectangles.get(0).getY()+(Math.random())*Commons.boardRectSize*3);
+			int x =  (int) (neighborBoardRectangles.get(0).getX()+(Math.random())*StagePanel.boardRectSize*3);
+			int y =  (int) (neighborBoardRectangles.get(0).getY()+(Math.random())*StagePanel.boardRectSize*3);
 			int randomGreyScale = (int) (Math.random() * 30 + 15);
 			particles.add(new TrailParticle(x, y, (int)(Math.random() * 20 + 8), 0, new Color(randomGreyScale,randomGreyScale,randomGreyScale), 0, 0, 0));
 		}
 		for(int i = 0; i < 20; i++) {
-			int x =  (int) (neighborBoardRectangles.get(0).getX() + (Math.random()) * Commons.boardRectSize*3);
-			int y =  (int) (neighborBoardRectangles.get(0).getY() + (Math.random()) * Commons.boardRectSize*3);
+			int x =  (int) (neighborBoardRectangles.get(0).getX() + (Math.random()) * StagePanel.boardRectSize*3);
+			int y =  (int) (neighborBoardRectangles.get(0).getY() + (Math.random()) * StagePanel.boardRectSize*3);
 			particles.add(new TrailParticle(x, y, (int)(Math.random() * 15 + 5), 0, new Color(204 + (int)((Math.random()-0.5)*50),164+(int)((Math.random()-0.5)*50),61), 0, 0, 0));
 		}
 	}
@@ -91,7 +91,7 @@ public class GoldMine extends DestructibleObject {
 		}
 		g2d.setColor(new Color(10, 10, 10));
 		g2d.setStroke(new BasicStroke(8));
-		g2d.drawRect(neighborBoardRectangles.get(0).getX(), neighborBoardRectangles.get(0).getY(), Commons.boardRectSize*3, Commons.boardRectSize*3);
+		g2d.drawRect(neighborBoardRectangles.get(0).getX(), neighborBoardRectangles.get(0).getY(), StagePanel.boardRectSize*3, StagePanel.boardRectSize*3);
 		for(Particle curP : particles) {
 			curP.drawParticle(g2d);
 		}

@@ -57,6 +57,8 @@ import networking.SignalMessage;
 public class StagePanel extends JPanel {
 	public static int w;
 	public static int h;
+	
+	public static int boardRectSize = 60;
 	KL kl = new KL();
 	
 	// FrameRate/UpdateRate
@@ -104,7 +106,7 @@ public class StagePanel extends JPanel {
 	public StagePanel() {
 		// Init the dimensions
 		w = ProjectFrame.width; 
-		h = ProjectFrame.height;
+		h = ProjectFrame.height-20;
 		setBounds(0, 0, w, h);
 		// setVisible(true);
 		cBackGround = new Color(28, 26, 36);
@@ -132,8 +134,10 @@ public class StagePanel extends JPanel {
 		tUpdateRate.setRepeats(true);
 		
 		// create and init the buttons 
-		endTurnButton = new ButtonEndTurn(w,h);
-		surrenderButton = new GenericButton(w-200, 50, 150, 75, "Surrender", new Color(20,20,20), new Color(255,0,50), 20);
+		endTurnButton = new ButtonEndTurn();
+		int border = StagePanel.w/100;
+		surrenderButton = new GenericButton(StagePanel.w-(border+StagePanel.w/8),border,StagePanel.w/8,StagePanel.w/16,
+				"Surrender", new Color(20,20,20), new Color(255,0,50), StagePanel.w/16/3);
 		
 		// create and init the TurnInfo display
 		turnInfoPanel = new TurnInfo();
@@ -169,12 +173,15 @@ public class StagePanel extends JPanel {
 			levelInitializer.readMapFromImage(mapName);
 			mapRows = levelInitializer.getMapRows();
 			mapColumns = levelInitializer.getMapColumns();
-			mapRectangle = new Rectangle(mapColumns*Commons.boardRectSize,mapRows*Commons.boardRectSize);
+			mapRectangle = new Rectangle(mapColumns*boardRectSize,mapRows*boardRectSize);
 		}
 		initFortresses();
 		initGamePieces();
-		
-		System.out.println(GameState.myTeamIsRed);
+		if(GameState.myTeamIsRed) {
+			camera.setCameraToBasePos(redBase);
+		}else {
+			camera.setCameraToBasePos(blueBase);
+		}
 	}
 	
 	// sets an impact-stop countdown (frame freezes)
@@ -537,6 +544,7 @@ public class StagePanel extends JPanel {
 		updateDmgLabels();
 		updateGamePieces();
 		
+		turnInfoPanel.update();
 		endTurnButton.updateHover(mousePos);
 		endTurnButton.updatePos(camera.getPos());
 		endTurnButton.setActive(curActionPerformingGP == null && levelDesignTool == null && GameState.myTurn
@@ -553,10 +561,10 @@ public class StagePanel extends JPanel {
 	public static void checkIfSomeOneWon() {
 		
 		if(blueBase.isDestroyed()) {
-			winScreen = new WinScreen((byte)1, w, h);
+			winScreen = new WinScreen((byte)1);
 		}
 		else if(redBase.isDestroyed()) {
-			winScreen = new WinScreen((byte)2, w, h);
+			winScreen = new WinScreen((byte)2);
 		}
 	}
 	

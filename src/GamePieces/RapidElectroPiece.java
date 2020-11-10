@@ -85,8 +85,8 @@ public class RapidElectroPiece extends GamePiece {
 
 	@Override
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2,boardRect.getCenterY()-Commons.boardRectSize/2,
-				Commons.boardRectSize,Commons.boardRectSize,0,-angle-90,Arc2D.PIE);
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2,boardRect.getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize,StagePanel.boardRectSize,0,-angle-90,Arc2D.PIE);
 		if(burstAmount > 0) {
 			burstCounter--;
 			if(burstCounter <= 0) {

@@ -13,6 +13,7 @@ import Projectiles.Rocket;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
+import Stage.StagePanel;
 
 
 public class RocketLauncherPiece extends GamePiece{
@@ -46,10 +47,10 @@ public class RocketLauncherPiece extends GamePiece{
 		
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		spriteLinks.add(Commons.pathToSpriteSource+"Turrets/RocketLauncher.png");
-		spriteTurret = new Sprite(spriteLinks, Commons.boardRectSize,Commons.boardRectSize, 0);
+		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize,StagePanel.boardRectSize, 0);
 		
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/4,boardRect.getCenterY()-Commons.boardRectSize/4,
-				Commons.boardRectSize/2,Commons.boardRectSize/2,0,0,Arc2D.PIE);
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/4,boardRect.getCenterY()-StagePanel.boardRectSize/4,
+				StagePanel.boardRectSize/2,StagePanel.boardRectSize/2,0,0,Arc2D.PIE);
 	}
 
 	public void drawAttack(Graphics2D g2d) {
@@ -120,8 +121,8 @@ public class RocketLauncherPiece extends GamePiece{
 
 	// updates all things that are animated with the attack (for example moves the rockets and updates the explosions)
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/4,boardRect.getCenterY()-Commons.boardRectSize/4,
-				Commons.boardRectSize/2,Commons.boardRectSize/2,0,-angle,Arc2D.PIE);
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/4,boardRect.getCenterY()-StagePanel.boardRectSize/4,
+				StagePanel.boardRectSize/2,StagePanel.boardRectSize/2,0,-angle,Arc2D.PIE);
 		
 		for(int i = 0;i<rockets.size();i++) {
 			Rocket curR = rockets.get(i);

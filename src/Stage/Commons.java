@@ -7,9 +7,6 @@ public interface Commons {
 	// The game title
 	public final String gameTitle = "Game Title";
 	
-	// Size of the Cells on the game board
-	final int boardRectSize = 70;
-	
 	// Refresh rates for timers 
 	public static final int frametime = 10;
 	

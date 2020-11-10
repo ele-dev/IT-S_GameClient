@@ -29,8 +29,8 @@ public class SniperPiece extends GamePiece{
 			}
 		});
 		attackDelayTimer.setRepeats(false);
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2,boardRect.getCenterY()-Commons.boardRectSize/2,
-				Commons.boardRectSize,Commons.boardRectSize,0,0,Arc2D.PIE);
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2,boardRect.getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize,StagePanel.boardRectSize,0,0,Arc2D.PIE);
 	}
 	 
 	public void update() {
@@ -63,8 +63,8 @@ public class SniperPiece extends GamePiece{
 	}
 
 	public void shootOnce() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2,boardRect.getCenterY()-Commons.boardRectSize/2,
-				Commons.boardRectSize,Commons.boardRectSize,0,-angle-90,Arc2D.PIE);	
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2,boardRect.getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize,StagePanel.boardRectSize,0,-angle-90,Arc2D.PIE);	
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 			

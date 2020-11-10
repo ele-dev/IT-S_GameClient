@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import Particles.TrailParticle;
+import Stage.StagePanel;
 
 public class ButtonEndTurn extends GenericButton{
 
@@ -14,8 +15,14 @@ public class ButtonEndTurn extends GenericButton{
 	float length = 0;
 	float[] counters = new float[6];
 	
-	public ButtonEndTurn(int wFrame , int hFrame) {
-		super(wFrame-300, hFrame -150, 250, 100, "End Turn", new Color(20,20,20), new Color(50,255,0), 30);
+	public ButtonEndTurn() {
+		super(0,0, 250, 100, "End Turn", new Color(20,20,20), new Color(50,255,0), StagePanel.w/16/3);
+		int border = StagePanel.w/100;
+		
+		this.rect.setBounds(StagePanel.w-(border+StagePanel.w/8),StagePanel.h-(border*2+StagePanel.w/16),StagePanel.w/8,StagePanel.w/16);
+		startx = rect.x;
+		starty = rect.y;
+		
 		length = (rect.width+rect.height) *2;
 		for(int i = 0;i<counters.length;i++) {
 			counters[i] = length* i/counters.length;
@@ -34,7 +41,7 @@ public class ButtonEndTurn extends GenericButton{
 		g2d.setColor(cInactive);
 		
 		
-		g2d.setStroke(new BasicStroke(8));
+		g2d.setStroke(new BasicStroke(StagePanel.w/160));
 		g2d.draw(rect);
 		
 		if(isActive) {
@@ -74,7 +81,7 @@ public class ButtonEndTurn extends GenericButton{
 			int x = startx;
 			int y = starty;
 			if(counters[i]<length) {
-				counters[i]+= 0.3f;
+				counters[i]+= 1f;
 			}else {
 				counters[i] = 0;
 			}
@@ -94,12 +101,15 @@ public class ButtonEndTurn extends GenericButton{
 			}else {
 				x += counter;
 			}
-			
 			Color c = new Color(10,10,10);
 			if(isActive) {
 				c = new Color(50,255,0);
 			}
-			trailParticles.add(new TrailParticle((int)(x+(Math.random()-0.5)*10), (int)(y+(Math.random()-0.5)*10),(int)(Math.random()*3+3), (float)Math.random()*360, c, 0, 1, 0));
+			if(counter%4 == 0) {
+				int size = (int)(Math.random()*StagePanel.w/300+StagePanel.w/300);
+				size = size > 0?size:1;
+				trailParticles.add(new TrailParticle((int)(x+(Math.random()-0.5)*4), (int)(y+(Math.random()-0.5)*4),size, (float)Math.random()*360, c, 0, 3, 0));
+			}
 		}
 	}
 	

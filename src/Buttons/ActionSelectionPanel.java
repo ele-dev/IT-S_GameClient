@@ -20,22 +20,26 @@ public class ActionSelectionPanel {
 	private GamePiece parentGamepiece;
 	private AttackButton attackButton;
 	private MoveButton moveButton;
-	int border = 40;
+	int border;
+	private Font font;
 	 
 	public ActionSelectionPanel(GamePiece parentGamepiece) {
-		w = 400;
-		h = StagePanel.h-300;
-		int x = 0;
-		int y = StagePanel.h -h;
+		w = StagePanel.w/5;
+		h = StagePanel.h*2/3;
+		int x = StagePanel.w/100;
+		int y = StagePanel.h -h -x*2;
 		startx = x;
 		starty = y;
-		
+		border = w/10;
 		rect = new Rectangle(x,y,w,h);
 		this.parentGamepiece = parentGamepiece;
-		int gapSize = 20;
+		int gapSize = h/20;
 		int buttonW = w-border*2;
 		attackButton = new AttackButton(x + border,(int)(y + h/2.5) +gapSize,buttonW ,parentGamepiece);
 		moveButton = new MoveButton(x + border,  attackButton.rect.y+attackButton.rect.height+gapSize, buttonW, parentGamepiece);
+		
+		font = new Font("Arial",Font.BOLD,w/10);
+		
 	}
 	
 	public boolean getAttackButtonIsActive() {
@@ -55,12 +59,12 @@ public class ActionSelectionPanel {
 	public void drawActionSelectionPanel(Graphics2D g2d) {
 		g2d.setColor(new Color(20,20,20,230));
 		g2d.fill(rect);
-		g2d.setStroke(new BasicStroke(10));
+		g2d.setStroke(new BasicStroke(StagePanel.w/160));
 		g2d.setColor(new Color(10,10,10));
 		g2d.draw(rect);
 		int x = rect.x;	
 		int y = rect.y;
-		parentGamepiece.gamePieceBase.drawHealth(g2d, x+border, y+border+40, w-border*2, 40,40);
+		parentGamepiece.gamePieceBase.drawHealth(g2d, x+border, y+border*2, w-border*2, attackButton.rect.height/2,w/8);
 		x = x+border;
 		y = y+h/5;
 		
@@ -69,7 +73,7 @@ public class ActionSelectionPanel {
 		String[] strValues = {parentGamepiece.getName(),dmg == Math.round(dmg)?Math.round(dmg)+"":dmg+"",parentGamepiece.gamePieceBase.getMovementRange()+""};
 		Color[] colors = {parentGamepiece.getColor(),Commons.cAttack,Commons.cMove};
 		
-		g2d.setFont(new Font("Arial",Font.BOLD,40));
+		g2d.setFont(font);
 		FontMetrics metrics = g2d.getFontMetrics();
 		int textHeight = metrics.getHeight();
 		
@@ -83,7 +87,7 @@ public class ActionSelectionPanel {
 		}
 
 		
-		g2d.setStroke(new BasicStroke(8));
+		g2d.setStroke(new BasicStroke(StagePanel.w/160));
 		attackButton.drawButton(g2d);
 		moveButton.drawButton(g2d);
 	}
