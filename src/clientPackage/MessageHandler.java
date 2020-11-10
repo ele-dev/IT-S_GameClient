@@ -49,7 +49,8 @@ public class MessageHandler {
 				MsgAccountStats accountStats = (MsgAccountStats) msg;
 				
 				// Now store the received stats from the message
-				// ...
+				GameState.playedMatches = accountStats.getPlayedMatches();
+				GameState.money = accountStats.getAccountBalance();
 				
 				// Show stats on the console for debugging
 				System.out.println("Received account stats from the server");

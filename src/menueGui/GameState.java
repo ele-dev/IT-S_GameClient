@@ -20,6 +20,10 @@ public class GameState {
 	public static String registerStatusDescription = "";
 	public static boolean userAccountVerified = false;
 	
+	// User account stats //
+	public static int playedMatches = 0;
+	public static int money = 0;
+	
 	// Ingame related variables //
 	public static String enemyName = "";
 	public static boolean enemySurrender = false;
