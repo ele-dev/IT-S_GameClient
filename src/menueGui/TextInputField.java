@@ -29,7 +29,7 @@ public class TextInputField extends GuiElement {
 	
 	private static final int defaultTextSize = (int) Math.round(Math.sqrt((double)ProjectFrame.height) / 2.0);
 	
-	private String validChars = "abcdefghijklmnopqrstuvwxyz1234567890!?_ ";
+	private String validChars = "abcdefghijklmnopqrstuvwxyz1234567890!?_";
 	private short maxLength = Commons.maxInputLength;
 	
 	// Constructor for text input field with default specs
