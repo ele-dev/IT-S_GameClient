@@ -59,7 +59,7 @@ public class HomePanel extends GuiPanel {
 		this.gameStatsDisplay.setRelativePosition(10, 30);
 
 		// Give the buttons relative screen positions
-		this.logoutButton.setRelativePosition(3, 95);
+		this.logoutButton.setRelativePosition(5, 95);
 		this.quickMatchButton.setRelativePosition(75, 40);
 		this.abortMatchSearchButton.setRelativePosition(75, 55);
 		
