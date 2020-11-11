@@ -15,7 +15,6 @@ import Particles.TazerBolt;
 import Particles.TrailParticle;
 import Projectiles.Bullet;
 import Stage.BoardRectangle;
-import Stage.Commons;
 import Stage.StagePanel;
 
 public class RapidElectroPiece extends GamePiece {

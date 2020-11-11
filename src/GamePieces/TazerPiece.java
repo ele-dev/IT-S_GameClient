@@ -16,9 +16,7 @@ import Particles.TazerBolt;
 import Particles.TrailParticle;
 import Projectiles.Bullet;
 import Stage.BoardRectangle;
-import Stage.Commons;
 import Stage.StagePanel;
-import sun.awt.RepaintArea;
 
 public class TazerPiece extends GamePiece{
 	
