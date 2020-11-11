@@ -60,6 +60,24 @@ public class MessageHandler {
 				break;
 			}
 			
+			case GenericMessage.MSG_GAME_DATA:
+			{
+				// Ignore this mesage if the player isnt't logged in yet
+				if(!ProjectFrame.conn.isLoggedIn()) {
+					System.err.println("Received invalid game data message from the server!");
+				}
+				
+				// Coerce it into the right format
+				MsgGameData gameData = (MsgGameData)msg;
+				
+				// Read and store the containing state variables 
+				if(gameData.getOnlinePlayerCount() >= 0) {
+					GameState.onlinePlayers = gameData.getOnlinePlayerCount();
+				}
+				
+				break;
+			}
+			
 			// A Signal Message that says a match was found
 			case GenericMessage.MSG_FOUND_MATCH:
 			{
