@@ -43,7 +43,7 @@ public abstract class GenericMessage implements Serializable {
 	public static final int MSG_END_TURN = 3021;
 	public static final int MSG_MAKE_MOVE = 3022;
 	public static final int MSG_ATTACK = 3023;
-	public static final int MSG_USE_ABILITY = 3024;
+	// public static final int MSG_USE_ABILITY = 3024;
 	public static final int MSG_SPAWN_GAMEPIECE = 3025;
 	
 	// ...
