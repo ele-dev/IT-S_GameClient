@@ -60,7 +60,7 @@ public class HomePanel extends GuiPanel {
 		this.accountVerificationMessage.setRelativePosition(10, 10);
 		this.gameMoneyDisplay.setRelativePosition(10, 30);
 		this.playedMatchesDisplay.setRelativePosition(10, 36);
-		this.onlinePlayerCounter.setRelativePosition(85, 10);
+		this.onlinePlayerCounter.setRelativePosition(90, 10);
 
 		// Give the buttons relative screen positions
 		this.logoutButton.setRelativePosition(5, 95);

@@ -20,7 +20,7 @@ public class TextLabel extends GuiElement {
 	// Constructor for Label with default specs
 	public TextLabel() {
 		// call constructor from super class
-		super(300, 400);
+		super(30, 15);
 		
 		// Set the default values
 		this.labelText = "Just a label";
