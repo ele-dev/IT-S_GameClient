@@ -73,7 +73,13 @@ public class MessageHandler {
 				// Read and store the containing state variables 
 				if(gameData.getOnlinePlayerCount() >= 0) {
 					GameState.onlinePlayers = gameData.getOnlinePlayerCount();
+				} else {
+					break;
 				}
+				
+				// Show received data on the console for debugging
+				System.out.println("Received Game Data from the server");
+				System.out.println("Current online players: " + GameState.onlinePlayers);
 				
 				break;
 			}

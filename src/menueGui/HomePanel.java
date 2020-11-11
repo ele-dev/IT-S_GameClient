@@ -31,7 +31,9 @@ public class HomePanel extends GuiPanel {
 	private TextLabel welcomeMessage = new TextLabel("Welcome", 18);
 	private TextLabel gameSearchMessage = new TextLabel("Waiting for an opponent ...", 18);
 	private TextLabel accountVerificationMessage = new TextLabel("", 17);
-	private TextLabel gameStatsDisplay = new TextLabel("", 17);
+	private TextLabel gameMoneyDisplay = new TextLabel("Money: ", 17);
+	private TextLabel playedMatchesDisplay = new TextLabel("Played matches: ", 17);
+	private TextLabel onlinePlayerCounter = new TextLabel("Currently online: ", 17);
 
 	// Constructor takes initial position
 	public HomePanel() {
@@ -50,13 +52,15 @@ public class HomePanel extends GuiPanel {
 	@Override
 	protected void initGuiElements() {
 		
-		// give the label relative screen positions
+		// give the labels relative screen positions
 		this.caption.setRelativePosition(50, 20);
 		this.welcomeMessage.setRelativePosition(50, 28);
 		this.gameSearchMessage.setRelativePosition(75, 47);
 		this.gameSearchMessage.setTextColor(Color.ORANGE);
 		this.accountVerificationMessage.setRelativePosition(10, 10);
-		this.gameStatsDisplay.setRelativePosition(10, 30);
+		this.gameMoneyDisplay.setRelativePosition(10, 30);
+		this.playedMatchesDisplay.setRelativePosition(10, 36);
+		this.onlinePlayerCounter.setRelativePosition(85, 10);
 
 		// Give the buttons relative screen positions
 		this.logoutButton.setRelativePosition(5, 95);
@@ -93,8 +97,9 @@ public class HomePanel extends GuiPanel {
 		}
 		
 		// Update the game statistic display
-		this.gameStatsDisplay.setText("Money: " + GameState.money + "$");
-		// ...
+		this.onlinePlayerCounter.setText("Currently online: " + GameState.onlinePlayers + " player(s)");
+		this.gameMoneyDisplay.setText("Money: " + GameState.money + "$");
+		this.playedMatchesDisplay.setText("Played matches: " + GameState.playedMatches);
 		
 		// Update the matchmaking buttons and labels for the 3 different possible cases
 		// case 1: Currently searching but not ingame
@@ -126,11 +131,15 @@ public class HomePanel extends GuiPanel {
 		this.caption.draw(g2d);
 		if(!ProjectFrame.conn.isGuestPlayer()) {
 			this.accountVerificationMessage.draw(g2d);
-			this.gameStatsDisplay.draw(g2d);
+			this.gameMoneyDisplay.draw(g2d);
+			this.playedMatchesDisplay.draw(g2d);
 		}
 
 		// Draw the welcome message 
 		this.welcomeMessage.draw(g2d);
+		
+		// Draw global game data
+		this.onlinePlayerCounter.draw(g2d);
 		
 		// Draw the game search/matchmaking status
 		this.gameSearchMessage.draw(g2d);
