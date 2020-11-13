@@ -10,6 +10,9 @@ public interface Commons {
 	// Size of the Cells on the game board
 	final int boardRectSize = 70;
 	
+	// Game money per match win
+	public static final int winnerMoney = 100;
+	
 	// Refresh rates for timers 
 	public static final int frametime = 10;
 	
