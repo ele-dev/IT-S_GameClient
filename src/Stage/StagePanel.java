@@ -48,6 +48,7 @@ import PlayerStructures.GoldMine;
 import PlayerStructures.PlayerFortress;
 import menueGui.GameState;
 import networking.GenericMessage;
+import networking.MsgAccountStats;
 import networking.MsgAttack;
 import networking.MsgMakeMove;
 import networking.SignalMessage;
@@ -233,7 +234,20 @@ public class StagePanel extends JPanel {
 			// Terminate the winning screen since it's no longer needed
 			StagePanel.winScreen = null;
 			
-			// At last reset the enemy state data
+			// Update the player's account stats (not for guests) according the match result
+			if(!ProjectFrame.conn.isGuestPlayer()) {
+				// increase the played matches counter
+				GameState.playedMatches++;
+				
+				// Only winners earn money
+				// ...
+				
+				// send an account stats message to the server
+				MsgAccountStats accStats = new MsgAccountStats(GameState.playedMatches, GameState.money);
+				ProjectFrame.conn.sendMessageToServer(accStats);
+			}
+			
+			// At last reset the enemy state data 
 			GameState.enemySurrender = false;
 			GameState.enemyName = "";
 			
