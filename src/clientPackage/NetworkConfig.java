@@ -12,7 +12,7 @@ package clientPackage;
 public interface NetworkConfig {
 	
 	// Global network configuration constants
-	public static final String serverAddress = "ele-server.de";
+	public static final String serverAddress = "game.ele-server.de";
 	public static final int serverPort = 50044;
 	public static final String hashingSalt = "g_p8nrY3";
 	
