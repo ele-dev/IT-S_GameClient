@@ -34,6 +34,7 @@ public class HomePanel extends GuiPanel {
 	private TextLabel gameMoneyDisplay = new TextLabel("Money: ", 17);
 	private TextLabel playedMatchesDisplay = new TextLabel("Played matches: ", 17);
 	private TextLabel onlinePlayerCounter = new TextLabel("Currently online: ", 17);
+	private TextLabel runningMatchCounter = new TextLabel("Running matches: ", 17);
 
 	// Constructor takes initial position
 	public HomePanel() {
@@ -61,6 +62,7 @@ public class HomePanel extends GuiPanel {
 		this.gameMoneyDisplay.setRelativePosition(10, 30);
 		this.playedMatchesDisplay.setRelativePosition(10, 36);
 		this.onlinePlayerCounter.setRelativePosition(90, 10);
+		this.runningMatchCounter.setRelativePosition(90, 15);
 
 		// Give the buttons relative screen positions
 		this.logoutButton.setRelativePosition(5, 95);
@@ -98,6 +100,7 @@ public class HomePanel extends GuiPanel {
 		
 		// Update the game statistic display
 		this.onlinePlayerCounter.setText("Currently online: " + GameState.onlinePlayers + " player(s)");
+		this.runningMatchCounter.setText("Running matches: " + GameState.globalRunningMatches);
 		this.gameMoneyDisplay.setText("Money: " + GameState.money + "$");
 		this.playedMatchesDisplay.setText("Played matches: " + GameState.playedMatches);
 		
@@ -140,6 +143,7 @@ public class HomePanel extends GuiPanel {
 		
 		// Draw global game data
 		this.onlinePlayerCounter.draw(g2d);
+		this.runningMatchCounter.draw(g2d);
 		
 		// Draw the game search/matchmaking status
 		this.gameSearchMessage.draw(g2d);
