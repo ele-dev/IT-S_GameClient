@@ -240,7 +240,12 @@ public class StagePanel extends JPanel {
 				GameState.playedMatches++;
 				
 				// Only winners earn money
-				GameState.money += Commons.winnerMoney;
+				if(blueBase.isDestroyed() && GameState.enemyTeamColor.equals(Color.BLUE)
+					|| redBase.isDestroyed() && GameState.enemyTeamColor.equals(Color.RED)) 
+				{
+					GameState.money += Commons.winnerMoney;
+
+				} 
 				
 				// send an account stats message to the server
 				MsgAccountStats accStats = new MsgAccountStats(GameState.playedMatches, GameState.money);
