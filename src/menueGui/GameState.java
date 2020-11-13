@@ -22,6 +22,7 @@ public class GameState {
 	
 	// Global game data // 
 	public static int onlinePlayers = 0;
+	public static int globalRunningMatches = 0;
 	
 	// User account stats //
 	public static int playedMatches = 0;
