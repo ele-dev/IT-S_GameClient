@@ -12,7 +12,6 @@ import Environment.DestructibleObject;
 import PlayerStructures.GoldMine;
 import PlayerStructures.PlayerFortress;
 import Stage.BoardRectangle;
-import Stage.Commons;
 import Stage.StagePanel;
 
 public class LevelDesignTool {
