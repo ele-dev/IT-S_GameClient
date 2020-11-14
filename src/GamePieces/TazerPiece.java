@@ -4,6 +4,7 @@ package GamePieces;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +17,7 @@ import Particles.TazerBolt;
 import Particles.TrailParticle;
 import Projectiles.Bullet;
 import Stage.BoardRectangle;
+import Stage.Commons;
 import Stage.StagePanel;
 
 public class TazerPiece extends GamePiece{
@@ -45,14 +47,9 @@ public class TazerPiece extends GamePiece{
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
 	@Override
 	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
-		if(selectedRow < myRow+2 && selectedRow > myRow-2 && selectedColumn < myColumn+2 && selectedColumn > myColumn-2) {
-			return false;
-		}
-		if(selectedRow < myRow+4 && selectedRow > myRow-4 
-				&& selectedColumn < myColumn+4 && selectedColumn > myColumn-4) {
-			return true;
-		}
-		return false;
+		Rectangle rect1 = new Rectangle(myColumn-1,myRow-1,3,3);
+		Rectangle rect2 = new Rectangle(myColumn-3,myRow-3,7,7);
+		return !rect1.contains(new Point(selectedColumn,selectedRow)) && rect2.contains(new Point(selectedColumn,selectedRow));
 	}
 
 	public void shootOnce() {	

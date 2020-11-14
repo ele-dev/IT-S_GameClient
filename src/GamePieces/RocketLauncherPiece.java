@@ -1,6 +1,8 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -64,11 +66,9 @@ public class RocketLauncherPiece extends GamePiece{
 
 	@Override
 	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
-		if(((selectedRow == myRow+3 || selectedRow == myRow-3) && selectedColumn < myColumn+3 && selectedColumn > myColumn-3) ||
-				((selectedColumn == myColumn+3 || selectedColumn == myColumn-3) && selectedRow <=myRow+3 && selectedRow >= myRow-3)) {
-			return true;
-		}
-		return false;
+		Rectangle rect1 = new Rectangle(myColumn-2,myRow-2,5,5);
+		Rectangle rect2 = new Rectangle(myColumn-3,myRow-3,7,7);
+		return !rect1.contains(new Point(selectedColumn,selectedRow)) && rect2.contains(new Point(selectedColumn,selectedRow));
 	}
 
 	

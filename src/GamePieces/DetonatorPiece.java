@@ -1,7 +1,8 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
-
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,11 +47,9 @@ public class DetonatorPiece extends GamePiece {
  
 	@Override
 	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
-		if(((selectedRow == myRow+2 || selectedRow == myRow-2) && selectedColumn < myColumn+2 && selectedColumn > myColumn-2) ||
-				((selectedColumn == myColumn+2 || selectedColumn == myColumn-2) && selectedRow <=myRow+2 && selectedRow >= myRow-2)) {
-			return true;
-		}
-		return false;
+		Rectangle rect1 = new Rectangle(myColumn-1,myRow-1,3,3);
+		Rectangle rect2 = new Rectangle(myColumn-2,myRow-2,5,5);
+		return !rect1.contains(new Point(selectedColumn,selectedRow)) && rect2.contains(new Point(selectedColumn,selectedRow));
 	}
 
 	// creates/shoots the DetonatorProjectile

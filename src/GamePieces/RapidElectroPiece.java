@@ -3,6 +3,7 @@ package GamePieces;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,7 @@ import Particles.TazerBolt;
 import Particles.TrailParticle;
 import Projectiles.Bullet;
 import Stage.BoardRectangle;
+import Stage.Commons;
 import Stage.StagePanel;
 
 public class RapidElectroPiece extends GamePiece {
@@ -72,10 +74,8 @@ public class RapidElectroPiece extends GamePiece {
 
 	@Override
 	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
-		if(selectedRow < myRow+3 && selectedRow > myRow-3 && selectedColumn < myColumn+3 && selectedColumn > myColumn-3) {
-			return true;
-		}
-		return false;
+		Rectangle rect = new Rectangle(myColumn-2,myRow-2,5,5);
+		return rect.contains(new Point(selectedColumn,selectedRow)) && selectedRow != myRow && selectedColumn != myColumn;
 	}
 
 	@Override

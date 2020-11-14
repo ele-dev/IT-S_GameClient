@@ -180,7 +180,7 @@ public class StagePanel extends JPanel {
 			mapRectangle = new Rectangle(mapColumns*boardRectSize,mapRows*boardRectSize);
 		}
 		initFortresses();
-//		initGamePieces();
+		initGamePieces();
 		if(GameState.myTeamIsRed) {
 			camera.setCameraToBasePos(redBase);
 		}else {

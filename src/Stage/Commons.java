@@ -43,7 +43,7 @@ public interface Commons {
 	final int dmgFlashCountDown = 5;
 	final int shieldRegen = 1;
 	
-	final int startCoinAmount = 100;
+	final int startCoinAmount = 30;
 	final int incCoinAmountFortress = 10;
 	final int goldDropGoldMine = 10;
 	final float PlayerFortressHealth = 15;

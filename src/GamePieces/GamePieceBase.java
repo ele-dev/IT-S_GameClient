@@ -264,6 +264,8 @@ public class GamePieceBase {
 				pathBoardRectangles.clear();
 				tAutoDirectionCorrection.stop();
 				StagePanel.tryCaptureGoldMine(parentGP);
+				parentGP.row = parentGP.boardRect.row;
+				parentGP.column = parentGP.boardRect.column;
 			}
 		}
 	}

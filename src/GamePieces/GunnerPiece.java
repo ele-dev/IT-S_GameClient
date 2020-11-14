@@ -1,6 +1,8 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -83,10 +85,8 @@ public class GunnerPiece extends GamePiece {
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
 	@Override
 	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
-		if(selectedRow < myRow+3 && selectedRow > myRow-3 && selectedColumn < myColumn+3 && selectedColumn > myColumn-3) {
-			return true;
-		}
-		return false;
+		Rectangle rect = new Rectangle(myColumn-2,myRow-2,5,5);
+		return rect.contains(new Point(selectedColumn,selectedRow));
 	}
 	
 	// starts burstTimer

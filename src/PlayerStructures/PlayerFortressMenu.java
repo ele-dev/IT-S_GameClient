@@ -43,8 +43,11 @@ public class PlayerFortressMenu {
 			curRGPIP.drawGamePieceInfo(g2d);
 		}
 		for(RecruitGPSectorButton curRGPSB : recruitGPSectorButtons) {
-			curRGPSB.drawButton(g2d);
+			if(activeRecruitGPSectorButton != curRGPSB) {
+				curRGPSB.drawButton(g2d);
+			}
 		}
+		activeRecruitGPSectorButton.drawButton(g2d);
 		g2d.setColor(Commons.cCurrency);
 		g2d.setFont(new Font("Arial", Font.BOLD, StagePanel.w/24));
 		g2d.drawString("Coins: " + playerFortress.getCoinAmount(), rect.x+StagePanel.w/40, rect.y+StagePanel.w/40*2);
