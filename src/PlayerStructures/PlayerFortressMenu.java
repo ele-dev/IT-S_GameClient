@@ -11,57 +11,71 @@ import Stage.Commons;
 import Stage.StagePanel;
 
 public class PlayerFortressMenu {
-	private int startx,starty;
 	private Rectangle rect;
 	private PlayerFortress playerFortress;
 	private GenericButton exitButton;
 	
-	private RecruitGamePieceInfoPanel[] recruitGamePieceInfoPanels = new RecruitGamePieceInfoPanel[4];
-	RecruitGamePieceInfoPanel lastPressedGamePieceInfoPanel;
+	private RecruitGPSectorButton[] recruitGPSectorButtons = new RecruitGPSectorButton[3];
+	private RecruitGPSectorButton activeRecruitGPSectorButton;
+	RecruitGPInfoPanel lastPressedGamePieceInfoPanel;
 	
 	public PlayerFortressMenu(PlayerFortress playerFortress) {
-		this.startx = 50;
-		this.starty = 50;
 		this.playerFortress = playerFortress;
-		rect = new Rectangle(startx,starty,StagePanel.w-startx*2,StagePanel.h-starty*2);
-		exitButton = new GenericButton(rect.x+rect.width-200, rect.y, 200, 100, "Exit", new Color(20,20,20), new Color(255,0,50), 50);
+		rect = new Rectangle(0,0,StagePanel.w,StagePanel.h);
+		int border = StagePanel.w/100;
+		exitButton = new GenericButton(rect.x+rect.width-StagePanel.w/6-border, border, StagePanel.w/6, StagePanel.w/16, "Exit", new Color(20,20,20), new Color(255,0,50), StagePanel.w/24);
 		
-		int gap = 20;
-		for(byte i = 0; i < recruitGamePieceInfoPanels.length; i++) {
-			if(i == 0) {
-				recruitGamePieceInfoPanels[i] = new RecruitGamePieceInfoPanel(startx+100, starty+200, 1000, 150, i, playerFortress);
-			} else {
-				recruitGamePieceInfoPanels[i] = new RecruitGamePieceInfoPanel(startx+100, recruitGamePieceInfoPanels[i-1].getStarty()+150+gap, 1000, 150, i, playerFortress);
-			}
+		String[] strs = {"Normal","Fire","Electro"};
+		Color[] colors = {new Color(170,170,170),new Color(255,50,0),new Color(58, 160, 155)};
+		for(int i = 0;i<recruitGPSectorButtons.length;i++) {
+			recruitGPSectorButtons[i] = new RecruitGPSectorButton(StagePanel.w/40+StagePanel.w/2/3*i, StagePanel.w/40 * 3, StagePanel.w/2/3, StagePanel.w/20, strs[i], new Color(20,20,20), colors[i], StagePanel.w/48,playerFortress);
 		}
+		
+		activeRecruitGPSectorButton = recruitGPSectorButtons[0];
+		activeRecruitGPSectorButton.setActive(true);;
 	}
 	
 	public void drawPlayerFortressMenu(Graphics2D g2d) {
-		g2d.setColor(new Color(10,10,10,250));
+		g2d.setColor(new Color(10,10,10));
 		g2d.fill(rect);
 		exitButton.drawButton(g2d);
-		for(RecruitGamePieceInfoPanel curRGPIP : recruitGamePieceInfoPanels) {
+		for(RecruitGPInfoPanel curRGPIP : activeRecruitGPSectorButton.getRecruitGamePieceInfoPanels()) {
 			curRGPIP.drawGamePieceInfo(g2d);
 		}
-		
-		g2d.translate(rect.x, rect.y);
+		for(RecruitGPSectorButton curRGPSB : recruitGPSectorButtons) {
+			curRGPSB.drawButton(g2d);
+		}
 		g2d.setColor(Commons.cCurrency);
-		g2d.setFont(new Font("Arial", Font.BOLD, 60));
-		g2d.drawString("Coins: " + playerFortress.getCoinAmount(), 100, 150);
-		g2d.translate(-rect.x, -rect.y);
+		g2d.setFont(new Font("Arial", Font.BOLD, StagePanel.w/24));
+		g2d.drawString("Coins: " + playerFortress.getCoinAmount(), rect.x+StagePanel.w/40, rect.y+StagePanel.w/40*2);
+		
+		drawHoverGPInfo(g2d);
+	}
+	
+	public void drawHoverGPInfo(Graphics2D g2d) {
+		for(RecruitGPInfoPanel curRGPIP : activeRecruitGPSectorButton.getRecruitGamePieceInfoPanels()) {
+			if(curRGPIP.isHover() || curRGPIP.getRectruitButton().isHover()) {
+				curRGPIP.drawHoverGPInfo(activeRecruitGPSectorButton.getRecruitGamePieceInfoPanels()[0],g2d);
+			}
+		}
 	}
 	
 	public void update() {
 		updatePos(StagePanel.camera.getPos());
 		exitButton.updateHover(StagePanel.mousePos);
-		for(RecruitGamePieceInfoPanel curRGPIP : recruitGamePieceInfoPanels) {
+		for(RecruitGPInfoPanel curRGPIP : activeRecruitGPSectorButton.getRecruitGamePieceInfoPanels()) {
 			curRGPIP.update();
+		}
+		for(RecruitGPSectorButton curRGPSB : recruitGPSectorButtons) {
+			curRGPSB.updateHover(StagePanel.mousePos);
+			curRGPSB.updatePos(StagePanel.camera.getPos());
+			curRGPSB.updateParticles();
 		}
 	}
 	
 	private void updatePos(Point cameraPos) {
-		rect.x = startx-cameraPos.x;
-		rect.y = starty-cameraPos.y;
+		rect.x = -cameraPos.x;
+		rect.y = -cameraPos.y;
 		
 		exitButton.updatePos(cameraPos);
 	}
@@ -70,10 +84,19 @@ public class PlayerFortressMenu {
 		if(exitButton.isHover()) {
 			playerFortress.setSelected(false);
 		}
-		for(RecruitGamePieceInfoPanel curRGPIP : recruitGamePieceInfoPanels) {
+		for(RecruitGPInfoPanel curRGPIP : activeRecruitGPSectorButton.getRecruitGamePieceInfoPanels()) {
 			if(curRGPIP.tryPressButton()) {
 				lastPressedGamePieceInfoPanel = curRGPIP;
 				return;
+			}
+		}
+		for(RecruitGPSectorButton curRGPSB : recruitGPSectorButtons) {
+			if(curRGPSB.isHover()) {
+				for(RecruitGPSectorButton curRGPSB1 : recruitGPSectorButtons) {
+					curRGPSB1.setActive(false);
+				}
+				curRGPSB.setActive(true);
+				activeRecruitGPSectorButton = curRGPSB;
 			}
 		}
 	}

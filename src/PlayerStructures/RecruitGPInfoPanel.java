@@ -1,0 +1,303 @@
+package PlayerStructures;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+
+import Buttons.GenericButton;
+import GamePieces.DetonatorPiece;
+import GamePieces.EMPPiece;
+import GamePieces.FlamethrowerPiece;
+import GamePieces.GunnerPiece;
+import GamePieces.RapidElectroPiece;
+import GamePieces.RocketLauncherPiece;
+import GamePieces.ShotgunPiece;
+import GamePieces.SniperPiece;
+import GamePieces.TazerPiece;
+import Stage.BoardRectangle;
+import Stage.Commons;
+import Stage.ProjectFrame;
+import Stage.StagePanel;
+import networking.MsgSpawnGamepiece;
+
+public class RecruitGPInfoPanel{
+	private int startx,starty;;
+	private GenericButton rectruitButton;
+	private Rectangle rect;
+	private PlayerFortress playerFortress;
+	private boolean isHover = false;
+	private GamePieceAttackRangePreviewPanel gamePieceAttackRangePreviewPanel;
+	
+	// GamePiece related
+	private int gamePieceCost;
+	
+	private String gamePieceName;
+	private float gamePieceDamage;
+	
+	// GamePieceBase related
+	private byte gamePieceBaseType;
+	private float gamePieceHealth,gamePieceShield;
+	private int gamePieceMovementRange;
+	
+	private Font font;
+	
+	public RecruitGPInfoPanel(int startx, int starty, int w, int h, String gamePieceName, PlayerFortress playerFortress) {
+		rect = new Rectangle(startx, starty, w, h);
+		this.startx = startx;
+		this.starty = starty;
+		rectruitButton = new GenericButton(rect.x+w, rect.y, w/4, h, "recruit", new Color(20,20,20), Commons.cCurrency, w/16);
+		
+		this.gamePieceName = gamePieceName;
+		initGamePieceInfos();
+		this.playerFortress = playerFortress;
+		
+		font = new Font("Arial",Font.BOLD,StagePanel.w/50);
+		int size = StagePanel.w-StagePanel.w/40-w-w/4-StagePanel.w/32*2;
+		gamePieceAttackRangePreviewPanel = new GamePieceAttackRangePreviewPanel(7, 7, size/2,this.gamePieceName);
+	}
+	
+	public int getX() {
+		return rect.x;
+	}
+	public int getY() {
+		return rect.y;
+	}
+	public int getWidth() {
+		return rect.width;
+	}
+	public int getTotalWidth() {
+		return rect.width + rect.width/4;
+	}
+	public int getHeight() {
+		return rect.height;
+	}
+	
+	public boolean isHover() {
+		return isHover;
+	}
+	
+	public GenericButton getRectruitButton() {
+		return rectruitButton;
+	}
+	
+	public int getGamePieceCost() {
+		return gamePieceCost;
+	}
+	
+	private void initGamePieceInfos() {
+		switch (gamePieceName) {
+		case "Gunner":
+			gamePieceDamage = Commons.dmgGunner;
+			gamePieceBaseType = Commons.baseTypeGunner;
+			break;
+		case "Shotgun":
+			gamePieceDamage = Commons.dmgShotgun;
+			gamePieceBaseType = Commons.baseTypeShotgun;
+			break;
+		case "Sniper":
+			gamePieceDamage = Commons.dmgSniper;
+			gamePieceBaseType = Commons.baseTypeSniper;
+			break;
+		case "Detonator":
+			gamePieceDamage = Commons.dmgDetonator;
+			gamePieceBaseType = Commons.baseTypeDetonator;
+			break;
+		case "FlameThrower":
+			gamePieceDamage = Commons.dmgFlameThrower;
+			gamePieceBaseType = Commons.baseTypeFlameThrower;
+			break;
+		case "RocketLauncher":
+			gamePieceDamage = Commons.dmgRocketLauncher;
+			gamePieceBaseType = Commons.baseTypeRocketLauncher;
+			break;
+		case "EMP":
+			gamePieceDamage = Commons.dmgEMP;
+			gamePieceBaseType = Commons.baseTypeEMP;
+			break;
+		case "RapidElectro":
+			gamePieceDamage = Commons.dmgRapidElectro;
+			gamePieceBaseType = Commons.baseTypeRapidElectro;
+			break;
+		case "Tazer":
+			gamePieceDamage = Commons.dmgTazer;
+			gamePieceBaseType = Commons.baseTypeTazer;
+			break;
+		default:
+			break;
+		}
+		
+		switch (gamePieceBaseType) {
+		case 0:
+			gamePieceHealth = Commons.maxHealthType0;
+			gamePieceShield = Commons.maxShieldType0;
+			gamePieceMovementRange = Commons.MovementRangeType0;
+			break;
+		case 1:
+			gamePieceHealth = Commons.maxHealthType1;
+			gamePieceShield = Commons.maxShieldType1;
+			gamePieceMovementRange = Commons.MovementRangeType1;
+			break;
+		}
+		
+		
+		gamePieceCost = 30;
+	}
+	public void	placeGamePiece(boolean isRed, BoardRectangle boardRectangle) {
+		// Place the game piece on the field and send message to the server
+		Point coordinates = new Point(boardRectangle.row, boardRectangle.column);
+		MsgSpawnGamepiece spawnGPmessage = new MsgSpawnGamepiece("undefined", coordinates, isRed?Color.RED:Color.BLUE);
+		switch (gamePieceName) {
+		case "Gunner":
+			StagePanel.gamePieces.add(new GunnerPiece(isRed, boardRectangle));
+			spawnGPmessage.setGamePieceClass("GunnerPiece");
+			break;
+		case "Shotgun":
+			StagePanel.gamePieces.add(new ShotgunPiece(isRed, boardRectangle));
+			spawnGPmessage.setGamePieceClass("ShotgunPiece");
+			break;
+		case "Sniper":
+			StagePanel.gamePieces.add(new SniperPiece(isRed, boardRectangle));
+			spawnGPmessage.setGamePieceClass("SniperPiece");
+			break;
+		case "Detonator":
+			StagePanel.gamePieces.add(new DetonatorPiece(isRed, boardRectangle));
+			spawnGPmessage.setGamePieceClass("DetonatorPiece");
+			break;
+		case "Flamethrower":
+			StagePanel.gamePieces.add(new FlamethrowerPiece(isRed, boardRectangle));
+			spawnGPmessage.setGamePieceClass("FlamethrowerPiece");
+			break;
+		case "RocketLauncher":
+			StagePanel.gamePieces.add(new RocketLauncherPiece(isRed, boardRectangle));
+			spawnGPmessage.setGamePieceClass("RocketLauncherPiece");
+			break;
+		case "EMP":
+			StagePanel.gamePieces.add(new EMPPiece(isRed, boardRectangle));
+			spawnGPmessage.setGamePieceClass("EMPPiece");
+			break;
+		case "RapidElectro":
+			StagePanel.gamePieces.add(new RapidElectroPiece(isRed, boardRectangle));
+			spawnGPmessage.setGamePieceClass("RapidElectroPiece");
+			break;
+		case "Tazer":
+			StagePanel.gamePieces.add(new TazerPiece(isRed, boardRectangle));
+			spawnGPmessage.setGamePieceClass("TazerPiece");
+			break;
+		default:
+			break;
+		}
+		
+		// send the message
+		ProjectFrame.conn.sendMessageToServer(spawnGPmessage);
+	}
+	
+	public int getStarty() {
+		return starty;
+	}
+	
+	public void updateHover(Point mousePos) {
+		isHover = rect.contains(mousePos);
+	}
+	
+	public boolean tryPressButton(){
+		if(rectruitButton.isHover() && rectruitButton.isActive()) {
+			playerFortress.refreshRecruitableBoardRectangles();
+			playerFortress.setRecruitingMode(true);
+			playerFortress.setSelected(false);
+			return true;
+		}
+		return false;
+	}
+	
+	public void update() {
+		updatePos(StagePanel.camera.getPos());
+		updateHover(StagePanel.mousePos);
+		rectruitButton.updatePos(StagePanel.camera.getPos());
+		if(playerFortress.getCoinAmount() >= gamePieceCost) {
+			rectruitButton.updateHover(StagePanel.mousePos);
+		}
+		rectruitButton.setActive(playerFortress.getCoinAmount() >= gamePieceCost);
+	}
+	
+	public void updatePos(Point cameraPos) {
+		rect.x = startx-cameraPos.x;
+		rect.y = starty-cameraPos.y;
+	}
+	
+	public void drawGamePieceInfo(Graphics2D g2d) {
+		
+		g2d.setColor(isHover?new Color(40,40,40):new Color(20,20,20));
+		g2d.fill(rect);
+		g2d.setStroke(new BasicStroke(8));
+		g2d.setColor(isHover?new Color(20,20,20):new Color(40,40,40));
+		g2d.draw(rect);
+		
+		int x = rect.x;
+		int y = rect.y;
+		g2d.setFont(font);
+		FontMetrics fontMetrics = g2d.getFontMetrics();
+		int textHeight = fontMetrics.getHeight();
+		int textWidth = 0;
+		
+		int border = StagePanel.w/100;
+		int wUnit = rect.width/2;
+		String strs[] = {"Name: ","Dmg: ","Moves: "};
+		String strValues[] = {(gamePieceName+""),(gamePieceDamage+""),(gamePieceMovementRange+"")};
+		Color colors[] = {Color.WHITE,Commons.cAttack,Commons.cMove};
+		for(byte i = 0;i<strs.length;i++) {
+			String str = strs[i];
+			textWidth = fontMetrics.stringWidth(str);
+			g2d.setColor(colors[i]);
+			g2d.drawString(str, x+border, y+border+textHeight*(i+1));
+			g2d.setColor(Color.WHITE);
+			g2d.drawString(strValues[i], x+border+textWidth, y+border+textHeight*(i+1));
+		}
+		
+		String strs0[] = {"Health: ","Shield: "};
+		String strValues0[] = {(gamePieceHealth+""),(gamePieceShield+"")};
+		Color colors0[] = {Commons.cHealth,Commons.cShield};
+		
+		for(byte i = 0;i<strs0.length;i++) {
+			String str = strs0[i];
+			textWidth = fontMetrics.stringWidth(str);
+			g2d.setColor(colors0[i]);
+			g2d.drawString(str, x+border+wUnit, y+border+textHeight*(i+1));
+			g2d.setColor(Color.WHITE);
+			g2d.drawString(strValues0[i], x+border+textWidth+wUnit, y+border+textHeight*(i+1));
+		}
+		
+		String str = "Cost: ";
+		textWidth = fontMetrics.stringWidth(str);
+		g2d.setColor(Commons.cCurrency);
+		g2d.drawString(str, x+border+(int)(wUnit*1.5), y+border+textHeight);
+		g2d.setColor(Color.WHITE);
+		g2d.drawString(gamePieceCost+"", x+border+textWidth+(int)(wUnit*1.5), y+border+textHeight);
+		
+		rectruitButton.drawButton(g2d);
+	}
+	
+	public void drawHoverGPInfo(RecruitGPInfoPanel firstRGPIP,Graphics2D g2d) {
+		Rectangle rectangle = new Rectangle(firstRGPIP.getX()+firstRGPIP.getTotalWidth()+StagePanel.w/32,firstRGPIP.getY(),
+				StagePanel.w-StagePanel.w/40-firstRGPIP.getTotalWidth()-StagePanel.w/32*2,StagePanel.h - StagePanel.w/40*6 - StagePanel.w/32);
+		g2d.setColor(new Color(20,20,20));
+		g2d.fill(rectangle);
+		g2d.setStroke(new BasicStroke(8));
+		g2d.setColor(new Color(40,40,40));
+		g2d.draw(rectangle);
+		
+		g2d.setColor(Color.WHITE);
+		g2d.setFont(font);
+		
+		FontMetrics fontMetrics = g2d.getFontMetrics();
+		int textHeight = fontMetrics.getHeight();
+		int textWidth = fontMetrics.stringWidth(gamePieceName);
+		g2d.drawString(gamePieceName, (int)rectangle.getCenterX()-textWidth/2, rectangle.y+textHeight+textHeight/3);
+		
+		gamePieceAttackRangePreviewPanel.drawGamePieceAttackRangePreviewPanel(g2d, rectangle.x, rectangle.y+rectangle.height/2);
+	}
+
+}

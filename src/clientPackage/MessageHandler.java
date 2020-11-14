@@ -177,7 +177,7 @@ public class MessageHandler {
 				GameState.myTurn = true;
 				
 				// Now update the GUI to switch the turn graphically and process all connected events
-				ProjectFrame.stagePanel.updateTurn();
+				StagePanel.updateTurn();
 				
 				break;
 			}

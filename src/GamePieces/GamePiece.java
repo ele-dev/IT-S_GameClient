@@ -27,6 +27,8 @@ import Stage.StagePanel;
 public abstract class GamePiece {
 	
 	public BoardRectangle boardRect;
+	protected int row;
+	protected int column;
 	private Rectangle rectShowTurret;
 	protected Color c;
 	private String name;
@@ -64,6 +66,12 @@ public abstract class GamePiece {
 		}else {
 			this.c = Commons.cBlue;
 		}
+	
+		this.row = boardRect.row;
+		this.column = boardRect.column;
+		
+		
+		
 		this.isRed = isRed;
 		this.boardRect = boardRect;
 		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
@@ -78,54 +86,42 @@ public abstract class GamePiece {
 	public String getName() {
 		return name;
 	}
-	
 	public boolean getIsDead() {
 		return isDead;
 	}
-	
-	public boolean getIsRed() {
+	public boolean isRed() {
 		return isRed;
 	}
-	
 	public Rectangle getRectHitbox() {
 		return gamePieceBase.getRectHitbox();
 	}
-
 	public float getDmg() {
 		return dmg;
 	}
-	
 	public boolean getHasExecutedAttack() {
 		return hasExecutedAttack;
 	}
-
 	public boolean getHasExecutedMove() {
 		return hasExecutedMove;
 	}
-	
 	public void setHasExecutedMove(boolean hasExecutedMove) {
 		this.hasExecutedMove = hasExecutedMove;
 	}
-
 	public int getCenterX() {
 		return (int) getRectHitbox().getCenterX();
 	}
 	public int getCenterY() {
 		return (int) getRectHitbox().getCenterY();
 	}
-	
 	public Point getPos() {
 		return new Point(getCenterX(),getCenterY());
 	}
-	
 	public Color getColor() {
 		return c;
 	} 
-	
 	public boolean isPerformingAction() {
 		return isAttacking || isMoving;
 	}
-	
 	// initializes the Pathfinding Grid (!!Does not start the Pathfinder!!)
 	public void initPathFinder() {
 		ArrayList<PathCell> pathCells = new ArrayList<PathCell>();
@@ -240,7 +236,7 @@ public abstract class GamePiece {
 	public void showPossibleAttacks() {
 		sightLines.clear(); 
 		for(BoardRectangle curBR : StagePanel.boardRectangles) {
-			if(checkAttacks(curBR.row, curBR.column) && !curBR.isWall) {
+			if(checkAttacks(curBR.row, curBR.column,row,column) && !curBR.isWall) {
 				boolean success = true;
 				for(GamePiece curGP : StagePanel.gamePieces) {
 					if(curGP.boardRect == curBR && !checkIfEnemies(curGP)) {
@@ -280,7 +276,7 @@ public abstract class GamePiece {
 	
 	// checks if the PositionParameter is a valid position to attack and returns true if it is
 	// is abstract because every GamePiece has a different attack pattern
-	public abstract boolean checkAttacks(int selectedRow, int selectedColumn);
+	public abstract boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn);
 	
 	// updates angle to face toward enemy and starts the attack (starts attackDelayTimer)
 	public void startAttack(BoardRectangle targetBoardRectangle) {
@@ -370,7 +366,7 @@ public abstract class GamePiece {
 		
 		int x = boardRect.getX();
 		int y = boardRect.getY();
-		int s = boardRect.getSize();
+		int s = StagePanel.boardRectSize;
 		int soI = (int)boardRect.so;
 		g2d.setStroke(new BasicStroke(6));
 		g2d.drawLine(x-soI/2, y-soI/2, x+s/4-soI/2, y-soI/2);

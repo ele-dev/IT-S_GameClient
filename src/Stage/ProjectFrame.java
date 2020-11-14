@@ -33,9 +33,10 @@ public class ProjectFrame extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
 		height = (int) screenSize.getHeight();
-//		width = (int) 1000;
-//		height = (int) width*9/16;
+		width = (int) 1600;
+		height = (int) width*9/16;
 		setSize(width, height);
+//		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setBoardRectangleSize();
 		
 		// Create and init the Window (JFrame)
@@ -46,7 +47,7 @@ public class ProjectFrame extends JFrame {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
 		
-//		setExtendedState(JFrame.MAXIMIZED_BOTH);
+
 		
 		Container cp = getContentPane();
 		
@@ -70,7 +71,7 @@ public class ProjectFrame extends JFrame {
 	} 
 	
 	public static void setBoardRectangleSize(){
-		StagePanel.boardRectSize = width/20;
+		StagePanel.boardRectSize = width/24;
 	}
 	
 	

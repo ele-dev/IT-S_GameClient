@@ -50,19 +50,10 @@ public class FlamethrowerPiece extends GamePiece {
 				curFTF.drawProjectile(g2d);
 		}
 	}
-
-	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
-					int dist = BoardRectangle.getDistanceBetweenBRs(boardRect, curBR);
-					if(dist <= 2 && !curBR.isWall) {
-						if(checkIfBoardRectangleInSight(curBR)) {
-							return true;
-						}
-					}
-				}
-			}
-		return false;
+	@Override
+	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
+		int dist = BoardRectangle.getDistanceBetweenBRs(myRow,myColumn, selectedRow,selectedColumn);
+		return dist <= 2;
 	}
 
 	
@@ -78,7 +69,7 @@ public class FlamethrowerPiece extends GamePiece {
 		}else {
 			burstCounter = 0;
 		}
-		int randomSize = (int)(Math.random() * 5 +5);
+		int randomSize = (int)(Math.random()*StagePanel.boardRectSize/16+StagePanel.boardRectSize/16);
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 			
@@ -109,25 +100,17 @@ public class FlamethrowerPiece extends GamePiece {
 	// damages the Target only if all flames have hit it or are faded
 	public void showWhenDmg() {
 		if(startedAttack) {
-			boolean allHaveHit = true;
-			for(FlameThrowerFlame curFTF : flames) {
-				if(!curFTF.hasHitTarget()) {
-					allHaveHit = false;
-				}
-			}
-			if(allHaveHit) {
+			if(flames.size() == 0) {
 				if(targetGamePiece != null) {
 					targetGamePiece.gamePieceBase.getDamaged(getDmg());
 					targetGamePiece = null;
 				}else {
-					targetDestructibleObject.getDamaged(getDmg(),angle,getIsRed());
+					targetDestructibleObject.getDamaged(getDmg(),angle,isRed());
 					targetDestructibleObject = null;
 				}
 				startedAttack = false;
 			}
 		}
-		
-			
 	}
 	
 	// updates the attack (moves flames,checks if they hit something and so forth)

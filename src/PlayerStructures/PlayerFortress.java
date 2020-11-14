@@ -61,7 +61,11 @@ public class PlayerFortress extends DestructibleObject {
 		coinAmount += incAmount;
 		lastCollectedGoldAmount += incAmount;
 		goldCollectLabel = new ValueLabel(x, y, "+" + lastCollectedGoldAmount, Commons.cCurrency);
-		
+	}
+	public void gainGoldForSelf() {
+		coinAmount += Commons.incCoinAmountFortress;
+		lastCollectedGoldAmount += Commons.incCoinAmountFortress;
+		goldCollectLabel = new ValueLabel((int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), "+" + lastCollectedGoldAmount, Commons.cCurrency);
 	}
 	public int getCoinAmount() {
 		return coinAmount;
@@ -88,7 +92,7 @@ public class PlayerFortress extends DestructibleObject {
 		recruitableBoardRectangles.clear();
 		BoardRectangle centerBR = occupiedBRs[4];
 		for(BoardRectangle curBR : StagePanel.boardRectangles) {
-			if(!curBR.isWall && !curBR.isGap && !curBR.isDestructibleObject() && !curBR.hasGamePieceOnIt()) {
+			if(!curBR.isWall && !curBR.isGap && !curBR.isDestructibleObject() && curBR.getGamePieceOnIt() == null) {
 				if(((curBR.row == centerBR.row+2 || curBR.row == centerBR.row-2) && curBR.column < centerBR.column+2 && curBR.column > centerBR.column-2) ||
 				((curBR.column == centerBR.column+2 || curBR.column == centerBR.column-2) && curBR.row <=centerBR.row+2 && curBR.row >= centerBR.row-2)) {
 					recruitableBoardRectangles.add(curBR);
@@ -150,7 +154,7 @@ public class PlayerFortress extends DestructibleObject {
 			g2d.translate(-x, -y);
 		}
 		
-		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), 25);
+		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), StagePanel.boardRectSize/4);
 		
 		if(goldCollectLabel != null) {
 			goldCollectLabel.drawValueLabel(g2d);

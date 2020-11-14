@@ -28,7 +28,7 @@ public class RapidElectroPiece extends GamePiece {
 	private ArrayList<GamePiece> targetGamePieces = new ArrayList<GamePiece>();
 
 	public RapidElectroPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, "RE", boardRect, 2, 1);
+		super(isRed, Commons.nameRapidElectro, boardRect, Commons.dmgRapidElectro, Commons.baseTypeRapidElectro);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -51,7 +51,7 @@ public class RapidElectroPiece extends GamePiece {
 			
 			ArrayList<BoardRectangle> possibleBoardRectangles = new ArrayList<BoardRectangle>();
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(checkAttacks(curBR.row,curBR.column)) {
+				if(checkAttacks(curBR.row,curBR.column,row,column)) {
 					possibleBoardRectangles.add(curBR);
 				}
 			}
@@ -72,13 +72,9 @@ public class RapidElectroPiece extends GamePiece {
 	}
 
 	@Override
-	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(selectedRow < boardRect.row+3 && selectedRow > boardRect.row-3 && selectedColumn < boardRect.column+3 && selectedColumn > boardRect.column-3) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall && checkIfBoardRectangleInSight(curBR)) {
-					return true;
-				}
-			}
+	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
+		if(selectedRow < myRow+3 && selectedRow > myRow-3 && selectedColumn < myColumn+3 && selectedColumn > myColumn-3) {
+			return true;
 		}
 		return false;
 	}
@@ -117,7 +113,7 @@ public class RapidElectroPiece extends GamePiece {
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 		
-		bullet = new Bullet(getCenterX(), getCenterY(), 10, 20, getIsRed(), 2, angle, shape, targetDestructibleObject);
+		bullet = new Bullet(getCenterX(), getCenterY(), 10, 20, isRed(), 2, angle, shape, targetDestructibleObject);
 		
 		ArrayList<Point> points = new ArrayList<Point>();
 		points.add(new Point((int)bullet.getX(), (int)bullet.getY()));
@@ -130,14 +126,11 @@ public class RapidElectroPiece extends GamePiece {
 				Color cTP =  new Color(58, 100+(int)(Math.random()*130), 140+(int)(Math.random()*30));
 				int x = (int)(bullet.getX() + (Math.random()-0.5)*10);
 				int y = (int)(bullet.getY() + (Math.random()-0.5)*10);
-				StagePanel.particles.add(new TrailParticle(x, y, (int)(Math.random()*5+6), 
+				StagePanel.particles.add(new TrailParticle(x, y, (int)(Math.random()*StagePanel.boardRectSize/16+StagePanel.boardRectSize/16), 
 						(int)(Math.random()*360), cTP, (float)(Math.random()*0.1), 3,0.1f));
-				
 				if(i % 10 == 0) {
-					points.add(new Point((int)(bullet.getX() + (Math.random()-0.5)*40), (int)(bullet.getY() + (Math.random()-0.5)*40)));
+					points.add(new Point((int)(bullet.getX() + (Math.random()-0.5)*StagePanel.boardRectSize/2), (int)(bullet.getY() + (Math.random()-0.5)*StagePanel.boardRectSize/2)));
 				}
-				
-			
 			}
 			
 			bullet.move();
@@ -149,7 +142,7 @@ public class RapidElectroPiece extends GamePiece {
 		
 		bullet = null;
 		if(targetDestructibleObject != null) {
-			targetDestructibleObject.getDamaged(getDmg(),angle,getIsRed());
+			targetDestructibleObject.getDamaged(getDmg(),angle,isRed());
 			targetDestructibleObject = null;
 		}else { 
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());

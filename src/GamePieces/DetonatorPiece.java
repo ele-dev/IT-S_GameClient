@@ -44,17 +44,11 @@ public class DetonatorPiece extends GamePiece {
 		}
 	}
  
-
-	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(((selectedRow == boardRect.row+2 || selectedRow == boardRect.row-2) && selectedColumn < boardRect.column+2 && selectedColumn > boardRect.column-2) ||
-				((selectedColumn == boardRect.column+2 || selectedColumn == boardRect.column-2) && selectedRow <=boardRect.row+2 && selectedRow >= boardRect.row-2)) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
-					if(checkIfBoardRectangleInSight(curBR)) {
-						return true;
-					}
-				}
-			}
+	@Override
+	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
+		if(((selectedRow == myRow+2 || selectedRow == myRow-2) && selectedColumn < myColumn+2 && selectedColumn > myColumn-2) ||
+				((selectedColumn == myColumn+2 || selectedColumn == myColumn-2) && selectedRow <=myRow+2 && selectedRow >= myRow-2)) {
+			return true;
 		}
 		return false;
 	}
@@ -63,7 +57,7 @@ public class DetonatorPiece extends GamePiece {
 	public void shootDetonator() {
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 			
-		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), 10, 20, getIsRed(), 
+		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, isRed(), 
 				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape, targetGamePiece, targetDestructibleObject));
 		targetDestructibleObject = null;
 		targetGamePiece = null;

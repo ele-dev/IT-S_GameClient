@@ -48,16 +48,10 @@ public class SniperPiece extends GamePiece{
 	}
 	
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
-	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(selectedRow < boardRect.row+4 && selectedRow > boardRect.row-4 && selectedColumn < boardRect.column+4 && selectedColumn > boardRect.column-4) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
-					
-					if(checkIfBoardRectangleInSight(curBR)) {
-						return true;
-					}
-				}
-			}
+	@Override
+	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
+		if(selectedRow < myRow+4 && selectedRow > myRow-4 && selectedColumn < myColumn+4 && selectedColumn > myColumn-4) {
+			return true;
 		}
 		return false;
 	}
@@ -68,13 +62,12 @@ public class SniperPiece extends GamePiece{
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 			
-		sniperBullet = new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 6, getIsRed(),1,
+		sniperBullet = new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/14, StagePanel.boardRectSize/6, isRed(),1,
 				angle, shape, targetDestructibleObject);	
-		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),8,20, (float)angle -90, c,(float)(Math.random()*1+1)));
+		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),StagePanel.boardRectSize/14, StagePanel.boardRectSize/6, (float)angle -90, c,(float)(Math.random()*1+1)));
 		
-		
-		
-		for(int i = 0;i<1000;i++) {
+		int i = 0;
+		while(true) {
 			if(i%2==0) {
 				int greyTone = (int)(Math.random()*90+10);
 				StagePanel.particles.add(new TrailParticle((int)(sniperBullet.getX() + (Math.random()-0.5)*10), (int)(sniperBullet.getY() + (Math.random()-0.5)*10),
@@ -86,18 +79,19 @@ public class SniperPiece extends GamePiece{
 			if(sniperBullet.hasHitTarget()) {
 				break;
 			}
+			i++;
 		}
 	
-		sniperBullet = null;
-		isAttacking = false;
-				
+		
+		isAttacking = false;		
 		if(targetGamePiece != null) {
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());
 			targetGamePiece = null;
 		}else {
-			targetDestructibleObject.getDamaged(getDmg(),angle,getIsRed());
+			targetDestructibleObject.getDamaged(getDmg(),sniperBullet.angle,isRed());
 			targetDestructibleObject = null;
 		}
+		sniperBullet = null;
 		StagePanel.applyScreenShake(5, 30);
 	}
 

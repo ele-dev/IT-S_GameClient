@@ -3,11 +3,14 @@ package Stage;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
@@ -15,13 +18,13 @@ import PlayerStructures.GoldMine;
 
 public class BoardRectangle {
 	public int row,column;
-	Color c;
+	private Color c;
 	public Rectangle rect;
 	public Color cPossibleMove,cPossibleAttack,cPossibleAbility;
 	int index;
 	public boolean isTile1;
-	public boolean isPossibleMove,isPossibleAttack,isPossibleAbility;
-	public boolean isShowPossibleMove,isShowPossibleAttack,isShowPossibleAbility;
+	public boolean isPossibleMove,isPossibleAttack;
+	public boolean isShowPossibleMove,isShowPossibleAttack;
 	public boolean isWall,isGap,isHinderingTerrain;
 	
 	private boolean isHover;
@@ -36,6 +39,8 @@ public class BoardRectangle {
 	public BoardRectangle northBR,southBR,eastBR,westBR;
 	ArrayList<BoardRectangle> adjecantBoardRectangles = new ArrayList<BoardRectangle>();
 	
+	String[] extendedInfoStrings = new String[7];
+	
 	public BoardRectangle(int row, int column,boolean isTile1,int index,boolean isHinderingTerrain) {
 		this.row = row;
 		this.column = column;
@@ -44,7 +49,6 @@ public class BoardRectangle {
 		int alpha = 200;
 		cPossibleMove = new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),alpha);
 		cPossibleAttack = new Color(Commons.cAttack.getRed(),Commons.cAttack.getGreen(),Commons.cAttack.getBlue(),alpha);
-		cPossibleAbility = new Color(Commons.cAbility.getRed(),Commons.cAbility.getGreen(),Commons.cAbility.getBlue(),alpha);
 		this.isTile1 = isTile1;
 		this.index = index;
 		this.isHinderingTerrain = isHinderingTerrain;
@@ -67,6 +71,17 @@ public class BoardRectangle {
 //		}
 //		spriteLinks.add(Commons.pathToSpriteSource+spriteDirector);
 //		groundSprite = new Sprite(spriteLinks, size,size, 0);
+		initExtendedInfoStrings();
+	}
+	
+	private void initExtendedInfoStrings() {
+		extendedInfoStrings[0] = "just a basic tile\ncannot be attacked\ncan be moved on";
+		extendedInfoStrings[1] = "a gap in the landscape\ncannot be attacked\ncannot be moved on\ncan be seen through";
+		extendedInfoStrings[2] = "movement hindering terrain\ncannot be attacked\ncan be moved on\ncosts double movement to cross.";
+		extendedInfoStrings[3] = "a basic wall\ncannot be attacked\ncannot be moved on.\ncannot be seen through.";
+		extendedInfoStrings[4] = "object that can be destroyed.\ncan be attacked.\ncannot be moved on.";
+		extendedInfoStrings[5] = "goldmine that collects gold every turn for team that captures it\ncan be attacked (only if captured by opposing team)\ncannot be moved on.\nmove next to goldmine to capture it (if not captured already).";
+		extendedInfoStrings[6] = "main base of players\ncan be attacked\ncannot be moved on\ndestroy enemy base to win\nleft click on own base to recruit new units";
 	}
 	public int getSize() {
 		return (int) rect.getWidth();
@@ -112,13 +127,13 @@ public class BoardRectangle {
 		return false;
 	}
 	
-	public boolean hasGamePieceOnIt() {
+	public GamePiece getGamePieceOnIt() {
 		for(GamePiece curGP : StagePanel.gamePieces) {
 			if(curGP.boardRect == this) {
-				return true;
+				return curGP;
 			}
 		}
-		return false;
+		return null;
 	}
 	public void initAdjecantBRs(ArrayList<BoardRectangle> boardRectangles) {
 		for(BoardRectangle curBR : boardRectangles ) {
@@ -145,6 +160,9 @@ public class BoardRectangle {
 	
 	public static int getDistanceBetweenBRs(BoardRectangle br1,BoardRectangle br2) {
 		return Math.abs(br1.row - br2.row)+Math.abs(br1.column - br2.column);
+	}
+	public static int getDistanceBetweenBRs(int row1, int column1,int row2, int column2) {
+		return Math.abs(row1 - row2)+Math.abs(column1 - column2);
 	}
 	
 	
@@ -267,7 +285,7 @@ public class BoardRectangle {
 	
 	public void drawState(Graphics2D g2d) {
 		g2d.setStroke(new BasicStroke(2));
-		if(isPossibleMove || isPossibleAttack || isPossibleAbility) {
+		if(isPossibleMove || isPossibleAttack) {
 			g2d.setColor(new Color(10,10,10,100));
 			g2d.fill(rect);
 			
@@ -276,12 +294,11 @@ public class BoardRectangle {
 			g2d.setColor(new Color(5,5,5));
 			g2d.draw(rect);
 		}
-		if((isShowPossibleAbility && !isPossibleAbility) || (isShowPossibleMove && !isPossibleMove) || (isShowPossibleAttack && !isPossibleAttack)) {
+		if((isShowPossibleMove && !isPossibleMove) || (isShowPossibleAttack && !isPossibleAttack)) {
 			g2d.setStroke(new BasicStroke(4));
 			g2d.setColor(new Color(10,10,10,100));
 			g2d.fill(rect);
-			g2d.setColor(isShowPossibleAbility?new Color(cPossibleAbility.getRed(),cPossibleAbility.getGreen(),cPossibleAbility.getBlue(),200):
-				isShowPossibleMove?new Color(cPossibleMove.getRed(),cPossibleMove.getGreen(),cPossibleMove.getBlue(),200):
+			g2d.setColor(isShowPossibleMove?new Color(cPossibleMove.getRed(),cPossibleMove.getGreen(),cPossibleMove.getBlue(),200):
 				new Color(cPossibleAttack.getRed(),cPossibleAttack.getGreen(),cPossibleAttack.getBlue(),200));
 			
 			
@@ -303,8 +320,6 @@ public class BoardRectangle {
 			if(isPossibleMove){
 				g2d.setColor(Commons.cMove);
 				g2d.setColor(new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),alpha));
-			}else if(isPossibleAbility) {
-				g2d.setColor(new Color(10,10,10));
 			}else {
 				g2d.setColor(new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),200));
 			}
@@ -334,28 +349,110 @@ public class BoardRectangle {
 				g2d.rotate(Math.toRadians(-rotation));
 				g2d.translate(-s/2, -s/2);
 			}
-			
-			if(isPossibleAbility) {
-				g2d.translate(s/2, s/2);
-				g2d.rotate(Math.toRadians(rotation));
-				Polygon polygon = new Polygon();
-				int radius = s/3;
-				int j = 0;
-	            for (int i = 0; i < 360; i+= 360/6) {
-	                int xHex = (int) (radius* Math.cos(Math.toRadians(i)));
-	                int yHex = (int) (radius * Math.sin(Math.toRadians(i)));
-	                if(j%2==0) {
-	                	g2d.drawLine(0, 0, xHex, yHex);
-	                }
-	                j++;
-	                polygon.addPoint(xHex, yHex);
-	            }
-	            g2d.draw(polygon);
-	            g2d.rotate(Math.toRadians(-rotation));
-				g2d.translate(-s/2, -s/2);
-			}
 			g2d.translate(-x, -y);
 		}
+	}
+	
+	// draws the Label of the BoardRectangle (only ifHover)
+	// also draws additional info of state if ctrl key is held
+	public void drawLabel(Graphics2D g2d, boolean ctrDown) {
+		String labelState = "Basic Tile";
+		String extendedInfoString = extendedInfoStrings[0];
+		GamePiece gamePieceOnBoardRectangle = getGamePieceOnIt();
+		if(isGap) {
+			labelState = "Gap";
+			extendedInfoString = extendedInfoStrings[1];
+		}else if(isHinderingTerrain){
+			labelState = "Hindering Terrain";
+			extendedInfoString = extendedInfoStrings[2];
+		}else if(isWall){
+			labelState = "Wall";
+			extendedInfoString = extendedInfoStrings[3];
+		}
+		if(isDestructibleObject()) {
+			labelState = "Destructible Object";
+			extendedInfoString = extendedInfoStrings[4];
+		}
+		if(isGoldMine()) {
+			labelState = "GoldMine";
+			extendedInfoString = extendedInfoStrings[5];
+		}
+		if(StagePanel.blueBase.containsBR(this) || StagePanel.redBase.containsBR(this)) {
+			labelState = "PlayerFortress";
+			extendedInfoString = extendedInfoStrings[6];
+		}
+		if(gamePieceOnBoardRectangle != null) {
+			labelState = gamePieceOnBoardRectangle.getName();
+		}
+		
+		int size = rect.width;
+		
+		g2d.setFont(new Font("Arial",Font.PLAIN,size/3));
+		FontMetrics fontMetrics = g2d.getFontMetrics();
+		int textHeight = fontMetrics.getHeight();
+		int textWidth = fontMetrics.stringWidth(labelState);
+		int border = textHeight/3;
+		int rectWidth = textWidth;
+		String[] extendedInfoStringSplit = null;
+		if(ctrDown && gamePieceOnBoardRectangle == null) {
+			extendedInfoStringSplit = extendedInfoString.split("\n");
+			for(String str:extendedInfoStringSplit) {
+				int w = g2d.getFontMetrics(new Font("Arial",Font.PLAIN,size/4)).stringWidth(str);
+				if(rectWidth<w) rectWidth = w;
+			}
+		}
+		
+		int shiftInYLength = ctrDown&&gamePieceOnBoardRectangle == null?size/2+g2d.getFontMetrics(new Font("Arial",Font.PLAIN,size/4)).getHeight()*extendedInfoStringSplit.length:0;
+		
+		Rectangle rectLabel = new Rectangle(getCenterX()-rectWidth/2-border,getCenterY()-size-shiftInYLength,rectWidth+border*2,size/2);
+		g2d.setColor(new Color(20,20,20,250));
+		g2d.fill(rectLabel);
+		g2d.setColor(new Color(10,10,10));
+		g2d.setStroke(new BasicStroke(size/10));
+		g2d.draw(rectLabel);
+		
+		g2d.setColor(gamePieceOnBoardRectangle == null?Color.WHITE:gamePieceOnBoardRectangle.getColor());
+		g2d.drawString(labelState, (int)rectLabel.x+border, (int)rectLabel.getCenterY()+textHeight/3);
+		
+		
+		if(gamePieceOnBoardRectangle != null) {
+			return;
+		}
+		if(ctrDown) {
+			g2d.setFont(new Font("Arial",Font.PLAIN,size/4));
+			fontMetrics = g2d.getFontMetrics();
+			textHeight = fontMetrics.getHeight();
+			textWidth = fontMetrics.stringWidth(labelState);
+			Rectangle rectLabelExtend = new Rectangle(rectLabel.x,rectLabel.y+rectLabel.height,rectWidth+border*2,textHeight*extendedInfoStringSplit.length+border);
+			g2d.setColor(new Color(20,20,20,240));
+			g2d.fill(rectLabelExtend);
+			g2d.setColor(new Color(10,10,10));
+			g2d.setStroke(new BasicStroke(size/10));
+			g2d.draw(rectLabelExtend);
+			g2d.setColor(Color.WHITE);
+			int i = 0;
+			for(String str : extendedInfoStringSplit) {
+				textWidth = fontMetrics.stringWidth(str);
+				g2d.drawString(str, (int)rectLabelExtend.x+border, (int)(rectLabelExtend.y+textHeight+i*textHeight));
+				i++;
+			}
+			
+		}else {
+			g2d.setFont(new Font("Arial",Font.PLAIN,size/6));
+			fontMetrics = g2d.getFontMetrics();
+			textHeight = fontMetrics.getHeight();
+			textWidth = fontMetrics.stringWidth("CTRL for Info");
+			Rectangle rectLabelExtend = new Rectangle(rectLabel.x,rectLabel.y+rectLabel.height,textWidth,size/4);
+			g2d.setColor(new Color(20,20,20,240));
+			g2d.fill(rectLabelExtend);
+			g2d.setColor(new Color(10,10,10));
+			g2d.setStroke(new BasicStroke(size/10));
+			g2d.draw(rectLabelExtend);
+			g2d.setColor(Color.WHITE);
+			g2d.drawString("CTRL for Info", (int)rectLabelExtend.getCenterX()-textWidth/2, (int)rectLabelExtend.getCenterY()+textHeight/3);
+			
+		}
+		
 	}
 	
 	// makes the Hover Rect bigger and then smaller gives it "pop" 
@@ -364,7 +461,7 @@ public class BoardRectangle {
 			rotation = 0;
 		}
 		rotation++;
-		if(isPossibleAttack || isPossibleAbility) {
+		if(isPossibleAttack) {
 			if(so < 5) {
 				animationSpeed = 0.3;
 			} else if(so > 10) {

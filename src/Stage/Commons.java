@@ -21,11 +21,8 @@ public interface Commons {
 	final Color textFieldSelected = new Color(136, 24, 206);
 	// final Color textFieldSelected = new Color(255,0,50);
 	
-	final Color cUltCharge = new Color(234,255,70);
-	
 	final Color cMove = new Color(255,220,90);
 	final Color cAttack = new Color(255,0,50);
-	final Color cAbility = new Color(50, 255, 150);
 	
 	final Color cRed = new Color(255,0,43);
 	final Color cBlue = new Color(16,68,255);
@@ -47,7 +44,9 @@ public interface Commons {
 	final int shieldRegen = 1;
 	
 	final int startCoinAmount = 100;
-	final float PlayerFortressHealth = 1;
+	final int incCoinAmountFortress = 10;
+	final int goldDropGoldMine = 10;
+	final float PlayerFortressHealth = 15;
 	
 	final float goldMineHealth = 5;
 	// BaseTypes
@@ -89,6 +88,14 @@ public interface Commons {
 	final int baseTypeSniper = 0;
 	final float dmgSniper = 5;
 	final String nameSniper = "SC";
+	// TazerPiece
+	final int baseTypeTazer = 0;
+	final float dmgTazer = 2;
+	final String nameTazer = "T";
+	// RapidElectroPiece
+	final int baseTypeRapidElectro = 0;
+	final float dmgRapidElectro = 2;
+	final String nameRapidElectro = "RE";
 	
 	// creates two vectors. One Vector(Vector with Angle angle) gets scaled with the scalar(rotationDelay)
 	// the two Vectors get added together and the angle of the resulting Vector is the return-product

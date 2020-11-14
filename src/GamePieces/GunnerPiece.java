@@ -81,17 +81,10 @@ public class GunnerPiece extends GamePiece {
 	}
 
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
-	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		
-		if(selectedRow < boardRect.row+3 && selectedRow > boardRect.row-3 && selectedColumn < boardRect.column+3 && selectedColumn > boardRect.column-3) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
-					
-					if(checkIfBoardRectangleInSight(curBR)) {
-						return true; 
-					}
-				}
-			} 
+	@Override
+	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
+		if(selectedRow < myRow+3 && selectedRow > myRow-3 && selectedColumn < myColumn+3 && selectedColumn > myColumn-3) {
+			return true;
 		}
 		return false;
 	}
@@ -115,9 +108,9 @@ public class GunnerPiece extends GamePiece {
 		
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 			
-		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, getIsRed(), 16, 
+		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/14, StagePanel.boardRectSize/6, isRed(), 16, 
 				(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));	
-		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(), 8, 12, (float)angle -90, c, (float)(Math.random()*2+3)));
+		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(), StagePanel.boardRectSize/12, StagePanel.boardRectSize/6, (float)angle -90, c, (float)(Math.random()*2+3)));
 	}
 	
 	// updates the isAttacking state
@@ -136,7 +129,7 @@ public class GunnerPiece extends GamePiece {
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
 			}else { 
-				targetDestructibleObject.getDamaged(getDmg(), angle, getIsRed());
+				targetDestructibleObject.getDamaged(getDmg(), angle, isRed());
 				targetDestructibleObject = null;
 			}
 			

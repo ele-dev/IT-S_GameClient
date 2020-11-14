@@ -85,7 +85,7 @@ public class StagePanel extends JPanel {
 	
 	// game Info
 	private GenericButton surrenderButton;
-	private ButtonEndTurn endTurnButton;
+	private static ButtonEndTurn endTurnButton;
 	private static TurnInfo turnInfoPanel;
 	
 	public static Camera camera;
@@ -101,6 +101,10 @@ public class StagePanel extends JPanel {
 	private static LevelDesignTool levelDesignTool;
 	
 	private static WinScreen winScreen;
+	
+	public static int amountOfActionsLeft = 0;
+	
+	private boolean ctrDown = false;
 	
 	
 	public StagePanel() {
@@ -136,7 +140,7 @@ public class StagePanel extends JPanel {
 		// create and init the buttons 
 		endTurnButton = new ButtonEndTurn();
 		int border = StagePanel.w/100;
-		surrenderButton = new GenericButton(StagePanel.w-(border+StagePanel.w/8),border,StagePanel.w/8,StagePanel.w/16,
+		surrenderButton = new GenericButton(StagePanel.w-(border+StagePanel.w/6),border,StagePanel.w/6,StagePanel.w/16,
 				"Surrender", new Color(20,20,20), new Color(255,0,50), StagePanel.w/16/3);
 		
 		// create and init the TurnInfo display
@@ -176,12 +180,19 @@ public class StagePanel extends JPanel {
 			mapRectangle = new Rectangle(mapColumns*boardRectSize,mapRows*boardRectSize);
 		}
 		initFortresses();
-		initGamePieces();
+//		initGamePieces();
 		if(GameState.myTeamIsRed) {
 			camera.setCameraToBasePos(redBase);
 		}else {
 			camera.setCameraToBasePos(blueBase);
 		}
+		updateAmountPossibleAttacks();
+		if(GameState.myTurn) {
+			endTurnButton.restartAutoEndTurnCountDown();
+		}else {
+			endTurnButton.tAutoEndTurn.stop();
+		}
+		
 	}
 	
 	// sets an impact-stop countdown (frame freezes)
@@ -207,7 +218,7 @@ public class StagePanel extends JPanel {
 	public static void tryCaptureGoldMine(GamePiece gamePiece) {
 		for(GoldMine curGM : StagePanel.goldMines) {
 			if(curGM.getCaptureState() == 0 && curGM.getNeighborBoardRectangles().contains(gamePiece.boardRect)) {
-				curGM.capture(gamePiece.getIsRed());
+				curGM.capture(gamePiece.isRed());
 			}
 		}
 	}
@@ -333,21 +344,27 @@ public class StagePanel extends JPanel {
 		drawAllGamePieceAttacksAbilities(g2d);
 		drawParticles(g2d);
 		
+		
+		
 		g2d.setStroke(new BasicStroke(80));
 		g2d.setColor(cBackGround);
 		g2d.draw(mapRectangle);
+		
+		if(curHoverBR != null)curHoverBR.drawLabel(g2d,ctrDown);
 		drawValueLabels(g2d);
 		drawMovesPanel(g2d);
 		
 		if(levelDesignTool != null) {
 			levelDesignTool.drawEquippedBuildObject(g2d);
 		} else {
+			endTurnButton.drawAmountOfAttacksLeft(g2d);
 			endTurnButton.drawButton(g2d);
 			surrenderButton.drawButton(g2d);
 			
 			g2d.translate(-camera.getPos().x, -camera.getPos().y);
 			turnInfoPanel.drawTurnInfo(g2d);
 			endTurnButton.drawParticles(g2d);
+			
 			if(winScreen != null) {
 				winScreen.drawWinScreen(g2d);
 			}
@@ -434,7 +451,7 @@ public class StagePanel extends JPanel {
 	private void drawAllGamePiecePointers(Graphics2D g2d) {
 		for(GamePiece curGP : gamePieces) {
 			if(camera.isInView(curGP.getPos())) {
-				if(curGP.getIsRed() == GameState.myTeamIsRed && GameState.myTurn) {
+				if(curGP.isRed() == GameState.myTeamIsRed && GameState.myTurn) {
 					curGP.drawPointer(g2d);
 				}
 			}
@@ -547,6 +564,7 @@ public class StagePanel extends JPanel {
 		turnInfoPanel.update();
 		endTurnButton.updateHover(mousePos);
 		endTurnButton.updatePos(camera.getPos());
+		endTurnButton.updateParticles();
 		endTurnButton.setActive(curActionPerformingGP == null && levelDesignTool == null && GameState.myTurn
 				&& noFortressSelected() && !goldUncollected());
 		
@@ -660,10 +678,11 @@ public class StagePanel extends JPanel {
 	}
 	
 	// updates/changes Turns
-	public void updateTurn() {
-		
+	public static void updateTurn() {
 		turnInfoPanel.toggleTurn();
 		curSelectedGP = null;
+		blueBase.gainGoldForSelf();
+		redBase.gainGoldForSelf();
 		for(GoldMine curGM : goldMines) {
 			curGM.tryGainGold();
 		}
@@ -681,13 +700,22 @@ public class StagePanel extends JPanel {
 				((EMPPiece)(curGP)).decEMPTimers();
 			}
 		}
+		updateAmountPossibleAttacks();
+		if(GameState.myTurn) {
+			endTurnButton.restartAutoEndTurnCountDown();
+		}else {
+			endTurnButton.tAutoEndTurn.stop();
+		}
+		
+		redBase.tryGetBackToFortressMenu();
+		blueBase.tryGetBackToFortressMenu();
+		redBase.setSelected(false);
+		blueBase.setSelected(false);
 	}
 	
 	// sets all BoardRectangles to the default color so they don't represent a possible move/attack
 	private void resetShowPossibleActivities() {
 		for(BoardRectangle curBR : StagePanel.boardRectangles) {
-			curBR.isPossibleAbility = false;
-			curBR.isShowPossibleAbility = false;
 			curBR.isPossibleAttack = false;
 			curBR.isShowPossibleAttack = false;
 			curBR.isPossibleMove = false;
@@ -700,7 +728,7 @@ public class StagePanel extends JPanel {
 		curSelectedGP = null;
 		if(curHoverBR != null && GameState.myTurn) {
 			for(GamePiece curGP : gamePieces) {
-				if(curGP.boardRect.equals(curHoverBR) && curGP.getIsRed() == GameState.myTeamIsRed) {
+				if(curGP.boardRect.equals(curHoverBR) && curGP.isRed() == GameState.myTeamIsRed) {
 					curSelectedGP = curGP;
 				} else {
 					curGP.actionSelectionPanel.setAttackButtonActive(false);
@@ -752,7 +780,7 @@ public class StagePanel extends JPanel {
 		if(curSelectedGP != null && !curSelectedGP.getIsDead() && curHoverBR != null && GameState.myTurn) {
 			
 			// check additional preconditions for performing any action
-			if(curHoverBR.isPossibleMove || curHoverBR.isPossibleAttack || curHoverBR.isPossibleAbility) {
+			if(curHoverBR.isPossibleMove || curHoverBR.isPossibleAttack) {
 				
 				// Make a move
 				if(curHoverBR.isPossibleMove) {
@@ -768,6 +796,7 @@ public class StagePanel extends JPanel {
 					
 					// Trigger the graphical animation for the move
 					curSelectedGP.startMove(curHoverBR);
+					endTurnButton.restartAutoEndTurnCountDown();
 				} 
 				// start an attack on an enemy player
 				else if(curHoverBR.isPossibleAttack) {
@@ -790,11 +819,22 @@ public class StagePanel extends JPanel {
 					
 					// Trigger the graphical animation for the attack
 					curSelectedGP.startAttack(curHoverBR);
+					endTurnButton.restartAutoEndTurnCountDown();
+					updateAmountPossibleAttacks();
 				} 
 
 				
 				curSelectedGP = null;
 				resetShowPossibleActivities();
+			}
+		}
+	}
+	
+	private static void updateAmountPossibleAttacks() {
+		amountOfActionsLeft = 0;
+		for(GamePiece curGP : gamePieces) {
+			if(curGP.isRed() == GameState.myTeamIsRed && !curGP.getHasExecutedAttack()) {
+				amountOfActionsLeft++;
 			}
 		}
 	}
@@ -948,7 +988,7 @@ public class StagePanel extends JPanel {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if(winScreen == null) {
+			if(winScreen == null && noFortressSelected()) {
 				camera.updateMovementPressedKey(e);
 			}
 			
@@ -963,11 +1003,21 @@ public class StagePanel extends JPanel {
 				}
 				return;
 			}
+			
+			if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
+				ctrDown = true;
+			}
+			
+			
+			
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
 			camera.updateMovementReleasedKey(e);
+			if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
+				ctrDown = false;
+			}
 		}
 
 		@Override

@@ -62,10 +62,10 @@ public class RocketLauncherPiece extends GamePiece{
 		}
 	}
 
-
-	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(((selectedRow == boardRect.row+3 || selectedRow == boardRect.row-3) && selectedColumn < boardRect.column+3 && selectedColumn > boardRect.column-3) ||
-				((selectedColumn == boardRect.column+3 || selectedColumn == boardRect.column-3) && selectedRow <=boardRect.row+3 && selectedRow >= boardRect.row-3)) {
+	@Override
+	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
+		if(((selectedRow == myRow+3 || selectedRow == myRow-3) && selectedColumn < myColumn+3 && selectedColumn > myColumn-3) ||
+				((selectedColumn == myColumn+3 || selectedColumn == myColumn-3) && selectedRow <=myRow+3 && selectedRow >= myRow-3)) {
 			return true;
 		}
 		return false;
@@ -93,7 +93,7 @@ public class RocketLauncherPiece extends GamePiece{
 			targetDestructibleObject.getRectHitbox();
 			
 			
-		rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, c,
+		rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, c,
 				(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));
 	}
 	
@@ -113,7 +113,7 @@ public class RocketLauncherPiece extends GamePiece{
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
 			} else if(targetDestructibleObject != null) {
-				targetDestructibleObject.getDamaged(getDmg(), angle,getIsRed());
+				targetDestructibleObject.getDamaged(getDmg(), angle,isRed());
 				targetDestructibleObject = null;
 			}
 		}

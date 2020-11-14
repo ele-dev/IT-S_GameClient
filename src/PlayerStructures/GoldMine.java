@@ -39,28 +39,25 @@ public class GoldMine extends DestructibleObject {
 			int x =  (int) (neighborBoardRectangles.get(0).getX()+(Math.random())*StagePanel.boardRectSize*3);
 			int y =  (int) (neighborBoardRectangles.get(0).getY()+(Math.random())*StagePanel.boardRectSize*3);
 			int randomGreyScale = (int) (Math.random() * 30 + 15);
-			particles.add(new TrailParticle(x, y, (int)(Math.random() * 20 + 8), 0, new Color(randomGreyScale,randomGreyScale,randomGreyScale), 0, 0, 0));
+			particles.add(new TrailParticle(x, y, (int)(Math.random() * StagePanel.boardRectSize/3 + StagePanel.boardRectSize/8), 0, new Color(randomGreyScale,randomGreyScale,randomGreyScale), 0, 0, 0));
 		}
 		for(int i = 0; i < 20; i++) {
 			int x =  (int) (neighborBoardRectangles.get(0).getX() + (Math.random()) * StagePanel.boardRectSize*3);
 			int y =  (int) (neighborBoardRectangles.get(0).getY() + (Math.random()) * StagePanel.boardRectSize*3);
-			particles.add(new TrailParticle(x, y, (int)(Math.random() * 15 + 5), 0, new Color(204 + (int)((Math.random()-0.5)*50),164+(int)((Math.random()-0.5)*50),61), 0, 0, 0));
+			particles.add(new TrailParticle(x, y, (int)(Math.random() * StagePanel.boardRectSize/5 + StagePanel.boardRectSize/12), 0, new Color(204 + (int)((Math.random()-0.5)*50),164+(int)((Math.random()-0.5)*50),61), 0, 0, 0));
 		}
 	}
-	
 	public byte getCaptureState() {
 		return captureState;
 	}
-	
 	public ArrayList<BoardRectangle> getNeighborBoardRectangles() {
 		return neighborBoardRectangles;
 	}
-	
 	public void drawDestructibleObject(Graphics2D g2d) {
 		g2d.setColor(captureState == 0 ? new Color(20, 20, 20) : captureState == 1 ? Commons.cRed : Commons.cBlue);
 		g2d.fill(rectHitbox);
 		
-		g2d.setStroke(new BasicStroke(8));
+		g2d.setStroke(new BasicStroke(StagePanel.boardRectSize/8));
 		g2d.setColor(new Color(10, 10, 10));
 		g2d.draw(rectHitbox);
 		
@@ -103,7 +100,7 @@ public class GoldMine extends DestructibleObject {
 		if(health <= 0) {
 			captureState = 0;
 			for(GamePiece curGP : StagePanel.gamePieces) {
-				if(curGP.getIsRed() == isRedAttack) {
+				if(curGP.isRed() == isRedAttack) {
 					StagePanel.tryCaptureGoldMine(curGP);
 				}
 			}
@@ -120,7 +117,7 @@ public class GoldMine extends DestructibleObject {
 	
 	public void tryGainGold() {
 		if(captureState != 0) {
-			for(int i = 0; i < 10; i++) {
+			for(int i = 0; i < Commons.goldDropGoldMine; i++) {
 				StagePanel.particles.add(new GoldParticle((float)occupiedBRs[0].getCenterX(),(float)occupiedBRs[0].getCenterY(),
 						(float)(Math.random() * 360), (float)(Math.random() * 360), (float)(Math.random() * 2.5f) + 2f, captureState == 1));
 			}

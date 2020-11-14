@@ -82,7 +82,7 @@ public class DestructibleObject {
 			g2d.rotate(Math.toRadians(-rotation));
 			g2d.translate(-rectHitbox.getCenterX(), -rectHitbox.getCenterY());
 		}
-		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), 25);
+		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), StagePanel.boardRectSize/4);
 	}
 	
 	protected void drawHealthValues(Graphics2D g2d,int x, int y, int fontSize) {

@@ -40,17 +40,11 @@ public class EMPPiece extends GamePiece{
 		}
 	}
  
-
-	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(((selectedRow == boardRect.row + 2 || selectedRow == boardRect.row - 2) && selectedColumn < boardRect.column + 2 && selectedColumn > boardRect.column - 2) ||
-				((selectedColumn == boardRect.column + 2 || selectedColumn == boardRect.column - 2) && selectedRow <= boardRect.row + 2 && selectedRow >= boardRect.row - 2)) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
-					if(checkIfBoardRectangleInSight(curBR)) {
-						return true;
-					}
-				}
-			}
+	@Override
+	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
+		if(((selectedRow == myRow + 2 || selectedRow == myRow - 2) && selectedColumn < myColumn + 2 && selectedColumn > myColumn - 2) ||
+				((selectedColumn == myColumn + 2 || selectedColumn == myColumn - 2) && selectedRow <= myRow + 2 && selectedRow >= myRow - 2)) {
+			return true;
 		}
 		return false;
 	}
@@ -59,7 +53,7 @@ public class EMPPiece extends GamePiece{
 	public void shootEMP() {
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 			
-		empProjectiles.add(new EMPProjectile(getCenterX(), getCenterY(), 10, 20, c, getDmg(), 
+		empProjectiles.add(new EMPProjectile(getCenterX(), getCenterY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, c, getDmg(), 
 				(float)(angle + (Math.random()-0.5)*10), shape,targetGamePiece,targetDestructibleObject));
 		targetDestructibleObject = null;
 		targetGamePiece = null;
@@ -100,7 +94,7 @@ public class EMPPiece extends GamePiece{
 					if(curEMPP.getTargetGamePiece() != null) {
 						curEMPP.getTargetGamePiece().gamePieceBase.getDamaged(getDmg());
 					} else {
-						targetDestructibleObject.getDamaged(getDmg(), angle, getIsRed());
+						targetDestructibleObject.getDamaged(getDmg(), angle, isRed());
 						targetDestructibleObject = null;
 					}
 				}
