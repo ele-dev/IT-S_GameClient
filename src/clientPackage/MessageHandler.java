@@ -179,7 +179,7 @@ public class MessageHandler {
 				GameState.enemySurrender = true;
 				if(!GameState.myTeamIsRed) {
 					StagePanel.redBase.getDamaged(StagePanel.redBase.getHealth(), 0, true);
-				}else {
+				} else {
 					StagePanel.blueBase.getDamaged(StagePanel.blueBase.getHealth(), 0, true);
 				}
 				GameState.isIngame = false;
