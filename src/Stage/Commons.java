@@ -64,38 +64,47 @@ public interface Commons {
 	final int baseTypeGunner = 1;
 	final float dmgGunner = 3;
 	final String nameGunner = "G";
+	final boolean neededLOSGunner = true;
 	// FlameThrowerPiece
 	final int baseTypeFlameThrower = 1;
 	final float dmgFlameThrower = 4;
 	final String nameFlameThrower = "F";
+	final boolean neededLOSFlameThrower = true;
 	// DetonatorPiece
 	final int baseTypeDetonator = 0;
 	final float dmgDetonator = 4;
 	final String nameDetonator = "D";
+	final boolean neededLOSDetonator = true;
 	// RocketLauncherPiece
 	final int baseTypeRocketLauncher = 0;
 	final float dmgRocketLauncher = 3;
 	final String nameRocketLauncher = "R";
+	final boolean neededLOSRocketLauncher = false;
 	// ShotgunPiece
 	final int baseTypeShotgun = 0;
 	final float dmgShotgun = 3;
 	final String nameShotgun = "S";
+	final boolean neededLOSShotgun = true;
 	// EMPPiece
 	final int baseTypeEMP = 0;
 	final float dmgEMP = 2;
 	final String nameEMP = "E";
+	final boolean neededLOSEMP = true;
 	// SniperPiece
 	final int baseTypeSniper = 0;
 	final float dmgSniper = 5;
 	final String nameSniper = "SC";
+	final boolean neededLOSSniper = true;
 	// TazerPiece
 	final int baseTypeTazer = 0;
 	final float dmgTazer = 2;
 	final String nameTazer = "T";
+	final boolean neededLOSTazer = false;
 	// RapidElectroPiece
 	final int baseTypeRapidElectro = 0;
 	final float dmgRapidElectro = 2;
 	final String nameRapidElectro = "RE";
+	final boolean neededLOSRapidElectro = true;
 	
 	// creates two vectors. One Vector(Vector with Angle angle) gets scaled with the scalar(rotationDelay)
 	// the two Vectors get added together and the angle of the resulting Vector is the return-product

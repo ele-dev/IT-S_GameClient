@@ -23,7 +23,7 @@ public class ShotgunPiece extends GamePiece {
 	private byte bulletAmount = 10;
 
 	public ShotgunPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameShotgun, boardRect, Commons.dmgShotgun, Commons.baseTypeShotgun);
+		super(isRed, Commons.nameShotgun, boardRect, Commons.dmgShotgun, Commons.baseTypeShotgun,Commons.neededLOSShotgun);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -32,6 +32,10 @@ public class ShotgunPiece extends GamePiece {
 			}
 		});
 		attackDelayTimer.setRepeats(false);
+	}
+	@Override
+	public boolean isAttacking() {
+		return attackDelayTimer.isRunning() || bullets.size()>0;
 	}
 
 	@Override
@@ -50,8 +54,8 @@ public class ShotgunPiece extends GamePiece {
 
 	@Override
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2,boardRect.getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize,StagePanel.boardRectSize,0,-angle-90,Arc2D.PIE);
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		for(int i = 0;i<bullets.size();i++) {
 			Bullet curB = bullets.get(i);
 			curB.move();
@@ -65,6 +69,8 @@ public class ShotgunPiece extends GamePiece {
 	}
 	
 	public void shootOnce() {
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		startedAttack = true;
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
@@ -78,13 +84,7 @@ public class ShotgunPiece extends GamePiece {
 	
 	// updates the isAttacking state
 	public void updateIsAttacking() {
-		isAttacking = false;
-		if(attackDelayTimer.isRunning()) {
-			isAttacking = true;
-			return;
-		}
-		if(bullets.size() >0) {
-			isAttacking = true;
+		if(isAttacking()) {
 			return;
 		}
 		

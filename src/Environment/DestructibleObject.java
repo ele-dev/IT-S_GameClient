@@ -15,6 +15,7 @@ import Stage.Commons;
 import Stage.Sprite;
 import Stage.StagePanel;
 
+// Object that can be destroyed/removed from match can occupy multiple BoardRectangles
 public class DestructibleObject {
 	protected float rotation;
 	protected float health;
@@ -58,6 +59,7 @@ public class DestructibleObject {
 	public float getHealth() {
 		return health;
 	}
+	// checks if the targetBR is contained within the bounds of the DestructibleObject
 	public boolean containsBR(BoardRectangle targetBR) {
 		for(BoardRectangle curBR : occupiedBRs) {
 			if(curBR.equals(targetBR)) {
@@ -105,6 +107,7 @@ public class DestructibleObject {
 		g2d.drawString(str, (int)r.getCenterX()-textWidth/2, (int)r.getCenterY()+textHeight/3);
 	}
 	
+	// checks if the rect(parameter) is contained within the hitbox and creates particles if so
 	public boolean checkIntersects(Rectangle rect) {
 		if(rectHitbox.intersects(rect)) {
 			if(impactFlashCounter <-3) {
@@ -117,13 +120,12 @@ public class DestructibleObject {
 						(int)(Math.random()*StagePanel.boardRectSize/10)+StagePanel.boardRectSize/8, 
 						sprite.getRandomPixelColor(),angle, 3));
 			}
-			
 			return true;
 		}
-		
 		return false;
 	}
 	
+	// damages the DestructibleObject and destroys it if health<0
 	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
 		health -= dmg;
 		if(health <= 0) {

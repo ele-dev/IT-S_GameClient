@@ -25,7 +25,7 @@ public class TazerPiece extends GamePiece{
 	Bullet tazerBullet;
 	
 	public TazerPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameTazer, boardRect, Commons.dmgTazer, Commons.baseTypeTazer); 
+		super(isRed, Commons.nameTazer, boardRect, Commons.dmgTazer, Commons.baseTypeTazer,Commons.neededLOSTazer); 
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -34,15 +34,15 @@ public class TazerPiece extends GamePiece{
 			}
 		});
 		attackDelayTimer.setRepeats(false);
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2,boardRect.getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize,StagePanel.boardRectSize,0,0,Arc2D.PIE);
-		
+	}
+	
+	@Override
+	public boolean isAttacking() {
+		return attackDelayTimer.isRunning();
 	}
 
 	@Override
-	public void drawAttack(Graphics2D g2d) {
-
-	}
+	public void drawAttack(Graphics2D g2d) {}
 	
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
 	@Override
@@ -53,8 +53,8 @@ public class TazerPiece extends GamePiece{
 	}
 
 	public void shootOnce() {	
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2,boardRect.getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize,StagePanel.boardRectSize,0,-angle-90,Arc2D.PIE);	
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 			
@@ -137,9 +137,6 @@ public class TazerPiece extends GamePiece{
 				}
 			}
 		}
-		
-			
-		isAttacking = false;
 		pointsArray.clear();
 		if(targetGamePiece != null) {
 			targetGamePiece = null;
@@ -155,7 +152,7 @@ public class TazerPiece extends GamePiece{
 
 	@Override
 	public void updateAttack() {
-		
-		
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 	}
 }

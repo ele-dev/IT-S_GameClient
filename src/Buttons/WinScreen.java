@@ -77,7 +77,6 @@ public class WinScreen {
 	}
 	
 	public void update() {
-		leaveButton.updatePos(StagePanel.camera.getPos());
-		leaveButton.updateHover(StagePanel.mousePos);
+		leaveButton.updateHover(StagePanel.mousePosUntranslated);
 	}
 }

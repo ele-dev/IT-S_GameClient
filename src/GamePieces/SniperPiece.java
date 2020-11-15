@@ -22,7 +22,7 @@ public class SniperPiece extends GamePiece{
 	Bullet sniperBullet;
 	
 	public SniperPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameSniper, boardRect, Commons.dmgSniper, Commons.baseTypeSniper);
+		super(isRed, Commons.nameSniper, boardRect, Commons.dmgSniper, Commons.baseTypeSniper,Commons.neededLOSSniper);
 		attackDelayTimer = new Timer(1500,new ActionListener() { 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -31,8 +31,6 @@ public class SniperPiece extends GamePiece{
 			}
 		});
 		attackDelayTimer.setRepeats(false);
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2,boardRect.getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize,StagePanel.boardRectSize,0,0,Arc2D.PIE);
 	}
 	 
 	public void update() {
@@ -42,6 +40,11 @@ public class SniperPiece extends GamePiece{
 			updateAngle(targetDestructibleObject.getPos());
 		}
 		updateAttack();
+	}
+	
+	@Override
+	public boolean isAttacking() {
+		return attackDelayTimer.isRunning();
 	}
 
 	@Override
@@ -58,8 +61,8 @@ public class SniperPiece extends GamePiece{
 	}
 
 	public void shootOnce() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2,boardRect.getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize,StagePanel.boardRectSize,0,-angle-90,Arc2D.PIE);	
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 			
@@ -81,10 +84,7 @@ public class SniperPiece extends GamePiece{
 				break;
 			}
 			i++;
-		}
-	
-		
-		isAttacking = false;		
+		}	
 		if(targetGamePiece != null) {
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());
 			targetGamePiece = null;
@@ -98,6 +98,7 @@ public class SniperPiece extends GamePiece{
 
 	@Override
 	public void updateAttack() {
-
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 	}
 }

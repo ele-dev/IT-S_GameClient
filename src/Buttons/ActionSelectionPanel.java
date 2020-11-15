@@ -12,9 +12,8 @@ import GamePieces.GamePiece;
 import Stage.Commons;
 import Stage.StagePanel;
 
-
+// Panel from GamePiece where Players can select an action for the GamePiece from (attack or move)
 public class ActionSelectionPanel {
-	private int startx,starty;
 	private int w,h;
 	private Rectangle rect;
 	private GamePiece parentGamepiece;
@@ -28,8 +27,6 @@ public class ActionSelectionPanel {
 		h = StagePanel.h*2/3;
 		int x = StagePanel.w/100;
 		int y = StagePanel.h -h -x*2;
-		startx = x;
-		starty = y;
 		border = w/10;
 		rect = new Rectangle(x,y,w,h);
 		this.parentGamepiece = parentGamepiece;
@@ -55,7 +52,7 @@ public class ActionSelectionPanel {
 		moveButton.isActive = isActive;
 	}
 	 
-	// draws the MovesPanel including its buttons and the GamePieces info
+	// draws the ActionSelectionPanel including it's buttons and the GamePieces info
 	public void drawActionSelectionPanel(Graphics2D g2d) {
 		g2d.setColor(new Color(20,20,20,230));
 		g2d.fill(rect);
@@ -65,8 +62,8 @@ public class ActionSelectionPanel {
 		int x = rect.x;	
 		int y = rect.y;
 		parentGamepiece.gamePieceBase.drawHealth(g2d, x+border, y+border*2, w-border*2, attackButton.rect.height/2,w/8);
-		x = x+border;
-		y = y+h/5;
+		x +=border;
+		y +=h/5;
 		
 		float dmg = parentGamepiece.getDmg();
 		String[] strs = {"Name: ","Dmg: ","Moves: "};
@@ -74,12 +71,12 @@ public class ActionSelectionPanel {
 		Color[] colors = {parentGamepiece.getColor(),Commons.cAttack,Commons.cMove};
 		
 		g2d.setFont(font);
-		FontMetrics metrics = g2d.getFontMetrics();
-		int textHeight = metrics.getHeight();
+		FontMetrics fontMetrics = g2d.getFontMetrics();
+		int textHeight = fontMetrics.getHeight();
 		
 		
 		for(int i = 0;i<strs.length;i++) {
-			int textWidth = metrics.stringWidth(strs[i]);
+			int textWidth = fontMetrics.stringWidth(strs[i]);
 			g2d.setColor(colors[i]);
 			g2d.drawString(strs[i], x, y+textHeight*(i+1));
 			g2d.setColor(Color.WHITE);
@@ -91,31 +88,20 @@ public class ActionSelectionPanel {
 		attackButton.drawButton(g2d);
 		moveButton.drawButton(g2d);
 	}
-	// updates the show functions/rectangles
 	public void updateActionSelectionPanel() {
 		if(attackButton.isActive) {
 			parentGamepiece.showPossibleAttacks();
 		}
 	}
 	
+	// tries to press any button and returns true if succeeded at doing so
 	public boolean tryPressButton() {
 		if(moveButton.tryPress()) {
 			attackButton.isActive = false;
 			return true;
 		}
-		if(attackButton.tryPress()) {
-			return true;
-		}
-		return false;
-		
+		return attackButton.tryPress();
 	} 
-	
-	public void updatePos(Point CameraPos) {
-		rect.x = startx-CameraPos.x;
-		rect.y = starty-CameraPos.y;
-		attackButton.updatePos(CameraPos);
-		moveButton.updatePos(CameraPos);
-	}
 	
 	public boolean containsMousePos(Point mousePos) {
 		return rect.contains(mousePos);

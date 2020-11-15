@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
@@ -20,7 +21,7 @@ public class DetonatorPiece extends GamePiece {
 	ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
 	
 	public DetonatorPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameDetonator, boardRect, Commons.dmgDetonator, Commons.baseTypeDetonator);
+		super(isRed, Commons.nameDetonator, boardRect, Commons.dmgDetonator, Commons.baseTypeDetonator,Commons.neededLOSDetonator);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -32,10 +33,19 @@ public class DetonatorPiece extends GamePiece {
 		attackDelayTimer.setRepeats(false);
 	}
 	
+	@Override
+	public boolean isAttacking() {
+		for(DetonatorProjectile curDP : detProjectiles) {
+			if(curDP.detonationTimer.isRunning() || !curDP.hasHitTarget()) {
+				return true;
+			}
+		}
+		return attackDelayTimer.isRunning();
+	}
+	
 	public void drawAttack(Graphics2D g2d) {
 		for(int i = 0; i < detProjectiles.size(); i++) {
 			DetonatorProjectile curDP = detProjectiles.get(i);
-			
 			if(curDP.isDetonated()) {
 				curDP.detExplosion.drawParticle(g2d);
 			} 
@@ -54,9 +64,11 @@ public class DetonatorPiece extends GamePiece {
 
 	// creates/shoots the DetonatorProjectile
 	public void shootDetonator() {
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 			
-		detProjectiles.add(new DetonatorProjectile(getCenterX(), getCenterY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, isRed(), 
+		detProjectiles.add(new DetonatorProjectile((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, isRed(), 
 				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape, targetGamePiece, targetDestructibleObject));
 		targetDestructibleObject = null;
 		targetGamePiece = null;
@@ -74,20 +86,12 @@ public class DetonatorPiece extends GamePiece {
 	}
 	
 	public void updateIsAttacking() {
-		isAttacking = false;
-		if(attackDelayTimer.isRunning()) {
-			isAttacking = true;
-			return;
-		}
-		for(DetonatorProjectile curDP : detProjectiles) {
-			if(curDP.detonationTimer.isRunning() || !curDP.hasHitTarget()) {
-				isAttacking = true;
-				return;
-			}
-		}
+		
 	}
 
 	public void updateAttack() { 
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		for(int i = 0; i < detProjectiles.size(); i++) { 
 			DetonatorProjectile curDP = detProjectiles.get(i);
 			if(!curDP.hasHitTarget()) {

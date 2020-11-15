@@ -29,21 +29,24 @@ public class RapidElectroPiece extends GamePiece {
 	private ArrayList<GamePiece> targetGamePieces = new ArrayList<GamePiece>();
 
 	public RapidElectroPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameRapidElectro, boardRect, Commons.dmgRapidElectro, Commons.baseTypeRapidElectro);
+		super(isRed, Commons.nameRapidElectro, boardRect, Commons.dmgRapidElectro, Commons.baseTypeRapidElectro,Commons.neededLOSRapidElectro);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				angle = angleDesired;
-				
 				burstAmount = targetGamePieces.size() > 0?(byte) (targetGamePieces.size()):1;
-				
 			}
 		});
 		attackDelayTimer.setRepeats(false);
 	}
+	
+	@Override
+	public boolean isAttacking() {
+		return attackDelayTimer.isRunning() || burstAmount > 0;
+	}
+	
 	@Override
 	protected void startAttackDelay() {
-		isAttacking = true;
 		attackDelayTimer.start();
 		hasExecutedAttack = true;
 		hasExecutedMove = true;
@@ -61,7 +64,6 @@ public class RapidElectroPiece extends GamePiece {
 					targetGamePieces.add(curGP);
 				}
 			}
-		
 			targetGamePiece = targetGamePieces.get(targetGamePieces.size()-1);
 		}
 		
@@ -80,8 +82,8 @@ public class RapidElectroPiece extends GamePiece {
 
 	@Override
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2,boardRect.getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize,StagePanel.boardRectSize,0,-angle-90,Arc2D.PIE);
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		if(burstAmount > 0) {
 			burstCounter--;
 			if(burstCounter <= 0) {
@@ -108,11 +110,13 @@ public class RapidElectroPiece extends GamePiece {
 	}
 	
 	public void shootOnce() {
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		startedAttack = true;
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 		
-		bullet = new Bullet(getCenterX(), getCenterY(), 10, 20, isRed(), 2, angle, shape, targetDestructibleObject);
+		bullet = new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, isRed(), 2, angle, shape, targetDestructibleObject);
 		
 		ArrayList<Point> points = new ArrayList<Point>();
 		points.add(new Point((int)bullet.getX(), (int)bullet.getY()));
@@ -152,11 +156,6 @@ public class RapidElectroPiece extends GamePiece {
 	
 	// updates the isAttacking state
 	public void updateIsAttacking() {
-		isAttacking = false;
-		if(attackDelayTimer.isRunning()) {
-			isAttacking = true;
-			return;
-		}
 	}
 
 }

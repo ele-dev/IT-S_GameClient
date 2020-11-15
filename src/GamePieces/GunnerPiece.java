@@ -29,7 +29,7 @@ public class GunnerPiece extends GamePiece {
 	double spreadAngle = 10;
 	
 	public GunnerPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameGunner, boardRect, Commons.dmgGunner, Commons.baseTypeGunner);
+		super(isRed, Commons.nameGunner, boardRect, Commons.dmgGunner, Commons.baseTypeGunner,Commons.neededLOSGunner);
 		attackDelayTimer = new Timer(1500, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -52,9 +52,11 @@ public class GunnerPiece extends GamePiece {
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		spriteLinks.add(Commons.pathToSpriteSource+"Turrets/Minigun.png");
 		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize, StagePanel.boardRectSize, 0);
-		
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, 0, Arc2D.PIE);
+	}
+	
+	@Override
+	public boolean isAttacking() {
+		return attackDelayTimer.isRunning() || bullets.size()>0;
 	}
 	
 	//draws every bullet in the bullets Array
@@ -66,7 +68,7 @@ public class GunnerPiece extends GamePiece {
 
 	// updates the attack (moves bullets,checks if they hit something and so forth)
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		for(int i = 0; i < bullets.size(); i++) {
 			Bullet curB = bullets.get(i);
@@ -97,6 +99,8 @@ public class GunnerPiece extends GamePiece {
 	// shoots one shot every timer the burstTimer activates and starts the burstTimer again if it still has shots left to shoot
 	// shots are counted by burstCounter (stops shooting if burstCounter >= burstBulletAmount)
 	public void shootOnce() {
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		StagePanel.applyScreenShake(2, 10);
 		burstCounter++;
 		if(burstCounter < burstBulletAmount) {
@@ -115,13 +119,7 @@ public class GunnerPiece extends GamePiece {
 	
 	// updates the isAttacking state
 	public void updateIsAttacking() {
-		isAttacking = false;
-		if(attackDelayTimer.isRunning()) {
-			isAttacking = true;
-			return;
-		}
-		if(burstCounter > 0 || bullets.size() > 0) {
-			isAttacking = true;
+		if (isAttacking()) {
 			return;
 		}
 		if(startedAttack) {

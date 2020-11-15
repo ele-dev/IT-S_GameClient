@@ -90,7 +90,7 @@ public class StagePanel extends JPanel {
 	
 	public static Camera camera;
 	public static Point mousePos = new Point(0,0);
-	private Point mousePosUntranslated;
+	public static Point mousePosUntranslated = mousePos;
 	
 	public static BoardRectangle curHoverBR;
 	public static GamePiece curSelectedGP,curActionPerformingGP;
@@ -313,7 +313,7 @@ public class StagePanel extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		
 		// Draw the background
-		g2d.setColor(this.cBackGround);
+		g2d.setColor(cBackGround);
 		g2d.fillRect(0, 0, w, h);
 		
 		g2d.translate(camera.getPos().x, camera.getPos().y);
@@ -352,27 +352,30 @@ public class StagePanel extends JPanel {
 		
 		if(curHoverBR != null)curHoverBR.drawLabel(g2d,ctrDown);
 		drawValueLabels(g2d);
-		drawMovesPanel(g2d);
 		
 		if(levelDesignTool != null) {
 			levelDesignTool.drawEquippedBuildObject(g2d);
 		} else {
-			endTurnButton.drawAmountOfAttacksLeft(g2d);
-			endTurnButton.drawButton(g2d);
-			surrenderButton.drawButton(g2d);
+			
 			
 			g2d.translate(-camera.getPos().x, -camera.getPos().y);
 			turnInfoPanel.drawTurnInfo(g2d);
+			endTurnButton.drawAmountOfAttacksLeft(g2d);
+			endTurnButton.drawButton(g2d);
 			endTurnButton.drawParticles(g2d);
+			drawMovesPanel(g2d);
+			surrenderButton.drawButton(g2d);
+			
+			if(levelDesignTool == null) {
+				if(redBase.isSelected()) { redBase.drawFortressMenu(g2d); }
+				if(blueBase.isSelected()) { blueBase.drawFortressMenu(g2d); }
+			}
 			
 			if(winScreen != null) {
 				winScreen.drawWinScreen(g2d);
 			}
+			if(winScreen != null) { winScreen.drawButtons(g2d); }
 			g2d.translate(camera.getPos().x, camera.getPos().y);
-		}
-		if(levelDesignTool == null) {
-			if(redBase.isSelected()) { redBase.drawFortressMenu(g2d); }
-			if(blueBase.isSelected()) { blueBase.drawFortressMenu(g2d); }
 		}
 		// g2d.setStroke(new BasicStroke(3));
 		// g2d.setColor(Color.WHITE);
@@ -380,7 +383,6 @@ public class StagePanel extends JPanel {
 		// g2d.fillOval((int)camera.getCenterOfScreen().x-5, (int)camera.getCenterOfScreen().y-5, 10, 10);
 		// camera.drawRectOfView(g2d);
 		
-		if(winScreen != null) { winScreen.drawButtons(g2d); }
 		drawCursor(g2d);
 		
 		g2d.translate(-camera.getPos().x, -camera.getPos().y);
@@ -500,6 +502,11 @@ public class StagePanel extends JPanel {
 	private void drawEveryBoardRectangle(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			if(camera.isInView(curBR.getPos())) {
+				curBR.tryDrawWaveParticles(g2d);
+			} 	
+		}
+		for(BoardRectangle curBR : boardRectangles) {
+			if(camera.isInView(curBR.getPos())) {
 				curBR.drawBoardRectangle(g2d);
 			} 	
 		}
@@ -546,6 +553,7 @@ public class StagePanel extends JPanel {
 			return;
 		}
 		
+		BoardRectangle.incWaveCounter();
 		if(levelDesignTool != null || noFortressSelected()) {
 			updateBoardRectangles();
 		}
@@ -562,14 +570,12 @@ public class StagePanel extends JPanel {
 		updateGamePieces();
 		
 		turnInfoPanel.update();
-		endTurnButton.updateHover(mousePos);
-		endTurnButton.updatePos(camera.getPos());
+		endTurnButton.updateHover(mousePosUntranslated);
 		endTurnButton.updateParticles();
 		endTurnButton.setActive(curActionPerformingGP == null && levelDesignTool == null && GameState.myTurn
 				&& noFortressSelected() && !goldUncollected());
 		
-		surrenderButton.updateHover(mousePos);
-		surrenderButton.updatePos(camera.getPos());
+		surrenderButton.updateHover(mousePosUntranslated);
 		surrenderButton.setActive(curActionPerformingGP == null && levelDesignTool == null && noFortressSelected() && !goldUncollected());
 		
 		if(levelDesignTool == null) { updateFortresses(); }
@@ -624,8 +630,9 @@ public class StagePanel extends JPanel {
 			}
 			curGP.updateMove();
 			curGP.update();
+			curGP.updateLinesOfSight();
 			curGP.tryDie();
-			curGP.updateActionSelectionPanelPos(camera.getPos(), mousePos);
+			curGP.updateActionSelectionPanelHover();
 			if(curGP.getIsDead()) {
 				gamePieces.remove(i);
 			}
@@ -743,7 +750,7 @@ public class StagePanel extends JPanel {
 	// presses button if it is clicked on a and not blocked and also a piece is selected
 	private boolean tryPressButton() {
 		resetShowPossibleActivities();
-		return curSelectedGP != null && (curSelectedGP.actionSelectionPanel.tryPressButton() || curSelectedGP.actionSelectionPanel.containsMousePos(StagePanel.mousePos));
+		return curSelectedGP != null && (curSelectedGP.actionSelectionPanel.tryPressButton() || curSelectedGP.actionSelectionPanel.containsMousePos(StagePanel.mousePosUntranslated));
 	}
 	private boolean noFortressSelected() {
 		boolean status = true;

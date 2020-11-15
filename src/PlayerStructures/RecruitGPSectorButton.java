@@ -123,7 +123,6 @@ public class RecruitGPSectorButton extends GenericButton{
 	
 	private void tryAddParticle() {
 		for(int i = 0;i<counters.length;i++) {
-			
 			int x = rect.x;
 			int y = rect.y;
 			if(counters[i]<length) {

@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
@@ -20,7 +21,7 @@ public class EMPPiece extends GamePiece{
 	ArrayList<EMPProjectile> empProjectiles = new ArrayList<EMPProjectile>();
 	
 	public EMPPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameEMP, boardRect, Commons.dmgEMP, Commons.baseTypeEMP);
+		super(isRed, Commons.nameEMP, boardRect, Commons.dmgEMP, Commons.baseTypeEMP,Commons.neededLOSEMP);
 		
 		attackDelayTimer = new Timer(1500, new ActionListener() {
 			
@@ -31,6 +32,16 @@ public class EMPPiece extends GamePiece{
 			} 
 		}); 
 		attackDelayTimer.setRepeats(false);
+	}
+	
+	@Override
+	public boolean isAttacking() {
+		for(EMPProjectile curEMPP : empProjectiles) {
+			if(!curEMPP.hasHitTarget()) {
+				return true;
+			}
+		}
+		return attackDelayTimer.isRunning();
 	}
 	
 	public void drawAttack(Graphics2D g2d) {
@@ -50,6 +61,8 @@ public class EMPPiece extends GamePiece{
 
 	// creates/shoots the DetonatorProjectile
 	public void shootEMP() {
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 			
 		empProjectiles.add(new EMPProjectile(getCenterX(), getCenterY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, c, getDmg(), 
@@ -68,20 +81,12 @@ public class EMPPiece extends GamePiece{
 	}
 	
 	public void updateIsAttacking() {
-		isAttacking = false;
-		if(attackDelayTimer.isRunning()) {
-			isAttacking = true;
-			return;
-		}
-		for(EMPProjectile curEMPP : empProjectiles) {
-			if(!curEMPP.hasHitTarget()) {
-				isAttacking = true;
-				return;
-			}
-		}
+
 	}
 
 	public void updateAttack() { 
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		for(int i = 0; i < empProjectiles.size(); i++) { 
 			EMPProjectile curEMPP = empProjectiles.get(i);
 			curEMPP.update();

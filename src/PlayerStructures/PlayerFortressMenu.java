@@ -30,7 +30,6 @@ public class PlayerFortressMenu {
 		for(int i = 0;i<recruitGPSectorButtons.length;i++) {
 			recruitGPSectorButtons[i] = new RecruitGPSectorButton(StagePanel.w/40+StagePanel.w/2/3*i, StagePanel.w/40 * 3, StagePanel.w/2/3, StagePanel.w/20, strs[i], new Color(20,20,20), colors[i], StagePanel.w/48,playerFortress);
 		}
-		
 		activeRecruitGPSectorButton = recruitGPSectorButtons[0];
 		activeRecruitGPSectorButton.setActive(true);;
 	}
@@ -64,23 +63,14 @@ public class PlayerFortressMenu {
 	}
 	
 	public void update() {
-		updatePos(StagePanel.camera.getPos());
-		exitButton.updateHover(StagePanel.mousePos);
+		exitButton.updateHover(StagePanel.mousePosUntranslated);
 		for(RecruitGPInfoPanel curRGPIP : activeRecruitGPSectorButton.getRecruitGamePieceInfoPanels()) {
 			curRGPIP.update();
 		}
 		for(RecruitGPSectorButton curRGPSB : recruitGPSectorButtons) {
-			curRGPSB.updateHover(StagePanel.mousePos);
-			curRGPSB.updatePos(StagePanel.camera.getPos());
+			curRGPSB.updateHover(StagePanel.mousePosUntranslated);
 			curRGPSB.updateParticles();
 		}
-	}
-	
-	private void updatePos(Point cameraPos) {
-		rect.x = -cameraPos.x;
-		rect.y = -cameraPos.y;
-		
-		exitButton.updatePos(cameraPos);
 	}
 	
 	public void tryPresssButton() {

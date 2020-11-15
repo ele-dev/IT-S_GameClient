@@ -37,7 +37,7 @@ public class RecruitGPInfoPanel{
 	
 	private String gamePieceName;
 	private float gamePieceDamage;
-	
+	private boolean gamePieceNeededLOS;
 	// GamePieceBase related
 	private byte gamePieceBaseType;
 	private float gamePieceHealth,gamePieceShield;
@@ -93,38 +93,47 @@ public class RecruitGPInfoPanel{
 		case "Gunner":
 			gamePieceDamage = Commons.dmgGunner;
 			gamePieceBaseType = Commons.baseTypeGunner;
+			gamePieceNeededLOS = Commons.neededLOSGunner;
 			break;
 		case "Shotgun":
 			gamePieceDamage = Commons.dmgShotgun;
 			gamePieceBaseType = Commons.baseTypeShotgun;
+			gamePieceNeededLOS = Commons.neededLOSShotgun;
 			break;
 		case "Sniper":
 			gamePieceDamage = Commons.dmgSniper;
 			gamePieceBaseType = Commons.baseTypeSniper;
+			gamePieceNeededLOS = Commons.neededLOSSniper;
 			break;
 		case "Detonator":
 			gamePieceDamage = Commons.dmgDetonator;
 			gamePieceBaseType = Commons.baseTypeDetonator;
+			gamePieceNeededLOS = Commons.neededLOSDetonator;
 			break;
 		case "FlameThrower":
 			gamePieceDamage = Commons.dmgFlameThrower;
 			gamePieceBaseType = Commons.baseTypeFlameThrower;
+			gamePieceNeededLOS = Commons.neededLOSFlameThrower;
 			break;
 		case "RocketLauncher":
 			gamePieceDamage = Commons.dmgRocketLauncher;
 			gamePieceBaseType = Commons.baseTypeRocketLauncher;
+			gamePieceNeededLOS = Commons.neededLOSRocketLauncher;
 			break;
 		case "EMP":
 			gamePieceDamage = Commons.dmgEMP;
 			gamePieceBaseType = Commons.baseTypeEMP;
+			gamePieceNeededLOS = Commons.neededLOSEMP;
 			break;
 		case "RapidElectro":
 			gamePieceDamage = Commons.dmgRapidElectro;
 			gamePieceBaseType = Commons.baseTypeRapidElectro;
+			gamePieceNeededLOS = Commons.neededLOSRapidElectro;
 			break;
 		case "Tazer":
 			gamePieceDamage = Commons.dmgTazer;
 			gamePieceBaseType = Commons.baseTypeTazer;
+			gamePieceNeededLOS = Commons.neededLOSTazer;
 			break;
 		default:
 			break;
@@ -214,18 +223,11 @@ public class RecruitGPInfoPanel{
 	}
 	
 	public void update() {
-		updatePos(StagePanel.camera.getPos());
-		updateHover(StagePanel.mousePos);
-		rectruitButton.updatePos(StagePanel.camera.getPos());
+		updateHover(StagePanel.mousePosUntranslated);
 		if(playerFortress.getCoinAmount() >= gamePieceCost) {
-			rectruitButton.updateHover(StagePanel.mousePos);
+			rectruitButton.updateHover(StagePanel.mousePosUntranslated);
 		}
 		rectruitButton.setActive(playerFortress.getCoinAmount() >= gamePieceCost);
-	}
-	
-	public void updatePos(Point cameraPos) {
-		rect.x = startx-cameraPos.x;
-		rect.y = starty-cameraPos.y;
 	}
 	
 	public void drawGamePieceInfo(Graphics2D g2d) {
@@ -257,9 +259,9 @@ public class RecruitGPInfoPanel{
 			g2d.drawString(strValues[i], x+border+textWidth, y+border+textHeight*(i+1));
 		}
 		
-		String strs0[] = {"Health: ","Shield: "};
-		String strValues0[] = {(gamePieceHealth+""),(gamePieceShield+"")};
-		Color colors0[] = {Commons.cHealth,Commons.cShield};
+		String strs0[] = {"Health: ","Shield: ",(gamePieceNeededLOS?"LOS needed":"no LOS needed")};
+		String strValues0[] = {(gamePieceHealth+""),(gamePieceShield+""),""};
+		Color colors0[] = {Commons.cHealth,Commons.cShield,Commons.cAttack};
 		
 		for(byte i = 0;i<strs0.length;i++) {
 			String str = strs0[i];

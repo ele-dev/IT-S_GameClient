@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
@@ -23,7 +24,7 @@ public class FlamethrowerPiece extends GamePiece {
 	double spreadAngle = 20;
 	
 	public FlamethrowerPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,Commons.baseTypeFlameThrower);
+		super(isRed, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,Commons.baseTypeFlameThrower,Commons.neededLOSFlameThrower);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -44,6 +45,11 @@ public class FlamethrowerPiece extends GamePiece {
 		burstTimer.setRepeats(false);
 	}
 	
+	@Override
+	public boolean isAttacking() {
+		return attackDelayTimer.isRunning() || flames.size()>0 || burstTimer.isRunning();
+	}
+	
 
 	public void drawAttack(Graphics2D g2d) {
 		for(FlameThrowerFlame curFTF : flames) {
@@ -55,13 +61,14 @@ public class FlamethrowerPiece extends GamePiece {
 		int dist = BoardRectangle.getDistanceBetweenBRs(myRow,myColumn, selectedRow,selectedColumn);
 		return dist <= 2;
 	}
-
 	
 	public void shootBurst() {
 		burstTimer.start();
 	}
 	
 	public void shootOnce() {
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		startedAttack = true;
 		burstCounter++;
 		if(burstCounter<burstBulletAmount) {
@@ -73,7 +80,7 @@ public class FlamethrowerPiece extends GamePiece {
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 			
-		flames.add(new FlameThrowerFlame(getCenterX(), getCenterY(), randomSize, randomSize, 
+		flames.add(new FlameThrowerFlame((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), randomSize, randomSize, 
 				(float)Math.random()+2, (float)(angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));
 		
 			
@@ -81,21 +88,7 @@ public class FlamethrowerPiece extends GamePiece {
 	}
 	// checks if the GamePiece is attacking and sets it (isAttacking = true)
 	public void updateIsAttacking() {
-		isAttacking = false;
-		if(attackDelayTimer.isRunning()) {
-			isAttacking = true;
-			return;
-		}
-		if(burstTimer.isRunning()) {
-			isAttacking = true;
-			return;
-		}
-		for(FlameThrowerFlame curFTF : flames) {
-			if(!curFTF.hasHitEnemy) {
-				isAttacking = true;
-				return;
-			}
-		} 
+
 	}
 	// damages the Target only if all flames have hit it or are faded
 	public void showWhenDmg() {
@@ -115,6 +108,8 @@ public class FlamethrowerPiece extends GamePiece {
 	
 	// updates the attack (moves flames,checks if they hit something and so forth)
 	public void updateAttack() {
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		for(int i = 0;i<flames.size();i++) {
 			FlameThrowerFlame curFTF = flames.get(i);
 			curFTF.move();

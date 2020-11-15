@@ -170,7 +170,10 @@ public class PlayerFortress extends DestructibleObject {
 	}
 	
 	public void update() {
-		fortressMenu.update();
+		if(isSelected) {
+			fortressMenu.update();
+		}
+		
 		updateHover();
 		if(goldCollectLabel != null) {
 			if(goldCollectLabel.getColor().getAlpha()>10) {

@@ -14,7 +14,10 @@ import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
+import Particles.TrailParticle;
+import Particles.WaveParticle;
 import PlayerStructures.GoldMine;
+import sun.java2d.windows.GDIBlitLoops;
 
 public class BoardRectangle {
 	public int row,column;
@@ -41,6 +44,9 @@ public class BoardRectangle {
 	
 	String[] extendedInfoStrings = new String[7];
 	
+	private static long waveCounter = 0;
+	ArrayList<WaveParticle> waveParticles = new ArrayList<WaveParticle>();
+	
 	public BoardRectangle(int row, int column,boolean isTile1,int index,boolean isHinderingTerrain) {
 		this.row = row;
 		this.column = column;
@@ -53,8 +59,9 @@ public class BoardRectangle {
 		this.index = index;
 		this.isHinderingTerrain = isHinderingTerrain;
 		
-		c = isTile1?new Color(10,10,10):new Color(200,200,200);
+		c = isTile1?new Color(5,5,5):new Color(150,150,150);
 		 
+//		waveCounter = getCenterX();
 //		spriteRotation = (byte) (Math.random()*4)* 90;
 //		ArrayList<String> spriteLinks = new ArrayList<String>();
 //		String spriteDirector = "";
@@ -103,6 +110,22 @@ public class BoardRectangle {
 	}
 	public boolean isHover() {
 		return isHover;
+	}
+	
+	public Color getColor() {
+		return c;
+	}
+	
+	public void initGap() {
+		this.isGap = true;
+		for(int i = 0;i<50;i++) {
+			int x = (int) (Math.random()*StagePanel.boardRectSize+getX());
+			int y = (int) ((Math.random())*StagePanel.boardRectSize+getCenterY());
+			int size =  (int) (Math.random() * StagePanel.boardRectSize/4+StagePanel.boardRectSize/4);
+			Color randomColor = new Color(0,(int)(50+Math.random()*100),(int)(200+Math.random()*55));
+			waveParticles.add(new WaveParticle(x, y, size, (float)(Math.random()*360), randomColor));
+		}
+		
 	}
 	
 	public ArrayList<BoardRectangle> getAdjecantBoardRectangles() {
@@ -271,16 +294,32 @@ public class BoardRectangle {
 	}
 	// draws The Rectangle depending on if it is a Possible move/attack (draws another rectangle with another color over it)
 	public void drawBoardRectangle(Graphics2D g2d) {
-		g2d.setColor(isGap?new Color(35,137,218):isHinderingTerrain?Color.MAGENTA:c);
-		g2d.fill(rect);
-			
-		if(groundSprite != null && !isGap && !isWall) {
-			groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), spriteRotation, 1);
+		g2d.setColor(isHinderingTerrain?Color.MAGENTA:c);
+		if(!isGap) {
+			g2d.fill(rect);
+			if(groundSprite != null && !isGap && !isWall) {
+				groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), spriteRotation, 1);
+			}
 		}
-		
-		g2d.setColor(new Color(0,0,0,100));
-		g2d.fill(rect);
-		
+	}
+	public void tryDrawWaveParticles(Graphics2D g2d) {
+		if(!adjecantBoardRectangles.get(0).isGap) {
+			g2d.setColor(adjecantBoardRectangles.get(0).getColor());
+			g2d.fill(rect);
+			g2d.setColor(new Color(0,0,0,100));
+			g2d.fill(rect);
+		}
+		for(WaveParticle curWP : waveParticles) {
+			curWP.setYOffset(waveFunction(curWP.getX()));
+			curWP.drawParticle(g2d);
+		}
+	}
+	
+	private static int waveFunction(float x) {
+		return	(int) (StagePanel.boardRectSize/5 * Math.sin(2*Math.PI*((waveCounter/400.0f)-(x/(StagePanel.boardRectSize*6.0f)))));
+	}
+	public static void incWaveCounter() {
+		waveCounter = waveCounter >= Integer.MAX_VALUE?0:waveCounter+1;
 	}
 	
 	public void drawState(Graphics2D g2d) {
@@ -402,7 +441,7 @@ public class BoardRectangle {
 			}
 		}
 		
-		int shiftInYLength = ctrDown&&gamePieceOnBoardRectangle == null?size/2+g2d.getFontMetrics(new Font("Arial",Font.PLAIN,size/4)).getHeight()*extendedInfoStringSplit.length:0;
+		int shiftInYLength = ctrDown&&gamePieceOnBoardRectangle == null?size/4+g2d.getFontMetrics(new Font("Arial",Font.PLAIN,size/4)).getHeight()*extendedInfoStringSplit.length:0;
 		
 		Rectangle rectLabel = new Rectangle(getCenterX()-rectWidth/2-border,getCenterY()-size-shiftInYLength,rectWidth+border*2,size/2);
 		g2d.setColor(new Color(20,20,20,250));
