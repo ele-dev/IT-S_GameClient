@@ -33,10 +33,10 @@ public class ProjectFrame extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
 		height = (int) screenSize.getHeight();
-		width = (int) 1600;
-		height = (int) width*9/16;
+//		width = (int) 1600;
+//		height = (int) width*9/16;
 		setSize(width, height);
-//		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setBoardRectangleSize();
 		
 		// Create and init the Window (JFrame)

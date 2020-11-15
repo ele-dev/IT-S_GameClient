@@ -352,13 +352,13 @@ public abstract class GamePiece {
 		
 		
 		// only Dev
-		g2d.setColor(new Color(0,0,255,200));
-		if(aimArc != null) {
-			g2d.fill(aimArc);
-		}	
-		if(StagePanel.curSelectedGP == this) {
-			drawLinesOfSight(g2d);
-		}
+//		g2d.setColor(new Color(0,0,255,200));
+//		if(aimArc != null) {
+//			g2d.fill(aimArc);
+//		}	
+//		if(StagePanel.curSelectedGP == this) {
+//			drawLinesOfSight(g2d);
+//		}
 	}
 	
 	// draws all LinesOfSight (only for devs)
