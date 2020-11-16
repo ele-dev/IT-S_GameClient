@@ -15,6 +15,7 @@ import Stage.Commons;
 import Stage.Sprite;
 import Stage.StagePanel;
 
+// Object that can be destroyed/removed from match can occupy multiple BoardRectangles
 public class DestructibleObject {
 	protected float rotation;
 	protected float health;
@@ -26,7 +27,7 @@ public class DestructibleObject {
 	
 	public DestructibleObject(BoardRectangle boardRectangle,int occupiedRows,int occupiedColumns,float maxHealth,float rotation) {
 		health = maxHealth;
-		rectHitbox = new Rectangle(boardRectangle.getX(),boardRectangle.getY(),Commons.boardRectSize*occupiedColumns,Commons.boardRectSize*occupiedRows);
+		rectHitbox = new Rectangle(boardRectangle.getX(),boardRectangle.getY(),StagePanel.boardRectSize*occupiedColumns,StagePanel.boardRectSize*occupiedRows);
 		this.rotation = rotation;
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		spriteLinks.add(Commons.pathToSpriteSource + "Environment/crate.png");
@@ -58,6 +59,7 @@ public class DestructibleObject {
 	public float getHealth() {
 		return health;
 	}
+	// checks if the targetBR is contained within the bounds of the DestructibleObject
 	public boolean containsBR(BoardRectangle targetBR) {
 		for(BoardRectangle curBR : occupiedBRs) {
 			if(curBR.equals(targetBR)) {
@@ -82,7 +84,7 @@ public class DestructibleObject {
 			g2d.rotate(Math.toRadians(-rotation));
 			g2d.translate(-rectHitbox.getCenterX(), -rectHitbox.getCenterY());
 		}
-		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), 25);
+		drawHealthValues(g2d, (int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), StagePanel.boardRectSize/4);
 	}
 	
 	protected void drawHealthValues(Graphics2D g2d,int x, int y, int fontSize) {
@@ -105,6 +107,7 @@ public class DestructibleObject {
 		g2d.drawString(str, (int)r.getCenterX()-textWidth/2, (int)r.getCenterY()+textHeight/3);
 	}
 	
+	// checks if the rect(parameter) is contained within the hitbox and creates particles if so
 	public boolean checkIntersects(Rectangle rect) {
 		if(rectHitbox.intersects(rect)) {
 			if(impactFlashCounter <-3) {
@@ -113,17 +116,16 @@ public class DestructibleObject {
 				float y = (float)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.height);
 				float angle = (float)(Math.random()*360);
 				StagePanel.particles.add(new DestructionParticle(x,y,
-						(int)(Math.random()*Commons.boardRectSize/3)+Commons.boardRectSize/6,
-						(int)(Math.random()*Commons.boardRectSize/10)+Commons.boardRectSize/8, 
+						(int)(Math.random()*StagePanel.boardRectSize/3)+StagePanel.boardRectSize/6,
+						(int)(Math.random()*StagePanel.boardRectSize/10)+StagePanel.boardRectSize/8, 
 						sprite.getRandomPixelColor(),angle, 3));
 			}
-			
 			return true;
 		}
-		
 		return false;
 	}
 	
+	// damages the DestructibleObject and destroys it if health<0
 	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
 		health -= dmg;
 		if(health <= 0) {
@@ -133,8 +135,8 @@ public class DestructibleObject {
 				float y = (float)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.height);
 				float angle = attackAngle + (float)((Math.random()-0.5)*50);
 				StagePanel.particles.add(new DestructionParticle(x,y,
-					(int)(Math.random()*Commons.boardRectSize/2)+Commons.boardRectSize/3,
-					(int)(Math.random()*Commons.boardRectSize/8)+Commons.boardRectSize/8, 
+					(int)(Math.random()*StagePanel.boardRectSize/2)+StagePanel.boardRectSize/3,
+					(int)(Math.random()*StagePanel.boardRectSize/8)+StagePanel.boardRectSize/8, 
 					sprite.getRandomPixelColor(),angle, (float)(Math.random()*4+dmg)));
 			}
 		}

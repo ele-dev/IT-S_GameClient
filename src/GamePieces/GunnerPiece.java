@@ -1,6 +1,8 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,7 +29,7 @@ public class GunnerPiece extends GamePiece {
 	double spreadAngle = 10;
 	
 	public GunnerPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameGunner, boardRect, Commons.dmgGunner, Commons.baseTypeGunner);
+		super(isRed, Commons.nameGunner, boardRect, Commons.dmgGunner, Commons.baseTypeGunner,Commons.neededLOSGunner);
 		attackDelayTimer = new Timer(1500, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -49,10 +51,12 @@ public class GunnerPiece extends GamePiece {
 		
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		spriteLinks.add(Commons.pathToSpriteSource+"Turrets/Minigun.png");
-		spriteTurret = new Sprite(spriteLinks, Commons.boardRectSize, Commons.boardRectSize, 0);
-		
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2, boardRect.getCenterY()-Commons.boardRectSize/2,
-				Commons.boardRectSize, Commons.boardRectSize, 0, 0, Arc2D.PIE);
+		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize, StagePanel.boardRectSize, 0);
+	}
+	
+	@Override
+	public boolean isAttacking() {
+		return attackDelayTimer.isRunning() || bullets.size()>0;
 	}
 	
 	//draws every bullet in the bullets Array
@@ -64,8 +68,8 @@ public class GunnerPiece extends GamePiece {
 
 	// updates the attack (moves bullets,checks if they hit something and so forth)
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2, boardRect.getCenterY()-Commons.boardRectSize/2,
-				Commons.boardRectSize, Commons.boardRectSize, 0, -angle-90, Arc2D.PIE);
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		for(int i = 0; i < bullets.size(); i++) {
 			Bullet curB = bullets.get(i);
 			curB.move();
@@ -81,19 +85,10 @@ public class GunnerPiece extends GamePiece {
 	}
 
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
-	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		
-		if(selectedRow < boardRect.row+3 && selectedRow > boardRect.row-3 && selectedColumn < boardRect.column+3 && selectedColumn > boardRect.column-3) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall) {
-					
-					if(checkIfBoardRectangleInSight(curBR)) {
-						return true; 
-					}
-				}
-			} 
-		}
-		return false;
+	@Override
+	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
+		Rectangle rect = new Rectangle(myColumn-2,myRow-2,5,5);
+		return rect.contains(new Point(selectedColumn,selectedRow));
 	}
 	
 	// starts burstTimer
@@ -104,6 +99,8 @@ public class GunnerPiece extends GamePiece {
 	// shoots one shot every timer the burstTimer activates and starts the burstTimer again if it still has shots left to shoot
 	// shots are counted by burstCounter (stops shooting if burstCounter >= burstBulletAmount)
 	public void shootOnce() {
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		StagePanel.applyScreenShake(2, 10);
 		burstCounter++;
 		if(burstCounter < burstBulletAmount) {
@@ -115,20 +112,14 @@ public class GunnerPiece extends GamePiece {
 		
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 			
-		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, getIsRed(), 16, 
+		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/14, StagePanel.boardRectSize/6, isRed(), 16, 
 				(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));	
-		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(), 8, 12, (float)angle -90, c, (float)(Math.random()*2+3)));
+		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(), StagePanel.boardRectSize/12, StagePanel.boardRectSize/6, (float)angle -90, c, (float)(Math.random()*2+3)));
 	}
 	
 	// updates the isAttacking state
 	public void updateIsAttacking() {
-		isAttacking = false;
-		if(attackDelayTimer.isRunning()) {
-			isAttacking = true;
-			return;
-		}
-		if(burstCounter > 0 || bullets.size() > 0) {
-			isAttacking = true;
+		if (isAttacking()) {
 			return;
 		}
 		if(startedAttack) {
@@ -136,7 +127,7 @@ public class GunnerPiece extends GamePiece {
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
 			}else { 
-				targetDestructibleObject.getDamaged(getDmg(), angle, getIsRed());
+				targetDestructibleObject.getDamaged(getDmg(), angle, isRed());
 				targetDestructibleObject = null;
 			}
 			

@@ -1,6 +1,8 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +23,7 @@ public class ShotgunPiece extends GamePiece {
 	private byte bulletAmount = 10;
 
 	public ShotgunPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameShotgun, boardRect, Commons.dmgShotgun, Commons.baseTypeShotgun);
+		super(isRed, Commons.nameShotgun, boardRect, Commons.dmgShotgun, Commons.baseTypeShotgun,Commons.neededLOSShotgun);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -30,6 +32,10 @@ public class ShotgunPiece extends GamePiece {
 			}
 		});
 		attackDelayTimer.setRepeats(false);
+	}
+	@Override
+	public boolean isAttacking() {
+		return attackDelayTimer.isRunning() || bullets.size()>0;
 	}
 
 	@Override
@@ -40,21 +46,16 @@ public class ShotgunPiece extends GamePiece {
 	}
 
 	@Override
-	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(selectedRow < boardRect.row+3 && selectedRow > boardRect.row-3 && selectedColumn < boardRect.column+3 && selectedColumn > boardRect.column-3) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall && checkIfBoardRectangleInSight(curBR)) {
-					return true;
-				}
-			}
-		}
-		return false;
+	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
+		Rectangle rect1 = new Rectangle(myColumn-2,myRow-1,5,3);
+		Rectangle rect2 = new Rectangle(myColumn-1,myRow-2,3,5);
+		return rect1.contains(new Point(selectedColumn,selectedRow)) || rect2.contains(new Point(selectedColumn,selectedRow));
 	}
 
 	@Override
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2,boardRect.getCenterY()-Commons.boardRectSize/2,
-				Commons.boardRectSize,Commons.boardRectSize,0,-angle-90,Arc2D.PIE);
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		for(int i = 0;i<bullets.size();i++) {
 			Bullet curB = bullets.get(i);
 			curB.move();
@@ -68,26 +69,22 @@ public class ShotgunPiece extends GamePiece {
 	}
 	
 	public void shootOnce() {
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		startedAttack = true;
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 		for(int i = 0;i<bulletAmount;i++) {
-			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 6, 20, getIsRed(),16, 
+			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/14, StagePanel.boardRectSize/4, isRed(),16, 
 					(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));	
 		}
-		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),8,20, (float)angle -90, c,(float)(Math.random()*3+2)));
+		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),StagePanel.boardRectSize/14,StagePanel.boardRectSize/4, (float)angle -90, c,(float)(Math.random()*3+2)));
 		StagePanel.applyScreenShake(5, 10);
 	}
 	
 	// updates the isAttacking state
 	public void updateIsAttacking() {
-		isAttacking = false;
-		if(attackDelayTimer.isRunning()) {
-			isAttacking = true;
-			return;
-		}
-		if(bullets.size() >0) {
-			isAttacking = true;
+		if(isAttacking()) {
 			return;
 		}
 		
@@ -96,7 +93,7 @@ public class ShotgunPiece extends GamePiece {
 				targetGamePiece.gamePieceBase.getDamaged(getDmg());
 				targetGamePiece = null;
 			}else { 
-				targetDestructibleObject.getDamaged(getDmg(),angle,getIsRed());
+				targetDestructibleObject.getDamaged(getDmg(),angle,isRed());
 				targetDestructibleObject = null;
 			}
 			startedAttack = false;

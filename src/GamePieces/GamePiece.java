@@ -27,12 +27,15 @@ import Stage.StagePanel;
 public abstract class GamePiece {
 	
 	public BoardRectangle boardRect;
+	protected int row;
+	protected int column;
 	private Rectangle rectShowTurret;
 	protected Color c;
 	private String name;
 	protected float angle,angleDesired; 
 	public boolean isDead = false;
 	private float dmg;
+	protected boolean lineOfSightNeeded = false;
 	
 	private boolean isRed;
 	protected boolean hasExecutedMove = true;  
@@ -44,9 +47,9 @@ public abstract class GamePiece {
 	
 	protected Arc2D aimArc;
 	
-	public boolean isMoving,isAttacking;
+	public boolean isMoving;
 	public ActionSelectionPanel actionSelectionPanel;
-	private ArrayList<Line2D> sightLines = new ArrayList<Line2D>();
+	private ArrayList<Line2D> linesOfSight = new ArrayList<Line2D>();
 	
 	private int rotationDelay = 4;
 	protected Sprite spriteTurret;
@@ -58,12 +61,16 @@ public abstract class GamePiece {
 	private AStarPathFinder pathFinder;
 	public GamePieceBase gamePieceBase;
 	
-	public GamePiece(boolean isRed, String name, BoardRectangle boardRect, float dmg, int baseTypeIndex) {
+	public GamePiece(boolean isRed, String name, BoardRectangle boardRect, float dmg, int baseTypeIndex,boolean lineOfSightNeeded) {
 		if(isRed) {
 			this.c = Commons.cRed;
 		}else {
 			this.c = Commons.cBlue;
 		}
+		this.lineOfSightNeeded = lineOfSightNeeded;
+		this.row = boardRect.row;
+		this.column = boardRect.column;
+		
 		this.isRed = isRed;
 		this.boardRect = boardRect;
 		rectShowTurret = new Rectangle((int)(-boardRect.getSize()*0.2),(int)(-boardRect.getSize()*0.2),(int)(boardRect.getSize()*0.4),(int)(boardRect.getSize()*0.4));
@@ -73,65 +80,59 @@ public abstract class GamePiece {
 		this.name = name;
 		this.dmg = dmg;
 		this.actionSelectionPanel = new ActionSelectionPanel(this);
+		
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, 0, Arc2D.PIE);
 	}
 	
 	public String getName() {
 		return name;
 	}
-	
 	public boolean getIsDead() {
 		return isDead;
 	}
-	
-	public boolean getIsRed() {
+	public boolean isRed() {
 		return isRed;
 	}
-	
 	public Rectangle getRectHitbox() {
 		return gamePieceBase.getRectHitbox();
 	}
-
 	public float getDmg() {
 		return dmg;
 	}
-	
 	public boolean getHasExecutedAttack() {
 		return hasExecutedAttack;
 	}
-
 	public boolean getHasExecutedMove() {
 		return hasExecutedMove;
 	}
-	
 	public void setHasExecutedMove(boolean hasExecutedMove) {
 		this.hasExecutedMove = hasExecutedMove;
 	}
-
 	public int getCenterX() {
 		return (int) getRectHitbox().getCenterX();
 	}
 	public int getCenterY() {
 		return (int) getRectHitbox().getCenterY();
 	}
-	
 	public Point getPos() {
 		return new Point(getCenterX(),getCenterY());
 	}
-	
 	public Color getColor() {
 		return c;
 	} 
 	
-	public boolean isPerformingAction() {
-		return isAttacking || isMoving;
-	}
+	public abstract boolean isAttacking();
 	
+	public boolean isPerformingAction() {
+		return isAttacking() || isMoving;
+	}
 	// initializes the Pathfinding Grid (!!Does not start the Pathfinder!!)
 	public void initPathFinder() {
 		ArrayList<PathCell> pathCells = new ArrayList<PathCell>();
 		for(int i = 0;i<StagePanel.boardRectangles.size();i++) {
 			BoardRectangle curBR  = StagePanel.boardRectangles.get(i);
-			pathCells.add(new PathCell(curBR.getX(), curBR.getY(), Commons.boardRectSize, curBR.row, curBR.column,i));
+			pathCells.add(new PathCell(curBR.getX(), curBR.getY(), StagePanel.boardRectSize, curBR.row, curBR.column,i));
 				
 			if(curBR.isWall || curBR.isDestructibleObject() || curBR.isGoldMine() || curBR.isGap) {
 				pathCells.get(i).setIsWall(true);
@@ -228,8 +229,8 @@ public abstract class GamePiece {
 		if(gamePieceBase.getHealth() <= 0 && !getIsDead()) {
 			StagePanel.particles.add(new Explosion(getCenterX(), getCenterY(), 1.2f));
 			for(int i = 0; i < 3; i++) {
-				StagePanel.particles.add(new Explosion(getCenterX()+(int)((Math.random()-0.5)*Commons.boardRectSize/2),
-						getCenterY()+(int)((Math.random()-0.5)*Commons.boardRectSize/2), 1f));
+				StagePanel.particles.add(new Explosion(getCenterX()+(int)((Math.random()-0.5)*StagePanel.boardRectSize/2),
+						getCenterY()+(int)((Math.random()-0.5)*StagePanel.boardRectSize/2), 1f));
 			}
 			isDead = true;
 			StagePanel.impactStop();
@@ -238,9 +239,8 @@ public abstract class GamePiece {
 	
 	// sets each BoardRectangle to being a possible attackPosition if it is(changes color accordingly)
 	public void showPossibleAttacks() {
-		sightLines.clear(); 
 		for(BoardRectangle curBR : StagePanel.boardRectangles) {
-			if(checkAttacks(curBR.row, curBR.column) && !curBR.isWall) {
+			if(checkAttacks(curBR.row, curBR.column,row,column) && checkInLineOfSightIfNecessary(curBR.row, curBR.column) && !curBR.isWall) {
 				boolean success = true;
 				for(GamePiece curGP : StagePanel.gamePieces) {
 					if(curGP.boardRect == curBR && !checkIfEnemies(curGP)) {
@@ -254,33 +254,20 @@ public abstract class GamePiece {
 			}
 		}
 	} 
-	
-	// returns true if the BoardRectangle is in sight of the GamePiece and return false if it is for example behind a wall
-	public boolean checkIfBoardRectangleInSight(BoardRectangle targetBoardRectangle) {
-		Line2D lineOfSight = new Line2D.Double(boardRect.getCenterX(),boardRect.getCenterY(),targetBoardRectangle.getCenterX(),targetBoardRectangle.getCenterY());	
-		sightLines.add(lineOfSight);
-				
-		for(BoardRectangle curBR : StagePanel.boardRectangles) {
-			Rectangle rectWall = new Rectangle(curBR.rect.x +10 , curBR.rect.y +10,curBR.rect.width-20,curBR.rect.height-20);
-			if(lineOfSight.intersects(rectWall) && (curBR.isWall) && (!targetBoardRectangle.isWall)) {
-				return false;
-			}
-		} 
-		return true;
-	}
 	// draws the attack differently for each GamePiece
 	public abstract void drawAttack(Graphics2D g2d);
-	// draws all LinesOfSight (only for devs)
-	public void drawLinesOfSight(Graphics2D g2d) {
-		for(Line2D line : sightLines) {
-			g2d.setColor(new Color(0,0,255,200));
-			g2d.draw(line);
-		}
-	}
 	
 	// checks if the PositionParameter is a valid position to attack and returns true if it is
 	// is abstract because every GamePiece has a different attack pattern
-	public abstract boolean checkAttacks(int selectedRow, int selectedColumn);
+	public abstract boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn);
+	
+	public boolean checkInLineOfSightIfNecessary(int selectedRow, int selectedColumn) {
+		if(lineOfSightNeeded) {
+			return checkIfInSight(selectedRow, selectedColumn);
+		}else {
+			return true;
+		}
+	}
 	
 	// updates angle to face toward enemy and starts the attack (starts attackDelayTimer)
 	public void startAttack(BoardRectangle targetBoardRectangle) {
@@ -323,7 +310,6 @@ public abstract class GamePiece {
 	}
 	
 	protected void startAttackDelay() {
-		isAttacking = true;
 		attackDelayTimer.start();
 		hasExecutedAttack = true;
 		hasExecutedMove = true;
@@ -363,6 +349,61 @@ public abstract class GamePiece {
 			int textWidth = metrics.stringWidth(text);
 			g2d.drawString(text, cx - textWidth/2, cy + textHeight/3);
 		}
+		
+		
+		// only Dev
+//		g2d.setColor(new Color(0,0,255,200));
+//		if(aimArc != null) {
+//			g2d.fill(aimArc);
+//		}	
+//		if(StagePanel.curSelectedGP == this) {
+//			drawLinesOfSight(g2d);
+//		}
+	}
+	
+	// draws all LinesOfSight (only for devs)
+	public void drawLinesOfSight(Graphics2D g2d) {
+		g2d.setColor(new Color(0,0,255,200));
+		for(Line2D line : linesOfSight) {
+			g2d.draw(line);
+		}
+	}
+	
+	public void updateLinesOfSight() {
+		linesOfSight.clear();
+		for(BoardRectangle curBR : StagePanel.boardRectangles) {
+			if(checkAttacks(curBR.row, curBR.column, row, column) && !curBR.isWall) {
+				Line2D sightLine = new Line2D.Double(getCenterX(),getCenterY(),curBR.getCenterX(),curBR.getCenterY());
+				boolean noIntersection = true;
+				for(BoardRectangle curBR1 : StagePanel.boardRectangles) {
+					if(curBR1.isWall) {
+						Rectangle rectWall = new Rectangle(curBR1.rect.x +10 , curBR1.rect.y +10,curBR1.rect.width-20,curBR1.rect.height-20);
+						if(sightLine.intersects(rectWall)) {
+							noIntersection = false;
+						}
+					}
+				} 
+				if(noIntersection) {
+					linesOfSight.add(sightLine);
+				}
+			}
+		}
+	}
+	
+	// returns true if the BoardRectangle is in sight of the GamePiece and return false if it is, for example behind a wall
+	public boolean checkIfInSight(int targetRow, int targetColumn) {
+		BoardRectangle targetBoardRectangle = null;
+		for(BoardRectangle curBR : StagePanel.boardRectangles) {
+			if(curBR.row == targetRow && curBR.column == targetColumn) {
+				targetBoardRectangle = curBR;
+			}
+		}
+		for(Line2D curLOS : linesOfSight) {
+			if(targetBoardRectangle.rect.contains(curLOS.getP2())) {
+				return true;
+			}
+		} 
+		return false;
 	}
 	
 	public void drawPointer(Graphics2D g2d) {
@@ -370,7 +411,7 @@ public abstract class GamePiece {
 		
 		int x = boardRect.getX();
 		int y = boardRect.getY();
-		int s = boardRect.getSize();
+		int s = StagePanel.boardRectSize;
 		int soI = (int)boardRect.so;
 		g2d.setStroke(new BasicStroke(6));
 		g2d.drawLine(x-soI/2, y-soI/2, x+s/4-soI/2, y-soI/2);
@@ -383,11 +424,8 @@ public abstract class GamePiece {
 		g2d.drawLine(x+s+soI/2, y+s+soI/2, x+s+soI/2, y+s*3/4+soI/2);	
 	}
 	// updates the MovesPanels position so it follows the camera (also updates the isHover boolean)
-	public void updateActionSelectionPanelPos(Point CameraPos,Point mousePos) {
-		actionSelectionPanel.updatePos(CameraPos);
-		if(mousePos != null) {
-			actionSelectionPanel.updateHover(mousePos);
-		}
+	public void updateActionSelectionPanelHover() {
+		actionSelectionPanel.updateHover(StagePanel.mousePosUntranslated);
 	}
 	
 	// updates the shot angle towards the TargetEnemy/TargetGamepice

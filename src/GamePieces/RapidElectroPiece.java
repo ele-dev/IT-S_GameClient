@@ -3,6 +3,7 @@ package GamePieces;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,21 +29,24 @@ public class RapidElectroPiece extends GamePiece {
 	private ArrayList<GamePiece> targetGamePieces = new ArrayList<GamePiece>();
 
 	public RapidElectroPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, "RE", boardRect, 2, 1);
+		super(isRed, Commons.nameRapidElectro, boardRect, Commons.dmgRapidElectro, Commons.baseTypeRapidElectro,Commons.neededLOSRapidElectro);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				angle = angleDesired;
-				
 				burstAmount = targetGamePieces.size() > 0?(byte) (targetGamePieces.size()):1;
-				
 			}
 		});
 		attackDelayTimer.setRepeats(false);
 	}
+	
+	@Override
+	public boolean isAttacking() {
+		return attackDelayTimer.isRunning() || burstAmount > 0;
+	}
+	
 	@Override
 	protected void startAttackDelay() {
-		isAttacking = true;
 		attackDelayTimer.start();
 		hasExecutedAttack = true;
 		hasExecutedMove = true;
@@ -51,7 +55,7 @@ public class RapidElectroPiece extends GamePiece {
 			
 			ArrayList<BoardRectangle> possibleBoardRectangles = new ArrayList<BoardRectangle>();
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(checkAttacks(curBR.row,curBR.column)) {
+				if(checkAttacks(curBR.row,curBR.column,row,column)) {
 					possibleBoardRectangles.add(curBR);
 				}
 			}
@@ -60,7 +64,6 @@ public class RapidElectroPiece extends GamePiece {
 					targetGamePieces.add(curGP);
 				}
 			}
-		
 			targetGamePiece = targetGamePieces.get(targetGamePieces.size()-1);
 		}
 		
@@ -72,21 +75,15 @@ public class RapidElectroPiece extends GamePiece {
 	}
 
 	@Override
-	public boolean checkAttacks(int selectedRow, int selectedColumn) {
-		if(selectedRow < boardRect.row+3 && selectedRow > boardRect.row-3 && selectedColumn < boardRect.column+3 && selectedColumn > boardRect.column-3) {
-			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(curBR.row == selectedRow && curBR.column == selectedColumn && !curBR.isWall && checkIfBoardRectangleInSight(curBR)) {
-					return true;
-				}
-			}
-		}
-		return false;
+	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
+		Rectangle rect = new Rectangle(myColumn-2,myRow-2,5,5);
+		return rect.contains(new Point(selectedColumn,selectedRow)) && selectedRow != myRow && selectedColumn != myColumn;
 	}
 
 	@Override
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-Commons.boardRectSize/2,boardRect.getCenterY()-Commons.boardRectSize/2,
-				Commons.boardRectSize,Commons.boardRectSize,0,-angle-90,Arc2D.PIE);
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		if(burstAmount > 0) {
 			burstCounter--;
 			if(burstCounter <= 0) {
@@ -113,11 +110,13 @@ public class RapidElectroPiece extends GamePiece {
 	}
 	
 	public void shootOnce() {
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		startedAttack = true;
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 		
-		bullet = new Bullet(getCenterX(), getCenterY(), 10, 20, getIsRed(), 2, angle, shape, targetDestructibleObject);
+		bullet = new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), 10, 20, isRed(), 2, angle, shape, targetDestructibleObject);
 		
 		ArrayList<Point> points = new ArrayList<Point>();
 		points.add(new Point((int)bullet.getX(), (int)bullet.getY()));
@@ -130,14 +129,11 @@ public class RapidElectroPiece extends GamePiece {
 				Color cTP =  new Color(58, 100+(int)(Math.random()*130), 140+(int)(Math.random()*30));
 				int x = (int)(bullet.getX() + (Math.random()-0.5)*10);
 				int y = (int)(bullet.getY() + (Math.random()-0.5)*10);
-				StagePanel.particles.add(new TrailParticle(x, y, (int)(Math.random()*5+6), 
+				StagePanel.particles.add(new TrailParticle(x, y, (int)(Math.random()*StagePanel.boardRectSize/16+StagePanel.boardRectSize/16), 
 						(int)(Math.random()*360), cTP, (float)(Math.random()*0.1), 3,0.1f));
-				
 				if(i % 10 == 0) {
-					points.add(new Point((int)(bullet.getX() + (Math.random()-0.5)*40), (int)(bullet.getY() + (Math.random()-0.5)*40)));
+					points.add(new Point((int)(bullet.getX() + (Math.random()-0.5)*StagePanel.boardRectSize/2), (int)(bullet.getY() + (Math.random()-0.5)*StagePanel.boardRectSize/2)));
 				}
-				
-			
 			}
 			
 			bullet.move();
@@ -149,7 +145,7 @@ public class RapidElectroPiece extends GamePiece {
 		
 		bullet = null;
 		if(targetDestructibleObject != null) {
-			targetDestructibleObject.getDamaged(getDmg(),angle,getIsRed());
+			targetDestructibleObject.getDamaged(getDmg(),angle,isRed());
 			targetDestructibleObject = null;
 		}else { 
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());
@@ -160,11 +156,6 @@ public class RapidElectroPiece extends GamePiece {
 	
 	// updates the isAttacking state
 	public void updateIsAttacking() {
-		isAttacking = false;
-		if(attackDelayTimer.isRunning()) {
-			isAttacking = true;
-			return;
-		}
 	}
 
 }

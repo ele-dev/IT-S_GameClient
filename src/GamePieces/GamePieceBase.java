@@ -23,8 +23,8 @@ import Stage.ValueLabel;
 public class GamePieceBase {
 	private float x,y;
 	private Rectangle rectHitbox;
-	private float angle,angleDesired,v = 2f;
-	private float rotationDelay = 2.5f;
+	private float angle,angleDesired,v;
+	private float rotationDelay;
 	private Sprite spriteBase;
 	private float health,maxHealth,shield,maxShield;
 	private int movementRange;
@@ -44,6 +44,8 @@ public class GamePieceBase {
 		this.y = y;
 		this.rectHitbox = new Rectangle((int)x-w/2,(int)y-h/2,w,h);
 		this.parentGP = parentGP;
+		this.v = StagePanel.boardRectSize/40.0f;
+		this.rotationDelay = StagePanel.boardRectSize/30.0f;
 
 		initBaseType(baseTypeIndex);
 		initSprites(); 
@@ -79,14 +81,14 @@ public class GamePieceBase {
 	
 	private void initSprites() {
 		ArrayList<String> spriteLinks = new ArrayList<String>();
-		if(parentGP.getIsRed()) {
+		if(parentGP.isRed()) {
 			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseE0.png");
 			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseE1.png");
 		}else {
 			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseNE0.png");
 			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseNE1.png");
 		}
-		spriteBase = new Sprite(spriteLinks, Commons.boardRectSize,Commons.boardRectSize, 10);
+		spriteBase = new Sprite(spriteLinks, StagePanel.boardRectSize,StagePanel.boardRectSize, 10);
 	}
 	
 	// getters
@@ -128,8 +130,8 @@ public class GamePieceBase {
 	// draws a HealthBar and a String with The HealthAmount
 	public void drawHealth(Graphics2D g2d) {	
 		g2d.setColor(new Color(0,0,0,200));
-		int w = parentGP.boardRect.getSize();
-		int h = 15;
+		int w = StagePanel.boardRectSize;
+		int h = StagePanel.boardRectSize/6;
 		int x = (int)getRectHitbox().getCenterX() - w/2;
 		int y = (int)getRectHitbox().getCenterY() - parentGP.boardRect.getSize()/2;
 		
@@ -147,7 +149,7 @@ public class GamePieceBase {
 		g2d.draw(maxHealthShieldRect);
 		
 		if(parentGP.boardRect == StagePanel.curHoverBR || parentGP == StagePanel.curSelectedGP) {
-			drawHealthValues(g2d, x, y,15);
+			drawHealthValues(g2d, x, y,StagePanel.boardRectSize/5);
 		}
 	}
 	
@@ -225,12 +227,12 @@ public class GamePieceBase {
 	public void regenShield() {
 		if(shield + Commons.shieldRegen >= maxShield) {
 			if(shield < maxShield) {
-				StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
+				StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*StagePanel.boardRectSize), y+(int)((Math.random()-0.5)*StagePanel.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
 			}
 			shield = maxShield;
 		}else {
 			shield += Commons.shieldRegen;
-			StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*Commons.boardRectSize), y+(int)((Math.random()-0.5)*Commons.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
+			StagePanel.valueLabels.add(new ValueLabel(x+(int)((Math.random()-0.5)*StagePanel.boardRectSize), y+(int)((Math.random()-0.5)*StagePanel.boardRectSize), "+" + Commons.shieldRegen+"", Commons.cShield));
 		}
 	}
 	
@@ -262,6 +264,8 @@ public class GamePieceBase {
 				pathBoardRectangles.clear();
 				tAutoDirectionCorrection.stop();
 				StagePanel.tryCaptureGoldMine(parentGP);
+				parentGP.row = parentGP.boardRect.row;
+				parentGP.column = parentGP.boardRect.column;
 			}
 		}
 	}
