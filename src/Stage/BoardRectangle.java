@@ -6,18 +6,13 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
-
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
-import Particles.TrailParticle;
 import Particles.WaveParticle;
 import PlayerStructures.GoldMine;
-import sun.java2d.windows.GDIBlitLoops;
 
 public class BoardRectangle {
 	public int row,column;
