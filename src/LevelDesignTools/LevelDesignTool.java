@@ -12,7 +12,6 @@ import Environment.DestructibleObject;
 import PlayerStructures.GoldMine;
 import PlayerStructures.PlayerFortress;
 import Stage.BoardRectangle;
-import Stage.Commons;
 import Stage.StagePanel;
 
 public class LevelDesignTool {
@@ -51,12 +50,12 @@ public class LevelDesignTool {
 		for(int i = 0; i < StagePanel.mapColumns; i++) {
 			String str= i+1+"";
 			textWidth = fontMetrics.stringWidth(str);
-			g2d.drawString(str, i*Commons.boardRectSize+textWidth/2, -Commons.boardRectSize/2+textHeight/3);
+			g2d.drawString(str, i*StagePanel.boardRectSize+textWidth/2, -StagePanel.boardRectSize/2+textHeight/3);
 		}
 		for(int i = 0;i<StagePanel.mapRows;i++) {
 			String str= i+1+"";
 			textWidth = fontMetrics.stringWidth(str);
-			g2d.drawString(str, textWidth/2-Commons.boardRectSize, i*Commons.boardRectSize+Commons.boardRectSize/2+textHeight/3);
+			g2d.drawString(str, textWidth/2-StagePanel.boardRectSize, i*StagePanel.boardRectSize+StagePanel.boardRectSize/2+textHeight/3);
 		}
 	}
 	

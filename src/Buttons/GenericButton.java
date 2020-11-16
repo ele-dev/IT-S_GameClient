@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import Stage.StagePanel;
+
 public class GenericButton {
 	protected String name;
 	protected int startx,starty;
@@ -57,7 +59,7 @@ public class GenericButton {
 			g2d.setColor(cInactive);
 		}
 		
-		g2d.setStroke(new BasicStroke(8));
+		g2d.setStroke(new BasicStroke(StagePanel.w/160));
 		g2d.draw(rect);
 		
 		g2d.setFont(f);

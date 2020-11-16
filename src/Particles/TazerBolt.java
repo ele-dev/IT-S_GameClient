@@ -9,12 +9,11 @@ import java.util.ArrayList;
 public class TazerBolt extends Particle{
 
 	private ArrayList<Point> points;
-	private float alpha;
+	private float alpha = 255;
 
 	public TazerBolt(ArrayList<Point> points) {
 		super(0, 0, 0, 0, new Color(200, 200+(int)(Math.random()*50), 200+(int)(Math.random()*50),255), 0, 3);
 		this.points = points;
-		this.alpha = c.getAlpha();
 	}
 
 	@Override

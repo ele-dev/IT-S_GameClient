@@ -7,6 +7,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+import Stage.Commons;
 import Stage.ProjectFrame;
 import Stage.StagePanel;
 import menueGui.GameState;
@@ -16,16 +17,20 @@ public class WinScreen {
 	// winnerIndex = 1 (red is winner)
 	// winnerIndex = 2 (blue is winner)
 	private byte winnerIndex;
-	private int w,h;
 	
 	// Gui elements in the Winscreen
 	private GenericButton leaveButton;
-	
-	public WinScreen(byte winnerIndex, int w, int h) {
+	private Font font;
+	private Rectangle rect;
+	int centerX,centerY;
+	public WinScreen(byte winnerIndex) {
 		this.winnerIndex = winnerIndex;
-		this.w = w;
-		this.h = h;
-		leaveButton = new GenericButton(w/2-160, h*3/4, 320, 100, "Leave Game", new Color(20,20,20), new Color(255,0,50), 50);
+		font = new Font("Arial",Font.BOLD,StagePanel.w/15);
+		rect = new Rectangle(StagePanel.w/16,StagePanel.h/16,StagePanel.w-StagePanel.w/8,StagePanel.h-StagePanel.h/8);
+		centerX = (int)rect.getCenterX();
+		centerY = (int)rect.getCenterY();
+		leaveButton = new GenericButton(centerX-StagePanel.w/8, centerY-StagePanel.w/16+rect.width/4, StagePanel.w/4, StagePanel.w/12, "Leave Game", new Color(20,20,20), new Color(255,0,50), StagePanel.w/24);
+		
 	}
 	
 	public GenericButton getLeaveButton() {
@@ -34,33 +39,32 @@ public class WinScreen {
 	
 	public void drawWinScreen(Graphics2D g2d) {
 		g2d.setColor(new Color(10,10,10,230));
-		Rectangle rectWinScreen = new Rectangle(100,100,w-200,h-200);
-		g2d.fill(rectWinScreen);
+		g2d.fill(rect);
 		g2d.setStroke(new BasicStroke(20));
 		g2d.setColor(new Color(5,5,5));
-		g2d.draw(rectWinScreen);
+		g2d.draw(rect);
 		
-		g2d.setFont(new Font("Arial",Font.BOLD,100));
+		g2d.setFont(font);
 		FontMetrics fontMetrics = g2d.getFontMetrics();
 		int textHeight = fontMetrics.getHeight();
 		int textWidth = 0;
 		g2d.setColor(Color.WHITE);
-		g2d.drawString("The winner", w/2-fontMetrics.stringWidth("The winner")/2, h/2+textHeight/3-textHeight);
-		g2d.drawString("is", w/2-fontMetrics.stringWidth("is")/2, h/2+textHeight/3);
+		g2d.drawString("The winner", centerX-fontMetrics.stringWidth("The winner")/2, centerY+textHeight/3-textHeight);
+		g2d.drawString("is", centerX-fontMetrics.stringWidth("is")/2, centerY+textHeight/3);
 		String winnerName = "";
 		// If the red has won
 		if(winnerIndex == 1) {
 			winnerName = GameState.myTeamIsRed?ProjectFrame.conn.getUsername():GameState.enemyName;
 			textWidth = fontMetrics.stringWidth(winnerName);
-			g2d.setColor(Color.RED);
-			g2d.drawString(winnerName, w/2-textWidth/2, h/2+textHeight/3+textHeight);
+			g2d.setColor(Commons.cRed);
+			g2d.drawString(winnerName, centerX-textWidth/2, centerY+textHeight/3+textHeight);
 		}
 		// If blue has won
 		else if(this.winnerIndex == 2) {
 			winnerName = !GameState.myTeamIsRed?ProjectFrame.conn.getUsername():GameState.enemyName;
 			textWidth = fontMetrics.stringWidth(winnerName);
-			g2d.setColor(Color.BLUE);
-			g2d.drawString(winnerName, w/2-textWidth/2, h/2+textHeight/3+textHeight);
+			g2d.setColor(Commons.cBlue);
+			g2d.drawString(winnerName, centerX-textWidth/2, centerY+textHeight/3+textHeight);
 		} 
 		// If nobody has won
 		else {
@@ -73,7 +77,6 @@ public class WinScreen {
 	}
 	
 	public void update() {
-		leaveButton.updatePos(StagePanel.camera.getPos());
-		leaveButton.updateHover(StagePanel.mousePos);
+		leaveButton.updateHover(StagePanel.mousePosUntranslated);
 	}
 }

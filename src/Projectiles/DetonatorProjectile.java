@@ -13,6 +13,7 @@ import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 import Particles.Explosion;
 import Stage.Commons;
+import Stage.StagePanel;
 import Stage.TurnCountDown;
 
 public class DetonatorProjectile extends Projectile {
@@ -93,7 +94,7 @@ public class DetonatorProjectile extends Projectile {
 	// creates the explosion and damages the target
 	public void detonate() {
 		if(!isDetonated) {
-			detExplosion = new Explosion((float)x, (float)y,1.5f,(float)angle);
+			detExplosion = new Explosion((float)x, (float)y,StagePanel.boardRectSize/60.0f,(float)angle);
 			isDetonated = true;
 			if(targetGamePiece != null) {
 				targetGamePiece.gamePieceBase.getDamaged(dmg);

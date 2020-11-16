@@ -6,6 +6,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
+import PlayerStructures.PlayerFortress;
+
 public class Camera {
 	private float x,y;
 	// velocity x/y direction
@@ -23,7 +25,7 @@ public class Camera {
 		this.y = 0;
 		int w = StagePanel.w;
 		int h = StagePanel.h;
-		rectOfView = new Rectangle((int)-x-Commons.boardRectSize,(int)-y-Commons.boardRectSize,w+Commons.boardRectSize*2,h+Commons.boardRectSize*2);
+		rectOfView = new Rectangle((int)-x-StagePanel.boardRectSize,(int)-y-StagePanel.boardRectSize,w+StagePanel.boardRectSize*2,h+StagePanel.boardRectSize*2);
 
 	}
 	
@@ -32,9 +34,9 @@ public class Camera {
 		g2d.draw(rectOfView);
 	}
 	
-	public void updateCamera(float x,float y) {
-		this.x = x;
-		this.y = y;
+	public void setCameraToBasePos(PlayerFortress playerFortress) {
+		this.x = -playerFortress.getPos().x+StagePanel.w/2;
+		this.y = -playerFortress.getPos().y+StagePanel.h/2;
 	}
 	
 	public void move(Rectangle mapRectangle) {
@@ -45,7 +47,7 @@ public class Camera {
 		if(!mapRectangle.contains(getCenterOfScreen())) x -= vx;
 		y += vy;
 		if(!mapRectangle.contains(getCenterOfScreen())) y -= vy;
-		rectOfView = new Rectangle((int)-x-Commons.boardRectSize,(int)-y-Commons.boardRectSize,rectOfView.width,rectOfView.height);
+		rectOfView = new Rectangle((int)-x-StagePanel.boardRectSize,(int)-y-StagePanel.boardRectSize,rectOfView.width,rectOfView.height);
 	}
 	
 	public void applyScreenShake(int screenShakeAmountOfFRames,int screenShakeMagnitude) {

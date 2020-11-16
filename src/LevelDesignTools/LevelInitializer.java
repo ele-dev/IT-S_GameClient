@@ -96,7 +96,7 @@ public class LevelInitializer {
 					if(mapImage.getRGB(j, i) == Color.BLACK.getRGB()) {
 						StagePanel.boardRectangles.get(index).isWall = true;
 					} else if(mapImage.getRGB(j, i) == Color.BLUE.getRGB()) {
-						StagePanel.boardRectangles.get(index).isGap = true;
+						StagePanel.boardRectangles.get(index).initGap();
 					} else if(mapImage.getRGB(j, i) == Color.MAGENTA.getRGB()) {
 						StagePanel.boardRectangles.get(index).isHinderingTerrain = true;
 					} else if(mapImage.getRGB(j, i) == Color.ORANGE.getRGB()) {

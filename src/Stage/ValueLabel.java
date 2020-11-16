@@ -30,7 +30,7 @@ public class ValueLabel {
 	}
 	// draws the dmgLabel to the screen
 	public void drawValueLabel(Graphics2D g2d) {
-		g2d.setFont(new Font("Arial",Font.BOLD,25));
+		g2d.setFont(new Font("Arial",Font.BOLD,StagePanel.boardRectSize/3));
 		FontMetrics metrics = g2d.getFontMetrics();
 		int textWidth = metrics.stringWidth(str);
 		int textHeight = metrics.getHeight();

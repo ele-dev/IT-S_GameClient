@@ -7,7 +7,7 @@ public class GameMap {
 	public GameMap(int rows, int columns) {
 		StagePanel.mapRows = rows;
 		StagePanel.mapColumns  = columns;
-		StagePanel.mapRectangle = new Rectangle(columns*Commons.boardRectSize,rows*Commons.boardRectSize);
+		StagePanel.mapRectangle = new Rectangle(columns*StagePanel.boardRectSize,rows*StagePanel.boardRectSize);
 		int index = 0;
 		for(int i = 0;i<rows;i++) {
 			for(int j = 0;j<columns;j++) {
