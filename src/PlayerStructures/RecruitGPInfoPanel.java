@@ -24,8 +24,10 @@ import Stage.ProjectFrame;
 import Stage.StagePanel;
 import networking.MsgSpawnGamepiece;
 
-public class RecruitGPInfoPanel{
-	private int startx,starty;;
+public class RecruitGPInfoPanel {
+	
+	@SuppressWarnings("unused")
+	private int startx, starty;
 	private GenericButton rectruitButton;
 	private Rectangle rect;
 	private PlayerFortress playerFortress;

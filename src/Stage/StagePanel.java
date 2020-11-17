@@ -265,6 +265,7 @@ public class StagePanel extends JPanel {
 //______________________________________________________________________________________________________	
   
 	// initializes/creates all GamePieces
+	@SuppressWarnings("unused")
 	private static void initGamePieces() {
 		gamePieces.add(new SniperPiece(false, boardRectangles.get(58)));
 		gamePieces.add(new SniperPiece(true, boardRectangles.get(105)));
