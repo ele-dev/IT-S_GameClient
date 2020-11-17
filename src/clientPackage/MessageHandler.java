@@ -312,7 +312,7 @@ public class MessageHandler {
 						break;
 					}
 					
-					case "FlamethrowerPiece":
+					case "FlameThrowerPiece":
 					{
 						spawnedGP = new FlamethrowerPiece(isRed, spawnPoint);
 						break;

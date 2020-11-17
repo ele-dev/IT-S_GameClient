@@ -64,9 +64,10 @@ public class EMPPiece extends GamePiece{
 		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
-			
+		Rectangle targetRect = (Rectangle) shape;
+		float angleDesiredProjectile = calculateAngle((int)(targetRect.getCenterX()+(Math.random()-0.5)*targetRect.width), (int)(targetRect.getCenterY()+(Math.random()-0.5)*targetRect.height));	
 		empProjectiles.add(new EMPProjectile(getCenterX(), getCenterY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, c, getDmg(), 
-				(float)(angle + (Math.random()-0.5)*10), shape,targetGamePiece,targetDestructibleObject));
+				angleDesiredProjectile, shape,targetGamePiece,targetDestructibleObject));
 		targetDestructibleObject = null;
 		targetGamePiece = null;
 	}

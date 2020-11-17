@@ -306,7 +306,7 @@ public class BoardRectangle {
 		if(!adjecantBoardRectangles.get(0).isGap) {
 			g2d.setColor(adjecantBoardRectangles.get(0).getColor());
 			g2d.fill(rect);
-			g2d.setColor(new Color(0,0,0,100));
+			g2d.setColor(new Color(0,0,0,200));
 			g2d.fill(rect);
 		}
 		for(WaveParticle curWP : waveParticles) {

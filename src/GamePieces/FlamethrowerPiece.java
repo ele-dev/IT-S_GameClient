@@ -1,6 +1,7 @@
 package GamePieces;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,8 +21,6 @@ public class FlamethrowerPiece extends GamePiece {
 	int burstCounter;
 	Timer burstTimer;
 	int burstBulletAmount = 200;
-	
-	double spreadAngle = 20;
 	
 	public FlamethrowerPiece(boolean isRed, BoardRectangle boardRect) {
 		super(isRed, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,Commons.baseTypeFlameThrower,Commons.neededLOSFlameThrower);
@@ -79,9 +78,10 @@ public class FlamethrowerPiece extends GamePiece {
 		int randomSize = (int)(Math.random()*StagePanel.boardRectSize/16+StagePanel.boardRectSize/16);
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
-			
+		Rectangle targetRect = (Rectangle) shape;
+		float angleDesiredProjectile = calculateAngle((int)(targetRect.getCenterX()+(Math.random()-0.5)*targetRect.width/2), (int)(targetRect.getCenterY()+(Math.random()-0.5)*targetRect.height/2));		
 		flames.add(new FlameThrowerFlame((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), randomSize, randomSize, 
-				(float)Math.random()+2, (float)(angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));
+				(float)Math.random()+2, angleDesiredProjectile, shape,targetDestructibleObject));
 		
 			
 		
