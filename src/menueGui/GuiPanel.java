@@ -34,6 +34,8 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import com.sun.jdi.event.Event;
+
 import Stage.Commons;
 import Stage.ProjectFrame;
 
@@ -153,6 +155,10 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	// Event method that is called on Panel close up (can be overwritten)
 	protected void onClose() {
 		// ...
+	}
+	
+	public void handleInputEvent(Event e) {
+		
 	}
 	
 	// Listener event methods (supposed to be overwritten in child classes)

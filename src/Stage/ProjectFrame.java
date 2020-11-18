@@ -2,6 +2,9 @@ package Stage;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
@@ -20,8 +23,11 @@ public class ProjectFrame extends JFrame {
 	// Network related
 	public static Connection conn;
 
-	// Windows related
+	// Window related
 	public static int width, height;
+	private static GraphicsDevice device;
+	@SuppressWarnings("unused")
+	private static DisplayMode standardMode;
 	
 	// GUI panels of the application (JPanels)
 	public static StagePanel stagePanel;
@@ -30,11 +36,11 @@ public class ProjectFrame extends JFrame {
 	public static RegisterPanel registerPanel;
 	 
 	private ProjectFrame() {
+		
+		// Get the screen dimensions of the monitor
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
 		height = (int) screenSize.getHeight();
-//		width = (int) 1600;
-//		height = (int) width*9/16;
 		setSize(width, height);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setBoardRectangleSize();
@@ -42,12 +48,11 @@ public class ProjectFrame extends JFrame {
 		// Create and init the Window (JFrame)
 		setLocationRelativeTo(null);
 		setLayout(null);
+		setUndecorated(false);
 		setResizable(false);
 		setTitle(Commons.gameTitle);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
-		
-
 		
 		Container cp = getContentPane();
 		
@@ -68,9 +73,32 @@ public class ProjectFrame extends JFrame {
 		addKeyListener(loginPanel);
 		addKeyListener(registerPanel);
 		addKeyListener(stagePanel.kl);
-	} 
+	}
 	
-	public static void setBoardRectangleSize(){
+	public boolean initFullscreenMode() {
+		
+		// Get the graphics device object
+		GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		device = graphics.getDefaultScreenDevice();
+		
+		// Check for the fullscreen support
+		if(!device.isFullScreenSupported()) {
+			setVisible(true);
+			return false;
+		}
+		
+		// Try to go fullscreen
+		device.setFullScreenWindow(this);
+		
+		// Change the display mode
+		standardMode = device.getDisplayMode();
+		DisplayMode fullscreenMode = new DisplayMode(width, height, 10, 60);
+		device.setDisplayMode(fullscreenMode);
+		
+		return true;
+	}
+	
+	public static void setBoardRectangleSize() {
 		StagePanel.boardRectSize = width/24;
 	}
 	
@@ -97,6 +125,13 @@ public class ProjectFrame extends JFrame {
 		
 		// Second create the main window and start the actual game
 		f = new ProjectFrame();
+		/*
+		boolean fullscreenSupport = f.initFullscreenMode();
+		if(!fullscreenSupport) {
+			JOptionPane.showMessageDialog(f, "Fullscreen is not supported");
+			System.out.println("Fullscreen rendering is not supported!");
+		}
+		*/
 		
 		System.out.println("Main Window is now visible");
 		
@@ -117,7 +152,9 @@ public class ProjectFrame extends JFrame {
 					}
 				}
 				
+				// Hide the window and restore the original display moded
 				f.setVisible(false);
+				// device.setDisplayMode(standardMode);
 				System.out.println("window was closed --> cleanup routine");
 				
 				conn.finalize();
