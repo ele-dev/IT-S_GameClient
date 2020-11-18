@@ -537,6 +537,7 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void drawEveryBoardRectangleIndex(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			curBR.drawIndex(g2d);
