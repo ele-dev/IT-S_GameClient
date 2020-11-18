@@ -26,7 +26,8 @@ public abstract class Projectile {
 		this.x = x;
 		this.y = y; 
 		this.c = c;
-		this.rectHitbox = new Rectangle(x-w/2,y-h/2,w,h);
+		int rectHitboxSize = (w+h)/2;
+		this.rectHitbox = new Rectangle(x-rectHitboxSize/2,y-rectHitboxSize/2,rectHitboxSize,rectHitboxSize);
 		this.angle = angle;
 		this.v = v;
 		this.acc = acc;

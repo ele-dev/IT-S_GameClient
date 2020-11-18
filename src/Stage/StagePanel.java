@@ -334,7 +334,7 @@ public class StagePanel extends JPanel {
 		g2d.translate(camera.getPos().x, camera.getPos().y);
 		
 		drawEveryBoardRectangle(g2d);
-		drawEveryBoardRectangleIndex(g2d);
+//		drawEveryBoardRectangleIndex(g2d);
 		drawGoldMines(g2d);
 		
 		if(redBase != null) { redBase.tryDrawRecruitableBoardRectangles(g2d); }
@@ -551,6 +551,7 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void drawEveryBoardRectangleIndex(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			curBR.drawIndex(g2d);

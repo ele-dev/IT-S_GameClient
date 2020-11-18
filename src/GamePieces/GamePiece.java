@@ -430,10 +430,14 @@ public abstract class GamePiece {
 	
 	// updates the shot angle towards the TargetEnemy/TargetGamepice
 	public void updateAngle(Point targetPoint) {
-		float ak = (float) (targetPoint.getX() - getCenterX());
-		float gk = (float) (targetPoint.getY() - getCenterY());
-		angleDesired = (float) Math.toDegrees(Math.atan2(ak*-1, gk));
+		angleDesired = calculateAngle(targetPoint.x,targetPoint.y);
 		angle = Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
+	}
+	
+	public float calculateAngle(int x , int y) {
+		float ak = (float) (x - getCenterX());
+		float gk = (float) (y - getCenterY());
+		return (float) Math.toDegrees(Math.atan2(ak*-1, gk));
 	}
 	
 	public void restoreMovesAndAttacks() {
