@@ -33,7 +33,6 @@ public abstract class GamePiece {
 	protected Color c;
 	private String name;
 	protected float angle,angleDesired; 
-	public boolean isDead = false;
 	private float dmg;
 	protected boolean lineOfSightNeeded = false;
 	
@@ -51,10 +50,8 @@ public abstract class GamePiece {
 	public ActionSelectionPanel actionSelectionPanel;
 	private ArrayList<Line2D> linesOfSight = new ArrayList<Line2D>();
 	
-	private int rotationDelay = 4;
+	private static int rotationDelay = 4;
 	protected Sprite spriteTurret;
-	
-	protected boolean startedAttack = false;
 	
 	
 	// pathfinding 
@@ -88,9 +85,6 @@ public abstract class GamePiece {
 	public String getName() {
 		return name;
 	}
-	public boolean getIsDead() {
-		return isDead;
-	}
 	public boolean isRed() {
 		return isRed;
 	}
@@ -122,6 +116,10 @@ public abstract class GamePiece {
 		return c;
 	} 
 	
+	public boolean isDead() {
+		return gamePieceBase.getHealth() <= 0;
+	}
+	
 	public abstract boolean isAttacking();
 	
 	public boolean isPerformingAction() {
@@ -138,7 +136,7 @@ public abstract class GamePiece {
 				pathCells.get(i).setIsWall(true);
 			}else
 			for(GamePiece curGP : StagePanel.gamePieces) {
-				if(curGP.boardRect == StagePanel.boardRectangles.get(i) && !curGP.isDead && curGP != this) {
+				if(curGP.boardRect == StagePanel.boardRectangles.get(i) && curGP != this) {
 					pathCells.get(i).setIsWall(true);
 					break;
 				}
@@ -158,7 +156,7 @@ public abstract class GamePiece {
 			return;
 		}
 		for(GamePiece curGP : StagePanel.gamePieces) {
-			if(curGP.boardRect == endBR && !curGP.isDead && curGP != this) {
+			if(curGP.boardRect == endBR && curGP != this) {
 				return;
 			}
 		}
@@ -205,6 +203,7 @@ public abstract class GamePiece {
 				}
 			}
 		}
+		pathFinder = null;
 	}
 	
 	public void showPathBRs() {
@@ -226,13 +225,12 @@ public abstract class GamePiece {
 	}
 	
 	public void tryDie() {
-		if(gamePieceBase.getHealth() <= 0 && !getIsDead()) {
+		if(gamePieceBase.getHealth() <= 0) {
 			StagePanel.particles.add(new Explosion(getCenterX(), getCenterY(), 1.2f));
 			for(int i = 0; i < 3; i++) {
 				StagePanel.particles.add(new Explosion(getCenterX()+(int)((Math.random()-0.5)*StagePanel.boardRectSize/2),
 						getCenterY()+(int)((Math.random()-0.5)*StagePanel.boardRectSize/2), 1f));
 			}
-			isDead = true;
 			StagePanel.impactStop();
 		}
 	}
@@ -300,7 +298,7 @@ public abstract class GamePiece {
 		}
 		for(GamePiece curGP : StagePanel.gamePieces) {
 			if(curGP.boardRect == targetBoardRectangle) {
-				if(!curGP.isDead && checkIfEnemies(curGP)) {
+				if(checkIfEnemies(curGP)) {
 					targetGamePiece = curGP;
 					startAttackDelay();
 					return;

@@ -26,7 +26,6 @@ public class BoardRectangle {
 	public boolean isWall,isGap,isHinderingTerrain;
 	
 	private boolean isHover;
-	private double animationSpeed;
 	public float so = 4;
 	private int rotation = 0; 
 	
@@ -34,13 +33,11 @@ public class BoardRectangle {
 	private Sprite groundSprite;
 	private float spriteRotation;
 	
-	public BoardRectangle northBR,southBR,eastBR,westBR;
-	ArrayList<BoardRectangle> adjecantBoardRectangles = new ArrayList<BoardRectangle>();
+	private ArrayList<BoardRectangle> adjecantBoardRectangles = new ArrayList<BoardRectangle>();
 	
-	String[] extendedInfoStrings = new String[7];
-	
+	private static String[] extendedInfoStrings = new String[7];
 	private static long waveCounter = 0;
-	ArrayList<WaveParticle> waveParticles = new ArrayList<WaveParticle>();
+	private static ArrayList<WaveParticle> waveParticles = new ArrayList<WaveParticle>();
 	
 	public BoardRectangle(int row, int column,boolean isTile1,int index,boolean isHinderingTerrain) {
 		this.row = row;
@@ -73,10 +70,8 @@ public class BoardRectangle {
 //		}
 //		spriteLinks.add(Commons.pathToSpriteSource+spriteDirector);
 //		groundSprite = new Sprite(spriteLinks, size,size, 0);
-		initExtendedInfoStrings();
 	}
-	
-	private void initExtendedInfoStrings() {
+	static void initExtendedInfoStrings() {
 		extendedInfoStrings[0] = "just a basic tile\ncannot be attacked\ncan be moved on";
 		extendedInfoStrings[1] = "a gap in the landscape\ncannot be attacked\ncannot be moved on\ncan be seen through";
 		extendedInfoStrings[2] = "movement hindering terrain\ncannot be attacked\ncan be moved on\ncosts double movement to cross.";
@@ -111,6 +106,7 @@ public class BoardRectangle {
 		return c;
 	}
 	
+	// sets itself as a Gap and adds WaveParticles to the Static Array
 	public void initGap() {
 		this.isGap = true;
 		for(int i = 0;i<50;i++) {
@@ -120,7 +116,6 @@ public class BoardRectangle {
 			Color randomColor = new Color(0,(int)(50+Math.random()*100),(int)(200+Math.random()*55));
 			waveParticles.add(new WaveParticle(x, y, size, (float)(Math.random()*360), randomColor));
 		}
-		
 	}
 	
 	public ArrayList<BoardRectangle> getAdjecantBoardRectangles() {
@@ -157,20 +152,16 @@ public class BoardRectangle {
 		for(BoardRectangle curBR : boardRectangles ) {
 			if(curBR != this) {
 				if(curBR.row == row-1 && curBR.column == column) {
-					northBR = curBR;
-					adjecantBoardRectangles.add(northBR);
+					adjecantBoardRectangles.add(curBR);
 				}
 				if(curBR.row == row+1 && curBR.column == column) {
-					southBR = curBR;
-					adjecantBoardRectangles.add(southBR);
+					adjecantBoardRectangles.add(curBR);
 				}
 				if(curBR.row == row && curBR.column == column+1) {
-					eastBR = curBR;
-					adjecantBoardRectangles.add(eastBR);
+					adjecantBoardRectangles.add(curBR);
 				}
 				if(curBR.row == row && curBR.column == column-1) {
-					westBR = curBR;
-					adjecantBoardRectangles.add(westBR);
+					adjecantBoardRectangles.add(curBR);
 				}
 			}
 		}
@@ -297,26 +288,34 @@ public class BoardRectangle {
 			}
 		}
 	}
-	public void tryDrawWaveParticles(Graphics2D g2d) {
+	// draws the GapBackground but only if the BR above this BR is not also a Gap
+	public void drawGapBackGround(Graphics2D g2d) {
 		if(!adjecantBoardRectangles.get(0).isGap) {
 			g2d.setColor(adjecantBoardRectangles.get(0).getColor());
 			g2d.fill(rect);
 			g2d.setColor(new Color(0,0,0,200));
 			g2d.fill(rect);
 		}
+	}
+	
+	// draws all WaveParticles on the entire map
+	public static void drawWaveParticles(Graphics2D g2d) {
 		for(WaveParticle curWP : waveParticles) {
 			curWP.setYOffset(waveFunction(curWP.getX()));
 			curWP.drawParticle(g2d);
 		}
 	}
 	
+	// returns the elongation of the wave at the point of x 
 	private static int waveFunction(float x) {
 		return	(int) (StagePanel.boardRectSize/5 * Math.sin(2*Math.PI*((waveCounter/400.0f)-(x/(StagePanel.boardRectSize*6.0f)))));
 	}
+	// increases waveCounter up to Integer.MAX_VALUE and then starts from 0
 	public static void incWaveCounter() {
 		waveCounter = waveCounter >= Integer.MAX_VALUE?0:waveCounter+1;
 	}
 	
+	// draws the BR different depending on if it is a possible move/attack
 	public void drawState(Graphics2D g2d) {
 		g2d.setStroke(new BasicStroke(2));
 		if(isPossibleMove || isPossibleAttack) {
@@ -342,49 +341,48 @@ public class BoardRectangle {
 		}
 	}
 	
-	// draw the Hover Rect
-	public void tryDrawHover(Graphics2D g2d) {
-		if(isHover) {
-			int alpha = 255;
-			g2d.setStroke(new BasicStroke(5));
-			if(isPossibleAttack) {
+	// draws BR in hover mode
+	public void drawHover(Graphics2D g2d) {
+		int alpha = 255;
+		g2d.setStroke(new BasicStroke(5));
+		if(isPossibleAttack) {
 				g2d.setColor(Commons.cAttack);
 				g2d.setColor(new Color(10,10,10));
 			}else 
-			if(isPossibleMove){
-				g2d.setColor(Commons.cMove);
-				g2d.setColor(new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),alpha));
-			}else {
-				g2d.setColor(new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),200));
-			}
-			int x = getX();
-			int y = getY();
-			int s = getSize();
-			int soI = (int)so;
-			g2d.translate(x, y);
-			g2d.drawLine(-soI/2, -soI/2, s/4-soI/2, -soI/2);
-			g2d.drawLine(s+soI/2, -soI/2, s*3/4+soI/2, -soI/2);
-					
-			g2d.drawLine(-soI/2, s+soI/2, s/4-soI/2, s+soI/2);
-			g2d.drawLine(s+soI/2, s+soI/2, s*3/4+soI/2, s+soI/2);
-					
-			g2d.drawLine(-soI/2, -soI/2, -soI/2, s/4-soI/2);
-			g2d.drawLine(-soI/2, s+soI/2, -soI/2, s*3/4+soI/2);
-					
-			g2d.drawLine(s+soI/2, -soI/2, s+soI/2, s/4-soI/2);
-			g2d.drawLine(s+soI/2, s+soI/2, s+soI/2, s*3/4+soI/2);
-			
-			if(isPossibleAttack) {
-				g2d.translate(s/2, s/2);
-				g2d.rotate(Math.toRadians(rotation));
-				g2d.drawLine(-s/3, 0, s/3, 0);
-				g2d.drawLine(0,-s/3, 0, s/3);
-				g2d.drawOval(-s/6, -s/6, s/3, s/3);
-				g2d.rotate(Math.toRadians(-rotation));
-				g2d.translate(-s/2, -s/2);
-			}
-			g2d.translate(-x, -y);
+		if(isPossibleMove){
+			g2d.setColor(Commons.cMove);
+			g2d.setColor(new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),alpha));
+		}else {
+			g2d.setColor(new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),200));
 		}
+		int x = getX();
+		int y = getY();
+		int s = getSize();
+		int soI = (int)so;
+		g2d.translate(x, y);
+		g2d.drawLine(-soI/2, -soI/2, s/4-soI/2, -soI/2);
+		g2d.drawLine(s+soI/2, -soI/2, s*3/4+soI/2, -soI/2);
+					
+		g2d.drawLine(-soI/2, s+soI/2, s/4-soI/2, s+soI/2);
+		g2d.drawLine(s+soI/2, s+soI/2, s*3/4+soI/2, s+soI/2);
+					
+		g2d.drawLine(-soI/2, -soI/2, -soI/2, s/4-soI/2);
+		g2d.drawLine(-soI/2, s+soI/2, -soI/2, s*3/4+soI/2);
+					
+		g2d.drawLine(s+soI/2, -soI/2, s+soI/2, s/4-soI/2);
+		g2d.drawLine(s+soI/2, s+soI/2, s+soI/2, s*3/4+soI/2);
+			
+		if(isPossibleAttack) {
+			g2d.translate(s/2, s/2);
+			g2d.rotate(Math.toRadians(rotation));
+			g2d.drawLine(-s/3, 0, s/3, 0);
+			g2d.drawLine(0,-s/3, 0, s/3);
+			g2d.drawOval(-s/6, -s/6, s/3, s/3);
+			g2d.rotate(Math.toRadians(-rotation));
+			g2d.translate(-s/2, -s/2);
+		}
+		g2d.translate(-x, -y);
+		
 	}
 	
 	// draws the Label of the BoardRectangle (only ifHover)
@@ -487,24 +485,6 @@ public class BoardRectangle {
 			
 		}
 		
-	}
-	
-	// makes the Hover Rect bigger and then smaller gives it "pop" 
-	public void tryAnimate() {
-		if(rotation > 360) {
-			rotation = 0;
-		}
-		rotation++;
-		if(isPossibleAttack) {
-			if(so < 5) {
-				animationSpeed = 0.3;
-			} else if(so > 10) {
-				animationSpeed = -0.3;
-			}
-			so+=animationSpeed;
-		} else {
-			so = 4;
-		}
 	}
 	// updates the Hover boolean to be Hover == true if the mouse is on the BoardRectangle
 	public void updateHover(Point mousePos) {

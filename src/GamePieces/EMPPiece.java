@@ -80,10 +80,6 @@ public class EMPPiece extends GamePiece{
 			}
 		}
 	}
-	
-	public void updateIsAttacking() {
-
-	}
 
 	public void updateAttack() { 
 		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
@@ -113,6 +109,5 @@ public class EMPPiece extends GamePiece{
 				empProjectiles.remove(i);
 			}
 		}
-		updateIsAttacking();
 	}
 }

@@ -68,7 +68,6 @@ public class FlamethrowerPiece extends GamePiece {
 	public void shootOnce() {
 		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
-		startedAttack = true;
 		burstCounter++;
 		if(burstCounter<burstBulletAmount) {
 			burstTimer.start();
@@ -86,25 +85,6 @@ public class FlamethrowerPiece extends GamePiece {
 			
 		
 	}
-	// checks if the GamePiece is attacking and sets it (isAttacking = true)
-	public void updateIsAttacking() {
-
-	}
-	// damages the Target only if all flames have hit it or are faded
-	public void showWhenDmg() {
-		if(startedAttack) {
-			if(flames.size() == 0) {
-				if(targetGamePiece != null) {
-					targetGamePiece.gamePieceBase.getDamaged(getDmg());
-					targetGamePiece = null;
-				}else {
-					targetDestructibleObject.getDamaged(getDmg(),angle,isRed());
-					targetDestructibleObject = null;
-				}
-				startedAttack = false;
-			}
-		}
-	}
 	
 	// updates the attack (moves flames,checks if they hit something and so forth)
 	public void updateAttack() {
@@ -116,10 +96,19 @@ public class FlamethrowerPiece extends GamePiece {
 			curFTF.checkHitAnyTarget();
 			curFTF.updateFade();
 			if(curFTF.getColor().getAlpha()<10) {
-			flames.remove(i);
+				flames.remove(i);
+				if(flames.size() == 0) {
+					if(targetGamePiece != null) {
+						targetGamePiece.gamePieceBase.getDamaged(getDmg());
+						targetGamePiece = null;
+					}else {
+						targetDestructibleObject.getDamaged(getDmg(),angle,isRed());
+						targetDestructibleObject = null;
+					}
+				}
 			}
+			
+				
 		}
-		updateIsAttacking();
-		showWhenDmg();
 	}
 }

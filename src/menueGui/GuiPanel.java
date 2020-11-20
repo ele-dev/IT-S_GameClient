@@ -44,10 +44,6 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	protected int width, height;
 	protected Color bgColor;
 	
-	// Timers 
-	protected Timer tFrameRate;
-	protected Timer tUpdateRate;
-	
 	// default constructor
 	public GuiPanel() {
 		
@@ -56,27 +52,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		this.height = ProjectFrame.height;
 		setBounds(0, 0, width, height);
 		this.bgColor = Color.GRAY; 			// Default panel color gray
-		
-		// Timer for repainting/redrawing
-		tFrameRate = new Timer(Commons.frametime, new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				repaint();
-			}
-		});
-		tFrameRate.setRepeats(true);
-		tFrameRate.start();
-		
-		// Timer for updating 
-		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				update();
-			}
-		});
-		tUpdateRate.setRepeats(true);
-		tUpdateRate.start();
+
 		
 		// Add the listeners to the panel
 		addMouseListener(this);
@@ -136,7 +112,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	}
 	
 	// Main update/processing method (does nothing by default, can be overwritten)
-	protected void update() {
+	public void update() {
 		// ...
 	}
 	

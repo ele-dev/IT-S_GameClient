@@ -136,6 +136,10 @@ public class TazerPiece extends GamePiece{
 					break;
 				}
 			}
+			// failsave
+			if(i > 10000) {
+				break;
+			}
 		}
 		pointsArray.clear();
 		if(targetGamePiece != null) {

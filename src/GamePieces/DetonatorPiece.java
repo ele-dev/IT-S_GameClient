@@ -87,10 +87,6 @@ public class DetonatorPiece extends GamePiece {
 			}
 		}
 	}
-	
-	public void updateIsAttacking() {
-		
-	}
 
 	public void updateAttack() { 
 		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
@@ -117,6 +113,5 @@ public class DetonatorPiece extends GamePiece {
 				detProjectiles.remove(i);
 			}
 		}
-		updateIsAttacking();
 	}
 }

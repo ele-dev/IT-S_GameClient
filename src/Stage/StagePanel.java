@@ -61,9 +61,6 @@ public class StagePanel extends JPanel {
 	public static int boardRectSize = 60;
 	KL kl = new KL();
 	
-	// FrameRate/UpdateRate
-	static Timer tFrameRate;
-	static Timer tUpdateRate;
 	private static int timeStopCounter = 0;
 	
 	// gameMap
@@ -122,20 +119,6 @@ public class StagePanel extends JPanel {
 		if(levelDesignTool != null) {
 			addMouseWheelListener(levelDesignTool.mwl);
 		}
-		tFrameRate = new Timer(16, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				repaint();
-			}
-		});
-		tFrameRate.setRepeats(true);
-		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				updateStage();
-			}
-		});
-		tUpdateRate.setRepeats(true);
 		
 		// create and init the buttons 
 		endTurnButton = new ButtonEndTurn();
@@ -158,8 +141,6 @@ public class StagePanel extends JPanel {
 	
 	public static void resetMatch(String mapName) {
 		initGameMap(mapName);
-		tFrameRate.start();
-		tUpdateRate.start();
 	}
 	
 	// initializes a map depending on the name (mapName can be null in that case it will load empty map to edit)
@@ -180,7 +161,8 @@ public class StagePanel extends JPanel {
 			mapRectangle = new Rectangle(mapColumns*boardRectSize,mapRows*boardRectSize);
 		}
 		initFortresses();
-//		initGamePieces();
+		initGamePieces();
+		BoardRectangle.initExtendedInfoStrings();
 		if(GameState.myTeamIsRed) {
 			camera.setCameraToBasePos(redBase);
 		}else {
@@ -206,9 +188,7 @@ public class StagePanel extends JPanel {
 	}
 	// adds a dmgLabel (shows the dmg that was taken)
 	public static void addValueLabel(GamePiece targetGP,float value, Color c) {
-		if(!targetGP.isDead) {
-			StagePanel.valueLabels.add(new ValueLabel((float)(targetGP.getCenterX()+((Math.random()-0.5)*60)),(float)(targetGP.getCenterY()+((Math.random()-0.5)*60)),"-"+Math.round(value), c));
-		}	
+		StagePanel.valueLabels.add(new ValueLabel((float)(targetGP.getCenterX()+((Math.random()-0.5)*60)),(float)(targetGP.getCenterY()+((Math.random()-0.5)*60)),"-"+Math.round(value), c));	
 	}
 	// adds a dmgLabel (shows the dmg that was taken)
 	public static void addValueLabel(int x, int y,float value,Color c) {
@@ -254,9 +234,6 @@ public class StagePanel extends JPanel {
 			// At last reset the enemy state data
 			GameState.enemySurrender = false;
 			GameState.enemyName = "";
-			
-			tFrameRate.stop();
-			tUpdateRate.stop();
 		}
 	}
 	
@@ -338,7 +315,7 @@ public class StagePanel extends JPanel {
 		// Draw the game pieces/actors, particles
 		drawAllGamePieces(g2d);
 		if(curHoverBR != null && (levelDesignTool != null || !redBase.containsBR(curHoverBR) && !blueBase.containsBR(curHoverBR))) {
-			curHoverBR.tryDrawHover(g2d);
+			curHoverBR.drawHover(g2d);
 		}
 		
 		drawAllGamePieceHealth(g2d);
@@ -502,10 +479,11 @@ public class StagePanel extends JPanel {
 	// draws every BoardRectangles rectangle that is not a gap and draws the Walls
 	private void drawEveryBoardRectangle(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
-			if(camera.isInView(curBR.getPos())) {
-				curBR.tryDrawWaveParticles(g2d);
+			if(camera.isInView(curBR.getPos()) && curBR.isGap) {
+				curBR.drawGapBackGround(g2d);
 			} 	
 		}
+		BoardRectangle.drawWaveParticles(g2d);
 		for(BoardRectangle curBR : boardRectangles) {
 			if(camera.isInView(curBR.getPos())) {
 				curBR.drawBoardRectangle(g2d);
@@ -537,7 +515,6 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
-	@SuppressWarnings("unused")
 	private void drawEveryBoardRectangleIndex(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			curBR.drawIndex(g2d);
@@ -549,7 +526,7 @@ public class StagePanel extends JPanel {
 //______________________________________________________________________________________________________
 	
 	// updates the Stage (moves pieces, moves bullets, updates animations...)
-	private void updateStage() {
+	void update() {
 		if(timeStopCounter > 0) {
 			timeStopCounter--;
 			return;
@@ -609,9 +586,6 @@ public class StagePanel extends JPanel {
 				} 
 			}
 		}
-		if(curHoverBR != null) {
-			curHoverBR.tryAnimate();
-		}
 	}
 	
 	private void updateFortresses() {
@@ -635,7 +609,7 @@ public class StagePanel extends JPanel {
 			curGP.updateLinesOfSight();
 			curGP.tryDie();
 			curGP.updateActionSelectionPanelHover();
-			if(curGP.getIsDead()) {
+			if(curGP.isDead()) {
 				gamePieces.remove(i);
 			}
 		}
@@ -786,7 +760,7 @@ public class StagePanel extends JPanel {
 	private void tryPerformActionOnPressedPos() {
 		
 		// First checked if the the move is possible and allowed at the moment
-		if(curSelectedGP != null && !curSelectedGP.getIsDead() && curHoverBR != null && GameState.myTurn) {
+		if(curSelectedGP != null && curHoverBR != null && GameState.myTurn) {
 			
 			// check additional preconditions for performing any action
 			if(curHoverBR.isPossibleMove || curHoverBR.isPossibleAttack) {
@@ -865,16 +839,12 @@ public class StagePanel extends JPanel {
 	}
 	
 	private class ML implements MouseListener {
-
 		@Override
 		public void mouseClicked(MouseEvent e) {}
-
 		@Override
 		public void mouseEntered(MouseEvent e) {}
-
 		@Override
 		public void mouseExited(MouseEvent e) {}
-		
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (levelDesignTool != null) {
@@ -986,7 +956,6 @@ public class StagePanel extends JPanel {
 				return;
 			}
 		}
-
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			mousePosUntranslated = e.getPoint();
@@ -1016,9 +985,6 @@ public class StagePanel extends JPanel {
 			if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
 				ctrDown = true;
 			}
-			
-			
-			
 		}
 
 		@Override
@@ -1028,7 +994,6 @@ public class StagePanel extends JPanel {
 				ctrDown = false;
 			}
 		}
-
 		@Override
 		public void keyTyped(KeyEvent e) {}
 	}

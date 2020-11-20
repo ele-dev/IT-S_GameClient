@@ -76,7 +76,6 @@ public class RocketLauncherPiece extends GamePiece{
 	public void shootOnce() {
 		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
-		startedAttack = true;
 		addRocketInArcFlight();
 		burstCounter++;
 		if(burstCounter <burstRocketAmount) {
@@ -94,22 +93,6 @@ public class RocketLauncherPiece extends GamePiece{
 			
 		rockets.add(new Rocket((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, c,
 				(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));
-	}
-	
-	// checks if the piece is attacking and sets its boolean isAttacking to true if it is currently attacking and to false if it isn't
-	public void updateIsAttacking() {
-		if(isAttacking()) {
-			return;
-		}
-		if(startedAttack) {
-			if(targetGamePiece != null) {
-				targetGamePiece.gamePieceBase.getDamaged(getDmg());
-				targetGamePiece = null;
-			} else if(targetDestructibleObject != null) {
-				targetDestructibleObject.getDamaged(getDmg(), angle,isRed());
-				targetDestructibleObject = null;
-			}
-		}
 	}
 
 	// updates all things that are animated with the attack (for example moves the rockets and updates the explosions)
@@ -130,10 +113,16 @@ public class RocketLauncherPiece extends GamePiece{
 			curR.move();
 			if(curR.isDestroyed()) {
 				rockets.remove(i);
+				if(rockets.size() == 0 && burstCounter == 0) {
+					if(targetGamePiece != null) {
+						targetGamePiece.gamePieceBase.getDamaged(getDmg());
+						targetGamePiece = null;
+					} else if(targetDestructibleObject != null) {
+						targetDestructibleObject.getDamaged(getDmg(), angle,isRed());
+						targetDestructibleObject = null;
+					}
+				}
 			}
 		}
-		updateIsAttacking();
-		
 	}
-
 }

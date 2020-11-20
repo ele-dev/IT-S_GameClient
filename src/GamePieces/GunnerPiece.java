@@ -77,11 +77,18 @@ public class GunnerPiece extends GamePiece {
 			
 			if(curB.hasHitTarget()) {
 				bullets.remove(i);
+				if(bullets.size() == 0 && burstCounter == 0) {
+					if(targetGamePiece != null) {
+						targetGamePiece.gamePieceBase.getDamaged(getDmg());
+						targetGamePiece = null;
+					}else { 
+						targetDestructibleObject.getDamaged(getDmg(), angle, isRed());
+						targetDestructibleObject = null;
+					}
+				}
 			}
 			
 		} 
-		
-		updateIsAttacking();
 	}
 
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
@@ -108,7 +115,6 @@ public class GunnerPiece extends GamePiece {
 		}else {
 			burstCounter = 0;
 		}
-		startedAttack = true;
 		
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
 		Rectangle targetRect = (Rectangle) shape;
@@ -116,25 +122,6 @@ public class GunnerPiece extends GamePiece {
 		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/10, StagePanel.boardRectSize/5, isRed(), 12, 
 				angleDesiredProjectile, shape,targetDestructibleObject));	
 		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, (float)angle -90, c, (float)(Math.random()*2+3)));
-	}
-	
-	// updates the isAttacking state
-	public void updateIsAttacking() {
-		if (isAttacking()) {
-			return;
-		}
-		if(startedAttack) {
-			if(targetGamePiece != null) {
-				targetGamePiece.gamePieceBase.getDamaged(getDmg());
-				targetGamePiece = null;
-			}else { 
-				targetDestructibleObject.getDamaged(getDmg(), angle, isRed());
-				targetDestructibleObject = null;
-			}
-			
-			startedAttack = false;
-			return;
-		}
 	}
 	
 }

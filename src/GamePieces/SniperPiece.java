@@ -84,6 +84,10 @@ public class SniperPiece extends GamePiece{
 				break;
 			}
 			i++;
+			// failsave
+			if(i > 10000) {
+				break;
+			}
 		}	
 		if(targetGamePiece != null) {
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());

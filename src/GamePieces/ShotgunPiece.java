@@ -62,15 +62,22 @@ public class ShotgunPiece extends GamePiece {
 			
 			if(curB.hasHitTarget()) {
 				bullets.remove(i);
+				if(bullets.size() == 0) {
+					if(targetGamePiece != null) {
+						targetGamePiece.gamePieceBase.getDamaged(getDmg());
+						targetGamePiece = null;
+					}else { 
+						targetDestructibleObject.getDamaged(getDmg(),angle,isRed());
+						targetDestructibleObject = null;
+					}
+				}
 			}
 		} 
-		updateIsAttacking();
 	}
 	
 	public void shootOnce() {
 		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
-		startedAttack = true;
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():targetDestructibleObject.getRectHitbox();
 		Rectangle targetRect = (Rectangle) shape;
 		
@@ -82,24 +89,4 @@ public class ShotgunPiece extends GamePiece {
 		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),StagePanel.boardRectSize/10,StagePanel.boardRectSize/5, (float)angle -90, c,(float)(Math.random()*3+2)));
 		StagePanel.applyScreenShake(5, 10);
 	}
-	
-	// updates the isAttacking state
-	public void updateIsAttacking() {
-		if(isAttacking()) {
-			return;
-		}
-		
-		if(startedAttack) {
-			if(targetGamePiece != null) {
-				targetGamePiece.gamePieceBase.getDamaged(getDmg());
-				targetGamePiece = null;
-			}else { 
-				targetDestructibleObject.getDamaged(getDmg(),angle,isRed());
-				targetDestructibleObject = null;
-			}
-			startedAttack = false;
-		}
-		
-	}
-
 }

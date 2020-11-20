@@ -4,9 +4,12 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 import clientPackage.Connection;
 import menueGui.GameState;
@@ -28,15 +31,17 @@ public class ProjectFrame extends JFrame {
 	public static LoginPanel loginPanel;
 	public static HomePanel homePanel;
 	public static RegisterPanel registerPanel;
+	
+	private static Timer tFrameRate,tUpdateRate;
 	 
 	private ProjectFrame() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = (int) screenSize.getWidth();
 		height = (int) screenSize.getHeight();
-//		width = (int) 1600;
-//		height = (int) width*9/16;
+		width = (int) 1600;
+		height = (int) width*9/16;
 		setSize(width, height);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+//		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setBoardRectangleSize();
 		
 		// Create and init the Window (JFrame)
@@ -46,10 +51,21 @@ public class ProjectFrame extends JFrame {
 		setTitle(Commons.gameTitle);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);
-		
+		tFrameRate = new Timer(16, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				repaint();
+			}
+		});
+		tFrameRate.setRepeats(true);
+		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateAllPanels();
+			}
+		});
+		tUpdateRate.setRepeats(true);
 
-		
-		Container cp = getContentPane();
 		
 		stagePanel = new StagePanel();
 		
@@ -60,7 +76,8 @@ public class ProjectFrame extends JFrame {
 		stagePanel.setVisible(false);
 		homePanel.setVisible(false);
 		loginPanel.setVisible(true);			// Display the login screen first
-		registerPanel.setVisible(false);		
+		registerPanel.setVisible(false);
+		Container cp = getContentPane();		
 		cp.add(loginPanel);
 		cp.add(stagePanel);
 		cp.add(homePanel);
@@ -68,10 +85,20 @@ public class ProjectFrame extends JFrame {
 		addKeyListener(loginPanel);
 		addKeyListener(registerPanel);
 		addKeyListener(stagePanel.kl);
+		
+		tUpdateRate.start();
+		tFrameRate.start();
 	} 
 	
 	public static void setBoardRectangleSize(){
 		StagePanel.boardRectSize = width/24;
+	}
+	
+	private static void updateAllPanels() {
+		if(loginPanel.isVisible())loginPanel.update();
+		if(homePanel.isVisible())homePanel.update();
+		if(registerPanel.isVisible())registerPanel.update();
+		if(stagePanel.isVisible())stagePanel.update();
 	}
 	
 	
