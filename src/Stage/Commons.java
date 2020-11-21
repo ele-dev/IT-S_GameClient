@@ -14,6 +14,7 @@ public interface Commons {
 	public static final int frametime = 10;
 	
 	// Menue gui elements dimensions
+	public static final boolean fullscreen = false;
 	public static final int textFieldHeight = 46;
 	public static final int textFieldWidth = 210;
 	
