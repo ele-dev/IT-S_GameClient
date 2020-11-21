@@ -126,10 +126,6 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		// ...
 	}
 	
-	public void handleInputEvent(Event e) {
-		
-	}
-	
 	// Listener event methods (supposed to be overwritten in child classes)
 	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {}
