@@ -8,9 +8,6 @@ package Stage;
 
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.DisplayMode;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
@@ -34,9 +31,6 @@ public class ProjectFrame extends JFrame {
 
 	// Window related
 	public static int width, height;
-	private static GraphicsDevice device;
-	@SuppressWarnings("unused")
-	private static DisplayMode standardMode;
 	
 	// GUI panels of the application (JPanels)
 	public static StagePanel stagePanel;
@@ -50,19 +44,17 @@ public class ProjectFrame extends JFrame {
     
 	    // Get the monitor screen resolution and take it as window dimension
 	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	    width = (int) screenSize.getWidth();
-	    height = (int) screenSize.getHeight();
-	
-	    /*
-	     * for windowed mode with fixed dimension and resolution
-	     * 
-	      width = (int) 1600;
-	      height = (int) width * 9 / 16;
-	     *
-	     */
-	
+		
+		if(Commons.fullscreen) {
+		    width = (int) screenSize.getWidth();
+		    height = (int) screenSize.getHeight();
+		    setExtendedState(JFrame.MAXIMIZED_BOTH);
+		} else {
+		    width = (int) Math.round(screenSize.getWidth() * 0.82);
+		    height = (int) Math.round(screenSize.getHeight() * 0.8);
+		}
+	    
 	    setSize(width, height);
-	    setExtendedState(JFrame.MAXIMIZED_BOTH);
 	    setBoardRectangleSize();
 	
 	    // Create and init the Window (JFrame)
@@ -75,7 +67,7 @@ public class ProjectFrame extends JFrame {
 	    setVisible(true);
 		
 		// Create the timers that make up the global realtime game loop
-		tFrameRate = new Timer(Commons.frametime + 3, new ActionListener() {
+		tFrameRate = new Timer(Commons.frametime + 4, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				repaint();
@@ -127,29 +119,6 @@ public class ProjectFrame extends JFrame {
 		if(stagePanel.isVisible()) { stagePanel.update(); }
 	}
 	
-	public boolean initFullscreenMode() {
-		
-		// Get the graphics device object
-		GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		device = graphics.getDefaultScreenDevice();
-		
-		// Check for the fullscreen support
-		if(!device.isFullScreenSupported()) {
-			setVisible(true);
-			return false;
-		}
-		
-		// Try to go fullscreen
-		device.setFullScreenWindow(this);
-		
-		// Change the display mode
-		standardMode = device.getDisplayMode();
-		DisplayMode fullscreenMode = new DisplayMode(width, height, 10, 60);
-		device.setDisplayMode(fullscreenMode);
-		
-		return true;
-	}
-	
 	public static ProjectFrame f;
 	
 	// ------------------- MAIN Application Entry Point -------------------------- //
@@ -171,46 +140,46 @@ public class ProjectFrame extends JFrame {
 		}
 		
 		// Second create the main window and start the actual game
-		f = new ProjectFrame();
-		/*
-		boolean fullscreenSupport = f.initFullscreenMode();
-		if(!fullscreenSupport) {
-			JOptionPane.showMessageDialog(f, "Fullscreen is not supported");
-			System.out.println("Fullscreen rendering is not supported!");
-		}
-		*/
-		
-		System.out.println("Main Window is now visible");
-		
-		// Add a window listener to the frame to trigger closeup routine on window close
-		f.addWindowListener(new WindowAdapter() {
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			
-			// Define window close event
 			@Override
-			public void windowClosing(WindowEvent windowEvent) {
+			public void run() {
+				f = new ProjectFrame();
 				
-				// Check if the player is currently ingame
-				if(GameState.isIngame) {
-					int option = JOptionPane.showConfirmDialog(f, "Are you sure that you want to surrender?",
-													"Quit game?", JOptionPane.YES_NO_OPTION);
-					// If player clicked No then abort the close up routine
-					if(option == JOptionPane.NO_OPTION) {
-						return;
+				System.out.println("Main Window is now visible");
+				
+				// Add a window listener to the frame to trigger closeup routine on window close
+				f.addWindowListener(new WindowAdapter() {
+					
+					// Define window close event
+					@Override
+					public void windowClosing(WindowEvent windowEvent) {
+						
+						// Check if the player is currently ingame
+						if(GameState.isIngame) {
+							int option = JOptionPane.showConfirmDialog(f, "Are you sure that you want to surrender?",
+															"Quit game?", JOptionPane.YES_NO_OPTION);
+							// If player clicked No then abort the close up routine
+							if(option == JOptionPane.NO_OPTION) {
+								return;
+							}
+						}
+						
+						// Hide the window and restore the original display mode
+						f.setVisible(false);
+						// device.setDisplayMode(standardMode);
+						System.out.println("window was closed --> cleanup routine");
+						
+						// close the network connection to the game server
+						conn.finalize();
+						
+						// Finally exit the application 
+						System.out.println("Application close up");
+						System.exit(0);
 					}
-				}
-				
-				// Hide the window and restore the original display mode
-				f.setVisible(false);
-				// device.setDisplayMode(standardMode);
-				System.out.println("window was closed --> cleanup routine");
-				
-				// close the network connection to the game server
-				conn.finalize();
-				
-				// Finally exit the application 
-				System.out.println("Application close up");
-				System.exit(0);
+				});
 			}
 		});
+		
 	}
 }
