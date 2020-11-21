@@ -46,12 +46,8 @@ public class AStarPathFinder {
 		}
 	}
 	
-	// draws all the PathCells and draws them in different Colorm if they are wall,start,end,path...
+	// draws all the PathCells and draws them in different Color if they are wall,start,end,path...
 	public void drawPathFinder(Graphics2D g2d) {
-//		for(PathCell curPC : pathCells) {
-//			g2d.setColor(Color.GRAY);
-//			g2d.fill(curPC.getRect());
-//		}
 		if(startPathCell != null && endPathCell != null) {
 			for(PathCell curPC : openSetPathCells) {
 				g2d.setColor(Color.GREEN);

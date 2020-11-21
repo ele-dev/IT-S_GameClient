@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 
 import Environment.DestructibleObject;
+import Stage.Commons;
 
 public abstract class Projectile {
 	protected float x,y;
@@ -17,7 +18,7 @@ public abstract class Projectile {
 	protected float v;
 	protected float acc;
 	protected boolean hasHitTarget;
-	protected boolean isDestroyed;
+	protected boolean isDestroyed = false;
 	
 	protected Shape targetShape;
 	protected DestructibleObject targetDestructibleObject;
@@ -26,7 +27,8 @@ public abstract class Projectile {
 		this.x = x;
 		this.y = y; 
 		this.c = c;
-		this.rectHitbox = new Rectangle(x-w/2,y-h/2,w,h);
+		int rectHitboxSize = (w+h)/2;
+		this.rectHitbox = new Rectangle(x-rectHitboxSize/2,y-rectHitboxSize/2,rectHitboxSize,rectHitboxSize);
 		this.angle = angle;
 		this.v = v;
 		this.acc = acc;
@@ -43,7 +45,6 @@ public abstract class Projectile {
 	public boolean hasHitTarget() {
 		return hasHitTarget;
 	}
-	
 	public boolean isDestroyed() {
 		return isDestroyed;
 	}
@@ -65,7 +66,7 @@ public abstract class Projectile {
 		gk = targetPoint.y - y;
 		
 		float angleDesired = (float) Math.toDegrees(Math.atan2(ak * -1, gk));
-		angle = Stage.Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
+		angle = Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
 	}
 	
 	public abstract void drawProjectile(Graphics2D g2d);

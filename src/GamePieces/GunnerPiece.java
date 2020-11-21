@@ -21,12 +21,10 @@ import Stage.StagePanel;
 
 public class GunnerPiece extends GamePiece {
 	
-	ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-	int burstCounter;
-	Timer burstTimer;
-	int burstBulletAmount = 16;
-	
-	double spreadAngle = 10;
+	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+	private int burstCounter;
+	private Timer burstTimer;
+	private int burstBulletAmount = 16;
 	
 	public GunnerPiece(boolean isRed, BoardRectangle boardRect) {
 		super(isRed, Commons.nameGunner, boardRect, Commons.dmgGunner, Commons.baseTypeGunner,Commons.neededLOSGunner);
@@ -56,7 +54,7 @@ public class GunnerPiece extends GamePiece {
 	
 	@Override
 	public boolean isAttacking() {
-		return attackDelayTimer.isRunning() || bullets.size()>0;
+		return attackDelayTimer.isRunning() || burstTimer.isRunning() || bullets.size()>0;
 	}
 	
 	//draws every bullet in the bullets Array
@@ -77,11 +75,18 @@ public class GunnerPiece extends GamePiece {
 			
 			if(curB.hasHitTarget()) {
 				bullets.remove(i);
+				if(bullets.size() == 0 && burstCounter == 0) {
+					if(targetGamePiece != null) {
+						targetGamePiece.gamePieceBase.getDamaged(getDmg());
+						targetGamePiece = null;
+					}else { 
+						targetDestructibleObject.getDamaged(getDmg(), angle, isRed());
+						targetDestructibleObject = null;
+					}
+				}
 			}
 			
 		} 
-		
-		updateIsAttacking();
 	}
 
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
@@ -108,32 +113,13 @@ public class GunnerPiece extends GamePiece {
 		}else {
 			burstCounter = 0;
 		}
-		startedAttack = true;
 		
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
-			
-		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/14, StagePanel.boardRectSize/6, isRed(), 16, 
-				(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));	
-		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(), StagePanel.boardRectSize/12, StagePanel.boardRectSize/6, (float)angle -90, c, (float)(Math.random()*2+3)));
-	}
-	
-	// updates the isAttacking state
-	public void updateIsAttacking() {
-		if (isAttacking()) {
-			return;
-		}
-		if(startedAttack) {
-			if(targetGamePiece != null) {
-				targetGamePiece.gamePieceBase.getDamaged(getDmg());
-				targetGamePiece = null;
-			}else { 
-				targetDestructibleObject.getDamaged(getDmg(), angle, isRed());
-				targetDestructibleObject = null;
-			}
-			
-			startedAttack = false;
-			return;
-		}
+		Rectangle targetRect = (Rectangle) shape;
+		float angleDesiredProjectile = calculateAngle((int)(targetRect.getCenterX()+(Math.random()-0.5)*targetRect.width/2), (int)(targetRect.getCenterY()+(Math.random()-0.5)*targetRect.height/2));		
+		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/10, StagePanel.boardRectSize/5, isRed(), 12, 
+				angleDesiredProjectile, shape,targetDestructibleObject));	
+		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, (float)angle -90, c, (float)(Math.random()*2+3)));
 	}
 	
 }

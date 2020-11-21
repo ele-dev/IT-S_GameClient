@@ -17,9 +17,7 @@ import Stage.Commons;
 import Stage.StagePanel;
 
 public class DetonatorPiece extends GamePiece {
-	
-	ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
-	
+	private ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
 	public DetonatorPiece(boolean isRed, BoardRectangle boardRect) {
 		super(isRed, Commons.nameDetonator, boardRect, Commons.dmgDetonator, Commons.baseTypeDetonator,Commons.neededLOSDetonator);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
@@ -67,9 +65,12 @@ public class DetonatorPiece extends GamePiece {
 		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
-			
+		
+		Rectangle targetRect = (Rectangle) shape;
+		float angleDesiredProjectile = calculateAngle((int)(targetRect.getCenterX()+(Math.random()-0.5)*targetRect.width), (int)(targetRect.getCenterY()+(Math.random()-0.5)*targetRect.height));
+		
 		detProjectiles.add(new DetonatorProjectile((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, isRed(), 
-				getDmg(), (float)(angle + (Math.random()-0.5)*10), shape, targetGamePiece, targetDestructibleObject));
+				getDmg(), angleDesiredProjectile, shape, targetGamePiece, targetDestructibleObject));
 		targetDestructibleObject = null;
 		targetGamePiece = null;
 	}
@@ -83,10 +84,6 @@ public class DetonatorPiece extends GamePiece {
 				curDP.setBlinkeIntervall(5);
 			}
 		}
-	}
-	
-	public void updateIsAttacking() {
-		
 	}
 
 	public void updateAttack() { 
@@ -114,6 +111,5 @@ public class DetonatorPiece extends GamePiece {
 				detProjectiles.remove(i);
 			}
 		}
-		updateIsAttacking();
 	}
 }

@@ -47,9 +47,8 @@ public class ValueLabel {
 		g2d.drawString(str,(int)this.x-textWidth/2,(int)this.y+textHeight/3);
 	}
 	
-	// fades the color of the dmgLabel out and moves it up 
+	// fades the color of the ValueLabel out and moves it up 
 	public void updateFade() {
-		
 		c = new Color(c.getRed(),c.getGreen(),c.getBlue(),(int)alpha);
 		y -= riseSpeed;
 		if(riseSpeed-0.03f > 0) {

@@ -8,7 +8,6 @@ public class TrailParticle extends Particle{
 	private Rectangle rect;
 	private float size,shrinkSpeed;
 	
-	
 	public TrailParticle(float x, float y, int size,float angle,Color c,float v, float fadeSpeed, float shrinkSpeed) {
 		super(x, y,angle,(float)(Math.random()*360),c,v,fadeSpeed);
 		rect = new Rectangle(-size/2,-size/2,size,size);

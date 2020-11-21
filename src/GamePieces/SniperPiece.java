@@ -19,7 +19,7 @@ import Stage.Commons;
 import Stage.StagePanel;
 
 public class SniperPiece extends GamePiece{
-	Bullet sniperBullet;
+	private Bullet sniperBullet;
 	
 	public SniperPiece(boolean isRed, BoardRectangle boardRect) {
 		super(isRed, Commons.nameSniper, boardRect, Commons.dmgSniper, Commons.baseTypeSniper,Commons.neededLOSSniper);
@@ -48,9 +48,7 @@ public class SniperPiece extends GamePiece{
 	}
 
 	@Override
-	public void drawAttack(Graphics2D g2d) {
-		
-	}
+	public void drawAttack(Graphics2D g2d) {}
 	
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
 	@Override
@@ -66,9 +64,9 @@ public class SniperPiece extends GamePiece{
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 			
-		sniperBullet = new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/14, StagePanel.boardRectSize/6, isRed(),1,
+		sniperBullet = new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/10, StagePanel.boardRectSize/4, isRed(),1,
 				angle, shape, targetDestructibleObject);	
-		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),StagePanel.boardRectSize/14, StagePanel.boardRectSize/6, (float)angle -90, c,(float)(Math.random()*1+1)));
+		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),StagePanel.boardRectSize/8, StagePanel.boardRectSize/3, (float)angle -90, c,(float)(Math.random()*3+2)));
 		
 		int i = 0;
 		while(true) {
@@ -84,6 +82,10 @@ public class SniperPiece extends GamePiece{
 				break;
 			}
 			i++;
+			// failsave
+			if(i > 500) {
+				break;
+			}
 		}	
 		if(targetGamePiece != null) {
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());
