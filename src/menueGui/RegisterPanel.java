@@ -62,7 +62,7 @@ public class RegisterPanel extends GuiPanel {
 		this.fields[1].addValidChars(additionalChars);
 		
 		// Give the buttons relative position
-		this.goToLoginButton.setRelativePosition(5, 95);
+		this.goToLoginButton.setRelativePosition(5, 92);
 		this.registerAccountButton.setRelativePosition(62, 62);
 		
 		// set the initial state and according message
