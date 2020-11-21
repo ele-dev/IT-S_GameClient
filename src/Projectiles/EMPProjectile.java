@@ -2,12 +2,14 @@ package Projectiles;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 import Particles.TrailParticle;
+import Stage.Commons;
 import Stage.StagePanel;
 import Stage.TurnCountDown;
 
@@ -21,19 +23,19 @@ public class EMPProjectile extends Projectile{
 	
 	private int particleSpawnIntervall = 50, particleSpawnCounter = 0;
 	
+	public static float rotationDelay = 3;
+	private int autoStickCounter = 500;
 	public EMPProjectile(int x, int y, int w, int h, Color c, float dmg, float angle, Shape targetShape, 
 			GamePiece targetGamePiece, DestructibleObject targetDestructibleObject) {
-		super(x, y, w, h, c, angle, 16, 0, targetShape, targetDestructibleObject);
+		super(x, y, w, h, c, angle, 0, 0.3f, targetShape, targetDestructibleObject);
 		shapeShow = new Rectangle(-w/2, -h/2, w, h);
 		this.targetGamePiece = targetGamePiece;
 		this.targetDestructibleObject = targetDestructibleObject;
 		destroyCountDown = new TurnCountDown(2, c);
 	}
-	
 	public GamePiece getTargetGamePiece() {
 		return targetGamePiece;
 	}
-	
 	public TurnCountDown getDestroyCountDown() {
 		return destroyCountDown;
 	}
@@ -61,6 +63,30 @@ public class EMPProjectile extends Projectile{
 				StagePanel.particles.add(new TrailParticle((int)x, (int)y,(int) (Math.random()*5+5), (float) ((Math.random()-0.5)*60)+ angle + 90, cTP,
 						(float) (Math.random()*0.5)+0.5f, (float) (Math.random()*2+4), 0));
 			}
+		}
+	}
+	
+	public void homeInOnTarget() {
+		float ak = 0;
+		float gk = 0;
+		Point targetPoint = null;
+		if(targetGamePiece != null) {
+			targetPoint = targetGamePiece.getPos();
+		}else if(targetDestructibleObject != null){
+			targetPoint = targetDestructibleObject.getPos();
+		}
+		ak = targetPoint.x - x;
+		gk = targetPoint.y - y;
+		
+		float angleDesired = (float) Math.toDegrees(Math.atan2(ak * -1, gk));
+		angle = Commons.calculateAngleAfterRotation(angle, angleDesired, rotationDelay);
+		
+		autoStickCounter--;
+		if(autoStickCounter <= 0){
+			x = targetPoint.x;
+			y = targetPoint.y;
+			rectHitbox.setBounds((int)(x-rectHitbox.width/2), (int)(y-rectHitbox.height/2), rectHitbox.width, rectHitbox.height);
+			hasHitTarget = true;
 		}
 	}
 	

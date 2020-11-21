@@ -20,17 +20,14 @@ public class WinScreen {
 	
 	// Gui elements in the Winscreen
 	private GenericButton leaveButton;
-	private Font font;
 	private Rectangle rect;
 	int centerX,centerY;
 	public WinScreen(byte winnerIndex) {
 		this.winnerIndex = winnerIndex;
-		font = new Font("Arial",Font.BOLD,StagePanel.w/15);
 		rect = new Rectangle(StagePanel.w/16,StagePanel.h/16,StagePanel.w-StagePanel.w/8,StagePanel.h-StagePanel.h/8);
 		centerX = (int)rect.getCenterX();
 		centerY = (int)rect.getCenterY();
 		leaveButton = new GenericButton(centerX-StagePanel.w/8, centerY-StagePanel.w/16+rect.width/4, StagePanel.w/4, StagePanel.w/12, "Leave Game", new Color(20,20,20), new Color(255,0,50), StagePanel.w/24);
-		
 	}
 	
 	public GenericButton getLeaveButton() {
@@ -44,7 +41,7 @@ public class WinScreen {
 		g2d.setColor(new Color(5,5,5));
 		g2d.draw(rect);
 		
-		g2d.setFont(font);
+		g2d.setFont(new Font("Arial",Font.BOLD,StagePanel.w/15));
 		FontMetrics fontMetrics = g2d.getFontMetrics();
 		int textHeight = fontMetrics.getHeight();
 		int textWidth = 0;

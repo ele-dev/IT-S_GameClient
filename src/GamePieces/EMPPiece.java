@@ -12,14 +12,15 @@ import java.util.ArrayList;
 import javax.swing.Timer;
 
 import Projectiles.EMPProjectile;
+import Projectiles.Rocket;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
 
 
 public class EMPPiece extends GamePiece{
-	ArrayList<EMPProjectile> empProjectiles = new ArrayList<EMPProjectile>();
-	
+	private ArrayList<EMPProjectile> empProjectiles = new ArrayList<EMPProjectile>();
+	private static float spreadAngle = 120;
 	public EMPPiece(boolean isRed, BoardRectangle boardRect) {
 		super(isRed, Commons.nameEMP, boardRect, Commons.dmgEMP, Commons.baseTypeEMP,Commons.neededLOSEMP);
 		
@@ -64,10 +65,8 @@ public class EMPPiece extends GamePiece{
 		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
-		Rectangle targetRect = (Rectangle) shape;
-		float angleDesiredProjectile = calculateAngle((int)(targetRect.getCenterX()+(Math.random()-0.5)*targetRect.width), (int)(targetRect.getCenterY()+(Math.random()-0.5)*targetRect.height));	
 		empProjectiles.add(new EMPProjectile(getCenterX(), getCenterY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, c, getDmg(), 
-				angleDesiredProjectile, shape,targetGamePiece,targetDestructibleObject));
+				angle+(float)((Math.random()-0.5)* spreadAngle), shape,targetGamePiece,targetDestructibleObject));
 		targetDestructibleObject = null;
 		targetGamePiece = null;
 	}
@@ -88,6 +87,7 @@ public class EMPPiece extends GamePiece{
 			EMPProjectile curEMPP = empProjectiles.get(i);
 			curEMPP.update();
 			if(!curEMPP.hasHitTarget()) {
+				curEMPP.homeInOnTarget();
 				curEMPP.move();
 				curEMPP.checkHitEnemy();
 				curEMPP.checkHitDestructibleObject();

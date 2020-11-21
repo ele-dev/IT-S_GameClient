@@ -17,9 +17,7 @@ import Stage.Commons;
 import Stage.StagePanel;
 
 public class DetonatorPiece extends GamePiece {
-	
-	ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
-	
+	private ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
 	public DetonatorPiece(boolean isRed, BoardRectangle boardRect) {
 		super(isRed, Commons.nameDetonator, boardRect, Commons.dmgDetonator, Commons.baseTypeDetonator,Commons.neededLOSDetonator);
 		attackDelayTimer = new Timer(1500,new ActionListener() {

@@ -23,10 +23,11 @@ import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
 import Stage.StagePanel;
+import jdk.internal.dynalink.beans.StaticClass;
 
 public abstract class GamePiece {
 	
-	public BoardRectangle boardRect;
+	protected BoardRectangle boardRect;
 	protected int row;
 	protected int column;
 	private Rectangle rectShowTurret;
@@ -90,6 +91,9 @@ public abstract class GamePiece {
 	}
 	public Rectangle getRectHitbox() {
 		return gamePieceBase.getRectHitbox();
+	}
+	public BoardRectangle getBoardRect() {
+		return boardRect;
 	}
 	public float getDmg() {
 		return dmg;

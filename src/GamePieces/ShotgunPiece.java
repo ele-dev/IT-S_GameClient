@@ -86,7 +86,7 @@ public class ShotgunPiece extends GamePiece {
 			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/10, StagePanel.boardRectSize/5, isRed(),16, 
 					angleDesiredProjectile, shape,targetDestructibleObject));	
 		}
-		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),StagePanel.boardRectSize/10,StagePanel.boardRectSize/5, (float)angle -90, c,(float)(Math.random()*3+2)));
+		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),StagePanel.boardRectSize/7, StagePanel.boardRectSize/4, (float)angle -90, c,(float)(Math.random()*3+2)));
 		StagePanel.applyScreenShake(5, 10);
 	}
 }

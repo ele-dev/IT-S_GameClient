@@ -20,7 +20,6 @@ public class BoardRectangle {
 	public Rectangle rect;
 	public Color cPossibleMove,cPossibleAttack,cPossibleAbility;
 	int index;
-	public boolean isTile1;
 	public boolean isPossibleMove,isPossibleAttack;
 	public boolean isShowPossibleMove,isShowPossibleAttack;
 	public boolean isWall,isGap,isHinderingTerrain;
@@ -42,18 +41,14 @@ public class BoardRectangle {
 	public BoardRectangle(int row, int column,boolean isTile1,int index,boolean isHinderingTerrain) {
 		this.row = row;
 		this.column = column;
-		int size = StagePanel.boardRectSize;
-		rect = new Rectangle(column*size,row*size,size,size);
-		int alpha = 200;
-		cPossibleMove = new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),alpha);
-		cPossibleAttack = new Color(Commons.cAttack.getRed(),Commons.cAttack.getGreen(),Commons.cAttack.getBlue(),alpha);
-		this.isTile1 = isTile1;
+		rect = new Rectangle(column*StagePanel.boardRectSize,row*StagePanel.boardRectSize,StagePanel.boardRectSize,StagePanel.boardRectSize);
+		cPossibleMove = new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),200);
+		cPossibleAttack = new Color(Commons.cAttack.getRed(),Commons.cAttack.getGreen(),Commons.cAttack.getBlue(),200);
 		this.index = index;
 		this.isHinderingTerrain = isHinderingTerrain;
 		
 		c = isTile1?new Color(5,5,5):new Color(150,150,150);
 		 
-//		waveCounter = getCenterX();
 //		spriteRotation = (byte) (Math.random()*4)* 90;
 //		ArrayList<String> spriteLinks = new ArrayList<String>();
 //		String spriteDirector = "";
@@ -69,7 +64,7 @@ public class BoardRectangle {
 //			spriteDirector = "Tiles/MudTile.png";
 //		}
 //		spriteLinks.add(Commons.pathToSpriteSource+spriteDirector);
-//		groundSprite = new Sprite(spriteLinks, size,size, 0);
+//		groundSprite = new Sprite(spriteLinks, StagePanel.boardRectSize,StagePanel.boardRectSize, 0);
 	}
 	static void initExtendedInfoStrings() {
 		extendedInfoStrings[0] = "just a basic tile\ncannot be attacked\ncan be moved on";
@@ -142,7 +137,7 @@ public class BoardRectangle {
 	
 	public GamePiece getGamePieceOnIt() {
 		for(GamePiece curGP : StagePanel.gamePieces) {
-			if(curGP.boardRect == this) {
+			if(curGP.getBoardRect() == this) {
 				return curGP;
 			}
 		}
@@ -468,7 +463,6 @@ public class BoardRectangle {
 				g2d.drawString(str, (int)rectLabelExtend.x+border, (int)(rectLabelExtend.y+textHeight+i*textHeight));
 				i++;
 			}
-			
 		}else {
 			g2d.setFont(new Font("Arial",Font.PLAIN,size/6));
 			fontMetrics = g2d.getFontMetrics();
@@ -482,9 +476,7 @@ public class BoardRectangle {
 			g2d.draw(rectLabelExtend);
 			g2d.setColor(Color.WHITE);
 			g2d.drawString("CTRL for Info", (int)rectLabelExtend.getCenterX()-textWidth/2, (int)rectLabelExtend.getCenterY()+textHeight/3);
-			
 		}
-		
 	}
 	// updates the Hover boolean to be Hover == true if the mouse is on the BoardRectangle
 	public void updateHover(Point mousePos) {
@@ -521,7 +513,7 @@ public class BoardRectangle {
 	
 	public void drawIndex(Graphics2D g2d) {
 		g2d.setFont(new Font("Arial",Font.PLAIN,15));
-		g2d.setColor(isTile1?new Color(200,200,200):new Color(30,30,30));
+		g2d.setColor(Color.GREEN);
 		g2d.drawString(index+"", getCenterX(), getCenterY());
 	}
 	
@@ -530,7 +522,6 @@ public class BoardRectangle {
 	// on the game field that is stored in the stage panel class
 	public static BoardRectangle getBoardRectFromCoords(Point pos) {
 		BoardRectangle rect = null;
-		
 		// Go through the global list and search a match
 		for(BoardRectangle currRect: StagePanel.boardRectangles)
 		{

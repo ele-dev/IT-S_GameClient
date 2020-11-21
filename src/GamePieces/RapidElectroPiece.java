@@ -139,7 +139,7 @@ public class RapidElectroPiece extends GamePiece {
 			i++;
 			
 			// failsave
-			if(i > 10000) {
+			if(i > 500) {
 				break;
 			}
 		}

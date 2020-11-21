@@ -78,7 +78,7 @@ public class ButtonEndTurn extends GenericButton{
 		}
 		g2d.fill(rect);
 		
-		g2d.setColor(cInactive);
+		g2d.setColor(new Color(10,10,10));
 		
 		
 		g2d.setStroke(new BasicStroke(StagePanel.w/160));
@@ -87,7 +87,7 @@ public class ButtonEndTurn extends GenericButton{
 		if(isActive) {
 			g2d.setColor(isHover?c:cHover);
 		}else {
-			g2d.setColor(cInactive);
+			g2d.setColor(new Color(10,10,10));
 		}
 		g2d.setFont(f);
 		FontMetrics fMetrics = g2d.getFontMetrics();

@@ -22,7 +22,7 @@ import Stage.StagePanel;
 
 public class TazerPiece extends GamePiece{
 	
-	Bullet tazerBullet;
+	private Bullet tazerBullet;
 	
 	public TazerPiece(boolean isRed, BoardRectangle boardRect) {
 		super(isRed, Commons.nameTazer, boardRect, Commons.dmgTazer, Commons.baseTypeTazer,Commons.neededLOSTazer); 
@@ -80,7 +80,6 @@ public class TazerPiece extends GamePiece{
 				StagePanel.particles.add(new TrailParticle(x, y, (int)(Math.random()*StagePanel.boardRectSize/16+StagePanel.boardRectSize/16), 
 						(int)(Math.random()*360), cTP, (float)(Math.random()*0.1), 3,0.1f));
 			} 
-				
 			int j = (int)(Math.random()*20)+40;
 			if(i%j==0) {
 				for(int k = 0;k<amountOfTazerBolts;k++) {
@@ -137,7 +136,7 @@ public class TazerPiece extends GamePiece{
 				}
 			}
 			// failsave
-			if(i > 10000) {
+			if(i > 500) {
 				break;
 			}
 		}

@@ -197,7 +197,7 @@ public class StagePanel extends JPanel {
 	
 	public static void tryCaptureGoldMine(GamePiece gamePiece) {
 		for(GoldMine curGM : StagePanel.goldMines) {
-			if(curGM.getCaptureState() == 0 && curGM.getNeighborBoardRectangles().contains(gamePiece.boardRect)) {
+			if(curGM.getCaptureState() == 0 && curGM.getNeighborBoardRectangles().contains(gamePiece.getBoardRect())) {
 				curGM.capture(gamePiece.isRed());
 			}
 		}
@@ -382,10 +382,8 @@ public class StagePanel extends JPanel {
 	private void drawFortresses(Graphics2D g2d) {
 		if(redBase != null)
 			redBase.drawDestructibleObject(g2d);
-		
 		if(blueBase != null)
 			blueBase.drawDestructibleObject(g2d);
-		
 	}
 	private void drawGoldMines(Graphics2D g2d) {
 		for(GoldMine curGM : goldMines) 
@@ -404,6 +402,7 @@ public class StagePanel extends JPanel {
 				}
 			}
 		}
+//		System.out.println(particles.size());
 	}
 		
 	private void drawAllDestructionParticles(Graphics2D g2d) {
@@ -562,7 +561,6 @@ public class StagePanel extends JPanel {
 	}
 	
 	public static void checkIfSomeOneWon() {
-		
 		if(blueBase.isDestroyed()) {
 			winScreen = new WinScreen((byte)1);
 		}
@@ -589,10 +587,8 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void updateFortresses() {
-		if(StagePanel.redBase != null && StagePanel.blueBase != null) {
-			redBase.update();
-			blueBase.update();
-		}
+		redBase.update();
+		blueBase.update();
 	}
 	
 	// updates all the GamePieces (checks if they are performing an action,are dead
@@ -711,7 +707,7 @@ public class StagePanel extends JPanel {
 		curSelectedGP = null;
 		if(curHoverBR != null && GameState.myTurn) {
 			for(GamePiece curGP : gamePieces) {
-				if(curGP.boardRect.equals(curHoverBR) && curGP.isRed() == GameState.myTeamIsRed) {
+				if(curGP.getBoardRect().equals(curHoverBR) && curGP.isRed() == GameState.myTeamIsRed) {
 					curSelectedGP = curGP;
 				} else {
 					curGP.actionSelectionPanel.setAttackButtonActive(false);
@@ -770,7 +766,7 @@ public class StagePanel extends JPanel {
 						
 					// Get 2D coordinates of the game piece's position and the destination field 
 					Point destination = new Point(curHoverBR.row, curHoverBR.column);
-					Point piecePos = new Point(curSelectedGP.boardRect.row, curSelectedGP.boardRect.column);
+					Point piecePos = new Point(curSelectedGP.getBoardRect().row, curSelectedGP.getBoardRect().column);
 					
 					// Send a make move message to the server passing player position and movement vector 
 					MsgMakeMove moveMessage = new MsgMakeMove(piecePos, destination);
@@ -792,7 +788,7 @@ public class StagePanel extends JPanel {
 					}
 					
 					// Get 2D coordinates of the attacker's game piece and the vicitim's game piece
-					Point attackerPos = new Point(curSelectedGP.boardRect.row, curSelectedGP.boardRect.column);
+					Point attackerPos = new Point(curSelectedGP.getBoardRect().row, curSelectedGP.getBoardRect().column);
 					Point victimPos = new Point(curHoverBR.row, curHoverBR.column);
 					
 					// Send an attack message to the server passing the attacker's and victims positions
@@ -828,7 +824,7 @@ public class StagePanel extends JPanel {
 				curBR.isPossibleAttack = false;
 			}
 			if(curSelectedGP.actionSelectionPanel.getMoveButtonIsActive()) {
-				curSelectedGP.resetPathFinder(curSelectedGP.boardRect, curHoverBR, false);
+				curSelectedGP.resetPathFinder(curSelectedGP.getBoardRect(), curHoverBR, false);
 				curSelectedGP.showPathBRs();
 			}else if(curSelectedGP.actionSelectionPanel.getAttackButtonIsActive()) {
 				if(curHoverBR.isShowPossibleAttack) {

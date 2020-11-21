@@ -86,15 +86,19 @@ public class Explosion extends Particle{
 	}
 	// updates each piece of the explosion (all fragments and all clouds)
 	public void updateExplosion() {
-		for(ExplosionFragment curEF : explosionFragments) {
-			if(curEF.getColor().getAlpha()>10) {
-				curEF.updateFade();
-				curEF.updateTrail();
+		for(int i = 0;i<explosionFragments.size();i++) {
+			if(explosionFragments.get(i).getColor().getAlpha()>10) {
+				explosionFragments.get(i).updateFade();
+				explosionFragments.get(i).updateTrail();
+			}else {
+				explosionFragments.remove(i);
 			}
 		}	
-		for(ExplosionCloud curEC : explosionClouds) {
-			if(curEC.getColor().getAlpha()>10) {
-				curEC.updateFade();
+		for(int i = 0;i<explosionClouds.size();i++) {
+			if(explosionClouds.get(i).getColor().getAlpha()>10) {
+				explosionClouds.get(i).updateFade();
+			}else {
+				explosionClouds.remove(i);
 			}
 		}
 	}

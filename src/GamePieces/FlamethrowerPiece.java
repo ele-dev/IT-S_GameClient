@@ -17,10 +17,10 @@ import Stage.StagePanel;
 
 public class FlamethrowerPiece extends GamePiece {
 	
-	ArrayList<FlameThrowerFlame> flames = new ArrayList<FlameThrowerFlame>();
-	int burstCounter;
-	Timer burstTimer;
-	int burstBulletAmount = 200;
+	private ArrayList<FlameThrowerFlame> flames = new ArrayList<FlameThrowerFlame>();
+	private int burstCounter;
+	private Timer burstTimer;
+	private int burstBulletAmount = 200;
 	
 	public FlamethrowerPiece(boolean isRed, BoardRectangle boardRect) {
 		super(isRed, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,Commons.baseTypeFlameThrower,Commons.neededLOSFlameThrower);

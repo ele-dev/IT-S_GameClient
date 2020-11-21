@@ -21,12 +21,10 @@ import Stage.StagePanel;
 
 public class GunnerPiece extends GamePiece {
 	
-	ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-	int burstCounter;
-	Timer burstTimer;
-	int burstBulletAmount = 16;
-	
-	double spreadAngle = 10;
+	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+	private int burstCounter;
+	private Timer burstTimer;
+	private int burstBulletAmount = 16;
 	
 	public GunnerPiece(boolean isRed, BoardRectangle boardRect) {
 		super(isRed, Commons.nameGunner, boardRect, Commons.dmgGunner, Commons.baseTypeGunner,Commons.neededLOSGunner);

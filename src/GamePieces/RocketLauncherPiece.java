@@ -19,12 +19,12 @@ import Stage.StagePanel;
 
 
 public class RocketLauncherPiece extends GamePiece{
-	ArrayList<Rocket> rockets = new ArrayList<Rocket>();
-	int burstCounter;
-	Timer burstTimer;
-	int burstRocketAmount = 8;
+	private ArrayList<Rocket> rockets = new ArrayList<Rocket>();
+	private int burstCounter;
+	private Timer burstTimer;
+	private int burstRocketAmount = 8;
 	 
-	double spreadAngle = 120;
+	private static float spreadAngle = 120;
 	
 	public RocketLauncherPiece(boolean isRed, BoardRectangle boardRect) {
 		super(isRed, Commons.nameRocketLauncher, boardRect, Commons.dmgRocketLauncher,Commons.baseTypeRocketLauncher,Commons.neededLOSRocketLauncher);
@@ -101,17 +101,17 @@ public class RocketLauncherPiece extends GamePiece{
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		
 		for(int i = 0;i<rockets.size();i++) {
-			Rocket curR = rockets.get(i);
-			curR.addTrailParticle();
-			curR.tryExplodeTarget();
+			rockets.get(i).addTrailParticle();
+			rockets.get(i).tryExplodeTarget();
 			if(targetGamePiece != null) {
-				curR.homeInOnTarget(targetGamePiece.getPos(), curR.rotationDelay);
+				rockets.get(i).homeInOnTarget(targetGamePiece.getPos(), Rocket.rotationDelay);
 			}else if(targetDestructibleObject != null){
-				curR.homeInOnTarget(targetDestructibleObject.getPos(), curR.rotationDelay);
+				rockets.get(i).homeInOnTarget(targetDestructibleObject.getPos(), Rocket.rotationDelay);
 			}
 			
-			curR.move();
-			if(curR.isDestroyed()) {
+			rockets.get(i).move();
+			rockets.get(i).decAutoExplodeCounter();
+			if(rockets.get(i).isDestroyed()) {
 				rockets.remove(i);
 				if(rockets.size() == 0 && burstCounter == 0) {
 					if(targetGamePiece != null) {

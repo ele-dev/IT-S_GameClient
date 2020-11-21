@@ -19,7 +19,7 @@ import Stage.Commons;
 import Stage.StagePanel;
 
 public class SniperPiece extends GamePiece{
-	Bullet sniperBullet;
+	private Bullet sniperBullet;
 	
 	public SniperPiece(boolean isRed, BoardRectangle boardRect) {
 		super(isRed, Commons.nameSniper, boardRect, Commons.dmgSniper, Commons.baseTypeSniper,Commons.neededLOSSniper);
@@ -48,9 +48,7 @@ public class SniperPiece extends GamePiece{
 	}
 
 	@Override
-	public void drawAttack(Graphics2D g2d) {
-		
-	}
+	public void drawAttack(Graphics2D g2d) {}
 	
 	// checks if the parameter Pos is a valid attack position (also if it  is in line of sight)
 	@Override
@@ -85,7 +83,7 @@ public class SniperPiece extends GamePiece{
 			}
 			i++;
 			// failsave
-			if(i > 10000) {
+			if(i > 500) {
 				break;
 			}
 		}	
