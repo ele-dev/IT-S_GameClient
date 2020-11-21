@@ -5,7 +5,7 @@ import java.awt.Color;
 public interface Commons {
 	
 	// The game title
-	public final String gameTitle = "Game Title";
+	public final String gameTitle = "Crossfire PvP";
 	
 	// Refresh rates for timers 
 	public static final int frametime = 10;

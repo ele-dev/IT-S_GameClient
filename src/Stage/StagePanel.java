@@ -44,6 +44,7 @@ import PlayerStructures.GoldMine;
 import PlayerStructures.PlayerFortress;
 import menueGui.GameState;
 import networking.GenericMessage;
+import networking.MsgAccountStats;
 import networking.MsgAttack;
 import networking.MsgMakeMove;
 import networking.SignalMessage;
@@ -227,7 +228,20 @@ public class StagePanel extends JPanel {
 			// Terminate the winning screen since it's no longer needed
 			StagePanel.winScreen = null;
 			
-			// At last reset the enemy state data
+			// Update the player's account stats (not for guests) according the match result
+			if(!ProjectFrame.conn.isGuestPlayer()) {
+				// increase the played matches counter
+				GameState.playedMatches++;
+				
+				// Only winners earn money
+				// ...
+				
+				// send an account stats message to the server
+				MsgAccountStats accStats = new MsgAccountStats(GameState.playedMatches, GameState.money);
+				ProjectFrame.conn.sendMessageToServer(accStats);
+			}
+			
+			// At last reset the enemy state data 
 			GameState.enemySurrender = false;
 			GameState.enemyName = "";
 		}
@@ -241,22 +255,22 @@ public class StagePanel extends JPanel {
 	@SuppressWarnings("unused")
 	private static void initGamePieces() {
 		gamePieces.add(new SniperPiece(false, boardRectangles.get(58)));
-		gamePieces.add(new SniperPiece(true, boardRectangles.get(105)));
+		gamePieces.add(new SniperPiece(true, boardRectangles.get(556)));
 		gamePieces.add(new GunnerPiece(false, boardRectangles.get(102)));
-		gamePieces.add(new GunnerPiece(true, boardRectangles.get(103)));
+		gamePieces.add(new GunnerPiece(true, boardRectangles.get(559)));
 		gamePieces.add(new RocketLauncherPiece(false, boardRectangles.get(137)));
-		gamePieces.add(new RocketLauncherPiece(true, boardRectangles.get(120)));
+		gamePieces.add(new RocketLauncherPiece(true, boardRectangles.get(432)));
 		gamePieces.add(new FlamethrowerPiece(false, boardRectangles.get(145)));
-		gamePieces.add(new FlamethrowerPiece(true, boardRectangles.get(172)));
+		gamePieces.add(new FlamethrowerPiece(true, boardRectangles.get(508)));
 		gamePieces.add(new TazerPiece(false, boardRectangles.get(133)));
-		gamePieces.add(new TazerPiece(true, boardRectangles.get(135)));
+		gamePieces.add(new TazerPiece(true, boardRectangles.get(516)));
 		gamePieces.add(new DetonatorPiece(false, boardRectangles.get(91)));
-		gamePieces.add(new DetonatorPiece(true, boardRectangles.get(69)));
+		gamePieces.add(new DetonatorPiece(true, boardRectangles.get(472)));
 		gamePieces.add(new EMPPiece(false, boardRectangles.get(139)));
-		gamePieces.add(new ShotgunPiece(false, boardRectangles.get(101)));
-		gamePieces.add(new RapidElectroPiece(true, boardRectangles.get(110)));
+		gamePieces.add(new ShotgunPiece(true, boardRectangles.get(514)));
+		gamePieces.add(new RapidElectroPiece(true, boardRectangles.get(470)));
 		gamePieces.add(new RapidElectroPiece(false, boardRectangles.get(59)));
-		gamePieces.add(new RapidElectroPiece(false, boardRectangles.get(60)));
+		gamePieces.add(new RapidElectroPiece(true, boardRectangles.get(490)));
 		gamePieces.add(new RapidElectroPiece(false, boardRectangles.get(61)));
 		
 		for(GamePiece curGP : gamePieces) {

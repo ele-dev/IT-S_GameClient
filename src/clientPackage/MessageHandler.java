@@ -49,12 +49,40 @@ public class MessageHandler {
 				MsgAccountStats accountStats = (MsgAccountStats) msg;
 				
 				// Now store the received stats from the message
-				// ...
+				GameState.playedMatches = accountStats.getPlayedMatches();
+				GameState.money = accountStats.getAccountBalance();
 				
 				// Show stats on the console for debugging
 				System.out.println("Received account stats from the server");
 				System.out.println("Played Matches: " + accountStats.getPlayedMatches());
 				System.out.println("Account Balance: " + accountStats.getAccountBalance());
+				
+				break;
+			}
+			
+			// Message that contains global multiplayer information (no ingame info)
+			case GenericMessage.MSG_GAME_DATA:
+			{
+				// Ignore this mesage if the player isnt't logged in yet
+				if(!ProjectFrame.conn.isLoggedIn()) {
+					System.err.println("Received invalid game data message from the server!");
+				}
+				
+				// Coerce it into the right format
+				MsgGameData gameData = (MsgGameData)msg;
+				
+				// Read and store the containing state variables (ignore values < 0) 
+				if(gameData.getOnlinePlayerCount() >= 0) {
+					GameState.onlinePlayers = gameData.getOnlinePlayerCount();
+				} 
+				if(gameData.getRunningMatchCount() >= 0) {
+					GameState.globalRunningMatches = gameData.getRunningMatchCount();
+				}
+				
+				// Show received data on the console for debugging
+				System.out.println("Received Game Data from the server");
+				System.out.println("Current online players: " + GameState.onlinePlayers);
+				System.out.println("Currently running matches: " + GameState.globalRunningMatches);
 				
 				break;
 			}
