@@ -23,7 +23,6 @@ import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
 import Stage.StagePanel;
-import jdk.internal.dynalink.beans.StaticClass;
 
 public abstract class GamePiece {
 	
