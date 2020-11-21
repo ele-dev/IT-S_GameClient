@@ -19,7 +19,6 @@ public class GenericButton {
 	
 	protected Color c;
 	protected Color cHover;
-	protected Color cInactive;
 	
 	protected Font f;
 	
@@ -31,7 +30,6 @@ public class GenericButton {
 		this.c = c;
 		this.cHover = cHover;
 		this.f = new Font("Arial",Font.BOLD,fontSize);
-		cInactive = new Color(10,10,10);
 	}
 	
 	public boolean isHover() {
@@ -56,7 +54,7 @@ public class GenericButton {
 		if(isActive) {
 			g2d.setColor(isHover?c:cHover);
 		}else {
-			g2d.setColor(cInactive);
+			g2d.setColor(new Color(10,10,10));
 		}
 		
 		g2d.setStroke(new BasicStroke(StagePanel.w/160));

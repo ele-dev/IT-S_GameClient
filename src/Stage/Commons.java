@@ -92,7 +92,7 @@ public interface Commons {
 	final int baseTypeEMP = 0;
 	final float dmgEMP = 2;
 	final String nameEMP = "E";
-	final boolean neededLOSEMP = true;
+	final boolean neededLOSEMP = false;
 	// SniperPiece
 	final int baseTypeSniper = 0;
 	final float dmgSniper = 5;

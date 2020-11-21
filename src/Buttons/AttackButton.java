@@ -40,7 +40,7 @@ class AttackButton extends InterfaceButton{
 			g2d.setColor(c);
 		}
 		if(parentGamepiece.getHasExecutedAttack()) {
-			g2d.setColor(cInactive);
+			g2d.setColor(new Color(10,10,10));
 		} 
 		g2d.draw(rect);
 		

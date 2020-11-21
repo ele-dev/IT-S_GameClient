@@ -19,7 +19,6 @@ import Stage.StagePanel;
 
 public class ShotgunPiece extends GamePiece {
 	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-	private float spreadAngle = 30;
 	private byte bulletAmount = 10;
 
 	public ShotgunPiece(boolean isRed, BoardRectangle boardRect) {
@@ -63,42 +62,31 @@ public class ShotgunPiece extends GamePiece {
 			
 			if(curB.hasHitTarget()) {
 				bullets.remove(i);
+				if(bullets.size() == 0) {
+					if(targetGamePiece != null) {
+						targetGamePiece.gamePieceBase.getDamaged(getDmg());
+						targetGamePiece = null;
+					}else { 
+						targetDestructibleObject.getDamaged(getDmg(),angle,isRed());
+						targetDestructibleObject = null;
+					}
+				}
 			}
 		} 
-		updateIsAttacking();
 	}
 	
 	public void shootOnce() {
 		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
-		startedAttack = true;
-		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
-			targetDestructibleObject.getRectHitbox();
+		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():targetDestructibleObject.getRectHitbox();
+		Rectangle targetRect = (Rectangle) shape;
+		
 		for(int i = 0;i<bulletAmount;i++) {
-			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/14, StagePanel.boardRectSize/4, isRed(),16, 
-					(float) (angle + (Math.random()-0.5)*spreadAngle), shape,targetDestructibleObject));	
+			float angleDesiredProjectile = calculateAngle((int)(targetRect.getCenterX()+(Math.random()-0.5)*targetRect.width), (int)(targetRect.getCenterY()+(Math.random()-0.5)*targetRect.height));
+			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/10, StagePanel.boardRectSize/5, isRed(),16, 
+					angleDesiredProjectile, shape,targetDestructibleObject));	
 		}
-		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),StagePanel.boardRectSize/14,StagePanel.boardRectSize/4, (float)angle -90, c,(float)(Math.random()*3+2)));
+		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),StagePanel.boardRectSize/7, StagePanel.boardRectSize/4, (float)angle -90, c,(float)(Math.random()*3+2)));
 		StagePanel.applyScreenShake(5, 10);
 	}
-	
-	// updates the isAttacking state
-	public void updateIsAttacking() {
-		if(isAttacking()) {
-			return;
-		}
-		
-		if(startedAttack) {
-			if(targetGamePiece != null) {
-				targetGamePiece.gamePieceBase.getDamaged(getDmg());
-				targetGamePiece = null;
-			}else { 
-				targetDestructibleObject.getDamaged(getDmg(),angle,isRed());
-				targetDestructibleObject = null;
-			}
-			startedAttack = false;
-		}
-		
-	}
-
 }

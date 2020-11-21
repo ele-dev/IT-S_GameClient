@@ -242,7 +242,7 @@ public class MessageHandler {
 				}
 				
 				// For debugging
-				System.out.println("movingGP: row=" + movingGP.boardRect.row + "column=" + movingGP.boardRect.column);
+				System.out.println("movingGP: row=" + movingGP.getBoardRect().row + "column=" + movingGP.getBoardRect().column);
 				System.out.println("destinationBR: row=" + destinationBR.row + "column="+ destinationBR.column);
 				
 				break;
@@ -289,7 +289,7 @@ public class MessageHandler {
 				attackerGP.startAttack(victimBR);
 				
 				// For debugging
-				System.out.println("attackerGP: row=" + attackerGP.boardRect.row + " column=" + attackerGP.boardRect.column);
+				System.out.println("attackerGP: row=" + attackerGP.getBoardRect().row + " column=" + attackerGP.getBoardRect().column);
 				System.out.println("victimGP: row=" + victimBR.row + " column=" + victimBR.column);
 				
 				// Check if someone has won the game 
@@ -340,7 +340,7 @@ public class MessageHandler {
 						break;
 					}
 					
-					case "FlamethrowerPiece":
+					case "FlameThrowerPiece":
 					{
 						spawnedGP = new FlamethrowerPiece(isRed, spawnPoint);
 						break;

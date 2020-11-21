@@ -131,7 +131,7 @@ public class TurnInfo {
 				x += counter;
 			}
 			Color c = GameState.myTurn?GameState.myTeamColor:new Color(10,10,10);
-			if(counter%4 == 0) {
+			if(counter%6 == 0) {
 				int size = (int)(Math.random()*StagePanel.w/300+StagePanel.w/300);
 				size = size > 0?size:1;
 				trailParticles.add(new TrailParticle((int)(x+(Math.random()-0.5)*4), (int)(y+(Math.random()-0.5)*4),size, (float)Math.random()*360, c, 0, 2, 0));

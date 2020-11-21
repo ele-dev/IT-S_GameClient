@@ -19,7 +19,6 @@ import Stage.StagePanel;
 public class DestructibleObject {
 	protected float rotation;
 	protected float health;
-	protected boolean isDestroyed;
 	protected Rectangle rectHitbox;
 	protected Sprite sprite;
 	protected int impactFlashCounter;
@@ -54,7 +53,7 @@ public class DestructibleObject {
 		return new Point((int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY());
 	}
 	public boolean isDestroyed() {
-		return isDestroyed;
+		return health <= 0;
 	}
 	public float getHealth() {
 		return health;
@@ -129,7 +128,6 @@ public class DestructibleObject {
 	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
 		health -= dmg;
 		if(health <= 0) {
-			isDestroyed = true;
 			for(int i = 0; i < 8 * occupiedBRs.length; i++) {
 				float x = (float)(rectHitbox.getCenterX()+(Math.random()-0.5)*rectHitbox.width);
 				float y = (float)(rectHitbox.getCenterY()+(Math.random()-0.5)*rectHitbox.height);

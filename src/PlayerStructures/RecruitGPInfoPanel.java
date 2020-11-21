@@ -178,9 +178,9 @@ public class RecruitGPInfoPanel {
 			StagePanel.gamePieces.add(new DetonatorPiece(isRed, boardRectangle));
 			spawnGPmessage.setGamePieceClass("DetonatorPiece");
 			break;
-		case "Flamethrower":
+		case "FlameThrower":
 			StagePanel.gamePieces.add(new FlamethrowerPiece(isRed, boardRectangle));
-			spawnGPmessage.setGamePieceClass("FlamethrowerPiece");
+			spawnGPmessage.setGamePieceClass("FlameThrowerPiece");
 			break;
 		case "RocketLauncher":
 			StagePanel.gamePieces.add(new RocketLauncherPiece(isRed, boardRectangle));

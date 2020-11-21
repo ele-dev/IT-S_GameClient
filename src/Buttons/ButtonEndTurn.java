@@ -78,7 +78,7 @@ public class ButtonEndTurn extends GenericButton{
 		}
 		g2d.fill(rect);
 		
-		g2d.setColor(cInactive);
+		g2d.setColor(new Color(10,10,10));
 		
 		
 		g2d.setStroke(new BasicStroke(StagePanel.w/160));
@@ -87,7 +87,7 @@ public class ButtonEndTurn extends GenericButton{
 		if(isActive) {
 			g2d.setColor(isHover?c:cHover);
 		}else {
-			g2d.setColor(cInactive);
+			g2d.setColor(new Color(10,10,10));
 		}
 		g2d.setFont(f);
 		FontMetrics fMetrics = g2d.getFontMetrics();
@@ -183,7 +183,7 @@ public class ButtonEndTurn extends GenericButton{
 			}else {
 				x += counter;
 			}
-			if(counter%4 == 0) {
+			if(counter%6 == 0) {
 				int size = (int)(Math.random()*StagePanel.w/300+StagePanel.w/300);
 				size = size > 0?size:1;
 				trailParticles.add(new TrailParticle((int)(x+(Math.random()-0.5)*4), (int)(y+(Math.random()-0.5)*4),size, (float)Math.random()*360,

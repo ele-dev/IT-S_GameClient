@@ -193,7 +193,6 @@ public class PlayerFortress extends DestructibleObject {
 	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
 		health -= dmg;
 		if(health <= 0) {
-			isDestroyed = true;
 			StagePanel.checkIfSomeOneWon();
 		}
 		StagePanel.addValueLabel((int)(rectHitbox.getCenterX() + (Math.random()-0.5)*rectHitbox.getWidth()),

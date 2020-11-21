@@ -106,13 +106,11 @@ public class RapidElectroPiece extends GamePiece {
 				}
 			}
 		}
-		updateIsAttacking();
 	}
 	
 	public void shootOnce() {
 		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
-		startedAttack = true;
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 		
@@ -139,6 +137,11 @@ public class RapidElectroPiece extends GamePiece {
 			bullet.move();
 			bullet.checkHitAnyTarget();
 			i++;
+			
+			// failsave
+			if(i > 500) {
+				break;
+			}
 		}
 		points.add(new Point((int)bullet.getX(), (int)bullet.getY()));
 		StagePanel.particles.add(new TazerBolt(points));
@@ -153,9 +156,4 @@ public class RapidElectroPiece extends GamePiece {
 		
 		StagePanel.applyScreenShake(5, 10);
 	}
-	
-	// updates the isAttacking state
-	public void updateIsAttacking() {
-	}
-
 }

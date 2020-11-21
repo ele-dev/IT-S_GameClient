@@ -78,8 +78,8 @@ public class LoginPanel extends GuiPanel {
 	}
 	
 	// Updating method
-	@Override 
-	protected void update() {
+	@Override
+	public void update() {
 		// Update the login status label
 		this.statusLabel.setTextColor(this.failedAttempt ? Color.RED : Color.WHITE);
 		this.statusLabel.setText(this.loginStatusStr);
