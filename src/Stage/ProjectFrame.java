@@ -48,31 +48,31 @@ public class ProjectFrame extends JFrame {
 	 
 	private ProjectFrame() {
     
-    // Get the monitor screen resolution and take it as window dimension
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    width = (int) screenSize.getWidth();
-    height = (int) screenSize.getHeight();
-
-    /*
-     * for windowed mode with fixed dimension and resolution
-     * 
-      width = (int) 1600;
-      height = (int) width * 9 / 16;
-     *
-     */
-
-    setSize(width, height);
-    setExtendedState(JFrame.MAXIMIZED_BOTH);
-    setBoardRectangleSize();
-
-    // Create and init the Window (JFrame)
-    setLocationRelativeTo(null);
-    setLayout(null);
-    setUndecorated(false);
-    setResizable(false);
-    setTitle(Commons.gameTitle);
-    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-    setVisible(true);
+	    // Get the monitor screen resolution and take it as window dimension
+	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	    width = (int) screenSize.getWidth();
+	    height = (int) screenSize.getHeight();
+	
+	    /*
+	     * for windowed mode with fixed dimension and resolution
+	     * 
+	      width = (int) 1600;
+	      height = (int) width * 9 / 16;
+	     *
+	     */
+	
+	    setSize(width, height);
+	    setExtendedState(JFrame.MAXIMIZED_BOTH);
+	    setBoardRectangleSize();
+	
+	    // Create and init the Window (JFrame)
+	    setLocationRelativeTo(null);
+	    setLayout(null);
+	    setUndecorated(false);
+	    setResizable(false);
+	    setTitle(Commons.gameTitle);
+	    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+	    setVisible(true);
 		
 		// Create the timers that make up the global realtime game loop
 		tFrameRate = new Timer(Commons.frametime + 3, new ActionListener() {
