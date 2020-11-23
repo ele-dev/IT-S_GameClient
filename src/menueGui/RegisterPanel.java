@@ -133,7 +133,7 @@ public class RegisterPanel extends GuiPanel {
 		}
 	}
 	
-	// Method for typing a letter in a focused text field
+	// method for handling key pressed events (e.g. typing in textfields)
 	private void tryTypeIn(KeyEvent e) {
 		
 		// Make sure not to handle events for other panels
@@ -207,9 +207,11 @@ public class RegisterPanel extends GuiPanel {
 				this.registerAccountButton.selectButtonNow(false);
 				this.goToLoginButton.selectButtonNow(false);
 			}
+			
+			return;
 		}
 		
-		// Trigger register attempt when enter was pressed
+		// Trigger a click event on the selected button when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 			if(this.goToLoginButton.isSelected()) {
 				this.redirectToLogin();
@@ -217,6 +219,8 @@ public class RegisterPanel extends GuiPanel {
 				System.out.println("register attempt because enter pressed");
 				this.tryRegisterAccount();
 			}
+			
+			return;
 		}
 		
 		// Try to enter a character of the key event into a textfield

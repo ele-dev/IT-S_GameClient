@@ -99,6 +99,7 @@ public class ProjectFrame extends JFrame {
 		cp.add(registerPanel);
 		addKeyListener(loginPanel);
 		addKeyListener(registerPanel);
+		addKeyListener(homePanel);
 		addKeyListener(stagePanel.kl);
 		
 		// Run the game loop by starting the timers (Update & Repaint)

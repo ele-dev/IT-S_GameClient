@@ -131,7 +131,7 @@ public class LoginPanel extends GuiPanel {
 		}
 	}
 	
-	// Method for typing a letter in a text field
+	// method for handling key pressed events (e.g. typing in textfields)
 	private void tryTypeIn(KeyEvent e) {
 		
 		// Make sure not to handle events for other panels
@@ -141,7 +141,6 @@ public class LoginPanel extends GuiPanel {
 		
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
-			
 			if(this.fields[0].isSelected()) {
 				// set focus on field[1] now
 				this.fields[0].selectFieldNow(false);
@@ -194,10 +193,8 @@ public class LoginPanel extends GuiPanel {
 			return;
 		}
 		
-		// Trigger login attempt when enter was pressed
+		// Trigger a click event on the selected button when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			// If the play as guest button is currently focused/selected then do so
-			// otherwise attempt to login with account credentials
 			if(this.playAsGuestButton.isSelected()) {
 				this.playAsGuest();
 			} else if(this.goToRegisterButton.isSelected()) {
@@ -206,11 +203,12 @@ public class LoginPanel extends GuiPanel {
 				System.out.println("login attempt because enter pressed");
 				this.tryLogin();
 			}
+			
+			return;
 		}
 		
 		// Try to enter a character of the key event into a textfield
-		for(TextInputField curTIF : this.fields) 
-		{ 
+		for(TextInputField curTIF : this.fields) { 
 			curTIF.typeInText(e);
 		}	
 	}
@@ -311,7 +309,7 @@ public class LoginPanel extends GuiPanel {
 		goToRegisterButton.updateHover(e);
 	}
 
-	// Key listener for typing text into textfields
+	// Key listener for reacting on keyboard input
 	@Override
 	public void keyPressed(KeyEvent e) {
 		tryTypeIn(e);
