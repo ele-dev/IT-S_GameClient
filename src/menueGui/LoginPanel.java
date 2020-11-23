@@ -38,6 +38,9 @@ public class LoginPanel extends GuiPanel {
 		// Set the desired background color
 		this.bgColor = Commons.loginScreenBackground;
 		
+		// Gain access to traversal key events on this panel (--> TAB)
+		this.setFocusTraversalKeysEnabled(false);
+		
 		// init the gui elements
 		initGuiElements();
 	}
@@ -118,24 +121,61 @@ public class LoginPanel extends GuiPanel {
 	// Method for typing a letter in a text field
 	private void tryTypeIn(KeyEvent e) {
 		
-		// Switch focus to next text field when TAB was typed
-		/*
-			if(e.getKeyCode() == KeyEvent.VK_TAB) {
-			System.out.println("TAB key pressed");
+		// Switch focus to next text field when TAB was pressed
+		if(e.getKeyCode() == KeyEvent.VK_TAB) {
+			// System.out.println("TAB key pressed");
 			
 			if(this.fields[0].isSelected()) {
 				// set focus on field[1] now
 				this.fields[0].selectFieldNow(false);
 				this.fields[1].selectFieldNow(true);
+				this.loginButton.selectButtonNow(false);
+				this.playAsGuestButton.selectButtonNow(false);
+				
+			} else if(this.fields[1].isSelected()) {
+				// set focus on login button
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(false);
+				this.loginButton.selectButtonNow(true);
+				this.playAsGuestButton.selectButtonNow(false);
+				
+			} else if(this.loginButton.isSelected()) {
+				// set focus on the play as guest button
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(false);
+				this.loginButton.selectButtonNow(false);
+				this.playAsGuestButton.selectButtonNow(true);
+				
+			} else if(this.playAsGuestButton.isSelected()) {
+				// set focus on field[0] now
+				this.fields[0].selectFieldNow(true);
+				this.fields[1].selectFieldNow(false);
+				this.loginButton.selectButtonNow(false);
+				this.playAsGuestButton.selectButtonNow(false);
+				
 			} else {
 				// set focus on field[0] now
-				this.fields[1].selectFieldNow(false);
 				this.fields[0].selectFieldNow(true);
-			} 
+				this.fields[1].selectFieldNow(false);
+				this.loginButton.selectButtonNow(false);
+				this.playAsGuestButton.selectButtonNow(false);
+			}
 			
 			return;
 		}
-		 */
+		
+		// Trigger login attempt when enter was pressed
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			// System.out.println("ENTER key pressed");
+			
+			// If the play as guest button is currently hovered then do so
+			// otherwise attempt to login with account credentials
+			if(this.playAsGuestButton.isSelected()) {
+				this.playAsGuest();
+			} else {
+				this.tryLogin();
+			}
+		}
 		
 		for(TextInputField curTIF : this.fields) 
 		{ 
@@ -147,7 +187,7 @@ public class LoginPanel extends GuiPanel {
 	private void playAsGuest() {
 		
 		// play as guest button click event
-		if(playAsGuestButton.isHover() && !ProjectFrame.conn.isLoggedIn()) {
+		if(!ProjectFrame.conn.isLoggedIn()) {
 			// Attempt to login as guest player
 			boolean success = ProjectFrame.conn.loginAsGuest();
 			if(!success) {
@@ -166,7 +206,7 @@ public class LoginPanel extends GuiPanel {
 	private void tryLogin() {
 		
 		// Login Button click event 
-		if(loginButton.isHover() && !ProjectFrame.conn.isLoggedIn()) {
+		if(!ProjectFrame.conn.isLoggedIn()) {
 			
 			// Obtain the content of the text fields
 			String user = this.fields[0].text;
@@ -218,8 +258,8 @@ public class LoginPanel extends GuiPanel {
 	// Mouse Listener events for detecting clicks on GUI elements
 	@Override 
 	public void mouseClicked(MouseEvent e) {
-		tryLogin();
-		playAsGuest();
+		if(this.loginButton.isHover()) { tryLogin(); }
+		if(this.playAsGuestButton.isHover()) { playAsGuest(); }
 		redirectToRegister();
 	}
 
