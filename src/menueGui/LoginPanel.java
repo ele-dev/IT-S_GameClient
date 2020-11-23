@@ -75,6 +75,10 @@ public class LoginPanel extends GuiPanel {
 		// Remove remaining focus on buttons
 		this.loginButton.selectButtonNow(false);
 		this.playAsGuestButton.selectButtonNow(false);
+		this.goToRegisterButton.selectButtonNow(false);
+		
+		// Reset hover status of all buttons 
+		// ...
 		
 		// Empty the password input field and the status label before panel closes
 		this.fields[1].clearField();
@@ -117,6 +121,7 @@ public class LoginPanel extends GuiPanel {
 		// Remove remaining focus on buttons 
 		this.loginButton.selectButtonNow(false);
 		this.playAsGuestButton.selectButtonNow(false);
+		this.goToRegisterButton.selectButtonNow(false);
 		
 		// Check if a text field was selected through the mouse click
 		for(TextInputField curTIF : this.fields) {
@@ -127,9 +132,13 @@ public class LoginPanel extends GuiPanel {
 	// Method for typing a letter in a text field
 	private void tryTypeIn(KeyEvent e) {
 		
+		// Make sure not to handle events for other panels
+		if(!this.isVisible()) {
+			return;
+		}
+		
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
-			// System.out.println("TAB key pressed");
 			
 			if(this.fields[0].isSelected()) {
 				// set focus on field[1] now
@@ -137,6 +146,7 @@ public class LoginPanel extends GuiPanel {
 				this.fields[1].selectFieldNow(true);
 				this.loginButton.selectButtonNow(false);
 				this.playAsGuestButton.selectButtonNow(false);
+				this.goToRegisterButton.selectButtonNow(false);
 				
 			} else if(this.fields[1].isSelected()) {
 				// set focus on login button
@@ -144,6 +154,7 @@ public class LoginPanel extends GuiPanel {
 				this.fields[1].selectFieldNow(false);
 				this.loginButton.selectButtonNow(true);
 				this.playAsGuestButton.selectButtonNow(false);
+				this.goToRegisterButton.selectButtonNow(false);
 				
 			} else if(this.loginButton.isSelected()) {
 				// set focus on the play as guest button
@@ -151,13 +162,23 @@ public class LoginPanel extends GuiPanel {
 				this.fields[1].selectFieldNow(false);
 				this.loginButton.selectButtonNow(false);
 				this.playAsGuestButton.selectButtonNow(true);
+				this.goToRegisterButton.selectButtonNow(false);
 				
 			} else if(this.playAsGuestButton.isSelected()) {
+				// set focus on go to register button
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(false);
+				this.loginButton.selectButtonNow(false);
+				this.playAsGuestButton.selectButtonNow(false);
+				this.goToRegisterButton.selectButtonNow(true);
+				
+			} else if(this.goToRegisterButton.isSelected()) {
 				// set focus on field[0] now
 				this.fields[0].selectFieldNow(true);
 				this.fields[1].selectFieldNow(false);
 				this.loginButton.selectButtonNow(false);
 				this.playAsGuestButton.selectButtonNow(false);
+				this.goToRegisterButton.selectButtonNow(false);
 				
 			} else {
 				// set focus on field[0] now
@@ -165,6 +186,7 @@ public class LoginPanel extends GuiPanel {
 				this.fields[1].selectFieldNow(false);
 				this.loginButton.selectButtonNow(false);
 				this.playAsGuestButton.selectButtonNow(false);
+				this.goToRegisterButton.selectButtonNow(false);
 			}
 			
 			return;
@@ -176,6 +198,8 @@ public class LoginPanel extends GuiPanel {
 			// otherwise attempt to login with account credentials
 			if(this.playAsGuestButton.isSelected()) {
 				this.playAsGuest();
+			} else if(this.goToRegisterButton.isSelected()) {
+				this.redirectToRegister();
 			} else {
 				this.tryLogin();
 			}
@@ -249,13 +273,9 @@ public class LoginPanel extends GuiPanel {
 	
 	// Method for navigating to the register panel
 	private void redirectToRegister() {
-		
-		// Go to register button click event 
-		if(this.goToRegisterButton.isHover()) {
-			// redirect to the register panel
-			this.closePanel();
-			ProjectFrame.registerPanel.setVisible(true);
-		}
+		// redirect to the register panel
+		this.closePanel();
+		ProjectFrame.registerPanel.setVisible(true);
 	}
 	
 	// ----- Event handling section -------- //
@@ -265,7 +285,7 @@ public class LoginPanel extends GuiPanel {
 	public void mouseClicked(MouseEvent e) {
 		if(this.loginButton.isHover()) { tryLogin(); }
 		if(this.playAsGuestButton.isHover()) { playAsGuest(); }
-		redirectToRegister();
+		if(this.goToRegisterButton.isHover()) { redirectToRegister(); }
 	}
 
 	@Override

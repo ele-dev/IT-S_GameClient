@@ -76,6 +76,13 @@ public class RegisterPanel extends GuiPanel {
 		// call the original method from the super class
 		super.onClose();
 		
+		// Remove remaining focus on buttons
+		this.registerAccountButton.selectButtonNow(false);
+		this.goToLoginButton.selectButtonNow(false);
+		
+		// Reset hover status of all buttons 
+		// ...
+		
 		// Clear all text fields before panel closes
 		for(TextInputField curTIF : this.fields) {
 			curTIF.clearField();
@@ -128,14 +135,86 @@ public class RegisterPanel extends GuiPanel {
 	// Method for typing a letter in a focused text field
 	private void tryTypeIn(KeyEvent e) {
 		
+		// Make sure not to handle events for other panels
+		if(!this.isVisible()) {
+			return;
+		}
+		
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
 			
+			if(this.fields[0].isSelected()) {
+				// set focus on field[1]
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(true);
+				this.fields[2].selectFieldNow(false);
+				this.fields[3].selectFieldNow(false);
+				this.registerAccountButton.selectButtonNow(false);
+				this.goToLoginButton.selectButtonNow(false);
+				
+			} else if(this.fields[1].isSelected()) {
+				// set focus on field[2]
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(false);
+				this.fields[2].selectFieldNow(true);
+				this.fields[3].selectFieldNow(false);
+				this.registerAccountButton.selectButtonNow(false);
+				this.goToLoginButton.selectButtonNow(false);
+				
+			} else if(this.fields[2].isSelected()) {
+				// set focus on field[3]
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(false);
+				this.fields[2].selectFieldNow(false);
+				this.fields[3].selectFieldNow(true);
+				this.registerAccountButton.selectButtonNow(false);
+				this.goToLoginButton.selectButtonNow(false);
+				
+			} else if(this.fields[3].isSelected()) {
+				// set focus on register button
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(false);
+				this.fields[2].selectFieldNow(false);
+				this.fields[3].selectFieldNow(false);
+				this.registerAccountButton.selectButtonNow(true);
+				this.goToLoginButton.selectButtonNow(false);
+				
+			} else if(this.registerAccountButton.isSelected()) {
+				// set focus on go to login button
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(false);
+				this.fields[2].selectFieldNow(false);
+				this.fields[3].selectFieldNow(false);
+				this.registerAccountButton.selectButtonNow(false);
+				this.goToLoginButton.selectButtonNow(true);
+				
+			} else if(this.goToLoginButton.isSelected()) {
+				// set focus on field[0]
+				this.fields[0].selectFieldNow(true);
+				this.fields[1].selectFieldNow(false);
+				this.fields[2].selectFieldNow(false);
+				this.fields[3].selectFieldNow(false);
+				this.registerAccountButton.selectButtonNow(false);
+				this.goToLoginButton.selectButtonNow(false);
+				
+			} else {
+				// set focus on field[0]
+				this.fields[0].selectFieldNow(true);
+				this.fields[1].selectFieldNow(false);
+				this.fields[2].selectFieldNow(false);
+				this.fields[3].selectFieldNow(false);
+				this.registerAccountButton.selectButtonNow(false);
+				this.goToLoginButton.selectButtonNow(false);
+			}
 		}
 		
 		// Trigger register attempt when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			
+			if(this.goToLoginButton.isSelected()) {
+				this.redirectToLogin();
+			} else {
+				this.tryRegisterAccount();
+			}
 		}
 		
 		// Try to enter a character of the key event into a textfield
