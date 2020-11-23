@@ -93,6 +93,10 @@ public class Button extends GuiElement {
 		this.isHover = this.rect.contains(e.getPoint()) && this.isEnabled;
 	}
 	
+	public void resetHover() {
+		this.isHover = false;
+	}
+	
 	// Setters
 	public void setTextSize(int size) {
 		this.textSize = size;

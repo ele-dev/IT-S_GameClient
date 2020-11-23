@@ -78,7 +78,9 @@ public class LoginPanel extends GuiPanel {
 		this.goToRegisterButton.selectButtonNow(false);
 		
 		// Reset hover status of all buttons 
-		// ...
+		this.loginButton.resetHover();
+		this.playAsGuestButton.resetHover();
+		this.goToRegisterButton.resetHover();
 		
 		// Empty the password input field and the status label before panel closes
 		this.fields[1].clearField();
@@ -200,7 +202,8 @@ public class LoginPanel extends GuiPanel {
 				this.playAsGuest();
 			} else if(this.goToRegisterButton.isSelected()) {
 				this.redirectToRegister();
-			} else {
+			} else if(this.loginButton.isSelected()) {
+				System.out.println("login attempt because enter pressed");
 				this.tryLogin();
 			}
 		}

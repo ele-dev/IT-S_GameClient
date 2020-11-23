@@ -81,7 +81,8 @@ public class RegisterPanel extends GuiPanel {
 		this.goToLoginButton.selectButtonNow(false);
 		
 		// Reset hover status of all buttons 
-		// ...
+		this.registerAccountButton.resetHover();
+		this.goToLoginButton.resetHover();
 		
 		// Clear all text fields before panel closes
 		for(TextInputField curTIF : this.fields) {
@@ -212,14 +213,14 @@ public class RegisterPanel extends GuiPanel {
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 			if(this.goToLoginButton.isSelected()) {
 				this.redirectToLogin();
-			} else {
+			} else if(this.registerAccountButton.isSelected()) {
+				System.out.println("register attempt because enter pressed");
 				this.tryRegisterAccount();
 			}
 		}
 		
 		// Try to enter a character of the key event into a textfield
-		for(TextInputField curTIF: this.fields) 
-		{
+		for(TextInputField curTIF: this.fields) {
 			curTIF.typeInText(e);
 		}
 	}
