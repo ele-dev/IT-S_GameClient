@@ -38,9 +38,6 @@ public class LoginPanel extends GuiPanel {
 		// Set the desired background color
 		this.bgColor = Commons.loginScreenBackground;
 		
-		// Gain access to traversal key events on this panel (--> TAB)
-		this.setFocusTraversalKeysEnabled(false);
-		
 		// init the gui elements
 		initGuiElements();
 	}
@@ -74,6 +71,10 @@ public class LoginPanel extends GuiPanel {
 	protected void onClose() {
 		// call the original method from the super class
 		super.onClose();
+		
+		// Remove remaining focus on buttons
+		this.loginButton.selectButtonNow(false);
+		this.playAsGuestButton.selectButtonNow(false);
 		
 		// Empty the password input field and the status label before panel closes
 		this.fields[1].clearField();
@@ -113,6 +114,11 @@ public class LoginPanel extends GuiPanel {
 	// Method for changing focus by clicking somewhere
 	private void tryPressSomething(MouseEvent e) {
 		
+		// Remove remaining focus on buttons 
+		this.loginButton.selectButtonNow(false);
+		this.playAsGuestButton.selectButtonNow(false);
+		
+		// Check if a text field was selected through the mouse click
 		for(TextInputField curTIF : this.fields) {
 			curTIF.trySelectField(e);
 		}
@@ -121,7 +127,7 @@ public class LoginPanel extends GuiPanel {
 	// Method for typing a letter in a text field
 	private void tryTypeIn(KeyEvent e) {
 		
-		// Switch focus to next text field when TAB was pressed
+		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
 			// System.out.println("TAB key pressed");
 			
@@ -166,9 +172,7 @@ public class LoginPanel extends GuiPanel {
 		
 		// Trigger login attempt when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			// System.out.println("ENTER key pressed");
-			
-			// If the play as guest button is currently hovered then do so
+			// If the play as guest button is currently focused/selected then do so
 			// otherwise attempt to login with account credentials
 			if(this.playAsGuestButton.isSelected()) {
 				this.playAsGuest();
@@ -177,6 +181,7 @@ public class LoginPanel extends GuiPanel {
 			}
 		}
 		
+		// Try to enter a character of the key event into a textfield
 		for(TextInputField curTIF : this.fields) 
 		{ 
 			curTIF.typeInText(e);

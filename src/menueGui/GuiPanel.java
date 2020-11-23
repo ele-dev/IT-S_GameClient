@@ -48,6 +48,8 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		setBounds(0, 0, width, height);
 		this.bgColor = Color.GRAY; 			// Default panel color gray
 
+		// Gain access to traversal key events on all panel (--> TAB, ENTER, etc)
+		this.setFocusTraversalKeysEnabled(false);
 		
 		// Add the listeners to the panel
 		addMouseListener(this);

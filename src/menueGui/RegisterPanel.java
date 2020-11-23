@@ -115,6 +115,11 @@ public class RegisterPanel extends GuiPanel {
 	// Method for changing focus by clicking somewhere
 	private void tryChangeFocus(MouseEvent e) {
 		
+		// Remove remaining focus on buttons
+		this.goToLoginButton.selectButtonNow(false);
+		this.registerAccountButton.selectButtonNow(false);
+		
+		// Check if a text field was selected through the mouse click
 		for(TextInputField curTIF : this.fields) {
 			curTIF.trySelectField(e);
 		}
@@ -122,6 +127,18 @@ public class RegisterPanel extends GuiPanel {
 	
 	// Method for typing a letter in a focused text field
 	private void tryTypeIn(KeyEvent e) {
+		
+		// Switch focus to next GUI element when TAB was pressed
+		if(e.getKeyCode() == KeyEvent.VK_TAB) {
+			
+		}
+		
+		// Trigger register attempt when enter was pressed
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			
+		}
+		
+		// Try to enter a character of the key event into a textfield
 		for(TextInputField curTIF: this.fields) 
 		{
 			curTIF.typeInText(e);
@@ -132,60 +149,54 @@ public class RegisterPanel extends GuiPanel {
 	private void tryRegisterAccount() {
 		
 		// Register account button click event
-		if(this.registerAccountButton.isHover()) {
-			// do register attempt
-			System.out.println("--> Register attempt");
+		System.out.println("--> Register attempt");
+		this.failedAttempt = false;
+		System.out.println("Processing ...");
+		this.registerStatusStr = "Processing ...";
+		
+		// validation of input fields
+		for(TextInputField curTIF : this.fields) 
+		{
+			this.failedAttempt = (curTIF.text.length() <= 0);
+		}
+		
+		if(this.failedAttempt) {
+			this.registerStatusStr = "Empty fields are not allowed!";
+			return;
+		}
+		
+		// check if the password fields were equal
+		this.failedAttempt = !(this.fields[2].text.equals(this.fields[3].text));
+		if(this.failedAttempt) {
+			this.registerStatusStr = "The passwords must be equal!";
+			return;
+		}
+		
+		// check the syntax of the entered email
+		String[] tmpStr = this.fields[1].text.split("@");
+		this.failedAttempt = (tmpStr.length != 2);
+		if(this.failedAttempt) {
+			this.registerStatusStr = "Invalid email address!";
+			return;
+		}
+		
+		// run the registration process with the validated parameters
+		boolean result = ProjectFrame.conn.registerAccount(this.fields[0].text, this.fields[1].text, this.fields[2].text);
+		if(result) {
 			this.failedAttempt = false;
-			System.out.println("Processing ...");
-			this.registerStatusStr = "Processing ...";
-			
-			// validation of input fields
-			for(TextInputField curTIF : this.fields) 
-			{
-				this.failedAttempt = (curTIF.text.length() <= 0);
-			}
-			
-			if(this.failedAttempt) {
-				this.registerStatusStr = "Empty fields are not allowed!";
-				return;
-			}
-			
-			// check if the password fields were equal
-			this.failedAttempt = !(this.fields[2].text.equals(this.fields[3].text));
-			if(this.failedAttempt) {
-				this.registerStatusStr = "The passwords must be equal!";
-				return;
-			}
-			
-			// check the syntax of the entered email
-			String[] tmpStr = this.fields[1].text.split("@");
-			this.failedAttempt = (tmpStr.length != 2);
-			if(this.failedAttempt) {
-				this.registerStatusStr = "Invalid email address!";
-				return;
-			}
-			
-			// run the registration process with the validated parameters
-			boolean result = ProjectFrame.conn.registerAccount(this.fields[0].text, this.fields[1].text, this.fields[2].text);
-			if(result) {
-				this.failedAttempt = false;
-				this.registerStatusStr = "Registration done successfully";
-			} else {
-				this.failedAttempt = true;
-				this.registerStatusStr = GameState.registerStatusDescription;
-			}
+			this.registerStatusStr = "Registration done successfully";
+		} else {
+			this.failedAttempt = true;
+			this.registerStatusStr = GameState.registerStatusDescription;
 		}
 	}
 	
 	// Method for navigating back to the login panel
 	private void redirectToLogin() {
 		
-		// Go to login button click event
-		if(this.goToLoginButton.isHover()) {
-			// redirect to the login panel
-			this.closePanel();
-			ProjectFrame.loginPanel.setVisible(true);
-		}
+		// redirect to the login panel
+		this.closePanel();
+		ProjectFrame.loginPanel.setVisible(true);
 	}
 	
 	// ----- Event handling section ----- //
@@ -193,8 +204,8 @@ public class RegisterPanel extends GuiPanel {
 	// Mouse Listener events for detecting clicks on GUI elements
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		redirectToLogin();
-		tryRegisterAccount();
+		if(this.goToLoginButton.isHover()) { redirectToLogin(); }
+		if(this.registerAccountButton.isHover()) { tryRegisterAccount(); }
 	}
 	
 	@Override 
