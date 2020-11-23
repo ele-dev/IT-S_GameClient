@@ -21,9 +21,11 @@ public interface Commons {
 	// Important colors
 	final Color loginScreenBackground = new Color(28, 26, 36);
 	final Color homeScreenBackground = new Color(28, 26, 36);
+	
+	final Color buttonDefault = new Color(20, 20, 20);
 	final Color buttonHover = Color.BLUE;
 	final Color textFieldSelected = new Color(136, 24, 206);
-	// final Color textFieldSelected = new Color(255,0,50);
+	final Color buttonSelected = new Color(136, 24, 206);
 	
 	final Color cMove = new Color(255,220,90);
 	final Color cAttack = new Color(255,0,50);
