@@ -148,6 +148,9 @@ public class ProjectFrame extends JFrame {
 				
 				System.out.println("Main Window is now visible");
 				
+				// Allow access to the traversal key events (TAB, ENTER, etc)
+				f.setFocusTraversalKeysEnabled(false);
+				
 				// Add a window listener to the frame to trigger closeup routine on window close
 				f.addWindowListener(new WindowAdapter() {
 					
