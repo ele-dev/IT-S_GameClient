@@ -25,7 +25,6 @@ public class BoardRectangle {
 	public boolean isWall,isGap,isHinderingTerrain;
 	
 	private boolean isHover;
-	public float so = 4;
 	private int rotation = 0; 
 	
 	private Sprite wallSprite;
@@ -350,34 +349,46 @@ public class BoardRectangle {
 		}else {
 			g2d.setColor(new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),200));
 		}
+		
+		int s = getSize();
+		drawBROutline(g2d, g2d.getColor(), 0, s);
 		int x = getX();
 		int y = getY();
-		int s = getSize();
-		int soI = (int)so;
-		g2d.translate(x, y);
-		g2d.drawLine(-soI/2, -soI/2, s/4-soI/2, -soI/2);
-		g2d.drawLine(s+soI/2, -soI/2, s*3/4+soI/2, -soI/2);
-					
-		g2d.drawLine(-soI/2, s+soI/2, s/4-soI/2, s+soI/2);
-		g2d.drawLine(s+soI/2, s+soI/2, s*3/4+soI/2, s+soI/2);
-					
-		g2d.drawLine(-soI/2, -soI/2, -soI/2, s/4-soI/2);
-		g2d.drawLine(-soI/2, s+soI/2, -soI/2, s*3/4+soI/2);
-					
-		g2d.drawLine(s+soI/2, -soI/2, s+soI/2, s/4-soI/2);
-		g2d.drawLine(s+soI/2, s+soI/2, s+soI/2, s*3/4+soI/2);
-			
+		
+		
 		if(isPossibleAttack) {
-			g2d.translate(s/2, s/2);
+			rotation+= 3;
+			g2d.translate(getCenterX(), getCenterY());	
 			g2d.rotate(Math.toRadians(rotation));
 			g2d.drawLine(-s/3, 0, s/3, 0);
 			g2d.drawLine(0,-s/3, 0, s/3);
 			g2d.drawOval(-s/6, -s/6, s/3, s/3);
 			g2d.rotate(Math.toRadians(-rotation));
-			g2d.translate(-s/2, -s/2);
+			g2d.translate(-getCenterX(), -getCenterY());	
 		}
-		g2d.translate(-x, -y);
+	}
+	
+	public void drawBROutline(Graphics2D g2d, Color c, float angle, int size) {
+		g2d.setColor(c);
+		int x = getCenterX();
+		int y = getCenterY();
+		int s = size;
+		g2d.translate(x, y);
+		g2d.rotate(Math.toRadians(angle));
+		g2d.setStroke(new BasicStroke(6));
+		g2d.drawLine(-s/2, -s/2, -s/4, -s/2);
+		g2d.drawLine(-s/2, -s/2, -s/2, -s/4);
+
+		g2d.drawLine(s/2, -s/2, s/4, -s/2);
+		g2d.drawLine(s/2, -s/2, s/2, -s/4);
 		
+		g2d.drawLine(-s/2, s/2, -s/4, s/2);
+		g2d.drawLine(-s/2, s/2, -s/2, s/4);
+		
+		g2d.drawLine(s/2, s/2, s/4, s/2);
+		g2d.drawLine(s/2, s/2, s/2, s/4);
+		g2d.rotate(Math.toRadians(-angle));
+		g2d.translate(-x, -y);
 	}
 	
 	// draws the Label of the BoardRectangle (only ifHover)

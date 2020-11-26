@@ -58,7 +58,7 @@ public class ProjectFrame extends JFrame {
 			}
 		});
 		tFrameRate.setRepeats(true);
-		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
+		tUpdateRate = new Timer(10, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateAllPanels();
@@ -66,7 +66,6 @@ public class ProjectFrame extends JFrame {
 		});
 		tUpdateRate.setRepeats(true);
 
-		
 		stagePanel = new StagePanel();
 		
 		// Create and init the GUI panels (JPanels)
@@ -100,7 +99,6 @@ public class ProjectFrame extends JFrame {
 		if(registerPanel.isVisible())registerPanel.update();
 		if(stagePanel.isVisible())stagePanel.update();
 	}
-	
 	
 	public static ProjectFrame f;
 	

@@ -190,7 +190,7 @@ public class PlayerFortress extends DestructibleObject {
 	}
 	
 	@Override
-	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
+	public void getDamaged(float dmg, float attackAngle, boolean isRed) {
 		health -= dmg;
 		if(health <= 0) {
 			StagePanel.checkIfSomeOneWon();

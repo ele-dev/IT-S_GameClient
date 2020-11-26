@@ -125,7 +125,7 @@ public class DestructibleObject {
 	}
 	
 	// damages the DestructibleObject and destroys it if health<0
-	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
+	public void getDamaged(float dmg, float attackAngle, boolean isRed) {
 		health -= dmg;
 		if(health <= 0) {
 			for(int i = 0; i < 8 * occupiedBRs.length; i++) {

@@ -25,19 +25,31 @@ public class EMPProjectile extends Projectile{
 	
 	public static float rotationDelay = 3;
 	private int autoStickCounter = 500;
-	public EMPProjectile(int x, int y, int w, int h, Color c, float dmg, float angle, Shape targetShape, 
-			GamePiece targetGamePiece, DestructibleObject targetDestructibleObject) {
-		super(x, y, w, h, c, angle, 0, 0.3f, targetShape, targetDestructibleObject);
+	
+	private float dmg;
+	private boolean isRed;
+	
+	public EMPProjectile(int x, int y, int w, int h, Color c, float angle, Shape targetShape, 
+			GamePiece targetGamePiece, DestructibleObject targetDestructibleObject,float dmg, boolean isRed) {
+		super(x, y, w, h, c, angle, 0, 0.5f, targetShape, targetDestructibleObject);
 		shapeShow = new Rectangle(-w/2, -h/2, w, h);
 		this.targetGamePiece = targetGamePiece;
 		this.targetDestructibleObject = targetDestructibleObject;
 		destroyCountDown = new TurnCountDown(2, c);
+		this.dmg = dmg;
+		this.isRed = isRed;
 	}
 	public GamePiece getTargetGamePiece() {
 		return targetGamePiece;
 	}
 	public TurnCountDown getDestroyCountDown() {
 		return destroyCountDown;
+	}
+	public float getDmg() {
+		return dmg;
+	}
+	public boolean isRed() {
+		return isRed;
 	}
 	// draws the projectile
 	public void drawProjectile(Graphics2D g2d) {

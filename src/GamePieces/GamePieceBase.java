@@ -44,8 +44,8 @@ public class GamePieceBase {
 		this.y = y;
 		this.rectHitbox = new Rectangle((int)x-w/2,(int)y-h/2,w,h);
 		this.parentGP = parentGP;
-		this.v = StagePanel.boardRectSize/40.0f;
-		this.rotationDelay = StagePanel.boardRectSize/30.0f;
+		this.v = StagePanel.boardRectSize/30.0f;
+		this.rotationDelay = StagePanel.boardRectSize/20.0f;
 
 		initBaseType(baseTypeIndex);
 		initSprites(); 

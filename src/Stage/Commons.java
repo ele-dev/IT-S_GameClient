@@ -7,9 +7,6 @@ public interface Commons {
 	// The game title
 	public final String gameTitle = "Crossfire PvP";
 	
-	// Refresh rates for timers 
-	public static final int frametime = 10;
-	
 	// Menue gui elements dimensions
 	public static final int textFieldHeight = 46;
 	public static final int textFieldWidth = 210;
