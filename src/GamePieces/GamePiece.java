@@ -23,7 +23,6 @@ import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
 import Stage.StagePanel;
-import Stage.ValueLabel;
 
 public abstract class GamePiece {
 	

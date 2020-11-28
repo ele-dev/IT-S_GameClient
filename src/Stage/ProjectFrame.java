@@ -68,7 +68,7 @@ public class ProjectFrame extends JFrame {
 
 		stagePanel = new StagePanel();
 		if(Commons.editMap) {
-			stagePanel.resetMatch(Commons.mapName);
+			StagePanel.resetMatch(Commons.mapName);
 		}
 		
 		// Create and init the GUI panels (JPanels)

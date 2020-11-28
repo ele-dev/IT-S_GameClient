@@ -15,7 +15,6 @@ import Particles.Particle;
 import Particles.TrailParticle;
 import Particles.WaveParticle;
 import PlayerStructures.GoldMine;
-import sun.java2d.windows.GDIBlitLoops;
 
 public class BoardRectangle {
 	public int row,column;
@@ -377,6 +376,7 @@ public class BoardRectangle {
 	}
 	
 	// draws BR in hover mode
+	@SuppressWarnings("unused")
 	public void drawHover(Graphics2D g2d) {
 		int alpha = 255;
 		g2d.setStroke(new BasicStroke(5));
