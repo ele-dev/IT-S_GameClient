@@ -20,7 +20,7 @@ import Stage.StagePanel;
 public class DetonatorPiece extends GamePiece {
 	private static ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
 	public DetonatorPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameDetonator, boardRect, Commons.dmgDetonator, Commons.baseTypeDetonator,Commons.neededLOSDetonator);
+		super(isRed, Commons.nameDetonator, boardRect, Commons.dmgDetonator,0, Commons.neededLOSDetonator);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override

@@ -22,7 +22,7 @@ public class SniperPiece extends GamePiece{
 	private Bullet sniperBullet;
 	
 	public SniperPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameSniper, boardRect, Commons.dmgSniper, Commons.baseTypeSniper,Commons.neededLOSSniper);
+		super(isRed, Commons.nameSniper, boardRect, Commons.dmgSniper, 2,Commons.neededLOSSniper);
 		attackDelayTimer = new Timer(1500,new ActionListener() { 
 			@Override
 			public void actionPerformed(ActionEvent e) {

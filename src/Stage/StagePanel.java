@@ -111,10 +111,6 @@ public class StagePanel extends JPanel {
 		camera = new Camera();
 		levelInitializer = new LevelInitializer();
 		
-		if(levelDesignTool != null) {
-			addMouseWheelListener(levelDesignTool.mwl);
-		}
-		
 		// create and init the buttons 
 		endTurnButton = new ButtonEndTurn();
 		int border = StagePanel.w/100;
@@ -146,23 +142,37 @@ public class StagePanel extends JPanel {
 		goldMines.clear();
 		particles.clear();
 		valueLabels.clear();
-		if(mapName == null) {
-			gameMap = new GameMap(25,25);
-			levelDesignTool = new LevelDesignTool();
-		} else {
+		if(Commons.editMap) {
+			if(mapName == null) {
+				gameMap = new GameMap(21,21);
+				levelDesignTool = new LevelDesignTool();
+				ProjectFrame.stagePanel.addMouseWheelListener(levelDesignTool.mwl);
+			} else {
+				levelInitializer.readMapFromImage(mapName);
+				mapRows = levelInitializer.getMapRows();
+				mapColumns = levelInitializer.getMapColumns();
+				mapRectangle = new Rectangle(mapColumns*boardRectSize,mapRows*boardRectSize);
+				levelDesignTool = new LevelDesignTool();
+				ProjectFrame.stagePanel.addMouseWheelListener(levelDesignTool.mwl);
+			}
+		}else {
 			levelInitializer.readMapFromImage(mapName);
 			mapRows = levelInitializer.getMapRows();
 			mapColumns = levelInitializer.getMapColumns();
 			mapRectangle = new Rectangle(mapColumns*boardRectSize,mapRows*boardRectSize);
 		}
+		
 		initFortresses();
-		initGamePieces();
+//		initGamePieces();
 		BoardRectangle.initExtendedInfoStrings();
-		if(GameState.myTeamIsRed) {
-			camera.setCameraToBasePos(redBase);
-		}else {
-			camera.setCameraToBasePos(blueBase);
+		if(redBase != null && blueBase != null) {
+			if(GameState.myTeamIsRed) {
+				camera.setCameraToBasePos(redBase);
+			}else {
+				camera.setCameraToBasePos(blueBase);
+			}
 		}
+		
 		updateAmountPossibleAttacks();
 		if(GameState.myTurn) {
 			endTurnButton.restartAutoEndTurnCountDown();
@@ -297,6 +307,7 @@ public class StagePanel extends JPanel {
 		
 		drawEveryBoardRectangle(g2d);
 		drawEveryBoardRectangleIndex(g2d);
+		BoardRectangle.drawGravelParticles(g2d);
 		drawGoldMines(g2d);
 		
 		if(redBase != null) { redBase.tryDrawRecruitableBoardRectangles(g2d); }

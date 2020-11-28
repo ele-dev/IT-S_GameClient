@@ -25,7 +25,7 @@ public class EMPPiece extends GamePiece{
 	private static DestructibleObject lastTargetDestructibleObject;
 	
 	public EMPPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameEMP, boardRect, Commons.dmgEMP, Commons.baseTypeEMP,Commons.neededLOSEMP);
+		super(isRed, Commons.nameEMP, boardRect, Commons.dmgEMP, 0,Commons.neededLOSEMP);
 		
 		attackDelayTimer = new Timer(1500, new ActionListener() {
 			

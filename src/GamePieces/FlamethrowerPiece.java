@@ -23,7 +23,7 @@ public class FlamethrowerPiece extends GamePiece {
 	private int burstBulletAmount = 200;
 	
 	public FlamethrowerPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,Commons.baseTypeFlameThrower,Commons.neededLOSFlameThrower);
+		super(isRed, Commons.nameFlameThrower, boardRect, Commons.dmgFlameThrower,1,Commons.neededLOSFlameThrower);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override

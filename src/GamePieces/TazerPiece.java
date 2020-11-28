@@ -25,7 +25,7 @@ public class TazerPiece extends GamePiece{
 	private Bullet tazerBullet;
 	
 	public TazerPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameTazer, boardRect, Commons.dmgTazer, Commons.baseTypeTazer,Commons.neededLOSTazer); 
+		super(isRed, Commons.nameTazer, boardRect, Commons.dmgTazer, 2,Commons.neededLOSTazer); 
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

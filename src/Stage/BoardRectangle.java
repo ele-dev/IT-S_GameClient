@@ -11,8 +11,11 @@ import java.util.ArrayList;
 
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
+import Particles.Particle;
+import Particles.TrailParticle;
 import Particles.WaveParticle;
 import PlayerStructures.GoldMine;
+import sun.java2d.windows.GDIBlitLoops;
 
 public class BoardRectangle {
 	public int row,column;
@@ -36,6 +39,7 @@ public class BoardRectangle {
 	private static String[] extendedInfoStrings = new String[7];
 	private static long waveCounter = 0;
 	private static ArrayList<WaveParticle> waveParticles = new ArrayList<WaveParticle>();
+	private static ArrayList<Particle> gravelParticles = new ArrayList<Particle>();	
 	
 	public BoardRectangle(int row, int column,boolean isTile1,int index,boolean isHinderingTerrain) {
 		this.row = row;
@@ -109,6 +113,16 @@ public class BoardRectangle {
 			int size =  (int) (Math.random() * StagePanel.boardRectSize/4+StagePanel.boardRectSize/4);
 			Color randomColor = new Color(0,(int)(50+Math.random()*100),(int)(200+Math.random()*55));
 			waveParticles.add(new WaveParticle(x, y, size, (float)(Math.random()*360), randomColor));
+		}
+	}
+	
+	public void initHinderingTerrain() {
+		isHinderingTerrain = true;
+		for(int i = 0;i<40;i++) {
+			int x =  (int) (getX()+Math.random()*StagePanel.boardRectSize);
+			int y =  (int) (getY()+Math.random()*StagePanel.boardRectSize);
+			int randomGreyScale = (int) (Math.random() * 30 + 15);
+			gravelParticles.add(new TrailParticle(x, y, (int)(Math.random() * StagePanel.boardRectSize/4 + StagePanel.boardRectSize/12), 0, new Color(randomGreyScale,randomGreyScale,randomGreyScale), 0, 0, 0));
 		}
 	}
 	
@@ -274,11 +288,32 @@ public class BoardRectangle {
 	}
 	// draws The Rectangle depending on if it is a Possible move/attack (draws another rectangle with another color over it)
 	public void drawBoardRectangle(Graphics2D g2d) {
-		g2d.setColor(isHinderingTerrain?Color.MAGENTA:c);
+		g2d.setColor(c);
 		if(!isGap) {
 			g2d.fill(rect);
 			if(groundSprite != null && !isGap && !isWall) {
 				groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), spriteRotation, 1);
+			}
+		}
+		if(isHinderingTerrain) {
+			g2d.setColor(new Color(60,60,60));
+			g2d.fill(rect);
+			g2d.setStroke(new BasicStroke(8));
+			g2d.setColor(new Color(10,10,10));
+			for(BoardRectangle curBR : adjecantBoardRectangles) {
+				if(!curBR.isHinderingTerrain) {
+					if(curBR.row == row) {
+						if(curBR.column == column+1) {
+							g2d.drawLine(getX()+getSize(), getY(), getX()+getSize(), getY()+getSize());
+						}else {
+							g2d.drawLine(getX(), getY(), getX(), getY()+getSize());
+						}
+					}else if(curBR.row == row+1){
+						g2d.drawLine(getX(), getY()+getSize(), getX()+getSize(), getY()+getSize());
+					}else {
+						g2d.drawLine(getX(), getY(), getX()+getSize(), getY());
+					}
+				}
 			}
 		}
 	}
@@ -297,6 +332,12 @@ public class BoardRectangle {
 		for(WaveParticle curWP : waveParticles) {
 			curWP.setYOffset(waveFunction(curWP.getX()));
 			curWP.drawParticle(g2d);
+		}
+	}
+	
+	public static void drawGravelParticles(Graphics2D g2d) {
+		for(Particle curP : gravelParticles) {
+			curP.drawParticle(g2d);
 		}
 	}
 	
@@ -406,16 +447,16 @@ public class BoardRectangle {
 		}else if(isWall){
 			labelState = "Wall";
 			extendedInfoString = extendedInfoStrings[3];
-		}
+		}else
 		if(isDestructibleObject()) {
 			labelState = "Destructible Object";
 			extendedInfoString = extendedInfoStrings[4];
-		}
+		}else
 		if(isGoldMine()) {
 			labelState = "GoldMine";
 			extendedInfoString = extendedInfoStrings[5];
-		}
-		if(StagePanel.blueBase.containsBR(this) || StagePanel.redBase.containsBR(this)) {
+		}else
+		if((StagePanel.blueBase != null && StagePanel.redBase != null) && (StagePanel.blueBase.containsBR(this) || StagePanel.redBase.containsBR(this))) {
 			labelState = "PlayerFortress";
 			extendedInfoString = extendedInfoStrings[6];
 		}

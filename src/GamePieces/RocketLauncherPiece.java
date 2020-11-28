@@ -27,7 +27,7 @@ public class RocketLauncherPiece extends GamePiece{
 	private static float spreadAngle = 120;
 	
 	public RocketLauncherPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameRocketLauncher, boardRect, Commons.dmgRocketLauncher,Commons.baseTypeRocketLauncher,Commons.neededLOSRocketLauncher);
+		super(isRed, Commons.nameRocketLauncher, boardRect, Commons.dmgRocketLauncher,2,Commons.neededLOSRocketLauncher);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			 
 			@Override

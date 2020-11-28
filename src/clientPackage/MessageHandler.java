@@ -156,7 +156,7 @@ public class MessageHandler {
 				
 				// Navigate to the game panel where the actual game happens
 				ProjectFrame.homePanel.closePanel();
-				StagePanel.resetMatch("LargeMap");
+				StagePanel.resetMatch(Commons.mapName);
 				ProjectFrame.stagePanel.setVisible(true);
 				
 				break;

@@ -66,8 +66,7 @@ public class LevelInitializer {
 	}
 	
 	public void readMapFromImage(String mapName) {
-		// File inputFile = new File("src/LevelDesignTools/"+mapName+".png");
-		File inputFile = new File("sprites/"+mapName+".png");
+		File inputFile = new File("src/LevelDesignTools/"+mapName+".png");
 		BufferedImage mapImage; 
 		try {
 			mapImage = ImageIO.read(inputFile);
@@ -98,7 +97,7 @@ public class LevelInitializer {
 					} else if(mapImage.getRGB(j, i) == Color.BLUE.getRGB()) {
 						StagePanel.boardRectangles.get(index).initGap();
 					} else if(mapImage.getRGB(j, i) == Color.MAGENTA.getRGB()) {
-						StagePanel.boardRectangles.get(index).isHinderingTerrain = true;
+						StagePanel.boardRectangles.get(index).initHinderingTerrain();
 					} else if(mapImage.getRGB(j, i) == Color.ORANGE.getRGB()) {
 						StagePanel.destructibleObjects.add(new DestructibleObject(StagePanel.boardRectangles.get(index),1,1, 1,0));
 					} else if(mapImage.getRGB(j, i) == Color.YELLOW.getRGB()) {

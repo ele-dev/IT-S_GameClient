@@ -26,7 +26,7 @@ public class RecruitGPSectorButton extends GenericButton{
 			counters[i] = length* i/counters.length;
 		}
 		for(int i = 0;i<1000;i++){
-			tryAddParticle();
+			updateParticles();
 		}
 	}
 	
@@ -58,9 +58,9 @@ public class RecruitGPSectorButton extends GenericButton{
 		int gap = StagePanel.w/32;
 		for(byte i = 0; i < recruitGamePieceInfoPanels.length; i++) {
 			if(i == 0) {
-				recruitGamePieceInfoPanels[i] = new RecruitGPInfoPanel(StagePanel.w/40 , StagePanel.w/40*6, StagePanel.w/2, StagePanel.w/10, gamePieceNames[i], playerFortress);
+				recruitGamePieceInfoPanels[i] = new RecruitGPInfoPanel(StagePanel.w/40 , StagePanel.w/40*6, StagePanel.w/2, StagePanel.w/10, gamePieceNames[i], playerFortress,i);
 			} else {
-				recruitGamePieceInfoPanels[i] = new RecruitGPInfoPanel(StagePanel.w/40, recruitGamePieceInfoPanels[i-1].getStarty()+StagePanel.w/10+gap, StagePanel.w/2, StagePanel.w/10, gamePieceNames[i], playerFortress);
+				recruitGamePieceInfoPanels[i] = new RecruitGPInfoPanel(StagePanel.w/40, recruitGamePieceInfoPanels[i-1].getStarty()+StagePanel.w/10+gap, StagePanel.w/2, StagePanel.w/10, gamePieceNames[i], playerFortress,i);
 			}
 		}
 	}

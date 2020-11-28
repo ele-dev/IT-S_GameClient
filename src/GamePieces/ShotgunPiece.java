@@ -22,7 +22,7 @@ public class ShotgunPiece extends GamePiece {
 	private byte bulletAmount = 10;
 
 	public ShotgunPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameShotgun, boardRect, Commons.dmgShotgun, Commons.baseTypeShotgun,Commons.neededLOSShotgun);
+		super(isRed, Commons.nameShotgun, boardRect, Commons.dmgShotgun, 1,Commons.neededLOSShotgun);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

@@ -44,7 +44,7 @@ public class GamePieceBase {
 		this.y = y;
 		this.rectHitbox = new Rectangle((int)x-w/2,(int)y-h/2,w,h);
 		this.parentGP = parentGP;
-		this.v = StagePanel.boardRectSize/30.0f;
+		this.v = StagePanel.boardRectSize/40.0f;
 		this.rotationDelay = StagePanel.boardRectSize/20.0f;
 
 		initBaseType(baseTypeIndex);
@@ -71,6 +71,11 @@ public class GamePieceBase {
 			this.maxHealth = Commons.maxHealthType1;
 			this.movementRange = Commons.MovementRangeType1;
 			this.maxShield = Commons.maxShieldType1;
+			break;
+		case 2:
+			this.maxHealth = Commons.maxHealthType2;
+			this.movementRange = Commons.MovementRangeType2;
+			this.maxShield = Commons.maxShieldType2;
 			break;
 		default:
 			break;
