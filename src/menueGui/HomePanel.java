@@ -70,6 +70,9 @@ public class HomePanel extends GuiPanel {
 		this.quickMatchButton.setRelativePosition(75, 40);
 		this.abortMatchSearchButton.setRelativePosition(75, 55);
 		
+		// add the gui elements to the list
+		// ...
+		
 		// disable the search abortion button and the status label at the beginning
 		this.abortMatchSearchButton.setEnabled(false);
 		this.gameSearchMessage.setEnabled(false);
@@ -82,6 +85,7 @@ public class HomePanel extends GuiPanel {
 		// call the original method from the super class
 		super.onClose();
 		
+		/*
 		// Remove remaining focus on buttons
 		this.logoutButton.selectButtonNow(false);
 		this.quickMatchButton.selectButtonNow(false);
@@ -91,6 +95,7 @@ public class HomePanel extends GuiPanel {
 		this.logoutButton.resetHover();
 		this.quickMatchButton.resetHover();
 		this.abortMatchSearchButton.resetHover();
+		*/
 		
 		// reset the buttons to the default appearance and state
 		this.abortMatchSearchButton.setEnabled(false);

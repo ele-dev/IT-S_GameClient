@@ -28,6 +28,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import Stage.ProjectFrame;
@@ -38,6 +39,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	// Dimension and background color properties
 	protected int width, height;
 	protected Color bgColor;
+	protected ArrayList<GuiElement> guiElements;
 	
 	// default constructor
 	public GuiPanel() {
@@ -47,6 +49,8 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		this.height = ProjectFrame.height;
 		setBounds(0, 0, width, height);
 		this.bgColor = Color.GRAY; 			// Default panel color gray
+		
+		this.guiElements = new ArrayList<GuiElement>();
 
 		// Gain access to traversal key events on all panel (--> TAB, ENTER, etc)
 		this.setFocusTraversalKeysEnabled(false);
@@ -125,7 +129,16 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	
 	// Event method that is called on Panel close up (can be overwritten)
 	protected void onClose() {
-		// ...
+		
+		// remove remaining focus on buttons
+		for(GuiElement e: this.guiElements)
+		{
+			if(e instanceof Button) {
+				Button currBtn = (Button) e;
+				currBtn.selectButtonNow(false);
+				currBtn.resetHover();
+			}
+		}
 	}
 	
 	// Listener event methods (supposed to be overwritten in child classes)

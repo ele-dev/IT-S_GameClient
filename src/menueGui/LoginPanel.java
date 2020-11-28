@@ -64,6 +64,13 @@ public class LoginPanel extends GuiPanel {
 		// Set the text in the password field to hidden
 		fields[1].hideText(true);
 		
+		// Now add the gui elements to the list of the panel
+		super.guiElements.add(fields[0]);
+		super.guiElements.add(fields[1]);
+		super.guiElements.add(loginButton);
+		super.guiElements.add(playAsGuestButton);
+		super.guiElements.add(goToRegisterButton);
+		
 		this.loginStatusStr = "";
 	}
 	
@@ -72,6 +79,7 @@ public class LoginPanel extends GuiPanel {
 		// call the original method from the super class
 		super.onClose();
 		
+		/*
 		// Remove remaining focus on buttons
 		this.loginButton.selectButtonNow(false);
 		this.playAsGuestButton.selectButtonNow(false);
@@ -81,6 +89,7 @@ public class LoginPanel extends GuiPanel {
 		this.loginButton.resetHover();
 		this.playAsGuestButton.resetHover();
 		this.goToRegisterButton.resetHover();
+		*/
 		
 		// Empty the password input field and the status label before panel closes
 		this.fields[1].clearField();
