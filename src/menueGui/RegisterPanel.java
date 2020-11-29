@@ -65,6 +65,14 @@ public class RegisterPanel extends GuiPanel {
 		this.goToLoginButton.setRelativePosition(5, 92);
 		this.registerAccountButton.setRelativePosition(62, 62);
 		
+		// add the gui elements to the list
+		super.guiElements.add(this.fields[0]);
+		super.guiElements.add(this.fields[1]);
+		super.guiElements.add(this.fields[2]);
+		super.guiElements.add(this.fields[3]);
+		super.guiElements.add(this.registerAccountButton);
+		super.guiElements.add(this.goToLoginButton);
+		
 		// set the initial state and according message
 		this.failedAttempt = false;
 		this.registerStatusStr = "";
@@ -75,14 +83,6 @@ public class RegisterPanel extends GuiPanel {
 		
 		// call the original method from the super class
 		super.onClose();
-		
-		// Remove remaining focus on buttons
-		this.registerAccountButton.selectButtonNow(false);
-		this.goToLoginButton.selectButtonNow(false);
-		
-		// Reset hover status of all buttons 
-		this.registerAccountButton.resetHover();
-		this.goToLoginButton.resetHover();
 		
 		// Clear all text fields before panel closes
 		for(TextInputField curTIF : this.fields) {
