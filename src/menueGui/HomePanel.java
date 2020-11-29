@@ -74,6 +74,14 @@ public class HomePanel extends GuiPanel {
 		super.guiElements.add(this.quickMatchButton);
 		super.guiElements.add(this.abortMatchSearchButton);
 		super.guiElements.add(this.logoutButton);
+		super.guiElements.add(this.caption);
+		super.guiElements.add(this.accountVerificationMessage);
+		super.guiElements.add(this.gameMoneyDisplay);
+		super.guiElements.add(this.gameSearchMessage);
+		super.guiElements.add(this.onlinePlayerCounter);
+		super.guiElements.add(this.playedMatchesDisplay);
+		super.guiElements.add(this.runningMatchCounter);
+		super.guiElements.add(this.welcomeMessage);
 		
 		// disable the search abortion button and the status label at the beginning
 		this.abortMatchSearchButton.setEnabled(false);
@@ -103,6 +111,17 @@ public class HomePanel extends GuiPanel {
 		} else {
 			this.accountVerificationMessage.setTextColor(Color.YELLOW);
 			this.accountVerificationMessage.setText("Info: Account has not been verified yet!");
+		}
+		
+		// Enable/Disable certain elements depending on guest player status
+		if(!ProjectFrame.conn.isGuestPlayer()) {
+			this.accountVerificationMessage.setEnabled(true);
+			this.gameMoneyDisplay.setEnabled(true);
+			this.playedMatchesDisplay.setEnabled(true);
+		} else {
+			this.accountVerificationMessage.setEnabled(false);
+			this.gameMoneyDisplay.setEnabled(false);
+			this.playedMatchesDisplay.setEnabled(false);
 		}
 		
 		// Update the game statistic display
@@ -139,23 +158,7 @@ public class HomePanel extends GuiPanel {
 		
 		super.drawPanelContent(g2d);
 		
-		// Draw caption text and account verification status label
-		this.caption.draw(g2d);
-		if(!ProjectFrame.conn.isGuestPlayer()) {
-			this.accountVerificationMessage.draw(g2d);
-			this.gameMoneyDisplay.draw(g2d);
-			this.playedMatchesDisplay.draw(g2d);
-		}
-
-		// Draw the welcome message 
-		this.welcomeMessage.draw(g2d);
-		
-		// Draw global game data
-		this.onlinePlayerCounter.draw(g2d);
-		this.runningMatchCounter.draw(g2d);
-		
-		// Draw the game search/matchmaking status
-		this.gameSearchMessage.draw(g2d);
+		// ...
 	}
 	
 	// Method for changing focus by clicking somewhere

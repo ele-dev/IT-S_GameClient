@@ -70,6 +70,9 @@ public class LoginPanel extends GuiPanel {
 		super.guiElements.add(loginButton);
 		super.guiElements.add(playAsGuestButton);
 		super.guiElements.add(goToRegisterButton);
+		super.guiElements.add(this.gameTitle);
+		super.guiElements.add(this.noAccountYet);
+		super.guiElements.add(this.statusLabel);
 		
 		this.loginStatusStr = "";
 	}
@@ -98,12 +101,7 @@ public class LoginPanel extends GuiPanel {
 		
 		super.drawPanelContent(g2d);
 		
-		// Draw game title and other labels
-		this.gameTitle.draw(g2d);
-		this.noAccountYet.draw(g2d);
-		
-		// Draw the status message directly under the input fields
-		this.statusLabel.draw(g2d);
+		// ...
 	}
 	
 	// Method for changing focus by clicking somewhere

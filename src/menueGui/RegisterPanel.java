@@ -72,6 +72,9 @@ public class RegisterPanel extends GuiPanel {
 		super.guiElements.add(this.fields[3]);
 		super.guiElements.add(this.registerAccountButton);
 		super.guiElements.add(this.goToLoginButton);
+		super.guiElements.add(this.caption);
+		super.guiElements.add(this.noteLabel);
+		super.guiElements.add(this.statusLabel);
 		
 		// set the initial state and according message
 		this.failedAttempt = false;
@@ -104,12 +107,7 @@ public class RegisterPanel extends GuiPanel {
 		
 		super.drawPanelContent(g2d);
 		
-		// Draw title text and note label
-		this.caption.draw(g2d);
-		this.noteLabel.draw(g2d);
-		
-		// Draw the status message
-		this.statusLabel.draw(g2d);
+		// ...
 	}
 	
 	// Method for changing focus by clicking somewhere
