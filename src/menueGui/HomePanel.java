@@ -137,6 +137,8 @@ public class HomePanel extends GuiPanel {
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
 		
+		super.drawPanelContent(g2d);
+		
 		// Draw caption text and account verification status label
 		this.caption.draw(g2d);
 		if(!ProjectFrame.conn.isGuestPlayer()) {
@@ -154,11 +156,6 @@ public class HomePanel extends GuiPanel {
 		
 		// Draw the game search/matchmaking status
 		this.gameSearchMessage.draw(g2d);
-		
-		// Draw the buttons
-		this.logoutButton.draw(g2d);
-		this.quickMatchButton.draw(g2d);
-		this.abortMatchSearchButton.draw(g2d);
 	}
 	
 	// Method for changing focus by clicking somewhere

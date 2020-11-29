@@ -117,6 +117,15 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		// ...
 	}
 	
+	protected void drawPanelContent(Graphics2D g2d) {
+		
+		// Just draw the gui elements in the list
+		for(GuiElement element: guiElements) 
+		{
+			element.draw(g2d);
+		}
+	}
+	
 	// Method that is called to close a panel that is currently visible
 	public void closePanel() {
 		
@@ -124,7 +133,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		this.setVisible(false);
 		
 		// call the reset method to do optional cleanup tasks before leaving
-		onClose();
+		this.onClose();
 	}
 	
 	// Event method that is called on Panel close up (can be overwritten)
@@ -154,8 +163,6 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	public void keyTyped(KeyEvent e) {}
 	
 	// Abstract methods
-	// This method must be implemented to draw draw gui elements
-	protected abstract void drawPanelContent(Graphics2D g2d);
 	
 	protected abstract void initGuiElements();
 	

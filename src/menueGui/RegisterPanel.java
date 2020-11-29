@@ -102,19 +102,11 @@ public class RegisterPanel extends GuiPanel {
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
 		
+		super.drawPanelContent(g2d);
+		
 		// Draw title text and note label
 		this.caption.draw(g2d);
 		this.noteLabel.draw(g2d);
-		
-		// Draw the input fields
-		for(TextInputField curTIF: this.fields) 
-		{
-			curTIF.draw(g2d);
-		}
-		
-		// Draw the buttons
-		this.goToLoginButton.draw(g2d);
-		this.registerAccountButton.draw(g2d);
 		
 		// Draw the status message
 		this.statusLabel.draw(g2d);

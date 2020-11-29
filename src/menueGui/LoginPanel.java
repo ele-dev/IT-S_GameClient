@@ -96,19 +96,11 @@ public class LoginPanel extends GuiPanel {
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
 		
+		super.drawPanelContent(g2d);
+		
 		// Draw game title and other labels
 		this.gameTitle.draw(g2d);
 		this.noAccountYet.draw(g2d);
-		
-		// Draw Loginbutton and play as guest button
-		this.loginButton.draw(g2d);
-		this.playAsGuestButton.draw(g2d);
-		this.goToRegisterButton.draw(g2d);
-		
-		// Draw Username and Password input-fields
-		for(TextInputField curTIF : this.fields) {
-			curTIF.draw(g2d);
-		}
 		
 		// Draw the status message directly under the input fields
 		this.statusLabel.draw(g2d);
