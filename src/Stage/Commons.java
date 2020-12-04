@@ -9,17 +9,26 @@ public interface Commons {
 	
 	public static final boolean editMap = false;
 	public static final String mapName = "SmallMap";
+  
+	// Game money per match win
+	public static final int winnerMoney = 100;
+	
+	// Refresh rates for timers 
+	public static final int frametime = 10;
 	
 	// Menue gui elements dimensions
+	public static final boolean fullscreen = false;
 	public static final int textFieldHeight = 46;
 	public static final int textFieldWidth = 210;
 	
 	// Important colors
 	final Color loginScreenBackground = new Color(28, 26, 36);
 	final Color homeScreenBackground = new Color(28, 26, 36);
+	
+	final Color buttonDefault = new Color(20, 20, 20);
 	final Color buttonHover = Color.BLUE;
 	final Color textFieldSelected = new Color(136, 24, 206);
-	// final Color textFieldSelected = new Color(255,0,50);
+	final Color buttonSelected = new Color(136, 24, 206);
 	
 	final Color cMove = new Color(255,220,90);
 	final Color cAttack = new Color(255,0,50);

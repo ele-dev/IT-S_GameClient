@@ -34,8 +34,8 @@ public class Connection extends Thread {
 	private String username;
 	
 	// Data I/O streams for class (de)serialization
-	private ObjectOutputStream objOut = null;
-	private ObjectInputStream objIn = null;
+	private ObjectOutputStream objOut;
+	private ObjectInputStream objIn;
 	
 	// State indicator variables
 	private boolean playAsGuest;

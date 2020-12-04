@@ -23,7 +23,7 @@ import Stage.ProjectFrame;
 public class Button extends GuiElement {
 
 	// class members
-	private boolean isHover;
+	private boolean isHover, isSelected;
 	private String buttonLabel;
 	private int textSize;
 	
@@ -36,6 +36,7 @@ public class Button extends GuiElement {
 		
 		// Set default values
 		this.isHover = false;
+		this.isSelected = false;
 		this.buttonLabel = "Button";
 		this.textSize = defaultTextSize;
 	}
@@ -71,7 +72,8 @@ public class Button extends GuiElement {
 	}
 	
 	private void drawButtonBox(Graphics2D g2d) {
-		g2d.setColor(isHover ? Commons.buttonHover : new Color(20, 20, 20));
+		g2d.setColor(this.isSelected ? Commons.buttonSelected : Commons.buttonDefault);
+		if(this.isHover) { g2d.setColor(Commons.buttonHover); }
 		g2d.fill(this.rect);
 	}
 	
@@ -91,6 +93,10 @@ public class Button extends GuiElement {
 		this.isHover = this.rect.contains(e.getPoint()) && this.isEnabled;
 	}
 	
+	public void resetHover() {
+		this.isHover = false;
+	}
+	
 	// Setters
 	public void setTextSize(int size) {
 		this.textSize = size;
@@ -101,10 +107,19 @@ public class Button extends GuiElement {
 		this.rect.y = posY;
 	}
 	
+	public void selectButtonNow(boolean status) {
+		this.isSelected = status;
+	}
+	
 	// Getters
 	public  boolean isHover() {
 		// Only enabled buttons can be hovered
 		return this.isHover && this.isEnabled;
+	}
+	
+	public boolean isSelected() {
+		// Only enabled buttons can be selected/focused
+		return this.isSelected && this.isEnabled;
 	}
 	
 	public int getTextSize() {

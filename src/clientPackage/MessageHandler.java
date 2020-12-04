@@ -54,8 +54,8 @@ public class MessageHandler {
 				
 				// Show stats on the console for debugging
 				System.out.println("Received account stats from the server");
-				System.out.println("Played Matches: " + accountStats.getPlayedMatches());
-				System.out.println("Account Balance: " + accountStats.getAccountBalance());
+				System.out.println("Played Matches: " + GameState.playedMatches);
+				System.out.println("Account Balance: " + GameState.money);
 				
 				break;
 			}
@@ -69,7 +69,7 @@ public class MessageHandler {
 				}
 				
 				// Coerce it into the right format
-				MsgGameData gameData = (MsgGameData)msg;
+				MsgGameData gameData = (MsgGameData) msg;
 				
 				// Read and store the containing state variables (ignore values < 0) 
 				if(gameData.getOnlinePlayerCount() >= 0) {
@@ -179,7 +179,7 @@ public class MessageHandler {
 				GameState.enemySurrender = true;
 				if(!GameState.myTeamIsRed) {
 					StagePanel.redBase.getDamaged(StagePanel.redBase.getHealth(), 0, true);
-				}else {
+				} else {
 					StagePanel.blueBase.getDamaged(StagePanel.blueBase.getHealth(), 0, true);
 				}
 				GameState.isIngame = false;
@@ -269,7 +269,6 @@ public class MessageHandler {
 				
 				// Find the attacker gmaePiece and the victim game piece on the local game map
 				GamePiece attackerGP = GamePiece.getGamePieceFromCoords(attackMsg.getAttackerPiece());
-				// GamePiece victimGP = GamePiece.getGamePieceFromCoords(attackMsg.getVicitimPos());
 				BoardRectangle victimBR = BoardRectangle.getBoardRectFromCoords(attackMsg.getVicitimPos());
 				
 				// Check for invalid arguments 

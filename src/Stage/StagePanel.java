@@ -206,7 +206,7 @@ public class StagePanel extends JPanel {
 		// Destroy the own fortress to trigger the winnin screen
 		if(GameState.myTeamIsRed) {
 			redBase.getDamaged(redBase.getHealth(), 0, true);
-		}else {
+		} else {
 			blueBase.getDamaged(blueBase.getHealth(), 0, true);
 		}
 		
@@ -236,7 +236,12 @@ public class StagePanel extends JPanel {
 				GameState.playedMatches++;
 				
 				// Only winners earn money
-				// ...
+				if(blueBase.isDestroyed() && GameState.enemyTeamColor.equals(Color.BLUE)
+					|| redBase.isDestroyed() && GameState.enemyTeamColor.equals(Color.RED)) 
+				{
+					GameState.money += Commons.winnerMoney;
+
+				} 
 				
 				// send an account stats message to the server
 				MsgAccountStats accStats = new MsgAccountStats(GameState.playedMatches, GameState.money);

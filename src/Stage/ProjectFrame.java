@@ -1,5 +1,11 @@
 package Stage;
 
+/*
+ * This is the base class that contains the application the entry point
+ * and the Window realted code
+ * 
+ */
+
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -23,7 +29,7 @@ public class ProjectFrame extends JFrame {
 	// Network related
 	public static Connection conn;
 
-	// Windows related
+	// Window related
 	public static int width, height;
 	
 	// GUI panels of the application (JPanels)
@@ -32,26 +38,36 @@ public class ProjectFrame extends JFrame {
 	public static HomePanel homePanel;
 	public static RegisterPanel registerPanel;
 	
-	private static Timer tFrameRate,tUpdateRate;
+	private static Timer tFrameRate, tUpdateRate;
 	 
 	private ProjectFrame() {
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		width = (int) screenSize.getWidth();
-		height = (int) screenSize.getHeight();
-		width = (int) 1600;
-		height = (int) width*9/16;
-		setSize(width, height);
-//		setExtendedState(JFrame.MAXIMIZED_BOTH);
-		setBoardRectangleSize();
+    
+	    // Get the monitor screen resolution and take it as window dimension
+	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		// Create and init the Window (JFrame)
-		setLocationRelativeTo(null);
-		setLayout(null);
-		setResizable(false);
-		setTitle(Commons.gameTitle);
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		setVisible(true);
-		tFrameRate = new Timer(16, new ActionListener() {
+		if(Commons.fullscreen) {
+		    width = (int) screenSize.getWidth();
+		    height = (int) screenSize.getHeight();
+		    setExtendedState(JFrame.MAXIMIZED_BOTH);
+		} else {
+		    width = (int) Math.round(screenSize.getWidth() * 0.82);
+		    height = (int) Math.round(screenSize.getHeight() * 0.8);
+		}
+	    
+	    setSize(width, height);
+	    setBoardRectangleSize();
+	
+	    // Create and init the Window (JFrame)
+	    setLocationRelativeTo(null);
+	    setLayout(null);
+	    setUndecorated(false);
+	    setResizable(false);
+	    setTitle(Commons.gameTitle);
+	    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+	    setVisible(true);
+		
+		// Create the timers that make up the global realtime game loop
+		tFrameRate = new Timer(Commons.frametime + 4, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				repaint();
@@ -65,7 +81,7 @@ public class ProjectFrame extends JFrame {
 			}
 		});
 		tUpdateRate.setRepeats(true);
-
+    
 		stagePanel = new StagePanel();
 		if(Commons.editMap) {
 			StagePanel.resetMatch(Commons.mapName);
@@ -86,21 +102,25 @@ public class ProjectFrame extends JFrame {
 		cp.add(registerPanel);
 		addKeyListener(loginPanel);
 		addKeyListener(registerPanel);
+		addKeyListener(homePanel);
 		addKeyListener(stagePanel.kl);
 		
+		// Run the game loop by starting the timers (Update & Repaint)
 		tUpdateRate.start();
 		tFrameRate.start();
 	} 
 	
-	public static void setBoardRectangleSize(){
-		StagePanel.boardRectSize = width/24;
+	// Method that defines board rectangle size based on window width
+	public static void setBoardRectangleSize() {
+		StagePanel.boardRectSize = width / 24;
 	}
 	
+	// Method that updates the currently active panel(s)
 	private static void updateAllPanels() {
-		if(loginPanel.isVisible())loginPanel.update();
-		if(homePanel.isVisible())homePanel.update();
-		if(registerPanel.isVisible())registerPanel.update();
-		if(stagePanel.isVisible())stagePanel.update();
+		if(loginPanel.isVisible()) { loginPanel.update(); }
+		if(homePanel.isVisible()) { homePanel.update(); }
+		if(registerPanel.isVisible()) { registerPanel.update(); }
+		if(stagePanel.isVisible()) { stagePanel.update(); }
 	}
 	
 	public static ProjectFrame f;
@@ -127,36 +147,49 @@ public class ProjectFrame extends JFrame {
 		
 		
 		// Second create the main window and start the actual game
-		f = new ProjectFrame();
-		
-		System.out.println("Main Window is now visible");
-		
-		// Add a window listener to the frame
-		f.addWindowListener(new WindowAdapter() {
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			
-			// Define window close event
 			@Override
-			public void windowClosing(WindowEvent windowEvent) {
+			public void run() {
+				f = new ProjectFrame();
 				
-				// Check if the player is currently ingame
-				if(GameState.isIngame) {
-					int option = JOptionPane.showConfirmDialog(null, "Are you sure that you want to surrender?",
-													"Quit game?", JOptionPane.YES_NO_OPTION);
-					// If player clicked No then abort the close up procedure
-					if(option == JOptionPane.NO_OPTION) {
-						return;
+				System.out.println("Main Window is now visible");
+				
+				// Allow access to the traversal key events (TAB, ENTER, etc)
+				f.setFocusTraversalKeysEnabled(false);
+				
+				// Add a window listener to the frame to trigger closeup routine on window close
+				f.addWindowListener(new WindowAdapter() {
+					
+					// Define window close event
+					@Override
+					public void windowClosing(WindowEvent windowEvent) {
+						
+						// Check if the player is currently ingame
+						if(GameState.isIngame) {
+							int option = JOptionPane.showConfirmDialog(f, "Are you sure that you want to surrender?",
+															"Quit game?", JOptionPane.YES_NO_OPTION);
+							// If player clicked No then abort the close up routine
+							if(option == JOptionPane.NO_OPTION) {
+								return;
+							}
+						}
+						
+						// Hide the window and restore the original display mode
+						f.setVisible(false);
+						// device.setDisplayMode(standardMode);
+						System.out.println("window was closed --> cleanup routine");
+						
+						// close the network connection to the game server
+						conn.finalize();
+						
+						// Finally exit the application 
+						System.out.println("Application close up");
+						System.exit(0);
 					}
-				}
-				
-				f.setVisible(false);
-				System.out.println("window was closed --> cleanup routine");
-				
-				conn.finalize();
-				
-				// Finally exit the application 
-				System.out.println("Application close up");
-				System.exit(0);
+				});
 			}
 		});
+		
 	}
 }

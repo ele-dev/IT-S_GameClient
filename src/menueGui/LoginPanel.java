@@ -64,6 +64,16 @@ public class LoginPanel extends GuiPanel {
 		// Set the text in the password field to hidden
 		fields[1].hideText(true);
 		
+		// Now add the gui elements to the list of the panel
+		super.guiElements.add(fields[0]);
+		super.guiElements.add(fields[1]);
+		super.guiElements.add(loginButton);
+		super.guiElements.add(playAsGuestButton);
+		super.guiElements.add(goToRegisterButton);
+		super.guiElements.add(this.gameTitle);
+		super.guiElements.add(this.noAccountYet);
+		super.guiElements.add(this.statusLabel);
+		
 		this.loginStatusStr = "";
 	}
 	
@@ -89,56 +99,103 @@ public class LoginPanel extends GuiPanel {
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
 		
-		// Draw game title and other labels
-		this.gameTitle.draw(g2d);
-		this.noAccountYet.draw(g2d);
+		super.drawPanelContent(g2d);
 		
-		// Draw Loginbutton and play as guest button
-		this.loginButton.draw(g2d);
-		this.playAsGuestButton.draw(g2d);
-		this.goToRegisterButton.draw(g2d);
-		
-		// Draw Username and Password input-fields
-		for(TextInputField curTIF : this.fields) {
-			curTIF.draw(g2d);
-		}
-		
-		// Draw the status message directly under the input fields
-		this.statusLabel.draw(g2d);
+		// ...
 	}
 	
 	// Method for changing focus by clicking somewhere
 	private void tryPressSomething(MouseEvent e) {
 		
+		// Remove remaining focus on buttons 
+		this.loginButton.selectButtonNow(false);
+		this.playAsGuestButton.selectButtonNow(false);
+		this.goToRegisterButton.selectButtonNow(false);
+		
+		// Check if a text field was selected through the mouse click
 		for(TextInputField curTIF : this.fields) {
 			curTIF.trySelectField(e);
 		}
 	}
 	
-	// Method for typing a letter in a text field
+	// method for handling key pressed events (e.g. typing in textfields)
 	private void tryTypeIn(KeyEvent e) {
 		
-		// Switch focus to next text field when TAB was typed
-		/*
-			if(e.getKeyCode() == KeyEvent.VK_TAB) {
-			System.out.println("TAB key pressed");
-			
+		// Make sure not to handle events for other panels
+		if(!this.isVisible()) {
+			return;
+		}
+		
+		// Switch focus to next GUI element when TAB was pressed
+		if(e.getKeyCode() == KeyEvent.VK_TAB) {
 			if(this.fields[0].isSelected()) {
 				// set focus on field[1] now
 				this.fields[0].selectFieldNow(false);
 				this.fields[1].selectFieldNow(true);
+				this.loginButton.selectButtonNow(false);
+				this.playAsGuestButton.selectButtonNow(false);
+				this.goToRegisterButton.selectButtonNow(false);
+				
+			} else if(this.fields[1].isSelected()) {
+				// set focus on login button
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(false);
+				this.loginButton.selectButtonNow(true);
+				this.playAsGuestButton.selectButtonNow(false);
+				this.goToRegisterButton.selectButtonNow(false);
+				
+			} else if(this.loginButton.isSelected()) {
+				// set focus on the play as guest button
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(false);
+				this.loginButton.selectButtonNow(false);
+				this.playAsGuestButton.selectButtonNow(true);
+				this.goToRegisterButton.selectButtonNow(false);
+				
+			} else if(this.playAsGuestButton.isSelected()) {
+				// set focus on go to register button
+				this.fields[0].selectFieldNow(false);
+				this.fields[1].selectFieldNow(false);
+				this.loginButton.selectButtonNow(false);
+				this.playAsGuestButton.selectButtonNow(false);
+				this.goToRegisterButton.selectButtonNow(true);
+				
+			} else if(this.goToRegisterButton.isSelected()) {
+				// set focus on field[0] now
+				this.fields[0].selectFieldNow(true);
+				this.fields[1].selectFieldNow(false);
+				this.loginButton.selectButtonNow(false);
+				this.playAsGuestButton.selectButtonNow(false);
+				this.goToRegisterButton.selectButtonNow(false);
+				
 			} else {
 				// set focus on field[0] now
-				this.fields[1].selectFieldNow(false);
 				this.fields[0].selectFieldNow(true);
-			} 
+				this.fields[1].selectFieldNow(false);
+				this.loginButton.selectButtonNow(false);
+				this.playAsGuestButton.selectButtonNow(false);
+				this.goToRegisterButton.selectButtonNow(false);
+			}
 			
 			return;
 		}
-		 */
 		
-		for(TextInputField curTIF : this.fields) 
-		{ 
+		// Trigger a click event on the selected button when enter was pressed
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			if(this.playAsGuestButton.isSelected()) {
+				this.playAsGuest();
+			} else if(this.goToRegisterButton.isSelected()) {
+				this.redirectToRegister();
+			} else if(this.loginButton.isSelected()) {
+				System.out.println("login attempt because enter pressed");
+				this.tryLogin();
+			}
+			
+			return;
+		}
+		
+		// Try to enter a character of the key event into a textfield
+		for(TextInputField curTIF : this.fields) { 
 			curTIF.typeInText(e);
 		}	
 	}
@@ -147,7 +204,7 @@ public class LoginPanel extends GuiPanel {
 	private void playAsGuest() {
 		
 		// play as guest button click event
-		if(playAsGuestButton.isHover() && !ProjectFrame.conn.isLoggedIn()) {
+		if(!ProjectFrame.conn.isLoggedIn()) {
 			// Attempt to login as guest player
 			boolean success = ProjectFrame.conn.loginAsGuest();
 			if(!success) {
@@ -166,7 +223,7 @@ public class LoginPanel extends GuiPanel {
 	private void tryLogin() {
 		
 		// Login Button click event 
-		if(loginButton.isHover() && !ProjectFrame.conn.isLoggedIn()) {
+		if(!ProjectFrame.conn.isLoggedIn()) {
 			
 			// Obtain the content of the text fields
 			String user = this.fields[0].text;
@@ -204,13 +261,9 @@ public class LoginPanel extends GuiPanel {
 	
 	// Method for navigating to the register panel
 	private void redirectToRegister() {
-		
-		// Go to register button click event 
-		if(this.goToRegisterButton.isHover()) {
-			// redirect to the register panel
-			this.closePanel();
-			ProjectFrame.registerPanel.setVisible(true);
-		}
+		// redirect to the register panel
+		this.closePanel();
+		ProjectFrame.registerPanel.setVisible(true);
 	}
 	
 	// ----- Event handling section -------- //
@@ -218,9 +271,9 @@ public class LoginPanel extends GuiPanel {
 	// Mouse Listener events for detecting clicks on GUI elements
 	@Override 
 	public void mouseClicked(MouseEvent e) {
-		tryLogin();
-		playAsGuest();
-		redirectToRegister();
+		if(this.loginButton.isHover()) { tryLogin(); }
+		if(this.playAsGuestButton.isHover()) { playAsGuest(); }
+		if(this.goToRegisterButton.isHover()) { redirectToRegister(); }
 	}
 
 	@Override
@@ -243,7 +296,7 @@ public class LoginPanel extends GuiPanel {
 		goToRegisterButton.updateHover(e);
 	}
 
-	// Key listener for typing text into textfields
+	// Key listener for reacting on keyboard input
 	@Override
 	public void keyPressed(KeyEvent e) {
 		tryTypeIn(e);

@@ -12,6 +12,7 @@ package menueGui;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import Stage.Commons;
@@ -65,9 +66,22 @@ public class HomePanel extends GuiPanel {
 		this.runningMatchCounter.setRelativePosition(90, 15);
 
 		// Give the buttons relative screen positions
-		this.logoutButton.setRelativePosition(5, 95);
+		this.logoutButton.setRelativePosition(5, 92);
 		this.quickMatchButton.setRelativePosition(75, 40);
 		this.abortMatchSearchButton.setRelativePosition(75, 55);
+		
+		// add the gui elements to the list
+		super.guiElements.add(this.quickMatchButton);
+		super.guiElements.add(this.abortMatchSearchButton);
+		super.guiElements.add(this.logoutButton);
+		super.guiElements.add(this.caption);
+		super.guiElements.add(this.accountVerificationMessage);
+		super.guiElements.add(this.gameMoneyDisplay);
+		super.guiElements.add(this.gameSearchMessage);
+		super.guiElements.add(this.onlinePlayerCounter);
+		super.guiElements.add(this.playedMatchesDisplay);
+		super.guiElements.add(this.runningMatchCounter);
+		super.guiElements.add(this.welcomeMessage);
 		
 		// disable the search abortion button and the status label at the beginning
 		this.abortMatchSearchButton.setEnabled(false);
@@ -81,6 +95,7 @@ public class HomePanel extends GuiPanel {
 		// call the original method from the super class
 		super.onClose();
 		
+		// reset the buttons to the default appearance and state
 		this.abortMatchSearchButton.setEnabled(false);
 		this.quickMatchButton.setEnabled(true);
 		this.gameSearchMessage.setEnabled(false);
@@ -96,6 +111,17 @@ public class HomePanel extends GuiPanel {
 		} else {
 			this.accountVerificationMessage.setTextColor(Color.YELLOW);
 			this.accountVerificationMessage.setText("Info: Account has not been verified yet!");
+		}
+		
+		// Enable/Disable certain elements depending on guest player status
+		if(!ProjectFrame.conn.isGuestPlayer()) {
+			this.accountVerificationMessage.setEnabled(true);
+			this.gameMoneyDisplay.setEnabled(true);
+			this.playedMatchesDisplay.setEnabled(true);
+		} else {
+			this.accountVerificationMessage.setEnabled(false);
+			this.gameMoneyDisplay.setEnabled(false);
+			this.playedMatchesDisplay.setEnabled(false);
 		}
 		
 		// Update the game statistic display
@@ -130,35 +156,57 @@ public class HomePanel extends GuiPanel {
 	@Override
 	protected void drawPanelContent(Graphics2D g2d) {
 		
-		// Draw caption text and account verification status label
-		this.caption.draw(g2d);
-		if(!ProjectFrame.conn.isGuestPlayer()) {
-			this.accountVerificationMessage.draw(g2d);
-			this.gameMoneyDisplay.draw(g2d);
-			this.playedMatchesDisplay.draw(g2d);
+		super.drawPanelContent(g2d);
+		
+		// ...
+	}
+	
+	// Method for changing focus by clicking somewhere
+	private void tryPressSomething(MouseEvent e) {
+		
+		// Remove remaining focus on buttons
+		this.logoutButton.selectButtonNow(false);
+		this.quickMatchButton.selectButtonNow(false);
+		this.abortMatchSearchButton.selectButtonNow(false);
+	}
+	
+	// method for handling key pressed events (e.g. typing in textfields)
+	private void tryTypeIn(KeyEvent e) {
+		
+		// Make sure not to handle events for other panels
+		if(!this.isVisible()) {
+			return;
 		}
-
-		// Draw the welcome message 
-		this.welcomeMessage.draw(g2d);
 		
-		// Draw global game data
-		this.onlinePlayerCounter.draw(g2d);
-		this.runningMatchCounter.draw(g2d);
+		// Switch focus to next GUI element when TAB was pressed
+		if(e.getKeyCode() == KeyEvent.VK_TAB) {
+			// Only works for the logout button to focus it using TAB
+			if(this.logoutButton.isSelected()) {
+				// remove focus from the button 
+				this.logoutButton.selectButtonNow(false);
+			} else {
+				// set focus on the logout button
+				this.logoutButton.selectButtonNow(true);
+			}
+			
+			return;
+		}
 		
-		// Draw the game search/matchmaking status
-		this.gameSearchMessage.draw(g2d);
-		
-		// Draw the buttons
-		this.logoutButton.draw(g2d);
-		this.quickMatchButton.draw(g2d);
-		this.abortMatchSearchButton.draw(g2d);
+		// Trigger a click event on the selected button when enter was pressed
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			if(this.logoutButton.isSelected()) {
+				this.tryLogout();
+			}
+			
+			return;
+		}
 	}
 	
 	// Method for processing a click on the logout button
 	private void tryLogout() {
 		
 		// Logout button click event
-		if(this.logoutButton.isHover() && ProjectFrame.conn.isLoggedIn()) {
+		if(ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Logout");
 			
 			// Abort possible game search
@@ -182,7 +230,7 @@ public class HomePanel extends GuiPanel {
 	private void tryQuickmatchJoin() {
 		
 		// Quickmatch join button click event
-		if(this.quickMatchButton.isHover() && ProjectFrame.conn.isLoggedIn()) {
+		if(ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Join quickmatch (waiting queue)");
 			
 			// send the join quickmatch message to the server
@@ -205,7 +253,7 @@ public class HomePanel extends GuiPanel {
 	private void tryAbortMatchSearch() {
 		
 		// Abort button click event
-		if(this.abortMatchSearchButton.isHover() && ProjectFrame.conn.isLoggedIn()) {
+		if(ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Abort quick-matchmaking");
 			
 			// Send the abort message to the server
@@ -229,9 +277,14 @@ public class HomePanel extends GuiPanel {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// React on the mouse click
-		tryQuickmatchJoin();
-		tryAbortMatchSearch();
-		tryLogout();
+		if(this.quickMatchButton.isHover()) { tryQuickmatchJoin(); }
+		if(this.abortMatchSearchButton.isHover()) { tryAbortMatchSearch(); }
+		if(this.logoutButton.isHover()) { tryLogout(); }
+	}
+	
+	@Override
+	public void mousePressed(MouseEvent e) {
+		this.tryPressSomething(e);
 	}
 	
 	@Override
@@ -248,5 +301,11 @@ public class HomePanel extends GuiPanel {
 		logoutButton.updateHover(e);
 		quickMatchButton.updateHover(e);
 		abortMatchSearchButton.updateHover(e);
+	}
+	
+	// Key listener for reacting on keyboard input
+	@Override
+	public void keyPressed(KeyEvent e) {
+		this.tryTypeIn(e);
 	}
 }
