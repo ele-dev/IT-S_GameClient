@@ -21,6 +21,7 @@ package menueGui;
  */
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -35,6 +36,12 @@ import Stage.ProjectFrame;
 
 @SuppressWarnings("serial")
 public abstract class GuiPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
+	
+	// static members
+	protected static Cursor crossCursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
+	protected static Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
+	protected static Cursor enterTextCursor = new Cursor(Cursor.TEXT_CURSOR);
+	protected static Cursor defaultCursor = Cursor.getDefaultCursor();
 	
 	// Dimension and background color properties
 	protected int width, height;
@@ -51,7 +58,11 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		this.bgColor = Color.GRAY; 			// Default panel color gray
 		
 		this.guiElements = new ArrayList<GuiElement>();
-
+		
+		// set the default cursor
+		setCursor(defaultCursor);
+		// this.setCursor(enterTextCursor);
+		
 		// Gain access to traversal key events on all panel (--> TAB, ENTER, etc)
 		this.setFocusTraversalKeysEnabled(false);
 		
@@ -134,6 +145,9 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		
 		// call the reset method to do optional cleanup tasks before leaving
 		this.onClose();
+		
+		// Reset the cursor to the default one
+		setCursor(defaultCursor);
 	}
 	
 	// Event method that is called on Panel close up (can be overwritten)
