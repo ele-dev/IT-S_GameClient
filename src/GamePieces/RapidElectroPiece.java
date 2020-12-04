@@ -29,7 +29,7 @@ public class RapidElectroPiece extends GamePiece {
 	private ArrayList<GamePiece> targetGamePieces = new ArrayList<GamePiece>();
 
 	public RapidElectroPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameRapidElectro, boardRect, Commons.dmgRapidElectro, Commons.baseTypeRapidElectro,Commons.neededLOSRapidElectro);
+		super(isRed, Commons.nameRapidElectro, boardRect, Commons.dmgRapidElectro, 1,Commons.neededLOSRapidElectro);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

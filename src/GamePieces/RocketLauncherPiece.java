@@ -27,7 +27,7 @@ public class RocketLauncherPiece extends GamePiece{
 	private static float spreadAngle = 120;
 	
 	public RocketLauncherPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameRocketLauncher, boardRect, Commons.dmgRocketLauncher,Commons.baseTypeRocketLauncher,Commons.neededLOSRocketLauncher);
+		super(isRed, Commons.nameRocketLauncher, boardRect, Commons.dmgRocketLauncher,2,Commons.neededLOSRocketLauncher);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			 
 			@Override
@@ -48,7 +48,7 @@ public class RocketLauncherPiece extends GamePiece{
 		burstTimer.setRepeats(false);
 		
 		ArrayList<String> spriteLinks = new ArrayList<String>();
-		spriteLinks.add(Commons.pathToSpriteSource+"Turrets/RocketLauncher.png");
+		spriteLinks.add(Commons.directoryToSprites+"Turrets/RocketLauncher.png");
 		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize,StagePanel.boardRectSize, 0);
 	}
 	

@@ -48,7 +48,7 @@ public class PlayerFortressMenu {
 		activeRecruitGPSectorButton.drawButton(g2d);
 		g2d.setColor(Commons.cCurrency);
 		g2d.setFont(new Font("Arial", Font.BOLD, StagePanel.w/24));
-		g2d.drawString("Coins: " + playerFortress.getCoinAmount(), rect.x+StagePanel.w/40, rect.y+StagePanel.w/40*2);
+		g2d.drawString("Gold: " + playerFortress.getGoldAmount(), rect.x+StagePanel.w/40, rect.y+StagePanel.w/40*2);
 		
 		drawHoverGPInfo(g2d);
 	}

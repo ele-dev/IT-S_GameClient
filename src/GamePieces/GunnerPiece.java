@@ -27,7 +27,7 @@ public class GunnerPiece extends GamePiece {
 	private int burstBulletAmount = 16;
 	
 	public GunnerPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameGunner, boardRect, Commons.dmgGunner, Commons.baseTypeGunner,Commons.neededLOSGunner);
+		super(isRed, Commons.nameGunner, boardRect, Commons.dmgGunner, 0,Commons.neededLOSGunner);
 		attackDelayTimer = new Timer(1500, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -48,7 +48,7 @@ public class GunnerPiece extends GamePiece {
 		burstTimer.setRepeats(false);
 		
 		ArrayList<String> spriteLinks = new ArrayList<String>();
-		spriteLinks.add(Commons.pathToSpriteSource+"Turrets/Minigun.png");
+		spriteLinks.add(Commons.directoryToSprites+"Turrets/Minigun.png");
 		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize, StagePanel.boardRectSize, 0);
 	}
 	

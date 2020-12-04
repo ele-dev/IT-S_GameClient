@@ -74,23 +74,26 @@ public class ProjectFrame extends JFrame {
 			}
 		});
 		tFrameRate.setRepeats(true);
-		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
+		tUpdateRate = new Timer(10, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateAllPanels();
 			}
 		});
 		tUpdateRate.setRepeats(true);
-		
+    
 		stagePanel = new StagePanel();
+		if(Commons.editMap) {
+			StagePanel.resetMatch(Commons.mapName);
+		}
 		
 		// Create and init the GUI panels (JPanels)
 		loginPanel = new LoginPanel();
 		registerPanel = new RegisterPanel();
 		homePanel = new HomePanel();
-		stagePanel.setVisible(false);
+		stagePanel.setVisible(Commons.editMap);
 		homePanel.setVisible(false);
-		loginPanel.setVisible(true);			// Display the login screen first
+		loginPanel.setVisible(!Commons.editMap);			// Display the login screen first
 		registerPanel.setVisible(false);
 		Container cp = getContentPane();		
 		cp.add(loginPanel);
@@ -126,19 +129,22 @@ public class ProjectFrame extends JFrame {
 	
 	public static void main(String[] args) {
 		
-		// First create a connection instance
-		try {
-			conn = new Connection();
-		} catch (Exception e) {}
-		
-		// Check if the connection is established 
-		if(conn.isConnected() == true) {
-			// ...
-		} else {
-			// If there's no connection to the game server then exit
-			System.out.println("\nApplication close up");
-			System.exit(0);
+		if(!Commons.editMap) {
+			// First create a connection instance
+			try {
+				conn = new Connection();
+			} catch (Exception e) {}
+			
+			// If the connection is established prompt the user to login
+			if(conn.isConnected() == true) {
+				// ...
+			} else {
+				// If theres no connection to the game server the exit
+				System.out.println("\nApplication close up");
+				System.exit(0);
+			}
 		}
+		
 		
 		// Second create the main window and start the actual game
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {

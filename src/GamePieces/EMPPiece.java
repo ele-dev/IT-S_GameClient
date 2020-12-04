@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import javax.swing.Timer;
 
+import Environment.DestructibleObject;
 import Projectiles.EMPProjectile;
 import Stage.BoardRectangle;
 import Stage.Commons;
@@ -18,16 +19,20 @@ import Stage.StagePanel;
 
 
 public class EMPPiece extends GamePiece{
-	private ArrayList<EMPProjectile> empProjectiles = new ArrayList<EMPProjectile>();
+	private static ArrayList<EMPProjectile> empProjectiles = new ArrayList<EMPProjectile>();
 	private static float spreadAngle = 120;
+	
+	private static DestructibleObject lastTargetDestructibleObject;
+	
 	public EMPPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameEMP, boardRect, Commons.dmgEMP, Commons.baseTypeEMP,Commons.neededLOSEMP);
+		super(isRed, Commons.nameEMP, boardRect, Commons.dmgEMP, 0,Commons.neededLOSEMP);
 		
 		attackDelayTimer = new Timer(1500, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				angle = angleDesired;
+				lastTargetDestructibleObject = targetDestructibleObject;
 				shootEMP();
 			} 
 		}); 
@@ -44,13 +49,7 @@ public class EMPPiece extends GamePiece{
 		return attackDelayTimer.isRunning();
 	}
 	
-	public void drawAttack(Graphics2D g2d) {
-		for(EMPProjectile curEMPP : empProjectiles) {
-			if(!curEMPP.isDestroyed()) {
-				curEMPP.drawProjectile(g2d);	
-			}
-		}
-	}
+	public void drawAttack(Graphics2D g2d) {}
  
 	@Override
 	public boolean checkAttacks(int selectedRow, int selectedColumn, int myRow, int myColumn) {
@@ -64,13 +63,13 @@ public class EMPPiece extends GamePiece{
 		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		Shape shape = targetGamePiece != null ? targetGamePiece.getRectHitbox() : targetDestructibleObject.getRectHitbox();
-		empProjectiles.add(new EMPProjectile(getCenterX(), getCenterY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, c, getDmg(), 
-				angle+(float)((Math.random()-0.5)* spreadAngle), shape,targetGamePiece,targetDestructibleObject));
+		empProjectiles.add(new EMPProjectile(getCenterX(), getCenterY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, c, 
+				angle+(float)((Math.random()-0.5)* spreadAngle), shape,targetGamePiece,targetDestructibleObject,getDmg(),isRed()));
 		targetDestructibleObject = null;
 		targetGamePiece = null;
 	}
 	// decreases the detonation counter and lets it explode if the timer <= 0
-	public void decEMPTimers() {
+	public static void decEMPTimers() {
 		for(EMPProjectile curEMPP : empProjectiles) {
 			curEMPP.getDestroyCountDown().countDownOne();
 			if(curEMPP.getDestroyCountDown().getCounter() <= 0) {
@@ -78,10 +77,14 @@ public class EMPPiece extends GamePiece{
 			}
 		}
 	}
+	
+	public static void drawEMPProjectiles(Graphics2D g2d) {
+		for(EMPProjectile curEMPP : empProjectiles) {
+			curEMPP.drawProjectile(g2d);	
+		}
+	}
 
-	public void updateAttack() { 
-		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
+	public static void updateEMPProjectiles() {
 		for(int i = 0; i < empProjectiles.size(); i++) { 
 			EMPProjectile curEMPP = empProjectiles.get(i);
 			curEMPP.update();
@@ -92,10 +95,10 @@ public class EMPPiece extends GamePiece{
 				curEMPP.checkHitDestructibleObject();
 				if(curEMPP.hasHitTarget()) {
 					if(curEMPP.getTargetGamePiece() != null) {
-						curEMPP.getTargetGamePiece().gamePieceBase.getDamaged(getDmg());
+						curEMPP.getTargetGamePiece().gamePieceBase.getDamaged(curEMPP.getDmg());
 					} else {
-						targetDestructibleObject.getDamaged(getDmg(), angle, isRed());
-						targetDestructibleObject = null;
+						lastTargetDestructibleObject.getDamaged(curEMPP.getDmg(), curEMPP.angle, curEMPP.isRed());
+						lastTargetDestructibleObject = null;
 					}
 				}
 			} else {
@@ -108,5 +111,10 @@ public class EMPPiece extends GamePiece{
 				empProjectiles.remove(i);
 			}
 		}
+	}	
+
+	public void updateAttack() { 
+		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 	}
 }

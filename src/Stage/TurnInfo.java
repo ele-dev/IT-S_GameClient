@@ -70,12 +70,23 @@ public class TurnInfo {
 		g2d.setColor(GameState.myTeamColor);
 		g2d.drawString(ProjectFrame.conn.getUsername()+" (You)", rect.x+60, (int)(rect.y+textHeight*3));
 		
-		if(fontMetrics.stringWidth(ProjectFrame.conn.getUsername()+" (You)")+120 > rect.width) {
-			rect.setBounds(rect.x,rect.y,fontMetrics.stringWidth(ProjectFrame.conn.getUsername()+" (You)")+120,rect.height);
+		g2d.setColor(Commons.cCurrency);
+//		int enemyCoinAmount = GameState.myTeamIsRed?StagePanel.blueBase.getCoinAmount():StagePanel.redBase.getCoinAmount();
+		int myCoinAmount =  GameState.myTeamIsRed?StagePanel.redBase.getGoldAmount():StagePanel.blueBase.getGoldAmount();
+//		g2d.drawString(enemyCoinAmount +"g", rect.x+rect.width-fontMetrics.stringWidth(enemyCoinAmount +"g")-rect.width/20, (int)(rect.y+textHeight*1.5));
+		g2d.drawString(myCoinAmount +"g", rect.x+rect.width-fontMetrics.stringWidth(myCoinAmount +"g")-rect.width/20, (int)(rect.y+textHeight*3));
+		
+		int largestCoinAmount = (StagePanel.blueBase.getGoldAmount()>StagePanel.redBase.getGoldAmount()?StagePanel.blueBase.getGoldAmount():StagePanel.redBase.getGoldAmount());
+		int largestCoinAmountStringWidth = fontMetrics.stringWidth(largestCoinAmount+"g");
+		
+		int newWidth = fontMetrics.stringWidth(ProjectFrame.conn.getUsername()+" (You)")+largestCoinAmountStringWidth+120;
+		if(newWidth > rect.width) {
+			rect.setBounds(rect.x,rect.y,newWidth,rect.height);
 			initCounters();
 		}
-		if(fontMetrics.stringWidth(GameState.enemyName)+120 > rect.width) {
-			rect.setBounds(rect.x,rect.y,fontMetrics.stringWidth(GameState.enemyName)+120,rect.height);
+		newWidth = fontMetrics.stringWidth(GameState.enemyName)+largestCoinAmountStringWidth+120;
+		if(newWidth > rect.width) {
+			rect.setBounds(rect.x,rect.y,newWidth,rect.height);
 			initCounters();
 		}
 		

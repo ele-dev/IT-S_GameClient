@@ -17,9 +17,9 @@ import Stage.Commons;
 import Stage.StagePanel;
 
 public class DetonatorPiece extends GamePiece {
-	private ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
+	private static ArrayList<DetonatorProjectile> detProjectiles = new ArrayList<DetonatorProjectile>();
 	public DetonatorPiece(boolean isRed, BoardRectangle boardRect) {
-		super(isRed, Commons.nameDetonator, boardRect, Commons.dmgDetonator, Commons.baseTypeDetonator,Commons.neededLOSDetonator);
+		super(isRed, Commons.nameDetonator, boardRect, Commons.dmgDetonator,0, Commons.neededLOSDetonator);
 		attackDelayTimer = new Timer(1500,new ActionListener() {
 			
 			@Override
@@ -44,12 +44,7 @@ public class DetonatorPiece extends GamePiece {
 	public void drawAttack(Graphics2D g2d) {
 		for(int i = 0; i < detProjectiles.size(); i++) {
 			DetonatorProjectile curDP = detProjectiles.get(i);
-			if(curDP.isDetonated()) {
-				curDP.detExplosion.drawParticle(g2d);
-			} 
-			if(!curDP.isDetonated()) {
-				curDP.drawProjectile(g2d);	
-			}
+			curDP.drawProjectile(g2d);	
 		}
 	}
  
@@ -70,12 +65,12 @@ public class DetonatorPiece extends GamePiece {
 		float angleDesiredProjectile = calculateAngle((int)(targetRect.getCenterX()+(Math.random()-0.5)*targetRect.width), (int)(targetRect.getCenterY()+(Math.random()-0.5)*targetRect.height));
 		
 		detProjectiles.add(new DetonatorProjectile((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, isRed(), 
-				getDmg(), angleDesiredProjectile, shape, targetGamePiece, targetDestructibleObject));
+				angleDesiredProjectile, shape, targetGamePiece, targetDestructibleObject,getDmg()));
 		targetDestructibleObject = null;
 		targetGamePiece = null;
 	}
 	// decreases the detonation counter and lets it explode if the timer <= 0
-	public void decDetonaterTimers() {
+	public static void decDetonaterTimers() {
 		for(DetonatorProjectile curDP : detProjectiles) {
 			curDP.getDetonationCountDown().countDownOne();
 			
@@ -85,10 +80,14 @@ public class DetonatorPiece extends GamePiece {
 			}
 		}
 	}
+	
+	public static void drawDetonatorProjectiles(Graphics2D g2d) {
+		for(DetonatorProjectile curDP : detProjectiles) {
+			curDP.drawProjectile(g2d);
+		}
+	}
 
-	public void updateAttack() { 
-		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
+	public static void updateDetonatorProjectiles() {
 		for(int i = 0; i < detProjectiles.size(); i++) { 
 			DetonatorProjectile curDP = detProjectiles.get(i);
 			if(!curDP.hasHitTarget()) {
@@ -101,15 +100,15 @@ public class DetonatorPiece extends GamePiece {
 					curDP.updateBlink();
 				}
 			}
-			if(curDP.isDetonated()) {
-				curDP.detExplosion.updateExplosion();
-				curDP.detExplosion.moveAllFrags();
-				curDP.checkIfExplosionFaded();
-			}
 			
 			if(curDP.isDestroyed()) {
 				detProjectiles.remove(i);
 			}
 		}
+	}
+
+	public void updateAttack() { 
+		aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 	}
 }

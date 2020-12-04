@@ -47,12 +47,13 @@ public class RecruitGPInfoPanel {
 	
 	private Font font;
 	
-	public RecruitGPInfoPanel(int startx, int starty, int w, int h, String gamePieceName, PlayerFortress playerFortress) {
+	public RecruitGPInfoPanel(int startx, int starty, int w, int h, String gamePieceName, PlayerFortress playerFortress, int index) {
 		rect = new Rectangle(startx, starty, w, h);
 		this.startx = startx;
 		this.starty = starty;
 		rectruitButton = new GenericButton(rect.x+w, rect.y, w/4, h, "recruit", new Color(20,20,20), Commons.cCurrency, w/16);
-		
+		this.gamePieceCost = index*10+10;
+		this.gamePieceBaseType = (byte) index;
 		this.gamePieceName = gamePieceName;
 		initGamePieceInfos();
 		this.playerFortress = playerFortress;
@@ -94,47 +95,38 @@ public class RecruitGPInfoPanel {
 		switch (gamePieceName) {
 		case "Gunner":
 			gamePieceDamage = Commons.dmgGunner;
-			gamePieceBaseType = Commons.baseTypeGunner;
 			gamePieceNeededLOS = Commons.neededLOSGunner;
 			break;
 		case "Shotgun":
 			gamePieceDamage = Commons.dmgShotgun;
-			gamePieceBaseType = Commons.baseTypeShotgun;
 			gamePieceNeededLOS = Commons.neededLOSShotgun;
 			break;
 		case "Sniper":
 			gamePieceDamage = Commons.dmgSniper;
-			gamePieceBaseType = Commons.baseTypeSniper;
 			gamePieceNeededLOS = Commons.neededLOSSniper;
 			break;
 		case "Detonator":
 			gamePieceDamage = Commons.dmgDetonator;
-			gamePieceBaseType = Commons.baseTypeDetonator;
 			gamePieceNeededLOS = Commons.neededLOSDetonator;
 			break;
 		case "FlameThrower":
 			gamePieceDamage = Commons.dmgFlameThrower;
-			gamePieceBaseType = Commons.baseTypeFlameThrower;
 			gamePieceNeededLOS = Commons.neededLOSFlameThrower;
 			break;
 		case "RocketLauncher":
 			gamePieceDamage = Commons.dmgRocketLauncher;
-			gamePieceBaseType = Commons.baseTypeRocketLauncher;
 			gamePieceNeededLOS = Commons.neededLOSRocketLauncher;
 			break;
 		case "EMP":
 			gamePieceDamage = Commons.dmgEMP;
-			gamePieceBaseType = Commons.baseTypeEMP;
 			gamePieceNeededLOS = Commons.neededLOSEMP;
 			break;
 		case "RapidElectro":
 			gamePieceDamage = Commons.dmgRapidElectro;
-			gamePieceBaseType = Commons.baseTypeRapidElectro;
 			gamePieceNeededLOS = Commons.neededLOSRapidElectro;
 			break;
 		case "Tazer":
 			gamePieceDamage = Commons.dmgTazer;
-			gamePieceBaseType = Commons.baseTypeTazer;
 			gamePieceNeededLOS = Commons.neededLOSTazer;
 			break;
 		default:
@@ -152,10 +144,13 @@ public class RecruitGPInfoPanel {
 			gamePieceShield = Commons.maxShieldType1;
 			gamePieceMovementRange = Commons.MovementRangeType1;
 			break;
+		case 2:
+			gamePieceHealth = Commons.maxHealthType2;
+			gamePieceShield = Commons.maxShieldType2;
+			gamePieceMovementRange = Commons.MovementRangeType2;
+			break;	
+			
 		}
-		
-		
-		gamePieceCost = 30;
 	}
 	public void	placeGamePiece(boolean isRed, BoardRectangle boardRectangle) {
 		// Place the game piece on the field and send message to the server
@@ -226,10 +221,10 @@ public class RecruitGPInfoPanel {
 	
 	public void update() {
 		updateHover(StagePanel.mousePosUntranslated);
-		if(playerFortress.getCoinAmount() >= gamePieceCost) {
+		if(playerFortress.getGoldAmount() >= gamePieceCost) {
 			rectruitButton.updateHover(StagePanel.mousePosUntranslated);
 		}
-		rectruitButton.setActive(playerFortress.getCoinAmount() >= gamePieceCost);
+		rectruitButton.setActive(playerFortress.getGoldAmount() >= gamePieceCost);
 	}
 	
 	public void drawGamePieceInfo(Graphics2D g2d) {

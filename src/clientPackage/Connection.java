@@ -46,7 +46,6 @@ public class Connection extends Thread {
 	
 	// Constructor attempts to connect to server
 	public Connection() {
-		
 		// Initialize state indicators assuming worst case 
 		this.playAsGuest = false;
 		this.isConnected = false;

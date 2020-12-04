@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 import Environment.DestructibleObject;
 import GamePieces.GamePiece;
+import Particles.Particle;
+import Particles.TrailParticle;
 import Particles.WaveParticle;
 import PlayerStructures.GoldMine;
 
@@ -25,7 +27,6 @@ public class BoardRectangle {
 	public boolean isWall,isGap,isHinderingTerrain;
 	
 	private boolean isHover;
-	public float so = 4;
 	private int rotation = 0; 
 	
 	private Sprite wallSprite;
@@ -37,6 +38,7 @@ public class BoardRectangle {
 	private static String[] extendedInfoStrings = new String[7];
 	private static long waveCounter = 0;
 	private static ArrayList<WaveParticle> waveParticles = new ArrayList<WaveParticle>();
+	private static ArrayList<Particle> gravelParticles = new ArrayList<Particle>();	
 	
 	public BoardRectangle(int row, int column,boolean isTile1,int index,boolean isHinderingTerrain) {
 		this.row = row;
@@ -110,6 +112,16 @@ public class BoardRectangle {
 			int size =  (int) (Math.random() * StagePanel.boardRectSize/4+StagePanel.boardRectSize/4);
 			Color randomColor = new Color(0,(int)(50+Math.random()*100),(int)(200+Math.random()*55));
 			waveParticles.add(new WaveParticle(x, y, size, (float)(Math.random()*360), randomColor));
+		}
+	}
+	
+	public void initHinderingTerrain() {
+		isHinderingTerrain = true;
+		for(int i = 0;i<40;i++) {
+			int x =  (int) (getX()+Math.random()*StagePanel.boardRectSize);
+			int y =  (int) (getY()+Math.random()*StagePanel.boardRectSize);
+			int randomGreyScale = (int) (Math.random() * 30 + 15);
+			gravelParticles.add(new TrailParticle(x, y, (int)(Math.random() * StagePanel.boardRectSize/4 + StagePanel.boardRectSize/12), 0, new Color(randomGreyScale,randomGreyScale,randomGreyScale), 0, 0, 0));
 		}
 	}
 	
@@ -197,89 +209,110 @@ public class BoardRectangle {
 		int size = getSize();
 		if(rightConnected) {
 			ArrayList<String> spriteLinks = new ArrayList<String>();
-			spriteLinks.add(Commons.pathToSpriteSource+"Tiles/DarkWall_R.png");
+			spriteLinks.add(Commons.directoryToSprites+"Tiles/DarkWall_R.png");
 			wallSprite = new Sprite(spriteLinks, size,size, 0);
 			if(leftConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
-				spriteLinks1.add(Commons.pathToSpriteSource+"Tiles/DarkWall_LR.png");
+				spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_LR.png");
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 				if(downConnected) {
 					ArrayList<String> spriteLinks2 = new ArrayList<String>();
-					spriteLinks2.add(Commons.pathToSpriteSource+"Tiles/DarkWall_LRD.png");
+					spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_LRD.png");
 					wallSprite = new Sprite(spriteLinks2, size,size, 0);
 					if(upConnected) {
 						ArrayList<String> spriteLinks3 = new ArrayList<String>();
-						spriteLinks3.add(Commons.pathToSpriteSource+"Tiles/DarkWall_LRUD.png");
+						spriteLinks3.add(Commons.directoryToSprites+"Tiles/DarkWall_LRUD.png");
 						wallSprite = new Sprite(spriteLinks3, size,size, 0);
 					}
 				} else if (upConnected) {
 					ArrayList<String> spriteLinks2 = new ArrayList<String>();
-					spriteLinks2.add(Commons.pathToSpriteSource+"Tiles/DarkWall_LRU.png");
+					spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_LRU.png");
 					wallSprite = new Sprite(spriteLinks2, size,size, 0);
 				}
 			} else
 			if(upConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
-				spriteLinks1.add(Commons.pathToSpriteSource+"Tiles/DarkWall_RU.png");
+				spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_RU.png");
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 				if(downConnected) {
 					ArrayList<String> spriteLinks2 = new ArrayList<String>();
-					spriteLinks2.add(Commons.pathToSpriteSource+"Tiles/DarkWall_RUD.png");
+					spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_RUD.png");
 					wallSprite = new Sprite(spriteLinks2, size,size, 0);
 				}
 			}else 
 			if(downConnected) {
 				ArrayList<String> spriteLinks2 = new ArrayList<String>();
-				spriteLinks2.add(Commons.pathToSpriteSource+"Tiles/DarkWall_RD.png");
+				spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_RD.png");
 				wallSprite = new Sprite(spriteLinks2, size,size, 0);
 			}
 		}else 
 		if(leftConnected) {
 			ArrayList<String> spriteLinks3 = new ArrayList<String>();
-			spriteLinks3.add(Commons.pathToSpriteSource+"Tiles/DarkWall_L.png");
+			spriteLinks3.add(Commons.directoryToSprites+"Tiles/DarkWall_L.png");
 			wallSprite = new Sprite(spriteLinks3, size,size, 0);
 			if(upConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
-				spriteLinks1.add(Commons.pathToSpriteSource+"Tiles/DarkWall_LU.png");
+				spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_LU.png");
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 				if(downConnected) {
 					ArrayList<String> spriteLinks2= new ArrayList<String>();
-					spriteLinks2.add(Commons.pathToSpriteSource+"Tiles/DarkWall_LUD.png");
+					spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_LUD.png");
 					wallSprite = new Sprite(spriteLinks2, size,size, 0);
 				}
 			}else if(downConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
-				spriteLinks1.add(Commons.pathToSpriteSource+"Tiles/DarkWall_LD.png");
+				spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_LD.png");
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 			}
 		}else 
 		if(upConnected) {
 			ArrayList<String> spriteLinks2 = new ArrayList<String>();
-			spriteLinks2.add(Commons.pathToSpriteSource+"Tiles/DarkWall_U.png");
+			spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_U.png");
 			wallSprite = new Sprite(spriteLinks2, size,size, 0);
 			if(downConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
-				spriteLinks1.add(Commons.pathToSpriteSource+"Tiles/DarkWall_UD.png");
+				spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_UD.png");
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 			}
 		}else 
 		if(downConnected) {
 			ArrayList<String> spriteLinks1 = new ArrayList<String>();
-			spriteLinks1.add(Commons.pathToSpriteSource+"Tiles/DarkWall_D.png");
+			spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_D.png");
 			wallSprite = new Sprite(spriteLinks1, size,size, 0);
 		}else {
 			ArrayList<String> spriteLinks3 = new ArrayList<String>();
-			spriteLinks3.add(Commons.pathToSpriteSource+"Tiles/DarkWall.png");
+			spriteLinks3.add(Commons.directoryToSprites+"Tiles/DarkWall.png");
 			wallSprite = new Sprite(spriteLinks3, size,size, 0);
 		}
 	}
 	// draws The Rectangle depending on if it is a Possible move/attack (draws another rectangle with another color over it)
 	public void drawBoardRectangle(Graphics2D g2d) {
-		g2d.setColor(isHinderingTerrain?Color.MAGENTA:c);
+		g2d.setColor(c);
 		if(!isGap) {
 			g2d.fill(rect);
 			if(groundSprite != null && !isGap && !isWall) {
 				groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), spriteRotation, 1);
+			}
+		}
+		if(isHinderingTerrain) {
+			g2d.setColor(new Color(60,60,60));
+			g2d.fill(rect);
+			g2d.setStroke(new BasicStroke(8));
+			g2d.setColor(new Color(10,10,10));
+			for(BoardRectangle curBR : adjecantBoardRectangles) {
+				if(!curBR.isHinderingTerrain) {
+					if(curBR.row == row) {
+						if(curBR.column == column+1) {
+							g2d.drawLine(getX()+getSize(), getY(), getX()+getSize(), getY()+getSize());
+						}else {
+							g2d.drawLine(getX(), getY(), getX(), getY()+getSize());
+						}
+					}else if(curBR.row == row+1){
+						g2d.drawLine(getX(), getY()+getSize(), getX()+getSize(), getY()+getSize());
+					}else {
+						g2d.drawLine(getX(), getY(), getX()+getSize(), getY());
+					}
+				}
 			}
 		}
 	}
@@ -298,6 +331,12 @@ public class BoardRectangle {
 		for(WaveParticle curWP : waveParticles) {
 			curWP.setYOffset(waveFunction(curWP.getX()));
 			curWP.drawParticle(g2d);
+		}
+	}
+	
+	public static void drawGravelParticles(Graphics2D g2d) {
+		for(Particle curP : gravelParticles) {
+			curP.drawParticle(g2d);
 		}
 	}
 	
@@ -337,6 +376,7 @@ public class BoardRectangle {
 	}
 	
 	// draws BR in hover mode
+	@SuppressWarnings("unused")
 	public void drawHover(Graphics2D g2d) {
 		int alpha = 255;
 		g2d.setStroke(new BasicStroke(5));
@@ -350,34 +390,46 @@ public class BoardRectangle {
 		}else {
 			g2d.setColor(new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),200));
 		}
+		
+		int s = getSize();
+		drawBROutline(g2d, g2d.getColor(), 0, s);
 		int x = getX();
 		int y = getY();
-		int s = getSize();
-		int soI = (int)so;
-		g2d.translate(x, y);
-		g2d.drawLine(-soI/2, -soI/2, s/4-soI/2, -soI/2);
-		g2d.drawLine(s+soI/2, -soI/2, s*3/4+soI/2, -soI/2);
-					
-		g2d.drawLine(-soI/2, s+soI/2, s/4-soI/2, s+soI/2);
-		g2d.drawLine(s+soI/2, s+soI/2, s*3/4+soI/2, s+soI/2);
-					
-		g2d.drawLine(-soI/2, -soI/2, -soI/2, s/4-soI/2);
-		g2d.drawLine(-soI/2, s+soI/2, -soI/2, s*3/4+soI/2);
-					
-		g2d.drawLine(s+soI/2, -soI/2, s+soI/2, s/4-soI/2);
-		g2d.drawLine(s+soI/2, s+soI/2, s+soI/2, s*3/4+soI/2);
-			
+		
+		
 		if(isPossibleAttack) {
-			g2d.translate(s/2, s/2);
+			rotation+= 3;
+			g2d.translate(getCenterX(), getCenterY());	
 			g2d.rotate(Math.toRadians(rotation));
 			g2d.drawLine(-s/3, 0, s/3, 0);
 			g2d.drawLine(0,-s/3, 0, s/3);
 			g2d.drawOval(-s/6, -s/6, s/3, s/3);
 			g2d.rotate(Math.toRadians(-rotation));
-			g2d.translate(-s/2, -s/2);
+			g2d.translate(-getCenterX(), -getCenterY());	
 		}
-		g2d.translate(-x, -y);
+	}
+	
+	public void drawBROutline(Graphics2D g2d, Color c, float angle, int size) {
+		g2d.setColor(c);
+		int x = getCenterX();
+		int y = getCenterY();
+		int s = size;
+		g2d.translate(x, y);
+		g2d.rotate(Math.toRadians(angle));
+		g2d.setStroke(new BasicStroke(6));
+		g2d.drawLine(-s/2, -s/2, -s/4, -s/2);
+		g2d.drawLine(-s/2, -s/2, -s/2, -s/4);
+
+		g2d.drawLine(s/2, -s/2, s/4, -s/2);
+		g2d.drawLine(s/2, -s/2, s/2, -s/4);
 		
+		g2d.drawLine(-s/2, s/2, -s/4, s/2);
+		g2d.drawLine(-s/2, s/2, -s/2, s/4);
+		
+		g2d.drawLine(s/2, s/2, s/4, s/2);
+		g2d.drawLine(s/2, s/2, s/2, s/4);
+		g2d.rotate(Math.toRadians(-angle));
+		g2d.translate(-x, -y);
 	}
 	
 	// draws the Label of the BoardRectangle (only ifHover)
@@ -395,16 +447,16 @@ public class BoardRectangle {
 		}else if(isWall){
 			labelState = "Wall";
 			extendedInfoString = extendedInfoStrings[3];
-		}
+		}else
 		if(isDestructibleObject()) {
 			labelState = "Destructible Object";
 			extendedInfoString = extendedInfoStrings[4];
-		}
+		}else
 		if(isGoldMine()) {
 			labelState = "GoldMine";
 			extendedInfoString = extendedInfoStrings[5];
-		}
-		if(StagePanel.blueBase.containsBR(this) || StagePanel.redBase.containsBR(this)) {
+		}else
+		if((StagePanel.blueBase != null && StagePanel.redBase != null) && (StagePanel.blueBase.containsBR(this) || StagePanel.redBase.containsBR(this))) {
 			labelState = "PlayerFortress";
 			extendedInfoString = extendedInfoStrings[6];
 		}

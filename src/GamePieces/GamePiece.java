@@ -234,7 +234,6 @@ public abstract class GamePiece {
 				StagePanel.particles.add(new Explosion(getCenterX()+(int)((Math.random()-0.5)*StagePanel.boardRectSize/2),
 						getCenterY()+(int)((Math.random()-0.5)*StagePanel.boardRectSize/2), 1f));
 			}
-			StagePanel.impactStop();
 		}
 	}
 	
@@ -408,21 +407,12 @@ public abstract class GamePiece {
 	}
 	
 	public void drawPointer(Graphics2D g2d) {
-		g2d.setColor(hasExecutedAttack?new Color(c.getRed()/2,c.getGreen()/2,c.getBlue()/2,200):c);
-		
-		int x = boardRect.getX();
-		int y = boardRect.getY();
-		int s = StagePanel.boardRectSize;
-		int soI = (int)boardRect.so;
-		g2d.setStroke(new BasicStroke(6));
-		g2d.drawLine(x-soI/2, y-soI/2, x+s/4-soI/2, y-soI/2);
-		g2d.drawLine(x+s+soI/2, y-soI/2, x+s*3/4+soI/2, y-soI/2);		
-		g2d.drawLine(x-soI/2, y+s+soI/2, x+s/4-soI/2, y+s+soI/2);
-		g2d.drawLine(x+s+soI/2, y+s+soI/2, x+s*3/4+soI/2, y+s+soI/2);		
-		g2d.drawLine(x-soI/2, y-soI/2, x-soI/2, y+s/4-soI/2);
-		g2d.drawLine(x-soI/2, y+s+soI/2, x-soI/2, y+s*3/4+soI/2);	
-		g2d.drawLine(x+s+soI/2, y-soI/2, x+s+soI/2, y+s/4-soI/2);
-		g2d.drawLine(x+s+soI/2, y+s+soI/2, x+s+soI/2, y+s*3/4+soI/2);	
+		if(!hasExecutedAttack) {
+			boardRect.drawBROutline(g2d, Commons.cAttack, 45,StagePanel.boardRectSize*7/8);
+			if(!hasExecutedMove) {
+				boardRect.drawBROutline(g2d, Commons.cMove, 0,StagePanel.boardRectSize*7/8);
+			}
+		}
 	}
 	// updates the MovesPanels position so it follows the camera (also updates the isHover boolean)
 	public void updateActionSelectionPanelHover() {
@@ -464,8 +454,13 @@ public abstract class GamePiece {
 	
 	public void updateMove() {
 		if(isMoving) {
-			gamePieceBase.updateAngle();
-			gamePieceBase.move();
+			for(int i = 0;i<2;i++) {
+				if(gamePieceBase.pathBoardRectangles.size() > 0) {
+					gamePieceBase.updateAngle();
+					gamePieceBase.move();
+				}
+				
+			}
 		}
 	}
 	

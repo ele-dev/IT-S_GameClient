@@ -45,7 +45,7 @@ public class GamePieceBase {
 		this.rectHitbox = new Rectangle((int)x-w/2,(int)y-h/2,w,h);
 		this.parentGP = parentGP;
 		this.v = StagePanel.boardRectSize/40.0f;
-		this.rotationDelay = StagePanel.boardRectSize/30.0f;
+		this.rotationDelay = StagePanel.boardRectSize/20.0f;
 
 		initBaseType(baseTypeIndex);
 		initSprites(); 
@@ -72,6 +72,11 @@ public class GamePieceBase {
 			this.movementRange = Commons.MovementRangeType1;
 			this.maxShield = Commons.maxShieldType1;
 			break;
+		case 2:
+			this.maxHealth = Commons.maxHealthType2;
+			this.movementRange = Commons.MovementRangeType2;
+			this.maxShield = Commons.maxShieldType2;
+			break;
 		default:
 			break;
 		}
@@ -82,11 +87,11 @@ public class GamePieceBase {
 	private void initSprites() {
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		if(parentGP.isRed()) {
-			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseE0.png");
-			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseE1.png");
+			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseE0.png");
+			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseE1.png");
 		}else {
-			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseNE0.png");
-			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseNE1.png");
+			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseNE0.png");
+			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseNE1.png");
 		}
 		spriteBase = new Sprite(spriteLinks, StagePanel.boardRectSize,StagePanel.boardRectSize, 10);
 	}

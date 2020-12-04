@@ -20,7 +20,7 @@ public class PlayerFortress extends DestructibleObject {
 	private PlayerFortressMenu fortressMenu;
 	
 	private ArrayList<BoardRectangle> recruitableBoardRectangles = new ArrayList<BoardRectangle>();
-	private int coinAmount = Commons.startCoinAmount;
+	private int goldAmount = Commons.startGoldAmount;
 	
 	
 	private ValueLabel goldCollectLabel;
@@ -58,17 +58,17 @@ public class PlayerFortress extends DestructibleObject {
 	}
 	
 	public void increaseCoinAmount(int incAmount, int x, int y) {
-		coinAmount += incAmount;
+		goldAmount += incAmount;
 		lastCollectedGoldAmount += incAmount;
 		goldCollectLabel = new ValueLabel(x, y, "+" + lastCollectedGoldAmount, Commons.cCurrency);
 	}
 	public void gainGoldForSelf() {
-		coinAmount += Commons.incCoinAmountFortress;
-		lastCollectedGoldAmount += Commons.incCoinAmountFortress;
+		goldAmount += Commons.incGoldAmountFortress;
+		lastCollectedGoldAmount += Commons.incGoldAmountFortress;
 		goldCollectLabel = new ValueLabel((int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), "+" + lastCollectedGoldAmount, Commons.cCurrency);
 	}
-	public int getCoinAmount() {
-		return coinAmount;
+	public int getGoldAmount() {
+		return goldAmount;
 	}
 	
 	public void tryGetBackToFortressMenu(){
@@ -81,7 +81,7 @@ public class PlayerFortress extends DestructibleObject {
 	public void tryPlaceRecruitedGP(BoardRectangle boardRectangle) {
 		if(isRecruitingMode() && getRecruitableBoardRectangles().contains(boardRectangle)) {
 			fortressMenu.lastPressedGamePieceInfoPanel.placeGamePiece(GameState.myTeamIsRed, boardRectangle);
-			coinAmount -= fortressMenu.lastPressedGamePieceInfoPanel.getGamePieceCost();
+			goldAmount -= fortressMenu.lastPressedGamePieceInfoPanel.getGamePieceCost();
 			String str = "-" + fortressMenu.lastPressedGamePieceInfoPanel.getGamePieceCost();
 			StagePanel.valueLabels.add(new ValueLabel((int)rectHitbox.getCenterX(), (int)rectHitbox.getCenterY(), str, Commons.cCurrency));
 			setRecruitingMode(false);
@@ -190,7 +190,7 @@ public class PlayerFortress extends DestructibleObject {
 	}
 	
 	@Override
-	public void getDamaged(float dmg, float attackAngle, boolean isEnemyAttack) {
+	public void getDamaged(float dmg, float attackAngle, boolean isRed) {
 		health -= dmg;
 		if(health <= 0) {
 			StagePanel.checkIfSomeOneWon();

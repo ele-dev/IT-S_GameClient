@@ -95,12 +95,12 @@ public class GoldMine extends DestructibleObject {
 	}
 	
 	@Override
-	public void getDamaged(float dmg, float attackAngle, boolean isRedAttack) {
+	public void getDamaged(float dmg, float attackAngle, boolean isRed) {
 		health -= dmg;
 		if(health <= 0) {
 			captureState = 0;
 			for(GamePiece curGP : StagePanel.gamePieces) {
-				if(curGP.isRed() == isRedAttack) {
+				if(curGP.isRed() == isRed) {
 					StagePanel.tryCaptureGoldMine(curGP);
 				}
 			}

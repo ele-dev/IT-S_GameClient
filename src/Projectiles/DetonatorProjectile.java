@@ -23,8 +23,6 @@ public class DetonatorProjectile extends Projectile {
 	private boolean isRed;
 	
 	public Timer detonationTimer;
-	public Explosion detExplosion;
-	private boolean isDetonated = false;
 	
 	private Color cBlink;
 	private int blinkCounter = 0;
@@ -35,8 +33,8 @@ public class DetonatorProjectile extends Projectile {
 	private DestructibleObject targetDestructibleObject;
 	
 	private TurnCountDown detonationCountDown;
-	public DetonatorProjectile(int x, int y, int w, int h, boolean isRed, float dmg, float angle, Shape targetShape
-			, GamePiece targetGamePiece, DestructibleObject targetDestructibleObject) {
+	public DetonatorProjectile(int x, int y, int w, int h, boolean isRed, float angle, Shape targetShape
+			, GamePiece targetGamePiece, DestructibleObject targetDestructibleObject,float dmg) {
 		super(x, y, w, h, isRed ? Commons.cRed : Commons.cBlue, angle, 16, 0, targetShape, targetDestructibleObject);
 		shapeShow = new Rectangle(-w/2,-h/2,w,h);
 		cBlink = Color.BLACK;
@@ -59,12 +57,11 @@ public class DetonatorProjectile extends Projectile {
 	public GamePiece getTargetGamePiece() {
 		return targetGamePiece;
 	}
-	
-	public boolean isDetonated() {
-		return isDetonated;
-	}
 	public void setBlinkeIntervall(int blinkeIntervall) {
 		this.blinkeIntervall = blinkeIntervall;
+	}
+	public float getDmg() {
+		return dmg;
 	}
 	
 	public TurnCountDown getDetonationCountDown() {
@@ -93,15 +90,14 @@ public class DetonatorProjectile extends Projectile {
 	}
 	// creates the explosion and damages the target
 	public void detonate() {
-		if(!isDetonated) {
-			detExplosion = new Explosion((float)x, (float)y,StagePanel.boardRectSize/60.0f,(float)angle);
-			isDetonated = true;
-			if(targetGamePiece != null) {
-				targetGamePiece.gamePieceBase.getDamaged(dmg);
-			}else if(targetDestructibleObject != null) {
-				targetDestructibleObject.getDamaged(dmg,angle,isRed);
-			}
+		StagePanel.particles.add(new Explosion((float)x, (float)y,StagePanel.boardRectSize/60.0f,(float)angle));
+		isDestroyed = true;
+		if(targetGamePiece != null) {
+			targetGamePiece.gamePieceBase.getDamaged(dmg);
+		}else if(targetDestructibleObject != null) {
+			targetDestructibleObject.getDamaged(dmg,angle,isRed);
 		}
+		
 	}
 	// checks if it has hit an Enemy and will set it to be Stuck
 	public void checkHitEnemy() {
@@ -117,11 +113,5 @@ public class DetonatorProjectile extends Projectile {
 	public void stayStuck() {
 		x = targetGamePiece.getCenterX() + xRelTarget; 
 		y = targetGamePiece.getCenterY() + yRelTarget;
-	}
-	// will set the projectile to be destroyed if its explosion has faded
-	public void checkIfExplosionFaded() {
-		if(detExplosion.checkIfExplosionFaded()) {
-			isDestroyed = true;
-		}
 	}
 }

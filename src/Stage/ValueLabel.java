@@ -14,6 +14,7 @@ public class ValueLabel {
 	private Color c;
 	private float alpha;
 	
+	
 	public ValueLabel(float x, float y, String str, Color c) {
 		this.x = x;
 		this.y = y;
@@ -43,8 +44,24 @@ public class ValueLabel {
 		g2d.draw(r);
 		
 		g2d.setColor(c);
-		
 		g2d.drawString(str,(int)this.x-textWidth/2,(int)this.y+textHeight/3);
+	}
+	
+	public static void drawValueLabelAtPos(Graphics2D g2d, int x ,int y, String str, int w, Color c, int fontsize) {
+		g2d.setFont(new Font("Arial",Font.BOLD,fontsize));
+		FontMetrics metrics = g2d.getFontMetrics();
+		int textWidth = metrics.stringWidth(str);
+		int textHeight = metrics.getHeight();
+		int size = (int) (textWidth+20);
+		Rectangle r = new Rectangle((int)x-size/2, (int)y-textHeight/2, size, textHeight);
+		g2d.setColor(new Color(20,20,20));
+		g2d.fill(r);	
+		g2d.setColor(new Color(5,5,5));
+		g2d.setStroke(new BasicStroke(5));
+		g2d.draw(r);
+		
+		g2d.setColor(c);
+		g2d.drawString(str,(int)x-textWidth/2,(int)y+textHeight/3);
 	}
 	
 	// fades the color of the ValueLabel out and moves it up 
