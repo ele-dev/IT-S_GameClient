@@ -87,11 +87,11 @@ public class GamePieceBase {
 	private void initSprites() {
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		if(parentGP.isRed()) {
-			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseE0.png");
-			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseE1.png");
+			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseE0.png");
+			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseE1.png");
 		}else {
-			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseNE0.png");
-			spriteLinks.add(Commons.pathToSpriteSource+"GamePieces/GamePieceBaseNE1.png");
+			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseNE0.png");
+			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseNE1.png");
 		}
 		spriteBase = new Sprite(spriteLinks, StagePanel.boardRectSize,StagePanel.boardRectSize, 10);
 	}

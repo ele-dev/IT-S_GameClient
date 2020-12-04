@@ -66,7 +66,7 @@ public class LevelInitializer {
 	}
 	
 	public void readMapFromImage(String mapName) {
-		File inputFile = new File("src/LevelDesignTools/"+mapName+".png");
+		File inputFile = new File(Commons.directoryToMaps+mapName+".png");
 		BufferedImage mapImage; 
 		try {
 			mapImage = ImageIO.read(inputFile);
@@ -121,7 +121,7 @@ public class LevelInitializer {
 	
 	public void saveMapAsImage(String mapName,ArrayList<BoardRectangle> boardRectangles) {
 		try {
-			File outputFile = new File("src/LevelDesignTools/"+mapName+".png");
+			File outputFile = new File(Commons.directoryToMaps+mapName+".png");
 			if(mapColumns == 0 || mapRows == 0) {
 				mapColumns = StagePanel.mapColumns;
 				mapRows = StagePanel.mapRows;

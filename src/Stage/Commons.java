@@ -36,7 +36,8 @@ public interface Commons {
 	public final short maxInputLength = 18;
 	
 	// File path for sprites
-	final String pathToSpriteSource = "sprites/";
+	final String directoryToSprites = "sprites/";
+	final String directoryToMaps = "src/LevelDesignTools/";
 	
 	
 	// Game Piece config variables //

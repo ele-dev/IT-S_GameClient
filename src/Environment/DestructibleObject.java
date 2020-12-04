@@ -29,7 +29,7 @@ public class DestructibleObject {
 		rectHitbox = new Rectangle(boardRectangle.getX(),boardRectangle.getY(),StagePanel.boardRectSize*occupiedColumns,StagePanel.boardRectSize*occupiedRows);
 		this.rotation = rotation;
 		ArrayList<String> spriteLinks = new ArrayList<String>();
-		spriteLinks.add(Commons.pathToSpriteSource + "Environment/crate.png");
+		spriteLinks.add(Commons.directoryToSprites + "Environment/crate.png");
 		sprite = new Sprite(spriteLinks, rectHitbox.width,rectHitbox.height, 0);
 		occupiedBRs = new BoardRectangle[occupiedRows*occupiedColumns];
 		if(occupiedRows*occupiedColumns > 1) {
