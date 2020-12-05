@@ -10,9 +10,10 @@ import javax.swing.Timer;
 
 public class DestructionParticle extends Particle {
 	int w,h;
-	private float friction = 0.08f;
-	float vRotation = (float) (Math.random()*5+3);
-	float fadeSpeed;
+	private Timer tFadeDelayTimer;
+	
+	private static final float friction = 0.08f;
+	private static final float vRotation = (float) (Math.random()*5+3);
 	
 	public DestructionParticle(float x, float y, int w, int h, Color c,float angle, float v) {
 		super(x, y, angle, (float)(Math.random()*360), c, v, 1f);
@@ -47,7 +48,10 @@ public class DestructionParticle extends Particle {
 			move();
 			tryGetWallBlocked();
 		}
-		fadeOut();
+		if(tFadeDelayTimer == null && !tFadeDelayTimer.isRunning()) {
+			fadeOut();
+		}
+		
 	}
 	
 	public void move() {

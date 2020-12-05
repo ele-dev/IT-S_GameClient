@@ -5,7 +5,7 @@ import java.awt.Color;
 public interface Commons {
 	
 	// The game title
-	public final String gameTitle = "Crossfire PvP";
+	public static final String gameTitle = "Crossfire PvP";
 	
 	public static final boolean editMap = false;
 	public static final String mapName = "SmallMap";

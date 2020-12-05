@@ -21,6 +21,7 @@ public class LevelDesignTool {
 	public MWL mwl = new MWL();
 	
 	
+	
 	public void drawEquippedBuildObject(Graphics2D g2d) {
 		drawRowsAndColumnLabels(g2d);
 		g2d.setFont(new Font("Arial",Font.PLAIN,30));

@@ -15,12 +15,11 @@ public abstract class Particle {
 	protected float angle,angleDesired,rotation;
 	protected Color c;
 	protected float v;
-	protected boolean isDestroyed = false;
 	protected float fadeSpeed;
 	private float alpha;
-	protected Timer tFadeDelayTimer;
 	protected Rectangle rectHitbox;
 	
+	protected boolean isDestroyed = false;
 	Particle(float x, float y, float angle, float rotation, Color c, float v, float fadeSpeed) {
 		this.x = x;
 		this.y = y;
@@ -47,9 +46,6 @@ public abstract class Particle {
 	}
 	
 	protected void fadeOut() {
-		if(tFadeDelayTimer != null && tFadeDelayTimer.isRunning()) {
-			return;
-		}
 		if(alpha > fadeSpeed+1) {
 			alpha-=fadeSpeed;
 			c = new Color(c.getRed(),c.getGreen(),c.getBlue(),(int)alpha);

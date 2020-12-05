@@ -52,10 +52,9 @@ public class RapidElectroPiece extends GamePiece {
 		hasExecutedMove = true;
 		targetGamePieces.clear();
 		if(targetDestructibleObject == null) {
-			
 			ArrayList<BoardRectangle> possibleBoardRectangles = new ArrayList<BoardRectangle>();
 			for(BoardRectangle curBR : StagePanel.boardRectangles) {
-				if(checkAttacks(curBR.row,curBR.column,row,column)) {
+				if(checkAttacks(curBR.row,curBR.column,boardRect.row,boardRect.column)) {
 					possibleBoardRectangles.add(curBR);
 				}
 			}
@@ -82,8 +81,6 @@ public class RapidElectroPiece extends GamePiece {
 
 	@Override
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		if(burstAmount > 0) {
 			burstCounter--;
 			if(burstCounter <= 0) {
@@ -109,7 +106,7 @@ public class RapidElectroPiece extends GamePiece {
 	}
 	
 	public void shootOnce() {
-		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+		Arc2D aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();

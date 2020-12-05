@@ -7,8 +7,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 public class TazerBolt extends Particle{
-
 	private ArrayList<Point> points;
+	
 	private float alpha = 255;
 
 	public TazerBolt(ArrayList<Point> points) {

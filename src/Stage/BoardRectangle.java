@@ -18,38 +18,36 @@ import PlayerStructures.GoldMine;
 
 public class BoardRectangle {
 	public int row,column;
-	private Color c;
+	private static Color cTile1 = new Color(5,5,5),cTile2 = new Color(150,150,150);
+	private boolean isTile1;
 	public Rectangle rect;
 	public Color cPossibleMove,cPossibleAttack,cPossibleAbility;
-	int index;
 	public boolean isPossibleMove,isPossibleAttack;
 	public boolean isShowPossibleMove,isShowPossibleAttack;
 	public boolean isWall,isGap,isHinderingTerrain;
 	
 	private boolean isHover;
-	private int rotation = 0; 
 	
 	private Sprite wallSprite;
 	private Sprite groundSprite;
-	private float spriteRotation;
 	
 	private ArrayList<BoardRectangle> adjecantBoardRectangles = new ArrayList<BoardRectangle>();
 	
 	private static String[] extendedInfoStrings = new String[7];
-	private static long waveCounter = 0;
+	private static int waveCounter = 0;
 	private static ArrayList<WaveParticle> waveParticles = new ArrayList<WaveParticle>();
-	private static ArrayList<Particle> gravelParticles = new ArrayList<Particle>();	
+	private static ArrayList<Particle> gravelParticles = new ArrayList<Particle>();
 	
-	public BoardRectangle(int row, int column,boolean isTile1,int index,boolean isHinderingTerrain) {
+	private static int animationRotation = 0; 	
+	
+	public BoardRectangle(int row, int column,boolean isTile1,boolean isHinderingTerrain) {
 		this.row = row;
 		this.column = column;
 		rect = new Rectangle(column*StagePanel.boardRectSize,row*StagePanel.boardRectSize,StagePanel.boardRectSize,StagePanel.boardRectSize);
 		cPossibleMove = new Color(Commons.cMove.getRed(),Commons.cMove.getGreen(),Commons.cMove.getBlue(),200);
 		cPossibleAttack = new Color(Commons.cAttack.getRed(),Commons.cAttack.getGreen(),Commons.cAttack.getBlue(),200);
-		this.index = index;
 		this.isHinderingTerrain = isHinderingTerrain;
-		
-		c = isTile1?new Color(5,5,5):new Color(150,150,150);
+		this.isTile1 = isTile1;
 		 
 //		spriteRotation = (byte) (Math.random()*4)* 90;
 //		ArrayList<String> spriteLinks = new ArrayList<String>();
@@ -100,16 +98,16 @@ public class BoardRectangle {
 	}
 	
 	public Color getColor() {
-		return c;
+		return isTile1?cTile1:cTile2;
 	}
 	
 	// sets itself as a Gap and adds WaveParticles to the Static Array
 	public void initGap() {
 		this.isGap = true;
-		for(int i = 0;i<50;i++) {
+		for(int i = 0;i<25;i++) {
 			int x = (int) (Math.random()*StagePanel.boardRectSize+getX());
 			int y = (int) ((Math.random())*StagePanel.boardRectSize+getCenterY());
-			int size =  (int) (Math.random() * StagePanel.boardRectSize/4+StagePanel.boardRectSize/4);
+			int size =  (int) (Math.random() * StagePanel.boardRectSize/3+StagePanel.boardRectSize/4);
 			Color randomColor = new Color(0,(int)(50+Math.random()*100),(int)(200+Math.random()*55));
 			waveParticles.add(new WaveParticle(x, y, size, (float)(Math.random()*360), randomColor));
 		}
@@ -117,10 +115,10 @@ public class BoardRectangle {
 	
 	public void initHinderingTerrain() {
 		isHinderingTerrain = true;
-		for(int i = 0;i<40;i++) {
+		for(int i = 0;i<30;i++) {
 			int x =  (int) (getX()+Math.random()*StagePanel.boardRectSize);
 			int y =  (int) (getY()+Math.random()*StagePanel.boardRectSize);
-			int randomGreyScale = (int) (Math.random() * 30 + 15);
+			int randomGreyScale = (int) (Math.random() * 50 + 25);
 			gravelParticles.add(new TrailParticle(x, y, (int)(Math.random() * StagePanel.boardRectSize/4 + StagePanel.boardRectSize/12), 0, new Color(randomGreyScale,randomGreyScale,randomGreyScale), 0, 0, 0));
 		}
 	}
@@ -287,11 +285,11 @@ public class BoardRectangle {
 	}
 	// draws The Rectangle depending on if it is a Possible move/attack (draws another rectangle with another color over it)
 	public void drawBoardRectangle(Graphics2D g2d) {
-		g2d.setColor(c);
+		g2d.setColor(getColor());
 		if(!isGap) {
 			g2d.fill(rect);
 			if(groundSprite != null && !isGap && !isWall) {
-				groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), spriteRotation, 1);
+				groundSprite.drawSprite(g2d, getCenterX(), getCenterY(), 0, 1);
 			}
 		}
 		if(isHinderingTerrain) {
@@ -346,7 +344,7 @@ public class BoardRectangle {
 	}
 	// increases waveCounter up to Integer.MAX_VALUE and then starts from 0
 	public static void incWaveCounter() {
-		waveCounter = waveCounter >= Integer.MAX_VALUE?0:waveCounter+1;
+		waveCounter = waveCounter >= Integer.MAX_VALUE/2 -10?0:waveCounter+1;
 	}
 	
 	// draws the BR different depending on if it is a possible move/attack
@@ -398,13 +396,13 @@ public class BoardRectangle {
 		
 		
 		if(isPossibleAttack) {
-			rotation+= 3;
+			animationRotation+= 3;
 			g2d.translate(getCenterX(), getCenterY());	
-			g2d.rotate(Math.toRadians(rotation));
+			g2d.rotate(Math.toRadians(animationRotation));
 			g2d.drawLine(-s/3, 0, s/3, 0);
 			g2d.drawLine(0,-s/3, 0, s/3);
 			g2d.drawOval(-s/6, -s/6, s/3, s/3);
-			g2d.rotate(Math.toRadians(-rotation));
+			g2d.rotate(Math.toRadians(-animationRotation));
 			g2d.translate(-getCenterX(), -getCenterY());	
 		}
 	}
@@ -563,7 +561,7 @@ public class BoardRectangle {
 		}
 	}
 	
-	public void drawIndex(Graphics2D g2d) {
+	public void drawIndex(Graphics2D g2d, int index) {
 		g2d.setFont(new Font("Arial",Font.PLAIN,15));
 		g2d.setColor(Color.GREEN);
 		g2d.drawString(index+"", getCenterX(), getCenterY());

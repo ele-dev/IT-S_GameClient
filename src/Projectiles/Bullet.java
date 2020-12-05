@@ -8,7 +8,6 @@ import java.awt.Shape;
 import Environment.DestructibleObject;
 
 public class Bullet extends Projectile {
-
 	public Bullet(int x, int y, int w, int h, boolean isRed,float v,float angle, Shape targetShape,DestructibleObject targetDestructibleObject) {
 		super(x, y, w, h, isRed?Color.RED:Color.BLUE, angle, v, 0, targetShape, targetDestructibleObject);
 		shapeShow = new Rectangle(-w/2, -h/2, w, h);

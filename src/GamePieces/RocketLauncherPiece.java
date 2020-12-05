@@ -74,8 +74,6 @@ public class RocketLauncherPiece extends GamePiece{
 	}
 	
 	public void shootOnce() {
-		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		addRocketInArcFlight();
 		burstCounter++;
 		if(burstCounter <burstRocketAmount) {
@@ -87,6 +85,8 @@ public class RocketLauncherPiece extends GamePiece{
 
 	
 	public void addRocketInArcFlight() {
+		Arc2D aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
+				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():
 			targetDestructibleObject.getRectHitbox();
 			
@@ -97,8 +97,6 @@ public class RocketLauncherPiece extends GamePiece{
 
 	// updates all things that are animated with the attack (for example moves the rockets and updates the explosions)
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		
 		for(int i = 0;i<rockets.size();i++) {
 			rockets.get(i).addTrailParticle();

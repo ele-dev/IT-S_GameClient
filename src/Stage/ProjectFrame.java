@@ -41,10 +41,8 @@ public class ProjectFrame extends JFrame {
 	private static Timer tFrameRate, tUpdateRate;
 	 
 	private ProjectFrame() {
-    
 	    // Get the monitor screen resolution and take it as window dimension
 	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		
 		if(Commons.fullscreen) {
 		    width = (int) screenSize.getWidth();
 		    height = (int) screenSize.getHeight();
@@ -84,7 +82,7 @@ public class ProjectFrame extends JFrame {
     
 		stagePanel = new StagePanel();
 		if(Commons.editMap) {
-			StagePanel.resetMatch(Commons.mapName);
+			StagePanel.initGameMap(Commons.mapName);
 		}
 		
 		// Create and init the GUI panels (JPanels)

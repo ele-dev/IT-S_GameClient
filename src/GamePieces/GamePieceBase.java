@@ -23,19 +23,15 @@ import Stage.ValueLabel;
 public class GamePieceBase {
 	private float x,y;
 	private Rectangle rectHitbox;
-	private float angle,angleDesired,v;
-	private float rotationDelay;
+	private float angle,angleDesired;
+	private static float rotationDelay,v;
 	private Sprite spriteBase;
 	private float health,maxHealth,shield,maxShield;
 	private int movementRange;
 	
-	ArrayList<BoardRectangle> pathBoardRectangles = new ArrayList<BoardRectangle>();
+	static ArrayList<BoardRectangle> pathBoardRectangles = new ArrayList<BoardRectangle>();
 	int curTargetPathCellIndex = 0;
 	private GamePiece parentGP;
-	
-	@SuppressWarnings("unused")
-	private int baseTypeIndex;
-	private Point targetPoint;
 	
 	private Timer tAutoDirectionCorrection;
 	 
@@ -44,8 +40,8 @@ public class GamePieceBase {
 		this.y = y;
 		this.rectHitbox = new Rectangle((int)x-w/2,(int)y-h/2,w,h);
 		this.parentGP = parentGP;
-		this.v = StagePanel.boardRectSize/40.0f;
-		this.rotationDelay = StagePanel.boardRectSize/20.0f;
+		v = StagePanel.boardRectSize/40.0f;
+		rotationDelay = StagePanel.boardRectSize/20.0f;
 
 		initBaseType(baseTypeIndex);
 		initSprites(); 
@@ -60,7 +56,6 @@ public class GamePieceBase {
 	}
 	
 	private void initBaseType(int baseTypeIndex) {
-		this.baseTypeIndex = baseTypeIndex;
 		switch (baseTypeIndex) {
 		case 0:
 			this.maxHealth = Commons.maxHealthType0;
@@ -122,14 +117,14 @@ public class GamePieceBase {
 		if(parentGP.isMoving) {
 			spriteBase.animate();
 		}
-		if(targetPoint != null) {
-			g2d.setColor(Commons.cMove);
-			g2d.setStroke(new BasicStroke(4));
-			g2d.translate(targetPoint.x, targetPoint.y);
-			g2d.drawLine(-10, 0, 10, 0);
-			g2d.drawLine(0, -10, 0, 10);
-			g2d.translate(-targetPoint.x, -targetPoint.y);
-		}
+//		if(targetPoint != null) {
+//			g2d.setColor(Commons.cMove);
+//			g2d.setStroke(new BasicStroke(4));
+//			g2d.translate(targetPoint.x, targetPoint.y);
+//			g2d.drawLine(-10, 0, 10, 0);
+//			g2d.drawLine(0, -10, 0, 10);
+//			g2d.translate(-targetPoint.x, -targetPoint.y);
+//		}
 	}
 	
 	// draws a HealthBar and a String with The HealthAmount
@@ -152,7 +147,6 @@ public class GamePieceBase {
 		g2d.setStroke(new BasicStroke(3)); 
 		g2d.setColor(Color.BLACK);
 		g2d.draw(maxHealthShieldRect);
-		
 		if(parentGP.boardRect == StagePanel.curHoverBR || parentGP == StagePanel.curSelectedGP) {
 			drawHealthValues(g2d, x, y,StagePanel.boardRectSize/5);
 		}
@@ -269,19 +263,16 @@ public class GamePieceBase {
 				pathBoardRectangles.clear();
 				tAutoDirectionCorrection.stop();
 				StagePanel.tryCaptureGoldMine(parentGP);
-				parentGP.row = parentGP.boardRect.row;
-				parentGP.column = parentGP.boardRect.column;
 			}
 		}
 	}
 	
 	// slowly moves the angle towards the desired angle (rotationDelay controls how fast this happens)
 	public void updateAngle() {
-		targetPoint = new Point(pathBoardRectangles.get(curTargetPathCellIndex).getCenterX(),pathBoardRectangles.get(curTargetPathCellIndex).getCenterY());
 		float ak = 0;
 		float gk = 0;
-		ak = (float) (targetPoint.x - x);
-		gk = (float) (targetPoint.y - y);
+		ak = (float) (pathBoardRectangles.get(curTargetPathCellIndex).getCenterX() - x);
+		gk = (float) (pathBoardRectangles.get(curTargetPathCellIndex).getCenterY() - y);
 		angleDesired = (float) Math.toDegrees(Math.atan2(ak*-1, gk));
 		// if the angle and the angleDesired are opposites the Vector point into the opposite direction
 		// this means the angle will be the angle of the longer vector which is always angle

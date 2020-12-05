@@ -66,8 +66,6 @@ public class GunnerPiece extends GamePiece {
 
 	// updates the attack (moves bullets,checks if they hit something and so forth)
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		for(int i = 0; i < bullets.size(); i++) {
 			Bullet curB = bullets.get(i);
 			curB.move();
@@ -104,7 +102,7 @@ public class GunnerPiece extends GamePiece {
 	// shoots one shot every timer the burstTimer activates and starts the burstTimer again if it still has shots left to shoot
 	// shots are counted by burstCounter (stops shooting if burstCounter >= burstBulletAmount)
 	public void shootOnce() {
-		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+		Arc2D aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		StagePanel.applyScreenShake(2, 10);
 		burstCounter++;

@@ -14,7 +14,7 @@ public class AStarPathFinder {
 	private ArrayList<PathCell> closedSetPathCells = new ArrayList<PathCell>();
 	
 	private ArrayList<PathCell> pathPathCells = new ArrayList<PathCell>();
-	boolean isDone = false;
+	public boolean isDone = false;
 	public boolean noSolution = false;
 	
 	public AStarPathFinder(ArrayList<PathCell> pathCells) {
@@ -87,7 +87,6 @@ public class AStarPathFinder {
 			PathCell current = openSetPathCells.get(wIndex);
 			// checks if the lowest cost PathCell is the endCell if yes then the Path is Done
 			if(current == endPathCell) {
-//				System.out.print("Done with pathfinding!");
 				isDone = true;
 				
 			}
@@ -130,7 +129,6 @@ public class AStarPathFinder {
 		} else {
 			// no solution
 			noSolution = true;
-//			System.out.println("No path solution");
 		}
 	}
 	

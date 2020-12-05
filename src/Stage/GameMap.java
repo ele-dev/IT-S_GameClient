@@ -11,7 +11,7 @@ public class GameMap {
 		int index = 0;
 		for(int i = 0;i<rows;i++) {
 			for(int j = 0;j<columns;j++) {
-				StagePanel.boardRectangles.add(new BoardRectangle(i, j, false, index,false));
+				StagePanel.boardRectangles.add(new BoardRectangle(i, j, false,false));
 				index++;
 			}
 		}

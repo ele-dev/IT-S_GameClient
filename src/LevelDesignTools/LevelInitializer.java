@@ -77,9 +77,9 @@ public class LevelInitializer {
 			for(int i = 0; i < mapRows; i++) {
 				for(int j = 0; j < mapColumns; j++) {
 					if(i % 2 == 0) {
-						StagePanel.boardRectangles.add(new BoardRectangle(i, j, j % 2 == 0, index,false));
+						StagePanel.boardRectangles.add(new BoardRectangle(i, j, j % 2 == 0,false));
 					}else{
-						StagePanel.boardRectangles.add(new BoardRectangle(i, j, j % 2 == 1, index,false));
+						StagePanel.boardRectangles.add(new BoardRectangle(i, j, j % 2 == 1,false));
 					}
 					index++;
 				}

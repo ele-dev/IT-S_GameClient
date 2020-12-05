@@ -66,7 +66,7 @@ public class FlamethrowerPiece extends GamePiece {
 	}
 	
 	public void shootOnce() {
-		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+		Arc2D aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		burstCounter++;
 		if(burstCounter<burstBulletAmount) {
@@ -88,8 +88,6 @@ public class FlamethrowerPiece extends GamePiece {
 	
 	// updates the attack (moves flames,checks if they hit something and so forth)
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
-				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		for(int i = 0;i<flames.size();i++) {
 			FlameThrowerFlame curFTF = flames.get(i);
 			curFTF.move();
