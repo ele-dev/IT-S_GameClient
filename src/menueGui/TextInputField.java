@@ -25,7 +25,7 @@ public class TextInputField extends GuiElement implements Focusable {
 	private boolean isFocused, isFlash;
 	private short flashCounter;
 	private final short flashIntervall = 10;
-	private boolean hiddenText;
+	private boolean textHidden;
 	
 	private static final int defaultTextSize = (int) Math.round(Math.sqrt((double)ProjectFrame.height) / 2.0);
 	
@@ -40,7 +40,7 @@ public class TextInputField extends GuiElement implements Focusable {
 		// set default values
 		this.isFlash = false;
 		this.isFocused = false;
-		this.hiddenText = false;
+		this.textHidden = false;
 		this.text = "";
 	}
 	
@@ -123,7 +123,7 @@ public class TextInputField extends GuiElement implements Focusable {
 		
 		// Decide if the text should be drawn hidden or visible
 		String drawingText = "";
-		if(this.hiddenText) {
+		if(this.textHidden) {
 			for(int i = this.text.length(); i > 0; i--) 
 			{
 				drawingText += "*";
@@ -164,7 +164,7 @@ public class TextInputField extends GuiElement implements Focusable {
 	
 	// Setters
 	public void hideText(boolean status) {
-		this.hiddenText = status;
+		this.textHidden = status;
 	}
 	
 	public void clearField() {
@@ -190,6 +190,6 @@ public class TextInputField extends GuiElement implements Focusable {
 	}
 	
 	public boolean isTextHidden() {
-		return this.hiddenText;
+		return this.textHidden;
 	}
 }

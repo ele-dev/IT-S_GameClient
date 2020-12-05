@@ -271,9 +271,9 @@ public class LoginPanel extends GuiPanel {
 	// Mouse Listener events for detecting clicks on GUI elements
 	@Override 
 	public void mouseClicked(MouseEvent e) {
-		if(this.loginButton.isHover()) { tryLogin(); }
-		if(this.playAsGuestButton.isHover()) { playAsGuest(); }
-		if(this.goToRegisterButton.isHover()) { redirectToRegister(); }
+		if(this.loginButton.isHovered()) { tryLogin(); }
+		if(this.playAsGuestButton.isHovered()) { playAsGuest(); }
+		if(this.goToRegisterButton.isHovered()) { redirectToRegister(); }
 	}
 
 	@Override

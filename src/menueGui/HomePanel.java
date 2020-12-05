@@ -277,9 +277,9 @@ public class HomePanel extends GuiPanel {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// React on the mouse click
-		if(this.quickMatchButton.isHover()) { tryQuickmatchJoin(); }
-		if(this.abortMatchSearchButton.isHover()) { tryAbortMatchSearch(); }
-		if(this.logoutButton.isHover()) { tryLogout(); }
+		if(this.quickMatchButton.isHovered()) { tryQuickmatchJoin(); }
+		if(this.abortMatchSearchButton.isHovered()) { tryAbortMatchSearch(); }
+		if(this.logoutButton.isHovered()) { tryLogout(); }
 	}
 	
 	@Override

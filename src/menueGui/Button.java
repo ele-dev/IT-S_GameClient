@@ -20,10 +20,10 @@ import java.awt.event.MouseEvent;
 import Stage.Commons;
 import Stage.ProjectFrame;
 
-public class Button extends GuiElement implements Focusable {
+public class Button extends GuiElement implements Focusable, Hoverable {
 
 	// class members
-	private boolean isHover, isFocused;
+	private boolean isHovered, isFocused;
 	private String buttonLabel;
 	private int textSize;
 	
@@ -35,7 +35,7 @@ public class Button extends GuiElement implements Focusable {
 		super(width, height);
 		
 		// Set default values
-		this.isHover = false;
+		this.isHovered = false;
 		this.isFocused = false;
 		this.buttonLabel = "Button";
 		this.textSize = defaultTextSize;
@@ -73,7 +73,7 @@ public class Button extends GuiElement implements Focusable {
 	
 	private void drawButtonBox(Graphics2D g2d) {
 		g2d.setColor(this.isFocused ? Commons.buttonFocused : Commons.buttonDefault);
-		if(this.isHover) { g2d.setColor(Commons.buttonHover); }
+		if(this.isHovered) { g2d.setColor(Commons.buttonHover); }
 		g2d.fill(this.rect);
 	}
 	
@@ -90,11 +90,11 @@ public class Button extends GuiElement implements Focusable {
 	// Update method for the hover status of a button through 
 	public void updateHover(MouseEvent e) {
 		// Only enabled buttons can be hovered
-		this.isHover = this.rect.contains(e.getPoint()) && this.isEnabled;
+		this.isHovered = this.rect.contains(e.getPoint()) && this.isEnabled;
 	}
 	
 	public void resetHover() {
-		this.isHover = false;
+		this.isHovered = false;
 	}
 	
 	// Setters
@@ -112,9 +112,9 @@ public class Button extends GuiElement implements Focusable {
 	}
 	
 	// Getters
-	public  boolean isHover() {
+	public  boolean isHovered() {
 		// Only enabled buttons can be hovered
-		return this.isHover && this.isEnabled;
+		return this.isHovered && this.isEnabled;
 	}
 	
 	public boolean isFocused() {
