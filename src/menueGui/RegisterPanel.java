@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.SwingWorker;
 
 import Stage.Commons;
 import Stage.ProjectFrame;
@@ -96,6 +99,10 @@ public class RegisterPanel extends GuiPanel {
 	// Updating method
 	@Override
 	public void update() {
+		
+		// Call update method from super class
+		super.update();
+		
 		// Update the register status label
 		this.statusLabel.setTextColor(this.failedAttempt ? Color.RED : Color.WHITE);
 		this.statusLabel.setText(this.registerStatusStr);
@@ -114,8 +121,8 @@ public class RegisterPanel extends GuiPanel {
 	private void tryChangeFocus(MouseEvent e) {
 		
 		// Remove remaining focus on buttons
-		this.goToLoginButton.selectButtonNow(false);
-		this.registerAccountButton.selectButtonNow(false);
+		this.goToLoginButton.focusNow(false);
+		this.registerAccountButton.focusNow(false);
 		
 		// Check if a text field was selected through the mouse click
 		for(TextInputField curTIF : this.fields) {
@@ -134,68 +141,68 @@ public class RegisterPanel extends GuiPanel {
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
 			
-			if(this.fields[0].isSelected()) {
+			if(this.fields[0].isFocused()) {
 				// set focus on field[1]
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(true);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(true);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(false);
 				
-			} else if(this.fields[1].isSelected()) {
+			} else if(this.fields[1].isFocused()) {
 				// set focus on field[2]
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(true);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(true);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(false);
 				
-			} else if(this.fields[2].isSelected()) {
+			} else if(this.fields[2].isFocused()) {
 				// set focus on field[3]
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(true);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(true);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(false);
 				
-			} else if(this.fields[3].isSelected()) {
+			} else if(this.fields[3].isFocused()) {
 				// set focus on register button
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(true);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(true);
+				this.goToLoginButton.focusNow(false);
 				
-			} else if(this.registerAccountButton.isSelected()) {
+			} else if(this.registerAccountButton.isFocused()) {
 				// set focus on go to login button
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(true);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(true);
 				
-			} else if(this.goToLoginButton.isSelected()) {
+			} else if(this.goToLoginButton.isFocused()) {
 				// set focus on field[0]
-				this.fields[0].selectFieldNow(true);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(true);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(false);
 				
 			} else {
 				// set focus on field[0]
-				this.fields[0].selectFieldNow(true);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(true);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(false);
 			}
 			
 			return;
@@ -203,9 +210,9 @@ public class RegisterPanel extends GuiPanel {
 		
 		// Trigger a click event on the selected button when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if(this.goToLoginButton.isSelected()) {
+			if(this.goToLoginButton.isFocused()) {
 				this.redirectToLogin();
-			} else if(this.registerAccountButton.isSelected()) {
+			} else if(this.registerAccountButton.isFocused()) {
 				System.out.println("register attempt because enter pressed");
 				this.tryRegisterAccount();
 			}
@@ -248,21 +255,51 @@ public class RegisterPanel extends GuiPanel {
 		
 		// check the syntax of the entered email
 		String[] tmpStr = this.fields[1].text.split("@");
-		this.failedAttempt = (tmpStr.length != 2);
-		if(this.failedAttempt) {
+		boolean noAtChar = (tmpStr.length != 2);
+		if(noAtChar) {
+			this.failedAttempt = true;
 			this.registerStatusStr = "Invalid email address!";
 			return;
 		}
 		
-		// run the registration process with the validated parameters
-		boolean result = ProjectFrame.conn.registerAccount(this.fields[0].text, this.fields[1].text, this.fields[2].text);
-		if(result) {
-			this.failedAttempt = false;
-			this.registerStatusStr = "Registration done successfully";
-		} else {
-			this.failedAttempt = true;
-			this.registerStatusStr = GameState.registerStatusDescription;
-		}
+		SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+
+			@Override protected Boolean doInBackground() throws Exception {
+				
+				// set the loading cursor
+				isLoading = true;
+				
+				// run the registration process with the validated parameters
+				boolean result = ProjectFrame.conn.registerAccount(fields[0].text, fields[1].text, fields[2].text);
+				
+				// switch back to the default cursor
+				isLoading = false;
+				
+				return result;
+			}
+			
+			@Override protected void done() {
+				
+				// Retrieve success status of the backgroud task
+				boolean status = false;
+				try {
+					status = get();
+				} catch(InterruptedException e) {
+					System.err.println("Interrupted Exception thrown while processing background task!");
+				} catch(ExecutionException e) {
+					System.err.println("Exception thrown during login task!");
+				}
+				
+				if(status) {
+					failedAttempt = false;
+					registerStatusStr = "Registration done successfully";
+				} else {
+					failedAttempt = true;
+					registerStatusStr = GameState.registerStatusDescription;
+				}
+			}
+		};
+		worker.execute();
 	}
 	
 	// Method for navigating back to the login panel
@@ -278,8 +315,8 @@ public class RegisterPanel extends GuiPanel {
 	// Mouse Listener events for detecting clicks on GUI elements
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(this.goToLoginButton.isHover()) { redirectToLogin(); }
-		if(this.registerAccountButton.isHover()) { tryRegisterAccount(); }
+		if(this.goToLoginButton.isHovered()) { redirectToLogin(); }
+		if(this.registerAccountButton.isHovered()) { tryRegisterAccount(); }
 	}
 	
 	@Override 

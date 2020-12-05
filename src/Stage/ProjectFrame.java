@@ -143,7 +143,6 @@ public class ProjectFrame extends JFrame {
 			}
 		}
 		
-		
 		// Second create the main window and start the actual game
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			
@@ -189,5 +188,7 @@ public class ProjectFrame extends JFrame {
 			}
 		});
 		
+		//  Code outside of the event dispatch thread
+		// ...
 	}
 }

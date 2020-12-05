@@ -208,7 +208,7 @@ public class StagePanel extends JPanel {
 		
 		// Send leave match message to server to surrender 
 		SignalMessage surrenderMsg = new SignalMessage(GenericMessage.MSG_LEAVE_MATCH);
-		ProjectFrame.conn.sendMessageToServer(surrenderMsg);
+		ProjectFrame.conn.sendMessageAsync(surrenderMsg);
 		System.out.println("Sent surrender/leave message to the server");
 	}
 	
@@ -241,7 +241,7 @@ public class StagePanel extends JPanel {
 				
 				// send an account stats message to the server
 				MsgAccountStats accStats = new MsgAccountStats(GameState.playedMatches, GameState.money);
-				ProjectFrame.conn.sendMessageToServer(accStats);
+				ProjectFrame.conn.sendMessageAsync(accStats);
 			}
 			
 			// At last reset the enemy state data 
@@ -789,7 +789,7 @@ public class StagePanel extends JPanel {
 					
 					// Send a make move message to the server passing player position and movement vector 
 					MsgMakeMove moveMessage = new MsgMakeMove(piecePos, destination);
-					ProjectFrame.conn.sendMessageToServer(moveMessage);
+					ProjectFrame.conn.sendMessageAsync(moveMessage);
 					System.out.println("Sent move message to server: pos=" + piecePos + " dest=" + destination);
 					
 					// Trigger the graphical animation for the move
@@ -812,7 +812,7 @@ public class StagePanel extends JPanel {
 					
 					// Send an attack message to the server passing the attacker's and victims positions
 					MsgAttack attackMessage = new MsgAttack(attackerPos, victimPos);
-					ProjectFrame.conn.sendMessageToServer(attackMessage);
+					ProjectFrame.conn.sendMessageAsync(attackMessage);
 					System.out.println("Sent attack message to the server: attacker=" + attackerPos + " victim=" + victimPos);
 					
 					// Trigger the graphical animation for the attack
@@ -903,7 +903,7 @@ public class StagePanel extends JPanel {
 							
 							// Send the signal message to the server
 							SignalMessage endTurn = new SignalMessage(GenericMessage.MSG_END_TURN);
-							ProjectFrame.conn.sendMessageToServer(endTurn);
+							ProjectFrame.conn.sendMessageAsync(endTurn);
 							
 							// process the game events for turn switch
 							updateTurn();

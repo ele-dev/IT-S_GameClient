@@ -9,6 +9,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.SwingWorker;
 
 import Stage.Commons;
 import Stage.ProjectFrame;
@@ -90,6 +93,10 @@ public class LoginPanel extends GuiPanel {
 	// Updating method
 	@Override
 	public void update() {
+		
+		// Call update method from super class
+		super.update();
+		
 		// Update the login status label
 		this.statusLabel.setTextColor(this.failedAttempt ? Color.RED : Color.WHITE);
 		this.statusLabel.setText(this.loginStatusStr);
@@ -108,9 +115,9 @@ public class LoginPanel extends GuiPanel {
 	private void tryPressSomething(MouseEvent e) {
 		
 		// Remove remaining focus on buttons 
-		this.loginButton.selectButtonNow(false);
-		this.playAsGuestButton.selectButtonNow(false);
-		this.goToRegisterButton.selectButtonNow(false);
+		this.loginButton.focusNow(false);
+		this.playAsGuestButton.focusNow(false);
+		this.goToRegisterButton.focusNow(false);
 		
 		// Check if a text field was selected through the mouse click
 		for(TextInputField curTIF : this.fields) {
@@ -128,53 +135,53 @@ public class LoginPanel extends GuiPanel {
 		
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
-			if(this.fields[0].isSelected()) {
+			if(this.fields[0].isFocused()) {
 				// set focus on field[1] now
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(true);
-				this.loginButton.selectButtonNow(false);
-				this.playAsGuestButton.selectButtonNow(false);
-				this.goToRegisterButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(true);
+				this.loginButton.focusNow(false);
+				this.playAsGuestButton.focusNow(false);
+				this.goToRegisterButton.focusNow(false);
 				
-			} else if(this.fields[1].isSelected()) {
+			} else if(this.fields[1].isFocused()) {
 				// set focus on login button
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.loginButton.selectButtonNow(true);
-				this.playAsGuestButton.selectButtonNow(false);
-				this.goToRegisterButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.loginButton.focusNow(true);
+				this.playAsGuestButton.focusNow(false);
+				this.goToRegisterButton.focusNow(false);
 				
-			} else if(this.loginButton.isSelected()) {
+			} else if(this.loginButton.isFocused()) {
 				// set focus on the play as guest button
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.loginButton.selectButtonNow(false);
-				this.playAsGuestButton.selectButtonNow(true);
-				this.goToRegisterButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.loginButton.focusNow(false);
+				this.playAsGuestButton.focusNow(true);
+				this.goToRegisterButton.focusNow(false);
 				
-			} else if(this.playAsGuestButton.isSelected()) {
+			} else if(this.playAsGuestButton.isFocused()) {
 				// set focus on go to register button
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.loginButton.selectButtonNow(false);
-				this.playAsGuestButton.selectButtonNow(false);
-				this.goToRegisterButton.selectButtonNow(true);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.loginButton.focusNow(false);
+				this.playAsGuestButton.focusNow(false);
+				this.goToRegisterButton.focusNow(true);
 				
-			} else if(this.goToRegisterButton.isSelected()) {
+			} else if(this.goToRegisterButton.isFocused()) {
 				// set focus on field[0] now
-				this.fields[0].selectFieldNow(true);
-				this.fields[1].selectFieldNow(false);
-				this.loginButton.selectButtonNow(false);
-				this.playAsGuestButton.selectButtonNow(false);
-				this.goToRegisterButton.selectButtonNow(false);
+				this.fields[0].focusNow(true);
+				this.fields[1].focusNow(false);
+				this.loginButton.focusNow(false);
+				this.playAsGuestButton.focusNow(false);
+				this.goToRegisterButton.focusNow(false);
 				
 			} else {
 				// set focus on field[0] now
-				this.fields[0].selectFieldNow(true);
-				this.fields[1].selectFieldNow(false);
-				this.loginButton.selectButtonNow(false);
-				this.playAsGuestButton.selectButtonNow(false);
-				this.goToRegisterButton.selectButtonNow(false);
+				this.fields[0].focusNow(true);
+				this.fields[1].focusNow(false);
+				this.loginButton.focusNow(false);
+				this.playAsGuestButton.focusNow(false);
+				this.goToRegisterButton.focusNow(false);
 			}
 			
 			return;
@@ -182,11 +189,11 @@ public class LoginPanel extends GuiPanel {
 		
 		// Trigger a click event on the selected button when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if(this.playAsGuestButton.isSelected()) {
+			if(this.playAsGuestButton.isFocused()) {
 				this.playAsGuest();
-			} else if(this.goToRegisterButton.isSelected()) {
+			} else if(this.goToRegisterButton.isFocused()) {
 				this.redirectToRegister();
-			} else if(this.loginButton.isSelected()) {
+			} else if(this.loginButton.isFocused()) {
 				System.out.println("login attempt because enter pressed");
 				this.tryLogin();
 			}
@@ -205,17 +212,48 @@ public class LoginPanel extends GuiPanel {
 		
 		// play as guest button click event
 		if(!ProjectFrame.conn.isLoggedIn()) {
-			// Attempt to login as guest player
-			boolean success = ProjectFrame.conn.loginAsGuest();
-			if(!success) {
-				System.err.println("Could not login to the game network!");
-			} else {
-				System.out.println("Logged in as guest player successfully");
+			
+			// create and execute a swing worker for login processesing in the background
+			SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+				@Override protected Boolean doInBackground() throws Exception {
+					
+					// set the loading cursor
+					isLoading = true;
+					
+					// Attempt to login as guest player
+					boolean success = ProjectFrame.conn.loginAsGuest();
+					if(!success) {
+						System.err.println("Could not login to the game network!");
+						return false;
+					} else {
+						System.out.println("Logged in as guest player successfully");
+					}
+					
+					return true;
+				}
 				
-				// redirect to the home screen panel
-				this.closePanel();
-				ProjectFrame.homePanel.setVisible(true);
-			}
+				// Safely update the GUI as soon as the background task has been processed
+				@Override protected void done() {
+					
+					// Retrieve the success status from the background task
+					boolean status = false;
+					try {
+						status = get();
+					} catch(InterruptedException e) {
+						System.err.println("Interrupted Exception thrown while processing background task!");
+					} catch(ExecutionException e) {
+						System.err.println("Exception thrown during login task!");
+					}
+					
+					// When everything worked successfully then update GUI
+					if(status) {
+						// redirect to the home screen panel
+						closePanel();
+						ProjectFrame.homePanel.setVisible(true);
+					}
+				}
+			};
+			worker.execute();
 		}
 	}
 	
@@ -225,37 +263,67 @@ public class LoginPanel extends GuiPanel {
 		// Login Button click event 
 		if(!ProjectFrame.conn.isLoggedIn()) {
 			
-			// Obtain the content of the text fields
-			String user = this.fields[0].text;
-			String pass = this.fields[1].text;
-			
-			// Attempt to login as registered player if a valid password was entered
-			boolean loginSuccess = false;
-			if(pass.length() > 0 && user.length() > 0) {
-				loginSuccess = ProjectFrame.conn.loginWithAccount(user, pass);
-			} else {
-				this.failedAttempt = true;
-				this.loginStatusStr = "Empty fields are not allowed!";
+			SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+
+				boolean loginSuccess = false;
 				
-				return;
-			}
+				@Override protected Boolean doInBackground() throws Exception {
+					
+					// Obtain the content of the text fields
+					String user = fields[0].text;
+					String pass = fields[1].text;
+					
+					// Attempt to login as registered player if a valid password was entered
+					boolean validSyntax = pass.length() > 0 && user.length() > 0;
+					if(validSyntax) {
+						// set the loading cursor
+						isLoading = true;
+						
+						loginSuccess = ProjectFrame.conn.loginWithAccount(user, pass);
+						
+						// Switch back to default cursor
+						isLoading = false;
+					} else {
+						failedAttempt = true;
+						loginStatusStr = "Empty fields are not allowed!";
+						return false;
+					}
+					
+					return true;
+				}
 				
-			// Show the login status to the user
-			if(!loginSuccess) {
-				System.err.println("Could not login to the game network!");
-				this.failedAttempt = true;
-				this.loginStatusStr = "Login data was incorrect!";
-				
-				return;
-			} else {
-				this.failedAttempt = false;
-				this.loginStatusStr = "";
-				System.out.println("Logged in successfully");
-				
-				// redirect to the home screen panel
-				this.closePanel();
-				ProjectFrame.homePanel.setVisible(true);
-			}
+				@Override protected void done() {
+					
+					// First retrieve the success status of the background task
+					boolean status = false;
+					try {
+						status = get();
+					} catch(InterruptedException e) {
+						System.err.println("Interrupted Exception thrown while processing background task!");
+					} catch(ExecutionException e) {
+						System.err.println("Exception thrown during login task!");
+					}
+					
+					if(status) {
+						// Show the login status to the user
+						if(!loginSuccess) {
+							System.err.println("Could not login to the game network!");
+							failedAttempt = true;
+							loginStatusStr = "Login data was incorrect!";
+							return;
+						} else {
+							failedAttempt = false;
+							loginStatusStr = "";
+							System.out.println("Logged in successfully");
+							
+							// redirect to the home screen panel
+							closePanel();
+							ProjectFrame.homePanel.setVisible(true);
+						}
+					}
+				}
+			};
+			worker.execute();
 		}
 	}
 	
@@ -271,9 +339,9 @@ public class LoginPanel extends GuiPanel {
 	// Mouse Listener events for detecting clicks on GUI elements
 	@Override 
 	public void mouseClicked(MouseEvent e) {
-		if(this.loginButton.isHover()) { tryLogin(); }
-		if(this.playAsGuestButton.isHover()) { playAsGuest(); }
-		if(this.goToRegisterButton.isHover()) { redirectToRegister(); }
+		if(this.loginButton.isHovered()) { tryLogin(); }
+		if(this.playAsGuestButton.isHovered()) { playAsGuest(); }
+		if(this.goToRegisterButton.isHovered()) { redirectToRegister(); }
 	}
 
 	@Override
