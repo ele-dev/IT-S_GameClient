@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.SwingWorker;
 
 import Stage.Commons;
 import Stage.ProjectFrame;
@@ -252,21 +255,51 @@ public class RegisterPanel extends GuiPanel {
 		
 		// check the syntax of the entered email
 		String[] tmpStr = this.fields[1].text.split("@");
-		this.failedAttempt = (tmpStr.length != 2);
-		if(this.failedAttempt) {
+		boolean noAtChar = (tmpStr.length != 2);
+		if(noAtChar) {
+			this.failedAttempt = true;
 			this.registerStatusStr = "Invalid email address!";
 			return;
 		}
 		
-		// run the registration process with the validated parameters
-		boolean result = ProjectFrame.conn.registerAccount(this.fields[0].text, this.fields[1].text, this.fields[2].text);
-		if(result) {
-			this.failedAttempt = false;
-			this.registerStatusStr = "Registration done successfully";
-		} else {
-			this.failedAttempt = true;
-			this.registerStatusStr = GameState.registerStatusDescription;
-		}
+		SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+
+			@Override protected Boolean doInBackground() throws Exception {
+				
+				// set the loading cursor
+				isLoading = true;
+				
+				// run the registration process with the validated parameters
+				boolean result = ProjectFrame.conn.registerAccount(fields[0].text, fields[1].text, fields[2].text);
+				
+				// switch back to the default cursor
+				isLoading = false;
+				
+				return result;
+			}
+			
+			@Override protected void done() {
+				
+				// Retrieve success status of the backgroud task
+				boolean status = false;
+				try {
+					status = get();
+				} catch(InterruptedException e) {
+					System.err.println("Interrupted Exception thrown while processing background task!");
+				} catch(ExecutionException e) {
+					System.err.println("Exception thrown during login task!");
+				}
+				
+				if(status) {
+					failedAttempt = false;
+					registerStatusStr = "Registration done successfully";
+				} else {
+					failedAttempt = true;
+					registerStatusStr = GameState.registerStatusDescription;
+				}
+			}
+		};
+		worker.execute();
 	}
 	
 	// Method for navigating back to the login panel

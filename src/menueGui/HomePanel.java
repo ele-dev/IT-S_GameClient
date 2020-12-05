@@ -120,14 +120,16 @@ public class HomePanel extends GuiPanel {
 		}
 		
 		// Enable/Disable certain elements depending on guest player status
-		if(!ProjectFrame.conn.isGuestPlayer()) {
-			this.accountVerificationMessage.setEnabled(true);
-			this.gameMoneyDisplay.setEnabled(true);
-			this.playedMatchesDisplay.setEnabled(true);
-		} else {
-			this.accountVerificationMessage.setEnabled(false);
-			this.gameMoneyDisplay.setEnabled(false);
-			this.playedMatchesDisplay.setEnabled(false);
+		if(ProjectFrame.conn.isLoggedIn()) {
+			if(!ProjectFrame.conn.isGuestPlayer()) {
+				this.accountVerificationMessage.setEnabled(true);
+				this.gameMoneyDisplay.setEnabled(true);
+				this.playedMatchesDisplay.setEnabled(true);
+			} else {
+				this.accountVerificationMessage.setEnabled(false);
+				this.gameMoneyDisplay.setEnabled(false);
+				this.playedMatchesDisplay.setEnabled(false);
+			}
 		}
 		
 		// Update the game statistic display

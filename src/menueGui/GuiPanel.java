@@ -170,7 +170,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		
 		// Reset the cursor to the default one before closing panel
 		this.isLoading = false;
-		this.setCursor(defaultCursor);
+		// this.setCursor(defaultCursor);
 	}
 	
 	// Event method that is called on Panel close up (can be overwritten)
