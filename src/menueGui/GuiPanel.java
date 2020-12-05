@@ -38,11 +38,11 @@ import Stage.ProjectFrame;
 public abstract class GuiPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 	
 	// static members
-	public static Cursor crossCursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
-	public static Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
-	public static Cursor enterTextCursor = new Cursor(Cursor.TEXT_CURSOR);
-	public static Cursor defaultCursor = Cursor.getDefaultCursor();
-	public static Cursor currentCursor = defaultCursor;
+	protected static Cursor crossCursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
+	protected static Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
+	protected static Cursor enterTextCursor = new Cursor(Cursor.TEXT_CURSOR);
+	protected static Cursor defaultCursor = Cursor.getDefaultCursor();
+	protected static Cursor currentCursor = defaultCursor;
 	
 	// Dimension and background color properties
 	protected int width, height;
@@ -136,7 +136,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 			}
 		}
 		
-		// Only update the cursor if the type has changed
+		// Only update the cursor if the type has changed since the last check
 		if(updatedCursor.getType() != this.getCursor().getType()) {
 			this.setCursor(updatedCursor);
 		}
