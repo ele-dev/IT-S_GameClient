@@ -190,5 +190,7 @@ public class ProjectFrame extends JFrame {
 			}
 		});
 		
+		//  Code outside of the event dispatch thread
+		// ...
 	}
 }

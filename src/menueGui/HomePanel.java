@@ -15,6 +15,8 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import javax.swing.SwingWorker;
+
 import Stage.Commons;
 import Stage.ProjectFrame;
 import networking.GenericMessage;
@@ -213,20 +215,36 @@ public class HomePanel extends GuiPanel {
 		if(ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Logout");
 			
-			// Abort possible game search
-			if(GameState.isSearching) {
-				// Send the abortion message to the server
-				SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
-				ProjectFrame.conn.sendMessageToServer(abortMessage);
-				GameState.isSearching = false;
-			}
-			
-			// Run the network logout routine
-			ProjectFrame.conn.logout();
-			
-			// Navigate to the login panel
-			this.closePanel();
-			ProjectFrame.loginPanel.setVisible(true);
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					
+					// Display the loading cursor
+					isLoading = true;
+					
+					// Abort possible game search
+					if(GameState.isSearching) {
+						// Send the abortion message to the server
+						SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
+						ProjectFrame.conn.sendMessageToServer(abortMessage);
+						GameState.isSearching = false;
+					}
+					
+					// Run the network logout routine
+					ProjectFrame.conn.logout();
+					
+					return null;
+				}
+				
+				@Override
+				protected void done() {
+					// Navigate to the login panel
+					closePanel();
+					ProjectFrame.loginPanel.setVisible(true);
+				}
+			};
+			worker.execute();
 		}
 	}
 	
@@ -237,19 +255,31 @@ public class HomePanel extends GuiPanel {
 		if(ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Join quickmatch (waiting queue)");
 			
-			// send the join quickmatch message to the server
-			SignalMessage joinQuickMatchMessage = new SignalMessage(GenericMessage.MSG_JOIN_QUICKMATCH);
-			ProjectFrame.conn.sendMessageToServer(joinQuickMatchMessage);
-			
-			// Enable the match search abortion button and disable this one
-			this.quickMatchButton.setEnabled(false);
-			this.abortMatchSearchButton.setEnabled(true);
-			
-			// Also enable the matchmaking status label
-			this.gameSearchMessage.setEnabled(true);
-			
-			// Update the state value that indicates, we are waiting for a player now
-			GameState.isSearching = true;
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+				@Override protected Void doInBackground() throws Exception {
+					
+					// send the join quickmatch message to the server
+					SignalMessage joinQuickMatchMessage = new SignalMessage(GenericMessage.MSG_JOIN_QUICKMATCH);
+					ProjectFrame.conn.sendMessageToServer(joinQuickMatchMessage);
+					
+					return null;
+				}
+				
+				@Override protected void done() {
+
+					// Enable the match search abortion button and disable this one
+					quickMatchButton.setEnabled(false);
+					abortMatchSearchButton.setEnabled(true);
+					
+					// Also enable the matchmaking status label
+					gameSearchMessage.setEnabled(true);
+					
+					// Update the state value that indicates, we are waiting for a player now
+					GameState.isSearching = true;
+				}
+			};
+			worker.execute();
 		}
 	}
 	
@@ -260,19 +290,31 @@ public class HomePanel extends GuiPanel {
 		if(ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Abort quick-matchmaking");
 			
-			// Send the abort message to the server
-			SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
-			ProjectFrame.conn.sendMessageToServer(abortMessage);
-			
-			// Enable the quick match search button and disable this one
-			this.abortMatchSearchButton.setEnabled(false);
-			this.quickMatchButton.setEnabled(true);
-			
-			// Also disable the matchmaking status label
-			this.gameSearchMessage.setEnabled(false);
-			
-			// update state value that indicates, we aren't waiting for a player anymore
-			GameState.isSearching = false;
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+				@Override protected Void doInBackground() throws Exception {
+					
+					// Send the abort message to the server
+					SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
+					ProjectFrame.conn.sendMessageToServer(abortMessage);
+					
+					return null;
+				}
+				
+				@Override protected void done() {
+					// Enable the quick match search button and disable this one
+					abortMatchSearchButton.setEnabled(false);
+					quickMatchButton.setEnabled(true);
+					
+					// Also disable the matchmaking status label
+					gameSearchMessage.setEnabled(false);
+					
+					// update state value that indicates, we aren't waiting for a player anymore
+					GameState.isSearching = false;
+				}
+				
+			};
+			worker.execute();
 		}
 	}
 	

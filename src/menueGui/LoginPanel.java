@@ -9,6 +9,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.SwingWorker;
 
 import Stage.Commons;
 import Stage.ProjectFrame;
@@ -209,17 +212,48 @@ public class LoginPanel extends GuiPanel {
 		
 		// play as guest button click event
 		if(!ProjectFrame.conn.isLoggedIn()) {
-			// Attempt to login as guest player
-			boolean success = ProjectFrame.conn.loginAsGuest();
-			if(!success) {
-				System.err.println("Could not login to the game network!");
-			} else {
-				System.out.println("Logged in as guest player successfully");
+			
+			// create and execute a swing worker for login processesing in the background
+			SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+				@Override protected Boolean doInBackground() throws Exception {
+					
+					// set the loading cursor
+					isLoading = true;
+					
+					// Attempt to login as guest player
+					boolean success = ProjectFrame.conn.loginAsGuest();
+					if(!success) {
+						System.err.println("Could not login to the game network!");
+						return false;
+					} else {
+						System.out.println("Logged in as guest player successfully");
+					}
+					
+					return true;
+				}
 				
-				// redirect to the home screen panel
-				this.closePanel();
-				ProjectFrame.homePanel.setVisible(true);
-			}
+				// Safely update the GUI as soon as the background task has been processed
+				@Override protected void done() {
+					
+					// Retrieve the success status from the background task
+					boolean status = false;
+					try {
+						status = get();
+					} catch(InterruptedException e) {
+						System.err.println("Interrupted Exception thrown while processing background task!");
+					} catch(ExecutionException e) {
+						System.err.println("Exception thrown during login task!");
+					}
+					
+					// When everything worked successfully then update GUI
+					if(status) {
+						// redirect to the home screen panel
+						closePanel();
+						ProjectFrame.homePanel.setVisible(true);
+					}
+				}
+			};
+			worker.execute();
 		}
 	}
 	
@@ -229,37 +263,67 @@ public class LoginPanel extends GuiPanel {
 		// Login Button click event 
 		if(!ProjectFrame.conn.isLoggedIn()) {
 			
-			// Obtain the content of the text fields
-			String user = this.fields[0].text;
-			String pass = this.fields[1].text;
-			
-			// Attempt to login as registered player if a valid password was entered
-			boolean loginSuccess = false;
-			if(pass.length() > 0 && user.length() > 0) {
-				loginSuccess = ProjectFrame.conn.loginWithAccount(user, pass);
-			} else {
-				this.failedAttempt = true;
-				this.loginStatusStr = "Empty fields are not allowed!";
+			SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+
+				boolean loginSuccess = false;
 				
-				return;
-			}
+				@Override protected Boolean doInBackground() throws Exception {
+					
+					// Obtain the content of the text fields
+					String user = fields[0].text;
+					String pass = fields[1].text;
+					
+					// Attempt to login as registered player if a valid password was entered
+					boolean validSyntax = pass.length() > 0 && user.length() > 0;
+					if(validSyntax) {
+						// set the loading cursor
+						isLoading = true;
+						
+						loginSuccess = ProjectFrame.conn.loginWithAccount(user, pass);
+						
+						// Switch back to default cursor
+						isLoading = false;
+					} else {
+						failedAttempt = true;
+						loginStatusStr = "Empty fields are not allowed!";
+						return false;
+					}
+					
+					return true;
+				}
 				
-			// Show the login status to the user
-			if(!loginSuccess) {
-				System.err.println("Could not login to the game network!");
-				this.failedAttempt = true;
-				this.loginStatusStr = "Login data was incorrect!";
-				
-				return;
-			} else {
-				this.failedAttempt = false;
-				this.loginStatusStr = "";
-				System.out.println("Logged in successfully");
-				
-				// redirect to the home screen panel
-				this.closePanel();
-				ProjectFrame.homePanel.setVisible(true);
-			}
+				@Override protected void done() {
+					
+					// First retrieve the success status of the background task
+					boolean status = false;
+					try {
+						status = get();
+					} catch(InterruptedException e) {
+						System.err.println("Interrupted Exception thrown while processing background task!");
+					} catch(ExecutionException e) {
+						System.err.println("Exception thrown during login task!");
+					}
+					
+					if(status) {
+						// Show the login status to the user
+						if(!loginSuccess) {
+							System.err.println("Could not login to the game network!");
+							failedAttempt = true;
+							loginStatusStr = "Login data was incorrect!";
+							return;
+						} else {
+							failedAttempt = false;
+							loginStatusStr = "";
+							System.out.println("Logged in successfully");
+							
+							// redirect to the home screen panel
+							closePanel();
+							ProjectFrame.homePanel.setVisible(true);
+						}
+					}
+				}
+			};
+			worker.execute();
 		}
 	}
 	

@@ -41,8 +41,11 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	protected static Cursor crossCursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
 	protected static Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
 	protected static Cursor enterTextCursor = new Cursor(Cursor.TEXT_CURSOR);
+	protected static Cursor loadingCursor = new Cursor(Cursor.WAIT_CURSOR);
 	protected static Cursor defaultCursor = Cursor.getDefaultCursor();
-	protected static Cursor currentCursor = defaultCursor;
+	
+	// Flag indicator for loading phase
+	protected boolean isLoading = false;
 	
 	// Dimension and background color properties
 	protected int width, height;
@@ -136,6 +139,11 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 			}
 		}
 		
+		// If this panel is currently in a loading phase then overwrite with loading cursor
+		if(this.isLoading) {
+			updatedCursor = loadingCursor;
+		}
+		
 		// Only update the cursor if the type has changed since the last check
 		if(updatedCursor.getType() != this.getCursor().getType()) {
 			this.setCursor(updatedCursor);
@@ -160,8 +168,9 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		// call the reset method to do optional cleanup tasks before leaving
 		this.onClose();
 		
-		// Reset the cursor to the default one
-		setCursor(defaultCursor);
+		// Reset the cursor to the default one before closing panel
+		this.isLoading = false;
+		this.setCursor(defaultCursor);
 	}
 	
 	// Event method that is called on Panel close up (can be overwritten)
