@@ -59,6 +59,7 @@ public class EMPPiece extends GamePiece{
 	}
 
 	// creates/shoots the DetonatorProjectile
+	@SuppressWarnings("unused")
 	public void shootEMP() {
 		Arc2D aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);

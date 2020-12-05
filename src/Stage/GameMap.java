@@ -8,6 +8,7 @@ public class GameMap {
 		StagePanel.mapRows = rows;
 		StagePanel.mapColumns  = columns;
 		StagePanel.mapRectangle = new Rectangle(columns*StagePanel.boardRectSize,rows*StagePanel.boardRectSize);
+		@SuppressWarnings("unused")
 		int index = 0;
 		for(int i = 0;i<rows;i++) {
 			for(int j = 0;j<columns;j++) {

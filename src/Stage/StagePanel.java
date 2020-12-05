@@ -9,8 +9,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Transparency;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -22,8 +20,6 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-
 import Buttons.ButtonEndTurn;
 import Buttons.GenericButton;
 import Buttons.WinScreen;
@@ -388,6 +384,7 @@ public class StagePanel extends JPanel {
 		g2d.dispose();
 	}
 	
+	@SuppressWarnings("unused")
 	private boolean createBufferAsBufferedImage() {
 		if(bufferedImage != null) {
 			 return true;

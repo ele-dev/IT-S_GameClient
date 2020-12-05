@@ -51,6 +51,7 @@ public class ShotgunPiece extends GamePiece {
 		return rect1.contains(new Point(selectedColumn,selectedRow)) || rect2.contains(new Point(selectedColumn,selectedRow));
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void updateAttack() {
 		Arc2D aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,

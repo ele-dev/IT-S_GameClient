@@ -5,8 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import javax.swing.Timer;
-
 import Stage.BoardRectangle;
 import Stage.StagePanel;
 
