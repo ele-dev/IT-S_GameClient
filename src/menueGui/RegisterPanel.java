@@ -96,6 +96,10 @@ public class RegisterPanel extends GuiPanel {
 	// Updating method
 	@Override
 	public void update() {
+		
+		// Call update method from super class
+		super.update();
+		
 		// Update the register status label
 		this.statusLabel.setTextColor(this.failedAttempt ? Color.RED : Color.WHITE);
 		this.statusLabel.setText(this.registerStatusStr);

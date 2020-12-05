@@ -8,7 +8,7 @@ package menueGui;
 
 public interface Focusable {
 	
-	public abstract void focusNow(boolean status);
-	public abstract boolean isFocused();
+	void focusNow(boolean status);
+	boolean isFocused();
 	
 }

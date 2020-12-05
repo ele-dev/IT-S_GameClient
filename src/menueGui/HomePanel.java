@@ -104,6 +104,10 @@ public class HomePanel extends GuiPanel {
 	// Method for updating/processing stuff 
 	@Override
 	public void update() {
+		
+		// Call update method from super class
+		super.update();
+		
 		// Update the account verification status label
 		if(GameState.userAccountVerified) {
 			this.accountVerificationMessage.setTextColor(Color.GREEN);
