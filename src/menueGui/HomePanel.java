@@ -165,9 +165,9 @@ public class HomePanel extends GuiPanel {
 	private void tryPressSomething(MouseEvent e) {
 		
 		// Remove remaining focus on buttons
-		this.logoutButton.selectButtonNow(false);
-		this.quickMatchButton.selectButtonNow(false);
-		this.abortMatchSearchButton.selectButtonNow(false);
+		this.logoutButton.focusNow(false);
+		this.quickMatchButton.focusNow(false);
+		this.abortMatchSearchButton.focusNow(false);
 	}
 	
 	// method for handling key pressed events (e.g. typing in textfields)
@@ -181,12 +181,12 @@ public class HomePanel extends GuiPanel {
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
 			// Only works for the logout button to focus it using TAB
-			if(this.logoutButton.isSelected()) {
+			if(this.logoutButton.isFocused()) {
 				// remove focus from the button 
-				this.logoutButton.selectButtonNow(false);
+				this.logoutButton.focusNow(false);
 			} else {
 				// set focus on the logout button
-				this.logoutButton.selectButtonNow(true);
+				this.logoutButton.focusNow(true);
 			}
 			
 			return;
@@ -194,7 +194,7 @@ public class HomePanel extends GuiPanel {
 		
 		// Trigger a click event on the selected button when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if(this.logoutButton.isSelected()) {
+			if(this.logoutButton.isFocused()) {
 				this.tryLogout();
 			}
 			

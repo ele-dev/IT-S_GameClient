@@ -114,8 +114,8 @@ public class RegisterPanel extends GuiPanel {
 	private void tryChangeFocus(MouseEvent e) {
 		
 		// Remove remaining focus on buttons
-		this.goToLoginButton.selectButtonNow(false);
-		this.registerAccountButton.selectButtonNow(false);
+		this.goToLoginButton.focusNow(false);
+		this.registerAccountButton.focusNow(false);
 		
 		// Check if a text field was selected through the mouse click
 		for(TextInputField curTIF : this.fields) {
@@ -134,68 +134,68 @@ public class RegisterPanel extends GuiPanel {
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
 			
-			if(this.fields[0].isSelected()) {
+			if(this.fields[0].isFocused()) {
 				// set focus on field[1]
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(true);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(true);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(false);
 				
-			} else if(this.fields[1].isSelected()) {
+			} else if(this.fields[1].isFocused()) {
 				// set focus on field[2]
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(true);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(true);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(false);
 				
-			} else if(this.fields[2].isSelected()) {
+			} else if(this.fields[2].isFocused()) {
 				// set focus on field[3]
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(true);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(true);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(false);
 				
-			} else if(this.fields[3].isSelected()) {
+			} else if(this.fields[3].isFocused()) {
 				// set focus on register button
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(true);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(true);
+				this.goToLoginButton.focusNow(false);
 				
-			} else if(this.registerAccountButton.isSelected()) {
+			} else if(this.registerAccountButton.isFocused()) {
 				// set focus on go to login button
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(true);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(true);
 				
-			} else if(this.goToLoginButton.isSelected()) {
+			} else if(this.goToLoginButton.isFocused()) {
 				// set focus on field[0]
-				this.fields[0].selectFieldNow(true);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(true);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(false);
 				
 			} else {
 				// set focus on field[0]
-				this.fields[0].selectFieldNow(true);
-				this.fields[1].selectFieldNow(false);
-				this.fields[2].selectFieldNow(false);
-				this.fields[3].selectFieldNow(false);
-				this.registerAccountButton.selectButtonNow(false);
-				this.goToLoginButton.selectButtonNow(false);
+				this.fields[0].focusNow(true);
+				this.fields[1].focusNow(false);
+				this.fields[2].focusNow(false);
+				this.fields[3].focusNow(false);
+				this.registerAccountButton.focusNow(false);
+				this.goToLoginButton.focusNow(false);
 			}
 			
 			return;
@@ -203,9 +203,9 @@ public class RegisterPanel extends GuiPanel {
 		
 		// Trigger a click event on the selected button when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if(this.goToLoginButton.isSelected()) {
+			if(this.goToLoginButton.isFocused()) {
 				this.redirectToLogin();
-			} else if(this.registerAccountButton.isSelected()) {
+			} else if(this.registerAccountButton.isFocused()) {
 				System.out.println("register attempt because enter pressed");
 				this.tryRegisterAccount();
 			}

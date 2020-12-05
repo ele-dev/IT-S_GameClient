@@ -27,8 +27,8 @@ public interface Commons {
 	
 	final Color buttonDefault = new Color(20, 20, 20);
 	final Color buttonHover = Color.BLUE;
-	final Color textFieldSelected = new Color(136, 24, 206);
-	final Color buttonSelected = new Color(136, 24, 206);
+	final Color textFieldFocused = new Color(136, 24, 206);
+	final Color buttonFocused = new Color(136, 24, 206);
 	
 	final Color cMove = new Color(255,220,90);
 	final Color cAttack = new Color(255,0,50);

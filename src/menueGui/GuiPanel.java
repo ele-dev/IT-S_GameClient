@@ -158,7 +158,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		{
 			if(e instanceof Button) {
 				Button currBtn = (Button) e;
-				currBtn.selectButtonNow(false);
+				currBtn.focusNow(false);
 				currBtn.resetHover();
 			}
 		}

@@ -20,10 +20,10 @@ import java.awt.event.MouseEvent;
 import Stage.Commons;
 import Stage.ProjectFrame;
 
-public class Button extends GuiElement {
+public class Button extends GuiElement implements Focusable {
 
 	// class members
-	private boolean isHover, isSelected;
+	private boolean isHover, isFocused;
 	private String buttonLabel;
 	private int textSize;
 	
@@ -36,7 +36,7 @@ public class Button extends GuiElement {
 		
 		// Set default values
 		this.isHover = false;
-		this.isSelected = false;
+		this.isFocused = false;
 		this.buttonLabel = "Button";
 		this.textSize = defaultTextSize;
 	}
@@ -72,7 +72,7 @@ public class Button extends GuiElement {
 	}
 	
 	private void drawButtonBox(Graphics2D g2d) {
-		g2d.setColor(this.isSelected ? Commons.buttonSelected : Commons.buttonDefault);
+		g2d.setColor(this.isFocused ? Commons.buttonFocused : Commons.buttonDefault);
 		if(this.isHover) { g2d.setColor(Commons.buttonHover); }
 		g2d.fill(this.rect);
 	}
@@ -107,8 +107,8 @@ public class Button extends GuiElement {
 		this.rect.y = posY;
 	}
 	
-	public void selectButtonNow(boolean status) {
-		this.isSelected = status;
+	public void focusNow(boolean status) {
+		this.isFocused = status;
 	}
 	
 	// Getters
@@ -117,9 +117,9 @@ public class Button extends GuiElement {
 		return this.isHover && this.isEnabled;
 	}
 	
-	public boolean isSelected() {
+	public boolean isFocused() {
 		// Only enabled buttons can be selected/focused
-		return this.isSelected && this.isEnabled;
+		return this.isFocused && this.isEnabled;
 	}
 	
 	public int getTextSize() {

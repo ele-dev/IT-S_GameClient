@@ -108,9 +108,9 @@ public class LoginPanel extends GuiPanel {
 	private void tryPressSomething(MouseEvent e) {
 		
 		// Remove remaining focus on buttons 
-		this.loginButton.selectButtonNow(false);
-		this.playAsGuestButton.selectButtonNow(false);
-		this.goToRegisterButton.selectButtonNow(false);
+		this.loginButton.focusNow(false);
+		this.playAsGuestButton.focusNow(false);
+		this.goToRegisterButton.focusNow(false);
 		
 		// Check if a text field was selected through the mouse click
 		for(TextInputField curTIF : this.fields) {
@@ -128,53 +128,53 @@ public class LoginPanel extends GuiPanel {
 		
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
-			if(this.fields[0].isSelected()) {
+			if(this.fields[0].isFocused()) {
 				// set focus on field[1] now
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(true);
-				this.loginButton.selectButtonNow(false);
-				this.playAsGuestButton.selectButtonNow(false);
-				this.goToRegisterButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(true);
+				this.loginButton.focusNow(false);
+				this.playAsGuestButton.focusNow(false);
+				this.goToRegisterButton.focusNow(false);
 				
-			} else if(this.fields[1].isSelected()) {
+			} else if(this.fields[1].isFocused()) {
 				// set focus on login button
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.loginButton.selectButtonNow(true);
-				this.playAsGuestButton.selectButtonNow(false);
-				this.goToRegisterButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.loginButton.focusNow(true);
+				this.playAsGuestButton.focusNow(false);
+				this.goToRegisterButton.focusNow(false);
 				
-			} else if(this.loginButton.isSelected()) {
+			} else if(this.loginButton.isFocused()) {
 				// set focus on the play as guest button
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.loginButton.selectButtonNow(false);
-				this.playAsGuestButton.selectButtonNow(true);
-				this.goToRegisterButton.selectButtonNow(false);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.loginButton.focusNow(false);
+				this.playAsGuestButton.focusNow(true);
+				this.goToRegisterButton.focusNow(false);
 				
-			} else if(this.playAsGuestButton.isSelected()) {
+			} else if(this.playAsGuestButton.isFocused()) {
 				// set focus on go to register button
-				this.fields[0].selectFieldNow(false);
-				this.fields[1].selectFieldNow(false);
-				this.loginButton.selectButtonNow(false);
-				this.playAsGuestButton.selectButtonNow(false);
-				this.goToRegisterButton.selectButtonNow(true);
+				this.fields[0].focusNow(false);
+				this.fields[1].focusNow(false);
+				this.loginButton.focusNow(false);
+				this.playAsGuestButton.focusNow(false);
+				this.goToRegisterButton.focusNow(true);
 				
-			} else if(this.goToRegisterButton.isSelected()) {
+			} else if(this.goToRegisterButton.isFocused()) {
 				// set focus on field[0] now
-				this.fields[0].selectFieldNow(true);
-				this.fields[1].selectFieldNow(false);
-				this.loginButton.selectButtonNow(false);
-				this.playAsGuestButton.selectButtonNow(false);
-				this.goToRegisterButton.selectButtonNow(false);
+				this.fields[0].focusNow(true);
+				this.fields[1].focusNow(false);
+				this.loginButton.focusNow(false);
+				this.playAsGuestButton.focusNow(false);
+				this.goToRegisterButton.focusNow(false);
 				
 			} else {
 				// set focus on field[0] now
-				this.fields[0].selectFieldNow(true);
-				this.fields[1].selectFieldNow(false);
-				this.loginButton.selectButtonNow(false);
-				this.playAsGuestButton.selectButtonNow(false);
-				this.goToRegisterButton.selectButtonNow(false);
+				this.fields[0].focusNow(true);
+				this.fields[1].focusNow(false);
+				this.loginButton.focusNow(false);
+				this.playAsGuestButton.focusNow(false);
+				this.goToRegisterButton.focusNow(false);
 			}
 			
 			return;
@@ -182,11 +182,11 @@ public class LoginPanel extends GuiPanel {
 		
 		// Trigger a click event on the selected button when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if(this.playAsGuestButton.isSelected()) {
+			if(this.playAsGuestButton.isFocused()) {
 				this.playAsGuest();
-			} else if(this.goToRegisterButton.isSelected()) {
+			} else if(this.goToRegisterButton.isFocused()) {
 				this.redirectToRegister();
-			} else if(this.loginButton.isSelected()) {
+			} else if(this.loginButton.isFocused()) {
 				System.out.println("login attempt because enter pressed");
 				this.tryLogin();
 			}
