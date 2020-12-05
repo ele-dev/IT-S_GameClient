@@ -170,19 +170,23 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		
 		// Reset the cursor to the default one before closing panel
 		this.isLoading = false;
-		// this.setCursor(defaultCursor);
+		this.setCursor(defaultCursor);
 	}
 	
 	// Event method that is called on Panel close up (can be overwritten)
 	protected void onClose() {
 		
-		// remove remaining focus on buttons
+		// remove remaining focus on gui elements
 		for(GuiElement e: this.guiElements)
 		{
-			if(e instanceof Button) {
-				Button currBtn = (Button) e;
-				currBtn.focusNow(false);
-				currBtn.resetHover();
+			if(e instanceof Focusable) {
+				Focusable fElement = (Focusable) e;
+				fElement.focusNow(false);
+			}
+			// reset the hovered status of gui elements
+			if(e instanceof Hoverable) {
+				Hoverable hElement = (Hoverable) e;
+				hElement.resetHover();
 			}
 		}
 	}
