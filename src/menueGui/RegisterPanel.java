@@ -12,7 +12,7 @@ import Stage.Commons;
 import Stage.ProjectFrame;
 
 @SuppressWarnings("serial")
-public class RegisterPanel extends GuiPanel {
+public final class RegisterPanel extends GuiPanel {
 
 	// GUI elements inside this panel
 	private Button goToLoginButton = new Button(70, 50, "Back to Login");
@@ -113,12 +113,11 @@ public class RegisterPanel extends GuiPanel {
 	protected void drawPanelContent(Graphics2D g2d) {
 		
 		super.drawPanelContent(g2d);
-		
 		// ...
 	}
 	
 	// Method for changing focus by clicking somewhere
-	private void tryChangeFocus(MouseEvent e) {
+	protected void tryChangeFocus(MouseEvent e) {
 		
 		// Remove remaining focus on buttons
 		this.goToLoginButton.focusNow(false);
@@ -131,7 +130,7 @@ public class RegisterPanel extends GuiPanel {
 	}
 	
 	// method for handling key pressed events (e.g. typing in textfields)
-	private void tryTypeIn(KeyEvent e) {
+	protected void tryTypeIn(KeyEvent e) {
 		
 		// Make sure not to handle events for other panels
 		if(!this.isVisible()) {
@@ -317,29 +316,5 @@ public class RegisterPanel extends GuiPanel {
 	public void mouseClicked(MouseEvent e) {
 		if(this.goToLoginButton.isHovered()) { redirectToLogin(); }
 		if(this.registerAccountButton.isHovered()) { tryRegisterAccount(); }
-	}
-	
-	@Override 
-	public void mousePressed(MouseEvent e) {
-		tryChangeFocus(e);
-	}
-	
-	// Mouse motion listener events for updating the hover status of GUI elements
-	@Override 
-	public void mouseDragged(MouseEvent e) {
-		goToLoginButton.updateHover(e);
-		registerAccountButton.updateHover(e);
-	}
-	
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		goToLoginButton.updateHover(e);
-		registerAccountButton.updateHover(e);
-	}
-	
-	// Key Listener for typing text into the fields
-	@Override
-	public void keyPressed(KeyEvent e) {
-		tryTypeIn(e);
 	}
 }

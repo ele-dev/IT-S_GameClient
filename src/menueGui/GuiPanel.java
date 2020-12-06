@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -74,18 +75,9 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		addMouseMotionListener(this);
 	}
 	
-	// Advanced Constructor for non-fullscreen panels (relative positioning)
-	public GuiPanel(int x, int y, int width, int height) {
-		
-		// Set the gui configs
-		this.width = width;
-		this.height = height;
-	
-		setRelativePosition(x, y);
-	}
-	
 	// Private method for relative positioning of non-fullscreen panels 
-	private void setRelativePosition(int x, int y) {
+	@SuppressWarnings("unused")
+	private final void setRelativePosition(int x, int y) {
 		
 		// calculate the abosolute coordinates in the frame
 		float xFactor = 0.01f * x;
@@ -114,16 +106,25 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	
 	// Main drawing method
 	@Override
-	public void paintComponent(Graphics g) {
+	public final void paintComponent(final Graphics g) {
 		
-		Graphics2D g2d = (Graphics2D)g;
+		// Skip if this panel is not visible 
+		if(!this.isVisible()) {
+			return;
+		}
+		
+		// Set the render target (front buffer in this case)
+		Graphics2D renderTarget = (Graphics2D) g;
+		
+		// Set advanced rendering instructions (e.g. anti aliasing)
+		renderTarget.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		// Draw the colored background
-		g2d.setColor(this.bgColor);
-		g2d.fillRect(this.getX(), this.getY(), this.width, this.height);
+		renderTarget.setColor(this.bgColor);
+		renderTarget.fillRect(0, 0, this.width, this.height);
 		
 		// Draw the rest of the GUI
-		drawPanelContent(g2d);
+		drawPanelContent(renderTarget);
 	}
 	
 	// Main update/processing method (does nothing by default, can be overwritten)
@@ -133,8 +134,15 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		Cursor updatedCursor = defaultCursor;
 		for(GuiElement e: guiElements)
 		{
+			// Search for a hovered gui element
 			if(e instanceof Hoverable && ((Hoverable) e).isHovered()) {
-				updatedCursor = handCursor;
+				
+				// Distinguish between a hovered button and a hovered text field
+				if(e instanceof Button) {
+					updatedCursor = handCursor;
+				} else if(e instanceof TextInputField) {
+					updatedCursor = enterTextCursor;
+				}
 				break;
 			}
 		}
@@ -160,7 +168,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	}
 	
 	// Method that is called to close a panel that is currently visible
-	public void closePanel() {
+	public final void closePanel() {
 		
 		// Hide the Panel 
 		this.setVisible(false);
@@ -170,42 +178,82 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		
 		// Reset the cursor to the default one before closing panel
 		this.isLoading = false;
-		// this.setCursor(defaultCursor);
+		this.setCursor(defaultCursor);
 	}
 	
 	// Event method that is called on Panel close up (can be overwritten)
 	protected void onClose() {
 		
-		// remove remaining focus on buttons
+		// remove remaining focus on gui elements
 		for(GuiElement e: this.guiElements)
 		{
-			if(e instanceof Button) {
-				Button currBtn = (Button) e;
-				currBtn.focusNow(false);
-				currBtn.resetHover();
+			if(e instanceof Focusable) {
+				((Focusable) e).focusNow(false);
+			}
+			// reset the hovered status of gui elements
+			if(e instanceof Hoverable) {
+				((Hoverable) e).resetHover();
 			}
 		}
 	}
 	
 	// Listener event methods (supposed to be overwritten in child classes)
-	public void mouseClicked(MouseEvent e) {}
-	public void mousePressed(MouseEvent e) {}
-	public void mouseReleased(MouseEvent e) {}
-	public void mouseEntered(MouseEvent e) {}
-	public void mouseExited(MouseEvent e) {}
-	public void mouseDragged(MouseEvent e) {}
-	public void mouseMoved(MouseEvent e) {}
-	public void keyPressed(KeyEvent e) {}
-	public void keyReleased(KeyEvent e) {}
-	public void keyTyped(KeyEvent e) {}
+	@Override public void mouseClicked(MouseEvent e) {}
+	
+	// Call the method that handles the mouse pressed events
+	@Override public void mousePressed(MouseEvent e) {
+		
+		// Skip the operations in case the panel is currently in loading state
+		if(this.isLoading) {
+			return;
+		}
+		
+		tryChangeFocus(e);
+	}
+	@Override public void mouseReleased(MouseEvent e) {}
+	@Override public void mouseEntered(MouseEvent e) {}
+	@Override public void mouseExited(MouseEvent e) {}
+
+	// Mouse motion listener events for updating the hover status of GUI elements
+	@Override public void mouseDragged(MouseEvent e) {
+		// Update all hoverable gui elements
+		for(GuiElement element: guiElements)
+		{
+			if(element instanceof Hoverable) {
+				((Hoverable) element).updateHover(e);
+			}
+		}
+	}
+	@Override public void mouseMoved(MouseEvent e) {
+		// Update all hoverable gui elements
+		for(GuiElement element: guiElements)
+		{
+			if(element instanceof Hoverable) {
+				((Hoverable) element).updateHover(e);
+			}
+		}
+	}
+	
+	// Call the method that handles the key pressed events
+	@Override public void keyPressed(KeyEvent e) {
+		
+		// Skip the operations in case the panel is currently in loading state
+		if(this.isLoading) {
+			return;
+		}
+		
+		tryTypeIn(e);
+	}
+	@Override public void keyReleased(KeyEvent e) {}
+	@Override public void keyTyped(KeyEvent e) {}
 	
 	// Abstract methods
-	
 	protected abstract void initGuiElements();
+	protected abstract void tryChangeFocus(MouseEvent e);
+	protected abstract void tryTypeIn(KeyEvent e);
 	
 	// setters
-	
-	protected void setBackgoundColor(Color color) {
+	protected final void setBackgoundColor(Color color) {
 		this.bgColor = color;
 	}
 }

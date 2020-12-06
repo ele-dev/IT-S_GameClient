@@ -87,12 +87,14 @@ public class Button extends GuiElement implements Focusable, Hoverable {
 		g2d.drawString(this.buttonLabel, posX, posY);
 	}
 	
-	// Update method for the hover status of a button through 
+	// Update method for the hover status of a button through
+	@Override
 	public void updateHover(MouseEvent e) {
 		// Only enabled buttons can be hovered
 		this.isHovered = this.rect.contains(e.getPoint()) && this.isEnabled;
 	}
 	
+	@Override
 	public void resetHover() {
 		this.isHovered = false;
 	}
@@ -107,16 +109,19 @@ public class Button extends GuiElement implements Focusable, Hoverable {
 		this.rect.y = posY;
 	}
 	
+	@Override
 	public void focusNow(boolean status) {
 		this.isFocused = status;
 	}
 	
 	// Getters
+	@Override
 	public  boolean isHovered() {
 		// Only enabled buttons can be hovered
 		return this.isHovered && this.isEnabled;
 	}
 	
+	@Override
 	public boolean isFocused() {
 		// Only enabled buttons can be selected/focused
 		return this.isFocused && this.isEnabled;

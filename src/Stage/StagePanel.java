@@ -940,8 +940,6 @@ public class StagePanel extends JPanel {
 								return;
 							}
 						}
-						
-						
 					}
 				}
 			} else {

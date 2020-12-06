@@ -28,7 +28,7 @@ import Stage.ProjectFrame;
 import menueGui.GameState;
 import networking.*;
 
-public class Connection extends Thread {
+public final class Connection extends Thread {
 	
 	// class members //
 	private Socket clientSocket;

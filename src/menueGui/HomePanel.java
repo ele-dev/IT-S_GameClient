@@ -24,7 +24,7 @@ import networking.SignalMessage;
 
 
 @SuppressWarnings("serial")
-public class HomePanel extends GuiPanel {
+public final class HomePanel extends GuiPanel {
 	
 	// Gui elements inside this panel (buttons, text fields, etc.)
 	private Button logoutButton = new Button(60, 40, "Logout");
@@ -165,12 +165,11 @@ public class HomePanel extends GuiPanel {
 	protected void drawPanelContent(Graphics2D g2d) {
 		
 		super.drawPanelContent(g2d);
-		
 		// ...
 	}
 	
 	// Method for changing focus by clicking somewhere
-	private void tryPressSomething(MouseEvent e) {
+	protected void tryChangeFocus(MouseEvent e) {
 		
 		// Remove remaining focus on buttons
 		this.logoutButton.focusNow(false);
@@ -179,7 +178,7 @@ public class HomePanel extends GuiPanel {
 	}
 	
 	// method for handling key pressed events (e.g. typing in textfields)
-	private void tryTypeIn(KeyEvent e) {
+	protected void tryTypeIn(KeyEvent e) {
 		
 		// Make sure not to handle events for other panels
 		if(!this.isVisible()) {
@@ -328,32 +327,5 @@ public class HomePanel extends GuiPanel {
 		if(this.quickMatchButton.isHovered()) { tryQuickmatchJoin(); }
 		if(this.abortMatchSearchButton.isHovered()) { tryAbortMatchSearch(); }
 		if(this.logoutButton.isHovered()) { tryLogout(); }
-	}
-	
-	@Override
-	public void mousePressed(MouseEvent e) {
-		this.tryPressSomething(e);
-	}
-	
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// Update the hover states of the buttons
-		logoutButton.updateHover(e);
-		quickMatchButton.updateHover(e);
-		abortMatchSearchButton.updateHover(e);
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// Update the hover states of the buttons
-		logoutButton.updateHover(e);
-		quickMatchButton.updateHover(e);
-		abortMatchSearchButton.updateHover(e);
-	}
-	
-	// Key listener for reacting on keyboard input
-	@Override
-	public void keyPressed(KeyEvent e) {
-		this.tryTypeIn(e);
 	}
 }
