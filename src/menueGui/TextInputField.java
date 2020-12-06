@@ -17,12 +17,12 @@ import javax.swing.SwingUtilities;
 import Stage.Commons;
 import Stage.ProjectFrame;
 
-public class TextInputField extends GuiElement implements Focusable {
+public class TextInputField extends GuiElement implements Focusable, Hoverable {
 	
 	// Class members 
 	public String text;
 	private String hint;
-	private boolean isFocused, isFlash;
+	private boolean isFocused, isHovered, isFlash;
 	private short flashCounter;
 	private final short flashIntervall = 10;
 	private boolean textHidden;
@@ -40,6 +40,7 @@ public class TextInputField extends GuiElement implements Focusable {
 		// set default values
 		this.isFlash = false;
 		this.isFocused = false;
+		this.isHovered = false;
 		this.textHidden = false;
 		this.text = "";
 	}
@@ -185,11 +186,28 @@ public class TextInputField extends GuiElement implements Focusable {
 	}
 	
 	// Getters
+	@Override
 	public boolean isFocused() {
-		return isFocused;
+		return this.isFocused && this.isEnabled;
 	}
 	
 	public boolean isTextHidden() {
 		return this.textHidden;
+	}
+
+	@Override
+	public void updateHover(MouseEvent e) {
+		// Only enabled text fields can be hovered
+		this.isHovered = this.rect.contains(e.getPoint()) && this.isEnabled;
+	}
+
+	@Override
+	public void resetHover() {
+		this.isHovered = false;
+	}
+
+	@Override
+	public boolean isHovered() {
+		return this.isHovered && this.isEnabled;
 	}
 }

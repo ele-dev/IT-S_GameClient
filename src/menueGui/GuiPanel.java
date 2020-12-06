@@ -135,8 +135,15 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		Cursor updatedCursor = defaultCursor;
 		for(GuiElement e: guiElements)
 		{
+			// Search a hovered gui element
 			if(e instanceof Hoverable && ((Hoverable) e).isHovered()) {
-				updatedCursor = handCursor;
+				
+				// Distinguish between a hovered button and a hovered text field
+				if(e instanceof Button) {
+					updatedCursor = handCursor;
+				} else if(e instanceof TextInputField) {
+					updatedCursor = enterTextCursor;
+				}
 				break;
 			}
 		}
