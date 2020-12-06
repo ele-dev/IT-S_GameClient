@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -74,17 +75,8 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		addMouseMotionListener(this);
 	}
 	
-	// Advanced Constructor for non-fullscreen panels (relative positioning)
-	public GuiPanel(int x, int y, int width, int height) {
-		
-		// Set the gui configs
-		this.width = width;
-		this.height = height;
-	
-		setRelativePosition(x, y);
-	}
-	
 	// Private method for relative positioning of non-fullscreen panels 
+	@SuppressWarnings("unused")
 	private void setRelativePosition(int x, int y) {
 		
 		// calculate the abosolute coordinates in the frame
@@ -114,16 +106,26 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	
 	// Main drawing method
 	@Override
-	public void paintComponent(Graphics g) {
+	public void paintComponent(final Graphics g) {
 		
-		Graphics2D g2d = (Graphics2D)g;
+		// Skip if this panel is not visible 
+		if(!this.isVisible()) {
+			return;
+		}
+		
+		// Set the render target (front buffer in this case)
+		Graphics2D renderTarget = (Graphics2D) g;
+		
+		// Set advanced rendering instructions (e.g. anti aliasing)
+		renderTarget.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		// Draw the colored background
-		g2d.setColor(this.bgColor);
-		g2d.fillRect(this.getX(), this.getY(), this.width, this.height);
+		renderTarget.setColor(this.bgColor);
+		// renderTarget.fillRect(this.getX(), this.getY(), this.width, this.height);
+		renderTarget.fillRect(0, 0, this.width, this.height);
 		
 		// Draw the rest of the GUI
-		drawPanelContent(g2d);
+		drawPanelContent(renderTarget);
 	}
 	
 	// Main update/processing method (does nothing by default, can be overwritten)

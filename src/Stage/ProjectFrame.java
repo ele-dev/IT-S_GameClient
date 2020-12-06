@@ -74,7 +74,7 @@ public class ProjectFrame extends JFrame {
 			}
 		});
 		tFrameRate.setRepeats(true);
-		tUpdateRate = new Timer(10, new ActionListener() {
+		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateAllPanels();
