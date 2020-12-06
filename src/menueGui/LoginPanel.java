@@ -107,12 +107,11 @@ public class LoginPanel extends GuiPanel {
 	protected void drawPanelContent(Graphics2D g2d) {
 		
 		super.drawPanelContent(g2d);
-		
 		// ...
 	}
 	
 	// Method for changing focus by clicking somewhere
-	private void tryPressSomething(MouseEvent e) {
+	protected void tryChangeFocus(MouseEvent e) {
 		
 		// Remove remaining focus on buttons 
 		this.loginButton.focusNow(false);
@@ -126,7 +125,7 @@ public class LoginPanel extends GuiPanel {
 	}
 	
 	// method for handling key pressed events (e.g. typing in textfields)
-	private void tryTypeIn(KeyEvent e) {
+	protected void tryTypeIn(KeyEvent e) {
 		
 		// Make sure not to handle events for other panels
 		if(!this.isVisible()) {
@@ -342,31 +341,5 @@ public class LoginPanel extends GuiPanel {
 		if(this.loginButton.isHovered()) { tryLogin(); }
 		if(this.playAsGuestButton.isHovered()) { playAsGuest(); }
 		if(this.goToRegisterButton.isHovered()) { redirectToRegister(); }
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		tryPressSomething(e);
-	}
-	
-	// Mouse motion listener events for updating the hover status of GUI elements
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		loginButton.updateHover(e);
-		playAsGuestButton.updateHover(e);
-		goToRegisterButton.updateHover(e);
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		loginButton.updateHover(e);		
-		playAsGuestButton.updateHover(e);
-		goToRegisterButton.updateHover(e);
-	}
-
-	// Key listener for reacting on keyboard input
-	@Override
-	public void keyPressed(KeyEvent e) {
-		tryTypeIn(e);
 	}
 }

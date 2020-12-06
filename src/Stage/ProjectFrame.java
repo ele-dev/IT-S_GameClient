@@ -176,7 +176,6 @@ public class ProjectFrame extends JFrame {
 						
 						// Hide the window and restore the original display mode
 						f.setVisible(false);
-						// device.setDisplayMode(standardMode);
 						System.out.println("window was closed --> cleanup routine");
 						
 						// close the network connection to the game server

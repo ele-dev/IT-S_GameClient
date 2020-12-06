@@ -180,32 +180,58 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		for(GuiElement e: this.guiElements)
 		{
 			if(e instanceof Focusable) {
-				Focusable fElement = (Focusable) e;
-				fElement.focusNow(false);
+				((Focusable) e).focusNow(false);
 			}
 			// reset the hovered status of gui elements
 			if(e instanceof Hoverable) {
-				Hoverable hElement = (Hoverable) e;
-				hElement.resetHover();
+				((Hoverable) e).resetHover();
 			}
 		}
 	}
 	
 	// Listener event methods (supposed to be overwritten in child classes)
 	public void mouseClicked(MouseEvent e) {}
-	public void mousePressed(MouseEvent e) {}
+	
+	// Call the method that handles the mouse pressed events
+	public void mousePressed(MouseEvent e) {
+		tryChangeFocus(e);
+	}
 	public void mouseReleased(MouseEvent e) {}
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
-	public void mouseDragged(MouseEvent e) {}
-	public void mouseMoved(MouseEvent e) {}
-	public void keyPressed(KeyEvent e) {}
+
+	// Mouse motion listener events for updating the hover status of GUI elements
+	public void mouseDragged(MouseEvent e) {
+		// Update all hoverable gui elements
+		for(GuiElement element: guiElements)
+		{
+			if(element instanceof Hoverable) {
+				((Hoverable) element).updateHover(e);
+			}
+		}
+	}
+	public void mouseMoved(MouseEvent e) {
+		// Update all hoverable gui elements
+		for(GuiElement element: guiElements)
+		{
+			if(element instanceof Hoverable) {
+				((Hoverable) element).updateHover(e);
+			}
+		}
+	}
+	
+	// Call the method that handles the key pressed events
+	public void keyPressed(KeyEvent e) {
+		tryTypeIn(e);
+	}
 	public void keyReleased(KeyEvent e) {}
 	public void keyTyped(KeyEvent e) {}
 	
 	// Abstract methods
 	
 	protected abstract void initGuiElements();
+	protected abstract void tryChangeFocus(MouseEvent e);
+	protected abstract void tryTypeIn(KeyEvent e);
 	
 	// setters
 	
