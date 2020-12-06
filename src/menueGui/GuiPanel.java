@@ -194,6 +194,12 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	
 	// Call the method that handles the mouse pressed events
 	public void mousePressed(MouseEvent e) {
+		
+		// Skip the operations in case the panel is currently in loading state
+		if(this.isLoading) {
+			return;
+		}
+		
 		tryChangeFocus(e);
 	}
 	public void mouseReleased(MouseEvent e) {}
@@ -222,6 +228,12 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	
 	// Call the method that handles the key pressed events
 	public void keyPressed(KeyEvent e) {
+		
+		// Skip the operations in case the panel is currently in loading state
+		if(this.isLoading) {
+			return;
+		}
+		
 		tryTypeIn(e);
 	}
 	public void keyReleased(KeyEvent e) {}
