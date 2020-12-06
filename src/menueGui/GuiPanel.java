@@ -77,7 +77,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	
 	// Private method for relative positioning of non-fullscreen panels 
 	@SuppressWarnings("unused")
-	private void setRelativePosition(int x, int y) {
+	private final void setRelativePosition(int x, int y) {
 		
 		// calculate the abosolute coordinates in the frame
 		float xFactor = 0.01f * x;
@@ -106,7 +106,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	
 	// Main drawing method
 	@Override
-	public void paintComponent(final Graphics g) {
+	public final void paintComponent(final Graphics g) {
 		
 		// Skip if this panel is not visible 
 		if(!this.isVisible()) {
@@ -121,7 +121,6 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		
 		// Draw the colored background
 		renderTarget.setColor(this.bgColor);
-		// renderTarget.fillRect(this.getX(), this.getY(), this.width, this.height);
 		renderTarget.fillRect(0, 0, this.width, this.height);
 		
 		// Draw the rest of the GUI
@@ -135,7 +134,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		Cursor updatedCursor = defaultCursor;
 		for(GuiElement e: guiElements)
 		{
-			// Search a hovered gui element
+			// Search for a hovered gui element
 			if(e instanceof Hoverable && ((Hoverable) e).isHovered()) {
 				
 				// Distinguish between a hovered button and a hovered text field
@@ -169,7 +168,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	}
 	
 	// Method that is called to close a panel that is currently visible
-	public void closePanel() {
+	public final void closePanel() {
 		
 		// Hide the Panel 
 		this.setVisible(false);
@@ -199,10 +198,10 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	}
 	
 	// Listener event methods (supposed to be overwritten in child classes)
-	public void mouseClicked(MouseEvent e) {}
+	@Override public void mouseClicked(MouseEvent e) {}
 	
 	// Call the method that handles the mouse pressed events
-	public void mousePressed(MouseEvent e) {
+	@Override public void mousePressed(MouseEvent e) {
 		
 		// Skip the operations in case the panel is currently in loading state
 		if(this.isLoading) {
@@ -211,12 +210,12 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		
 		tryChangeFocus(e);
 	}
-	public void mouseReleased(MouseEvent e) {}
-	public void mouseEntered(MouseEvent e) {}
-	public void mouseExited(MouseEvent e) {}
+	@Override public void mouseReleased(MouseEvent e) {}
+	@Override public void mouseEntered(MouseEvent e) {}
+	@Override public void mouseExited(MouseEvent e) {}
 
 	// Mouse motion listener events for updating the hover status of GUI elements
-	public void mouseDragged(MouseEvent e) {
+	@Override public void mouseDragged(MouseEvent e) {
 		// Update all hoverable gui elements
 		for(GuiElement element: guiElements)
 		{
@@ -225,7 +224,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 			}
 		}
 	}
-	public void mouseMoved(MouseEvent e) {
+	@Override public void mouseMoved(MouseEvent e) {
 		// Update all hoverable gui elements
 		for(GuiElement element: guiElements)
 		{
@@ -236,7 +235,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	}
 	
 	// Call the method that handles the key pressed events
-	public void keyPressed(KeyEvent e) {
+	@Override public void keyPressed(KeyEvent e) {
 		
 		// Skip the operations in case the panel is currently in loading state
 		if(this.isLoading) {
@@ -245,18 +244,16 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		
 		tryTypeIn(e);
 	}
-	public void keyReleased(KeyEvent e) {}
-	public void keyTyped(KeyEvent e) {}
+	@Override public void keyReleased(KeyEvent e) {}
+	@Override public void keyTyped(KeyEvent e) {}
 	
 	// Abstract methods
-	
 	protected abstract void initGuiElements();
 	protected abstract void tryChangeFocus(MouseEvent e);
 	protected abstract void tryTypeIn(KeyEvent e);
 	
 	// setters
-	
-	protected void setBackgoundColor(Color color) {
+	protected final void setBackgoundColor(Color color) {
 		this.bgColor = color;
 	}
 }

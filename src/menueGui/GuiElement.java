@@ -43,7 +43,7 @@ public abstract class GuiElement {
 	
 	// Function for determining the size absolute size (pixels) for a relative size (promille)
 	// using the screen resolution of the device
-	public void setRelativeSize(int relWidth, int relHeight) {
+	public final void setRelativeSize(int relWidth, int relHeight) {
 		
 		// calculate the the absolute width and height
 		float wFactor = 0.001f * relWidth;
@@ -57,7 +57,7 @@ public abstract class GuiElement {
 	}
 	
 	// Function for positioning a gui element relatively to the window frame
-	public void setRelativePosition(int x, int y) {
+	public final void setRelativePosition(int x, int y) {
 		
 		// calculate the abosolute coordinates in the frame
 		float xFactor = 0.01f * x;
@@ -86,11 +86,11 @@ public abstract class GuiElement {
 	}
 	
 	// Getter & setter
-	public void setEnabled(boolean status) {
+	public final void setEnabled(boolean status) {
 		this.isEnabled = status;
 	}
 	
-	public boolean isEnabled() {
+	public final boolean isEnabled() {
 		return this.isEnabled;
 	}
 }
