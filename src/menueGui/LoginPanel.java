@@ -17,7 +17,7 @@ import Stage.Commons;
 import Stage.ProjectFrame;
 
 @SuppressWarnings("serial")
-public class LoginPanel extends GuiPanel {
+public final class LoginPanel extends GuiPanel {
 	
 	// GUI elements inside this panel
 	private TextInputField[] fields = new TextInputField[2];

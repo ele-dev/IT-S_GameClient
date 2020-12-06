@@ -33,7 +33,7 @@ import menueGui.GameState;
 
 import networking.*;
 
-public class MessageHandler {
+public final class MessageHandler {
 
 	public static void handleMessage(GenericMessage msg)
 	{

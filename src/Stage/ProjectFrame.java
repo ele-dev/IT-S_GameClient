@@ -24,7 +24,7 @@ import menueGui.LoginPanel;
 import menueGui.RegisterPanel;
 
 @SuppressWarnings("serial")
-public class ProjectFrame extends JFrame {
+public final class ProjectFrame extends JFrame {
 	
 	// Network related
 	public static Connection conn;

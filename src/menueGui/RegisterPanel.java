@@ -12,7 +12,7 @@ import Stage.Commons;
 import Stage.ProjectFrame;
 
 @SuppressWarnings("serial")
-public class RegisterPanel extends GuiPanel {
+public final class RegisterPanel extends GuiPanel {
 
 	// GUI elements inside this panel
 	private Button goToLoginButton = new Button(70, 50, "Back to Login");

@@ -24,7 +24,7 @@ import networking.SignalMessage;
 
 
 @SuppressWarnings("serial")
-public class HomePanel extends GuiPanel {
+public final class HomePanel extends GuiPanel {
 	
 	// Gui elements inside this panel (buttons, text fields, etc.)
 	private Button logoutButton = new Button(60, 40, "Logout");
