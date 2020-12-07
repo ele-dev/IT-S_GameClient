@@ -3,5 +3,6 @@
 bin/*
 */*.class 
 /bin/
+TestITProjekt.jar
 GameClient.jar
 GameClient.zip
