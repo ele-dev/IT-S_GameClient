@@ -302,11 +302,9 @@ public class StagePanel extends JPanel {
 	// graphics methode does all the drawing of objects (renders everything)
 	public void paintComponent(Graphics g) {
 
-//		if(!createBufferAsBufferedImage()) {
-//			return;
-//		}
-//		Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
-		Graphics2D g2d = (Graphics2D)g;
+		if(createBufferAsBufferedImage()) {
+			Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
+//		Graphics2D g2d = (Graphics2D)g;
 		// Draw the background
 		g2d.setColor(new Color(28, 26, 36));
 		g2d.fillRect(0, 0, w, h);
@@ -383,9 +381,11 @@ public class StagePanel extends JPanel {
 		drawCursor(g2d);
 						
 		g2d.translate(-camera.getPos().x, -camera.getPos().y);	
-//		g.drawImage(bufferedImage, 0, 0, this);
-//		g.dispose();
+		g.drawImage(bufferedImage, 0, 0, this);
+		g.dispose();
 		g2d.dispose();
+		}
+
 	}
 	
 	private boolean createBufferAsBufferedImage() {

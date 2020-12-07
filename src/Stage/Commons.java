@@ -46,7 +46,7 @@ public interface Commons {
 	
 	// File path for sprites
 	final String directoryToSprites = "sprites/";
-	final String directoryToMaps = "src/LevelDesignTools/";
+	final String directoryToMaps = "sprites/Maps/";
 	
 	
 	// Game Piece config variables //
