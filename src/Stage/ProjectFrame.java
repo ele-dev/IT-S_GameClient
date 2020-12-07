@@ -24,7 +24,7 @@ import menueGui.LoginPanel;
 import menueGui.RegisterPanel;
 
 @SuppressWarnings("serial")
-public class ProjectFrame extends JFrame {
+public final class ProjectFrame extends JFrame {
 	
 	// Network related
 	public static Connection conn;
@@ -72,7 +72,7 @@ public class ProjectFrame extends JFrame {
 			}
 		});
 		tFrameRate.setRepeats(true);
-		tUpdateRate = new Timer(10, new ActionListener() {
+		tUpdateRate = new Timer(Commons.frametime, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateAllPanels();
@@ -143,7 +143,6 @@ public class ProjectFrame extends JFrame {
 			}
 		}
 		
-		
 		// Second create the main window and start the actual game
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			
@@ -175,7 +174,6 @@ public class ProjectFrame extends JFrame {
 						
 						// Hide the window and restore the original display mode
 						f.setVisible(false);
-						// device.setDisplayMode(standardMode);
 						System.out.println("window was closed --> cleanup routine");
 						
 						// close the network connection to the game server
@@ -189,5 +187,7 @@ public class ProjectFrame extends JFrame {
 			}
 		});
 		
+		//  Code outside of the event dispatch thread
+		// ...
 	}
 }

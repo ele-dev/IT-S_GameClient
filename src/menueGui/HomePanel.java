@@ -15,6 +15,8 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import javax.swing.SwingWorker;
+
 import Stage.Commons;
 import Stage.ProjectFrame;
 import networking.GenericMessage;
@@ -22,7 +24,7 @@ import networking.SignalMessage;
 
 
 @SuppressWarnings("serial")
-public class HomePanel extends GuiPanel {
+public final class HomePanel extends GuiPanel {
 	
 	// Gui elements inside this panel (buttons, text fields, etc.)
 	private Button logoutButton = new Button(60, 40, "Logout");
@@ -104,6 +106,10 @@ public class HomePanel extends GuiPanel {
 	// Method for updating/processing stuff 
 	@Override
 	public void update() {
+		
+		// Call update method from super class
+		super.update();
+		
 		// Update the account verification status label
 		if(GameState.userAccountVerified) {
 			this.accountVerificationMessage.setTextColor(Color.GREEN);
@@ -114,14 +120,16 @@ public class HomePanel extends GuiPanel {
 		}
 		
 		// Enable/Disable certain elements depending on guest player status
-		if(!ProjectFrame.conn.isGuestPlayer()) {
-			this.accountVerificationMessage.setEnabled(true);
-			this.gameMoneyDisplay.setEnabled(true);
-			this.playedMatchesDisplay.setEnabled(true);
-		} else {
-			this.accountVerificationMessage.setEnabled(false);
-			this.gameMoneyDisplay.setEnabled(false);
-			this.playedMatchesDisplay.setEnabled(false);
+		if(ProjectFrame.conn.isLoggedIn()) {
+			if(!ProjectFrame.conn.isGuestPlayer()) {
+				this.accountVerificationMessage.setEnabled(true);
+				this.gameMoneyDisplay.setEnabled(true);
+				this.playedMatchesDisplay.setEnabled(true);
+			} else {
+				this.accountVerificationMessage.setEnabled(false);
+				this.gameMoneyDisplay.setEnabled(false);
+				this.playedMatchesDisplay.setEnabled(false);
+			}
 		}
 		
 		// Update the game statistic display
@@ -157,21 +165,20 @@ public class HomePanel extends GuiPanel {
 	protected void drawPanelContent(Graphics2D g2d) {
 		
 		super.drawPanelContent(g2d);
-		
 		// ...
 	}
 	
 	// Method for changing focus by clicking somewhere
-	private void tryPressSomething(MouseEvent e) {
+	protected void tryChangeFocus(MouseEvent e) {
 		
 		// Remove remaining focus on buttons
-		this.logoutButton.selectButtonNow(false);
-		this.quickMatchButton.selectButtonNow(false);
-		this.abortMatchSearchButton.selectButtonNow(false);
+		this.logoutButton.focusNow(false);
+		this.quickMatchButton.focusNow(false);
+		this.abortMatchSearchButton.focusNow(false);
 	}
 	
 	// method for handling key pressed events (e.g. typing in textfields)
-	private void tryTypeIn(KeyEvent e) {
+	protected void tryTypeIn(KeyEvent e) {
 		
 		// Make sure not to handle events for other panels
 		if(!this.isVisible()) {
@@ -181,12 +188,12 @@ public class HomePanel extends GuiPanel {
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
 			// Only works for the logout button to focus it using TAB
-			if(this.logoutButton.isSelected()) {
+			if(this.logoutButton.isFocused()) {
 				// remove focus from the button 
-				this.logoutButton.selectButtonNow(false);
+				this.logoutButton.focusNow(false);
 			} else {
 				// set focus on the logout button
-				this.logoutButton.selectButtonNow(true);
+				this.logoutButton.focusNow(true);
 			}
 			
 			return;
@@ -194,7 +201,7 @@ public class HomePanel extends GuiPanel {
 		
 		// Trigger a click event on the selected button when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if(this.logoutButton.isSelected()) {
+			if(this.logoutButton.isFocused()) {
 				this.tryLogout();
 			}
 			
@@ -209,20 +216,36 @@ public class HomePanel extends GuiPanel {
 		if(ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Logout");
 			
-			// Abort possible game search
-			if(GameState.isSearching) {
-				// Send the abortion message to the server
-				SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
-				ProjectFrame.conn.sendMessageToServer(abortMessage);
-				GameState.isSearching = false;
-			}
-			
-			// Run the network logout routine
-			ProjectFrame.conn.logout();
-			
-			// Navigate to the login panel
-			this.closePanel();
-			ProjectFrame.loginPanel.setVisible(true);
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					
+					// Display the loading cursor
+					isLoading = true;
+					
+					// Abort possible game search
+					if(GameState.isSearching) {
+						// Send the abortion message to the server
+						SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
+						ProjectFrame.conn.sendMessageToServer(abortMessage);
+						GameState.isSearching = false;
+					}
+					
+					// Run the network logout routine
+					ProjectFrame.conn.logout();
+					
+					return null;
+				}
+				
+				@Override
+				protected void done() {
+					// Navigate to the login panel
+					closePanel();
+					ProjectFrame.loginPanel.setVisible(true);
+				}
+			};
+			worker.execute();
 		}
 	}
 	
@@ -233,19 +256,31 @@ public class HomePanel extends GuiPanel {
 		if(ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Join quickmatch (waiting queue)");
 			
-			// send the join quickmatch message to the server
-			SignalMessage joinQuickMatchMessage = new SignalMessage(GenericMessage.MSG_JOIN_QUICKMATCH);
-			ProjectFrame.conn.sendMessageToServer(joinQuickMatchMessage);
-			
-			// Enable the match search abortion button and disable this one
-			this.quickMatchButton.setEnabled(false);
-			this.abortMatchSearchButton.setEnabled(true);
-			
-			// Also enable the matchmaking status label
-			this.gameSearchMessage.setEnabled(true);
-			
-			// Update the state value that indicates, we are waiting for a player now
-			GameState.isSearching = true;
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+				@Override protected Void doInBackground() throws Exception {
+					
+					// send the join quickmatch message to the server
+					SignalMessage joinQuickMatchMessage = new SignalMessage(GenericMessage.MSG_JOIN_QUICKMATCH);
+					ProjectFrame.conn.sendMessageToServer(joinQuickMatchMessage);
+					
+					return null;
+				}
+				
+				@Override protected void done() {
+
+					// Enable the match search abortion button and disable this one
+					quickMatchButton.setEnabled(false);
+					abortMatchSearchButton.setEnabled(true);
+					
+					// Also enable the matchmaking status label
+					gameSearchMessage.setEnabled(true);
+					
+					// Update the state value that indicates, we are waiting for a player now
+					GameState.isSearching = true;
+				}
+			};
+			worker.execute();
 		}
 	}
 	
@@ -256,19 +291,31 @@ public class HomePanel extends GuiPanel {
 		if(ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Abort quick-matchmaking");
 			
-			// Send the abort message to the server
-			SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
-			ProjectFrame.conn.sendMessageToServer(abortMessage);
-			
-			// Enable the quick match search button and disable this one
-			this.abortMatchSearchButton.setEnabled(false);
-			this.quickMatchButton.setEnabled(true);
-			
-			// Also disable the matchmaking status label
-			this.gameSearchMessage.setEnabled(false);
-			
-			// update state value that indicates, we aren't waiting for a player anymore
-			GameState.isSearching = false;
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+				@Override protected Void doInBackground() throws Exception {
+					
+					// Send the abort message to the server
+					SignalMessage abortMessage = new SignalMessage(GenericMessage.MSG_ABORT_MATCH_SEARCH);
+					ProjectFrame.conn.sendMessageToServer(abortMessage);
+					
+					return null;
+				}
+				
+				@Override protected void done() {
+					// Enable the quick match search button and disable this one
+					abortMatchSearchButton.setEnabled(false);
+					quickMatchButton.setEnabled(true);
+					
+					// Also disable the matchmaking status label
+					gameSearchMessage.setEnabled(false);
+					
+					// update state value that indicates, we aren't waiting for a player anymore
+					GameState.isSearching = false;
+				}
+				
+			};
+			worker.execute();
 		}
 	}
 	
@@ -277,35 +324,8 @@ public class HomePanel extends GuiPanel {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// React on the mouse click
-		if(this.quickMatchButton.isHover()) { tryQuickmatchJoin(); }
-		if(this.abortMatchSearchButton.isHover()) { tryAbortMatchSearch(); }
-		if(this.logoutButton.isHover()) { tryLogout(); }
-	}
-	
-	@Override
-	public void mousePressed(MouseEvent e) {
-		this.tryPressSomething(e);
-	}
-	
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// Update the hover states of the buttons
-		logoutButton.updateHover(e);
-		quickMatchButton.updateHover(e);
-		abortMatchSearchButton.updateHover(e);
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// Update the hover states of the buttons
-		logoutButton.updateHover(e);
-		quickMatchButton.updateHover(e);
-		abortMatchSearchButton.updateHover(e);
-	}
-	
-	// Key listener for reacting on keyboard input
-	@Override
-	public void keyPressed(KeyEvent e) {
-		this.tryTypeIn(e);
+		if(this.quickMatchButton.isHovered()) { tryQuickmatchJoin(); }
+		if(this.abortMatchSearchButton.isHovered()) { tryAbortMatchSearch(); }
+		if(this.logoutButton.isHovered()) { tryLogout(); }
 	}
 }

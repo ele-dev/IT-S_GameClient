@@ -21,13 +21,14 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
 import Stage.Commons;
 import Stage.ProjectFrame;
 import menueGui.GameState;
 import networking.*;
 
-public class Connection extends Thread {
+public final class Connection extends Thread {
 	
 	// class members //
 	private Socket clientSocket;
@@ -408,7 +409,7 @@ public class Connection extends Thread {
 	public void sendMessageToServer(GenericMessage msg) {
 		
 		// Only try if the client is connected
-		if(this.clientSocket != null && this.clientSocket.isConnected()) 
+		if(this.clientSocket != null && this.clientSocket.isConnected() && msg != null) 
 		{
 			// Serialize and write the message object to the socket output stream
 			try {
@@ -416,6 +417,34 @@ public class Connection extends Thread {
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	// Method for sending messages anychronously to the server using SwingWorkers
+	public void sendMessageAsync(GenericMessage msg) {
+		
+		// Only try if the client is connected
+		if(this.clientSocket != null && this.clientSocket.isConnected() && msg != null) 
+		{
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+				@Override protected Void doInBackground() throws Exception {
+					
+					// Serialize and write the message object to the socket output stream
+					try {
+						objOut.writeObject(msg);
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
+					
+					return null;
+				}
+				
+				@Override protected void done() {
+					return;
+				}
+			};
+			worker.execute();
 		}
 	}
 	

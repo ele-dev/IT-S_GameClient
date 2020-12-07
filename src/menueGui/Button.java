@@ -20,10 +20,10 @@ import java.awt.event.MouseEvent;
 import Stage.Commons;
 import Stage.ProjectFrame;
 
-public class Button extends GuiElement {
+public class Button extends GuiElement implements Focusable, Hoverable {
 
 	// class members
-	private boolean isHover, isSelected;
+	private boolean isHovered, isFocused;
 	private String buttonLabel;
 	private int textSize;
 	
@@ -35,8 +35,8 @@ public class Button extends GuiElement {
 		super(width, height);
 		
 		// Set default values
-		this.isHover = false;
-		this.isSelected = false;
+		this.isHovered = false;
+		this.isFocused = false;
 		this.buttonLabel = "Button";
 		this.textSize = defaultTextSize;
 	}
@@ -72,8 +72,8 @@ public class Button extends GuiElement {
 	}
 	
 	private void drawButtonBox(Graphics2D g2d) {
-		g2d.setColor(this.isSelected ? Commons.buttonSelected : Commons.buttonDefault);
-		if(this.isHover) { g2d.setColor(Commons.buttonHover); }
+		g2d.setColor(this.isFocused ? Commons.buttonFocused : Commons.buttonDefault);
+		if(this.isHovered) { g2d.setColor(Commons.buttonHover); }
 		g2d.fill(this.rect);
 	}
 	
@@ -87,14 +87,16 @@ public class Button extends GuiElement {
 		g2d.drawString(this.buttonLabel, posX, posY);
 	}
 	
-	// Update method for the hover status of a button through 
+	// Update method for the hover status of a button through
+	@Override
 	public void updateHover(MouseEvent e) {
 		// Only enabled buttons can be hovered
-		this.isHover = this.rect.contains(e.getPoint()) && this.isEnabled;
+		this.isHovered = this.rect.contains(e.getPoint()) && this.isEnabled;
 	}
 	
+	@Override
 	public void resetHover() {
-		this.isHover = false;
+		this.isHovered = false;
 	}
 	
 	// Setters
@@ -107,19 +109,22 @@ public class Button extends GuiElement {
 		this.rect.y = posY;
 	}
 	
-	public void selectButtonNow(boolean status) {
-		this.isSelected = status;
+	@Override
+	public void focusNow(boolean status) {
+		this.isFocused = status;
 	}
 	
 	// Getters
-	public  boolean isHover() {
+	@Override
+	public  boolean isHovered() {
 		// Only enabled buttons can be hovered
-		return this.isHover && this.isEnabled;
+		return this.isHovered && this.isEnabled;
 	}
 	
-	public boolean isSelected() {
+	@Override
+	public boolean isFocused() {
 		// Only enabled buttons can be selected/focused
-		return this.isSelected && this.isEnabled;
+		return this.isFocused && this.isEnabled;
 	}
 	
 	public int getTextSize() {

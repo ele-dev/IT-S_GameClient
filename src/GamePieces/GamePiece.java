@@ -442,11 +442,10 @@ public abstract class GamePiece {
 	public void updateMove() {
 		if(isMoving) {
 			for(int i = 0;i<2;i++) {
-				if(gamePieceBase.pathBoardRectangles.size() > 0) {
+				if(GamePieceBase.pathBoardRectangles.size() > 0) {
 					gamePieceBase.updateAngle();
 					gamePieceBase.move();
 				}
-				
 			}
 		}
 	}

@@ -17,15 +17,15 @@ import javax.swing.SwingUtilities;
 import Stage.Commons;
 import Stage.ProjectFrame;
 
-public class TextInputField extends GuiElement {
+public class TextInputField extends GuiElement implements Focusable, Hoverable {
 	
 	// Class members 
 	public String text;
 	private String hint;
-	private boolean isSelected, isFlash;
+	private boolean isFocused, isHovered, isFlash;
 	private short flashCounter;
 	private final short flashIntervall = 10;
-	private boolean hiddenText;
+	private boolean textHidden;
 	
 	private static final int defaultTextSize = (int) Math.round(Math.sqrt((double)ProjectFrame.height) / 2.0);
 	
@@ -39,8 +39,9 @@ public class TextInputField extends GuiElement {
 		
 		// set default values
 		this.isFlash = false;
-		this.isSelected = false;
-		this.hiddenText = false;
+		this.isFocused = false;
+		this.isHovered = false;
+		this.textHidden = false;
 		this.text = "";
 	}
 	
@@ -61,7 +62,7 @@ public class TextInputField extends GuiElement {
 	public void typeInText(KeyEvent e) {
 		
 		// Ignore if this field isnt selected at the moment
-		if(!this.isSelected || !this.isEnabled) {
+		if(!this.isFocused || !this.isEnabled) {
 			return;
 		}
 		
@@ -70,7 +71,7 @@ public class TextInputField extends GuiElement {
 			// Remove the last character from the current text 
 			this.text = this.text.substring(0, this.text.length() - 1);
 		} 
-		else if(this.isSelected() && this.text.length() < this.maxLength) 
+		else if(this.isFocused() && this.text.length() < this.maxLength) 
 		{
 			if(validChars.contains((e.getKeyChar() + "").toLowerCase())) {
 				this.text = this.text + e.getKeyChar();
@@ -91,7 +92,7 @@ public class TextInputField extends GuiElement {
 		drawBox(g2d);
 		
 		// Hint info should only appear in empty fields unselected fields
-		if(this.text.length() <= 0 && !this.isSelected) {
+		if(this.text.length() <= 0 && !this.isFocused) {
 			// Draw the hint inside the empty field
 			drawHint(g2d);
 		} else {
@@ -102,7 +103,7 @@ public class TextInputField extends GuiElement {
 	
 	// Private method that draws the box of the text field
 	private void drawBox(Graphics2D g2d) {
-		g2d.setColor(isSelected ? Commons.textFieldSelected : Color.DARK_GRAY);
+		g2d.setColor(isFocused ? Commons.textFieldFocused : Color.DARK_GRAY);
 		g2d.fill(rect);
 	}
 
@@ -112,7 +113,7 @@ public class TextInputField extends GuiElement {
 		g2d.setFont(new Font("Arial", Font.PLAIN, defaultTextSize));
 		FontMetrics metrics = g2d.getFontMetrics();
 		String str = "";
-		if(isSelected) {
+		if(isFocused) {
 			flashCounter--;
 			if(flashCounter <= 0) { 
 				isFlash = !isFlash;
@@ -123,7 +124,7 @@ public class TextInputField extends GuiElement {
 		
 		// Decide if the text should be drawn hidden or visible
 		String drawingText = "";
-		if(this.hiddenText) {
+		if(this.textHidden) {
 			for(int i = this.text.length(); i > 0; i--) 
 			{
 				drawingText += "*";
@@ -154,17 +155,17 @@ public class TextInputField extends GuiElement {
 	
 	// method for selecting this field through mouse click
 	public void trySelectField(MouseEvent e) {
-		isSelected = SwingUtilities.isLeftMouseButton(e) && rect.contains(e.getPoint());
+		isFocused = SwingUtilities.isLeftMouseButton(e) && rect.contains(e.getPoint());
 	}
 	
 	// method for selecting this field without any condition (e.g. TAB typed)
-	public void selectFieldNow(boolean status) {
-		this.isSelected = status;
+	public void focusNow(boolean status) {
+		this.isFocused = status;
 	}
 	
 	// Setters
 	public void hideText(boolean status) {
-		this.hiddenText = status;
+		this.textHidden = status;
 	}
 	
 	public void clearField() {
@@ -185,11 +186,28 @@ public class TextInputField extends GuiElement {
 	}
 	
 	// Getters
-	public boolean isSelected() {
-		return isSelected;
+	@Override
+	public boolean isFocused() {
+		return this.isFocused && this.isEnabled;
 	}
 	
 	public boolean isTextHidden() {
-		return this.hiddenText;
+		return this.textHidden;
+	}
+
+	@Override
+	public void updateHover(MouseEvent e) {
+		// Only enabled text fields can be hovered
+		this.isHovered = this.rect.contains(e.getPoint()) && this.isEnabled;
+	}
+
+	@Override
+	public void resetHover() {
+		this.isHovered = false;
+	}
+
+	@Override
+	public boolean isHovered() {
+		return this.isHovered && this.isEnabled;
 	}
 }
