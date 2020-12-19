@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.event.KeyEvent;
@@ -304,7 +305,7 @@ public class StagePanel extends JPanel {
 		// Draw the background
 		g2d.setColor(new Color(28, 26, 36));
 		g2d.fillRect(0, 0, w, h);
-						
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);				
 		g2d.translate(camera.getPos().x, camera.getPos().y);
 						
 		drawEveryBoardRectangle(g2d);
