@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import Sound.SoundEffect;
+import Stage.Commons;
 import Stage.StagePanel;
 
 public class GenericButton {
@@ -35,6 +37,15 @@ public class GenericButton {
 	public boolean isHover() {
 		return isHover;
 	}
+
+
+	public boolean tryPress() {
+		if(isHover && isActive) {
+			playSelectSound();
+		}
+		return isHover;
+	}
+
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
@@ -68,12 +79,23 @@ public class GenericButton {
 	}
 	
 	public void updateHover(Point mousePos) {
+		boolean prevHover = isHover;
 		isHover = rect.contains(mousePos);
+		if(prevHover == false && isHover == true) {
+			playHoverSound();
+		}
 	}
 	
 	public void updatePos(Point cameraPos) {
 		rect.x = startx-cameraPos.x;
 		rect.y = starty-cameraPos.y;
+	}
+	
+	static void playSelectSound() {
+		SoundEffect.play(Commons.soundEffectDirectory+"Select.wav");
+	}
+	static void playHoverSound() {
+		SoundEffect.play(Commons.soundEffectDirectory+"Hover.wav");
 	}
 
 	

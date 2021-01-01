@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import Environment.DestructibleObject;
+import Sound.SoundEffect;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
@@ -58,6 +59,7 @@ public class PlayerFortress extends DestructibleObject {
 	}
 	
 	public void increaseCoinAmount(int incAmount, int x, int y) {
+		SoundEffect.play(Commons.soundEffectDirectory+"GoldCollect.wav");
 		goldAmount += incAmount;
 		lastCollectedGoldAmount += incAmount;
 		goldCollectLabel = new ValueLabel(x, y, "+" + lastCollectedGoldAmount, Commons.cCurrency);

@@ -8,7 +8,7 @@ public interface Commons {
 	public static final String gameTitle = "Crossfire PvP";
 	
 	public static final boolean editMap = false;
-	public static final String mapName = "SmallMap";
+	public static final String mapName = "LargeMap";
   
 	// Game money per match win
 	public static final int winnerMoney = 100;
@@ -47,6 +47,9 @@ public interface Commons {
 	// File path for sprites
 	final String directoryToSprites = "sprites/";
 	final String directoryToMaps = "sprites/Maps/";
+	
+	final String soundEffectDirectory = "SoundEffects/";
+	
 	
 	
 	// Game Piece config variables //

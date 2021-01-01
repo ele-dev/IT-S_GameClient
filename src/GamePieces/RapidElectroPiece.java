@@ -150,7 +150,6 @@ public class RapidElectroPiece extends GamePiece {
 		}else { 
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());
 		}
-		
 		StagePanel.applyScreenShake(5, 10);
 	}
 }

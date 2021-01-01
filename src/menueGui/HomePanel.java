@@ -187,6 +187,7 @@ public final class HomePanel extends GuiPanel {
 		
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
+			Button.playHoverSound();
 			// Only works for the logout button to focus it using TAB
 			if(this.logoutButton.isFocused()) {
 				// remove focus from the button 
@@ -201,7 +202,7 @@ public final class HomePanel extends GuiPanel {
 		
 		// Trigger a click event on the selected button when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if(this.logoutButton.isFocused()) {
+			if(this.logoutButton.tryPress()) {
 				this.tryLogout();
 			}
 			
@@ -324,8 +325,8 @@ public final class HomePanel extends GuiPanel {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// React on the mouse click
-		if(this.quickMatchButton.isHovered()) { tryQuickmatchJoin(); }
-		if(this.abortMatchSearchButton.isHovered()) { tryAbortMatchSearch(); }
-		if(this.logoutButton.isHovered()) { tryLogout(); }
+		if(this.quickMatchButton.tryPress()) { tryQuickmatchJoin(); }
+		if(this.abortMatchSearchButton.tryPress()) { tryAbortMatchSearch(); }
+		if(this.logoutButton.tryPress()) { tryLogout(); }
 	}
 }

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -154,6 +155,14 @@ public class ButtonEndTurn extends GenericButton{
 			if(curTP.isDestroyed()) {
 				trailParticles.remove(i);
 			}
+		}
+	}
+	
+	public void updateHover(Point mousePos) {
+		boolean prevHover = isHover;
+		isHover = rect.contains(mousePos);
+		if(prevHover == false && isHover == true && isActive) {
+			playHoverSound();
 		}
 	}
 	

@@ -114,6 +114,7 @@ public abstract class GamePiece {
 	public boolean isPerformingAction() {
 		return isAttacking() || isMoving;
 	}
+	
 	// initializes the Pathfinding Grid (!!Does not start the Pathfinder!!)
 	public static void initPathFinder(BoardRectangle startBR) {
 		ArrayList<PathCell> pathCells = new ArrayList<PathCell>();

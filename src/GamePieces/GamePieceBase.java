@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import javax.swing.Timer;
 
+import Sound.SoundEffect;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;

@@ -17,6 +17,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
+import Sound.SoundEffect;
 import Stage.Commons;
 import Stage.ProjectFrame;
 
@@ -91,7 +92,11 @@ public class Button extends GuiElement implements Focusable, Hoverable {
 	@Override
 	public void updateHover(MouseEvent e) {
 		// Only enabled buttons can be hovered
+		boolean prevHover = isHovered;
 		this.isHovered = this.rect.contains(e.getPoint()) && this.isEnabled;
+		if(prevHover == false && isHovered == true) {
+			playHoverSound();
+		}
 	}
 	
 	@Override
@@ -121,6 +126,13 @@ public class Button extends GuiElement implements Focusable, Hoverable {
 		return this.isHovered && this.isEnabled;
 	}
 	
+	public boolean tryPress() {
+		if((this.isHovered || this.isFocused) && this.isEnabled) {
+			playSelectSound();
+		}
+		return (this.isHovered || this.isFocused) && this.isEnabled;
+	}
+	
 	@Override
 	public boolean isFocused() {
 		// Only enabled buttons can be selected/focused
@@ -133,5 +145,13 @@ public class Button extends GuiElement implements Focusable, Hoverable {
 	
 	public Rectangle getDimension() {
 		return this.rect;
+	}
+	
+	static void playSelectSound() {
+		SoundEffect.play(Commons.soundEffectDirectory+"Select.wav");
+	}
+	
+	static void playHoverSound() {
+		SoundEffect.play(Commons.soundEffectDirectory+"Hover.wav");
 	}
 }
