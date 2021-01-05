@@ -73,9 +73,7 @@ public class StagePanel extends JPanel {
 	public static PlayerFortress blueBase, redBase;
 	// GamePieces
 	public static ArrayList<GamePiece> gamePieces = new ArrayList<GamePiece>();
-	
 	public static ArrayList<ValueLabel> valueLabels = new ArrayList<ValueLabel>();
-	
 	public static ArrayList<Particle> particles = new ArrayList<Particle>();
 	
 	// game Info
@@ -778,10 +776,8 @@ public class StagePanel extends JPanel {
 		
 		// First checked if the the move is possible and allowed at the moment
 		if(curSelectedGP != null && curHoverBR != null && GameState.myTurn) {
-			
 			// check additional preconditions for performing any action
 			if(curHoverBR.isPossibleMove || curHoverBR.isPossibleAttack) {
-				
 				// Make a move
 				if(curHoverBR.isPossibleMove) {
 						
@@ -822,9 +818,7 @@ public class StagePanel extends JPanel {
 					if(curSelectedGP.getHasExecutedAttack())endTurnButton.restartAutoEndTurnCountDown();
 					
 					updateAmountPossibleAttacks();
-				} 
-
-				
+				}
 				curSelectedGP = null;
 				resetShowPossibleActivities();
 			}
@@ -914,8 +908,6 @@ public class StagePanel extends JPanel {
 							
 							return;
 						}
-						
-						
 					}
 					// Surrender button click event
 					if(ingameOptionPanel.surrenderButton.isActive() && ingameOptionPanel.isOpened()) {

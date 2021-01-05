@@ -222,6 +222,7 @@ public class GamePieceBase {
 		}else {
 			health = 0;
 		}
+		SoundEffect.play(Commons.soundEffectDirectory+"Hurt.wav");
 	}
 	
 	public void regenShield() {

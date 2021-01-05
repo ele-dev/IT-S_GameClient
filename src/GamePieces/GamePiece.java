@@ -49,8 +49,6 @@ public abstract class GamePiece {
 	
 	private static AStarPathFinder pathFinder;
 	
-	
-	
 	public GamePiece(boolean isRed, String name, BoardRectangle boardRect, float dmg, int baseTypeIndex,boolean lineOfSightNeeded) {
 		if(isRed) {
 			this.c = Commons.cRed;

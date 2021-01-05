@@ -15,6 +15,7 @@ import javax.swing.Timer;
 import Particles.TazerBolt;
 import Particles.TrailParticle;
 import Projectiles.Bullet;
+import Sound.SoundEffect;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
@@ -130,18 +131,16 @@ public class RapidElectroPiece extends GamePiece {
 					points.add(new Point((int)(bullet.getX() + (Math.random()-0.5)*StagePanel.boardRectSize/2), (int)(bullet.getY() + (Math.random()-0.5)*StagePanel.boardRectSize/2)));
 				}
 			}
-			
 			bullet.move();
 			bullet.checkHitAnyTarget();
 			i++;
-			
 			// failsave
 			if(i > 500) {
 				break;
 			}
 		}
 		points.add(new Point((int)bullet.getX(), (int)bullet.getY()));
-		StagePanel.particles.add(new TazerBolt(points));
+		
 		
 		bullet = null;
 		if(targetDestructibleObject != null) {
@@ -151,5 +150,7 @@ public class RapidElectroPiece extends GamePiece {
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());
 		}
 		StagePanel.applyScreenShake(5, 10);
+		SoundEffect.play(Commons.soundEffectDirectory+"Electro.wav");
+		StagePanel.particles.add(new TazerBolt(points));
 	}
 }

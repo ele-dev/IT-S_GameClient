@@ -51,7 +51,7 @@ public final class ProjectFrame extends JFrame {
 		    width = (int) Math.round(screenSize.getWidth() * 0.82);
 		    height = (int) Math.round(screenSize.getHeight() * 0.8);
 		}
-	    
+		
 	    setSize(width, height);
 	    setBoardRectangleSize();
 	

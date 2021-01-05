@@ -130,10 +130,6 @@ public class TazerPiece extends GamePiece{
 				}
 				// if it found no more targets than the ricochet ends and it breaks the loop
 				if(nearNoTarget) {
-					for(int k = 0;k<amountOfTazerBolts;k++) {
-						pointsArray.get(k).add(new Point((int)tazerBullet.getX(), (int)tazerBullet.getY()));
-						StagePanel.particles.add(new TazerBolt(pointsArray.get(k)));
-					}
 					break;
 				}
 			}
@@ -142,7 +138,11 @@ public class TazerPiece extends GamePiece{
 				break;
 			}
 		}
-		pointsArray.clear();
+		for(int k = 0;k<amountOfTazerBolts;k++) {
+			pointsArray.get(k).add(new Point((int)tazerBullet.getX(), (int)tazerBullet.getY()));
+			StagePanel.particles.add(new TazerBolt(pointsArray.get(k)));
+		}
+		
 		if(targetGamePiece != null) {
 			targetGamePiece = null;
 			for(GamePiece curGP : alreadyHitGPs) {
