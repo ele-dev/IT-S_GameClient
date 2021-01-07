@@ -300,91 +300,88 @@ public class StagePanel extends JPanel {
 
 		if(createBufferAsBufferedImage()) {
 			Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
-//		Graphics2D g2d = (Graphics2D)g;
-		// Draw the background
-		g2d.setColor(new Color(28, 26, 36));
-		g2d.fillRect(0, 0, w, h);
-						
-		g2d.translate(camera.getPos().x, camera.getPos().y);
-						
-		drawEveryBoardRectangle(g2d);
-//		drawEveryBoardRectangleIndex(g2d);
-		BoardRectangle.drawGravelParticles(g2d);
-		drawGoldMines(g2d);
-						
-		if(redBase != null) { redBase.tryDrawRecruitableBoardRectangles(g2d); }
-		if(blueBase != null) { blueBase.tryDrawRecruitableBoardRectangles(g2d); }
-						
-		drawAllDestructionParticles(g2d);
-		drawAllEmptyShells(g2d);
-		drawFortresses(g2d);
-		drawEveryBoardRectangleState(g2d);
-		drawEveryWall(g2d);
-		drawEveryDestructibleObject(g2d);
-		drawAllGamePiecePointers(g2d);
-						
-			// Draw the game pieces/actors, particles
-		drawAllGamePieces(g2d);
-		if(curHoverBR != null && (levelDesignTool != null || !redBase.containsBR(curHoverBR) && !blueBase.containsBR(curHoverBR))) {
-			curHoverBR.drawHover(g2d);
-		}
-						
-		drawAllGamePieceHealth(g2d);
-		drawAllGamePieceAttacks(g2d);
-		drawParticles(g2d);
-						
-						
-						
-		g2d.setStroke(new BasicStroke(80));
-		g2d.setColor(new Color(28, 26, 36));
-						
-		g2d.draw(mapRectangle);
-						
-		if(curHoverBR != null && !curHoverBR.isPossibleAttack && !curHoverBR.isPossibleMove) {
-			curHoverBR.drawLabel(g2d,ctrDown);
-		}
-		drawValueLabels(g2d);
-						
-		if(levelDesignTool != null) {
-			levelDesignTool.drawEquippedBuildObject(g2d);
-		} else {
+			// Graphics2D g2d = (Graphics2D)g;
+			
+			// Draw the background
+			g2d.setColor(new Color(28, 26, 36));
+			g2d.fillRect(0, 0, w, h);
 							
-							
-		g2d.translate(-camera.getPos().x, -camera.getPos().y);
-		turnInfoPanel.drawTurnInfo(g2d);
-		endTurnButton.drawAmountOfAttacksLeft(g2d);
-		endTurnButton.drawButton(g2d);
-		endTurnButton.drawParticles(g2d);
-		drawMovesPanel(g2d);
-		surrenderButton.drawButton(g2d);
-							
-		if(levelDesignTool == null) {
-			if(redBase.isSelected()) { redBase.drawFortressMenu(g2d); }
-			if(blueBase.isSelected()) { blueBase.drawFortressMenu(g2d); }
-		}
-			if(winScreen != null) {
-				winScreen.drawWinScreen(g2d);
-			}
-			if(winScreen != null) { winScreen.drawButtons(g2d); }
 			g2d.translate(camera.getPos().x, camera.getPos().y);
-		}
-		// g2d.setStroke(new BasicStroke(3));
-		// g2d.setColor(Color.WHITE);
-		// g2d.draw(GameMap.mapRectangle);
-		// g2d.fillOval((int)camera.getCenterOfScreen().x-5, (int)camera.getCenterOfScreen().y-5, 10, 10);
-		// camera.drawRectOfView(g2d);
-						
-		drawCursor(g2d);
-						
-		g2d.translate(-camera.getPos().x, -camera.getPos().y);	
-		g.drawImage(bufferedImage, 0, 0, this);
-		g.dispose();
-		g2d.dispose();
+							
+			drawEveryBoardRectangle(g2d);
+			// drawEveryBoardRectangleIndex(g2d);
+			BoardRectangle.drawGravelParticles(g2d);
+			drawGoldMines(g2d);
+							
+			if(redBase != null) { redBase.tryDrawRecruitableBoardRectangles(g2d); }
+			if(blueBase != null) { blueBase.tryDrawRecruitableBoardRectangles(g2d); }
+							
+			drawAllDestructionParticles(g2d);
+			drawAllEmptyShells(g2d);
+			drawFortresses(g2d);
+			drawEveryBoardRectangleState(g2d);
+			drawEveryWall(g2d);
+			drawEveryDestructibleObject(g2d);
+			drawAllGamePiecePointers(g2d);
+							
+			// Draw the game pieces/actors, particles
+			drawAllGamePieces(g2d);
+			if(curHoverBR != null && (levelDesignTool != null || !redBase.containsBR(curHoverBR) && !blueBase.containsBR(curHoverBR))) {
+				curHoverBR.drawHover(g2d);
+			}
+							
+			drawAllGamePieceHealth(g2d);
+			drawAllGamePieceAttacks(g2d);
+			drawParticles(g2d);
+				
+							
+			g2d.setStroke(new BasicStroke(80));
+			g2d.setColor(new Color(28, 26, 36));
+							
+			g2d.draw(mapRectangle);
+							
+			if(curHoverBR != null && !curHoverBR.isPossibleAttack && !curHoverBR.isPossibleMove) {
+				curHoverBR.drawLabel(g2d,ctrDown);
+			}
+			drawValueLabels(g2d);
+							
+			if(levelDesignTool != null) {
+				levelDesignTool.drawEquippedBuildObject(g2d);
+			} else {			
+				g2d.translate(-camera.getPos().x, -camera.getPos().y);
+				turnInfoPanel.drawTurnInfo(g2d);
+				endTurnButton.drawAmountOfAttacksLeft(g2d);
+				endTurnButton.drawButton(g2d);
+				endTurnButton.drawParticles(g2d);
+				drawMovesPanel(g2d);
+				surrenderButton.drawButton(g2d);
+									
+				if(levelDesignTool == null) {
+					if(redBase.isSelected()) { redBase.drawFortressMenu(g2d); }
+					if(blueBase.isSelected()) { blueBase.drawFortressMenu(g2d); }
+				}
+				if(winScreen != null) {
+					winScreen.drawWinScreen(g2d);
+				}
+				if(winScreen != null) { winScreen.drawButtons(g2d); }
+				g2d.translate(camera.getPos().x, camera.getPos().y);
+			}
+			// g2d.setStroke(new BasicStroke(3));
+			// g2d.setColor(Color.WHITE);
+			// g2d.draw(GameMap.mapRectangle);
+			// g2d.fillOval((int)camera.getCenterOfScreen().x-5, (int)camera.getCenterOfScreen().y-5, 10, 10);
+			// camera.drawRectOfView(g2d);
+							
+			drawCursor(g2d);
+							
+			g2d.translate(-camera.getPos().x, -camera.getPos().y);	
+			g.drawImage(bufferedImage, 0, 0, this);
+			g.dispose();
+			g2d.dispose();
 		}
 
 	}
 	
-	@SuppressWarnings("unused")
 	private boolean createBufferAsBufferedImage() {
 		if(bufferedImage != null) {
 			 return true;
