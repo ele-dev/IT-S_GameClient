@@ -5,10 +5,9 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public class EmptyShell extends Particle {
-
+	private static final float friction = 0.1f;
+	private static final float vRotation = (float) ((Math.random()-0.5)*10);
 	private int w,h;
-	private float friction = 0.1f;
-	private float vRotation = (float) ((Math.random()-0.5)*10);
 	private float vY,capVY;
 	
 	public EmptyShell(float x, float y, int w, int h, float angle, Color c, float v) {

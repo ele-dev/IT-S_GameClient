@@ -32,7 +32,7 @@ public class RecruitGPInfoPanel {
 	private Rectangle rect;
 	private PlayerFortress playerFortress;
 	private boolean isHover = false;
-	private GamePieceAttackRangePreviewPanel gamePieceAttackRangePreviewPanel;
+	private static GamePieceAttackRangePreviewPanel gamePieceAttackRangePreviewPanel;
 	
 	// GamePiece related
 	private int gamePieceCost;
@@ -60,7 +60,7 @@ public class RecruitGPInfoPanel {
 		
 		font = new Font("Arial",Font.BOLD,StagePanel.w/50);
 		int size = StagePanel.w-StagePanel.w/40-w-w/4-StagePanel.w/32*2;
-		gamePieceAttackRangePreviewPanel = new GamePieceAttackRangePreviewPanel(7, 7, size/2,this.gamePieceName);
+		gamePieceAttackRangePreviewPanel = new GamePieceAttackRangePreviewPanel(7, 7, size/2);
 	}
 	
 	public int getX() {
@@ -207,6 +207,10 @@ public class RecruitGPInfoPanel {
 	
 	public void updateHover(Point mousePos) {
 		isHover = rect.contains(mousePos);
+		if(isHover) {
+			gamePieceAttackRangePreviewPanel.initShowPossiblAttack(this.gamePieceName);
+		}
+		
 	}
 	
 	public boolean tryPressButton(){

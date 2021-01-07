@@ -10,20 +10,17 @@ import java.awt.Rectangle;
 public class ValueLabel {
 	private float x,y;
 	private String str;
-	private float fadeSpeed,riseSpeed;
 	private Color c;
-	private float alpha;
 	
+	private float alpha = 255;
+	private float riseSpeed = 1.5f;
 	
+	private static final float fadeSpeed = 2;
 	public ValueLabel(float x, float y, String str, Color c) {
 		this.x = x;
 		this.y = y;
 		this.str = str;
-		
-		this.fadeSpeed = 2; 
-		this.riseSpeed = 1.5f;
 		this.c = c;
-		alpha = 255;
 	}
 	
 	public Color getColor() {

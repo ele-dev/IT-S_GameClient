@@ -14,28 +14,27 @@ import Stage.StagePanel;
 
 // Panel from GamePiece where Players can select an action for the GamePiece from (attack or move)
 public class ActionSelectionPanel {
-	private int w,h;
-	private Rectangle rect;
+	private static Rectangle rect;
+	static short border;
 	private GamePiece parentGamepiece;
 	private AttackButton attackButton;
 	private MoveButton moveButton;
-	int border;
+	
 	private Font font;
 	 
 	public ActionSelectionPanel(GamePiece parentGamepiece) {
-		w = StagePanel.w/5;
-		h = StagePanel.h*2/3;
 		int x = StagePanel.w/100;
-		int y = StagePanel.h -h -x*2;
-		border = w/10;
-		rect = new Rectangle(x,y,w,h);
+		int y = StagePanel.h -StagePanel.h*2/3 -x*2;
+		rect = new Rectangle(x,y,StagePanel.w/5,StagePanel.h*2/3);
+		border = (byte) (rect.width/10);
+		
 		this.parentGamepiece = parentGamepiece;
-		int gapSize = h/20;
-		int buttonW = w-border*2;
-		attackButton = new AttackButton(x + border,(int)(y + h/2.5) +gapSize,buttonW ,parentGamepiece);
+		int gapSize = rect.height/20;
+		int buttonW = rect.width-border*2;
+		attackButton = new AttackButton(x + border,(int)(y + rect.height/2.5) +gapSize,buttonW ,parentGamepiece);
 		moveButton = new MoveButton(x + border,  attackButton.rect.y+attackButton.rect.height+gapSize, buttonW, parentGamepiece);
 		
-		font = new Font("Arial",Font.BOLD,w/10);
+		font = new Font("Arial",Font.BOLD,rect.width/10);
 		
 	}
 	
@@ -61,9 +60,9 @@ public class ActionSelectionPanel {
 		g2d.draw(rect);
 		int x = rect.x;	
 		int y = rect.y;
-		parentGamepiece.gamePieceBase.drawHealth(g2d, x+border, y+border*2, w-border*2, attackButton.rect.height/2,w/8);
+		parentGamepiece.gamePieceBase.drawHealth(g2d, x+border, y+border*2, rect.width-border*2, attackButton.rect.height/2,rect.width/8);
 		x +=border;
-		y +=h/5;
+		y +=rect.height/5;
 		
 		float dmg = parentGamepiece.getDmg();
 		String[] strs = {"Name: ","Dmg: ","Moves: "};

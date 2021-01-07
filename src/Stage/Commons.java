@@ -5,7 +5,7 @@ import java.awt.Color;
 public interface Commons {
 	
 	// The game title
-	public final String gameTitle = "Crossfire PvP";
+	public static final String gameTitle = "Crossfire PvP";
 	
 	public static final boolean editMap = false;
 	public static final String mapName = "SmallMap";
@@ -46,7 +46,7 @@ public interface Commons {
 	
 	// File path for sprites
 	final String directoryToSprites = "sprites/";
-	final String directoryToMaps = "src/LevelDesignTools/";
+	final String directoryToMaps = "sprites/Maps/";
 	
 	
 	// Game Piece config variables //

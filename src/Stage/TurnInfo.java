@@ -17,7 +17,7 @@ public class TurnInfo {
 	
 	ArrayList<TrailParticle> trailParticles = new ArrayList<TrailParticle>();
 	float length;
-	float[] counters = new float[6];
+	float[] counters = new float[4];
 	
 	// is drawn after translation of graphics so it does not need to be moved with the camera
 	public TurnInfo() {

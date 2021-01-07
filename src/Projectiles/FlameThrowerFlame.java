@@ -28,11 +28,11 @@ public class FlameThrowerFlame extends Projectile{
 	public void move() {
 		v = acc+v > 0?v+acc:0;
 		
-		float vX = (float) (Math.cos(Math.toRadians(this.angle + 90)) * v);
-		float vY = (float) (Math.sin(Math.toRadians(this.angle + 90)) * v);
+		float vX = (float) (Math.cos(Math.toRadians(angle + 90)) * v);
+		float vY = (float) (Math.sin(Math.toRadians(angle + 90)) * v);
 		if(hasHitEnemy) {
-			vX = (float) (Math.cos(Math.toRadians(this.angle + 90)) * v/3);
-			vY = (float) (Math.sin(Math.toRadians(this.angle + 90)) * v/3);
+			vX = (float) (Math.cos(Math.toRadians(angle + 90)) * v/3);
+			vY = (float) (Math.sin(Math.toRadians(angle + 90)) * v/3);
 		}
 		x += vX;
 		y += vY;	

@@ -15,7 +15,7 @@ public class RecruitGPSectorButton extends GenericButton{
 	
 	ArrayList<TrailParticle> trailParticles = new ArrayList<TrailParticle>();
 	float length = 0;
-	float[] counters = new float[6];
+	float[] counters = new float[4];
 
 	public RecruitGPSectorButton(int startx, int starty, int w, int h, String name, Color c, Color cHover,int fontSize,PlayerFortress playerFortress) {
 		super(startx, starty, w, h, name, c, cHover, fontSize);

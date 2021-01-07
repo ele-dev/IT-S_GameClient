@@ -26,7 +26,7 @@ public class GamePieceAttackRangePreviewPanel {
 	private int rows,columns;
 	private int size;
 	
-	public GamePieceAttackRangePreviewPanel(int rows ,int columns, int size, String GPName) {
+	public GamePieceAttackRangePreviewPanel(int rows ,int columns, int size) {
 		rectangles = new Rectangle[rows][columns];
 		colors = new Color[rows][columns];
 		sizeRectangle = size / rows; 
@@ -36,13 +36,12 @@ public class GamePieceAttackRangePreviewPanel {
 		for(int i = 0;i<rows;i++) {
 			for(int j = 0;j<columns;j++) {
 				rectangles[i][j] = new Rectangle(j*sizeRectangle,i*sizeRectangle,sizeRectangle,sizeRectangle);
-				colors[i][j] = Color.GRAY;
+				colors[i][j] = new Color(40,40,40);
 			}
 		}
-		initShowPossiblAttack(GPName);
 	}
 	
-	private void initShowPossiblAttack(String GPName) {
+	void initShowPossiblAttack(String GPName) {
 		int centerRow = rows/2;
 		int centerColumn = columns/2;
 		GamePiece gp = new GunnerPiece(false, StagePanel.boardRectangles.get(0));;
@@ -82,6 +81,8 @@ public class GamePieceAttackRangePreviewPanel {
 			for(int j = 0;j<columns;j++) {
 				if(gp.checkAttacks(i, j, centerRow, centerColumn)) {
 					colors[i][j] = Commons.cAttack;
+				}else {
+					colors[i][j] = new Color(40,40,40);
 				}
 			}
 		}

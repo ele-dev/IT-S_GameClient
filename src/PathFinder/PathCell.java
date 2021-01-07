@@ -9,14 +9,15 @@ import java.util.ArrayList;
 public class PathCell {
 	private Rectangle rect;
 	private int row, column;
+	private int index;
 	
 	float f;
 	float g;
 	float h;
 	ArrayList<PathCell> adjecantPathCells = new ArrayList<PathCell>();
-	PathCell parentGridCell = null;
+	PathCell parentGridCell;
 	boolean isWall;
-	int index;
+	
 	
 	public PathCell(int x, int y, int size, int row, int column, int index) {
 		this.rect = new Rectangle(x,y,size,size);

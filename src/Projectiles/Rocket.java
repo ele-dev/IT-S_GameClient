@@ -11,7 +11,7 @@ import Stage.StagePanel;
 
 
 public class Rocket extends Projectile {
-	private Polygon poly;
+	private static Polygon poly;
 	public static float rotationDelay = StagePanel.boardRectSize/20;
 	private int autoExplodeCounter = 500;
 	

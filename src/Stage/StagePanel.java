@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Transparency;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -76,7 +77,7 @@ public class StagePanel extends JPanel {
 	public static ArrayList<Particle> particles = new ArrayList<Particle>();
 	
 	// game Info
-	private GenericButton surrenderButton;
+	private static GenericButton surrenderButton;
 	private static ButtonEndTurn endTurnButton;
 	private static TurnInfo turnInfoPanel;
 	
@@ -87,7 +88,6 @@ public class StagePanel extends JPanel {
 	public static BoardRectangle curHoverBR;
 	public static GamePiece curSelectedGP,curActionPerformingGP;
 	
-	private Color cBackGround;
 	private static LevelInitializer levelInitializer;
 	public static GameMap gameMap;
 	private static LevelDesignTool levelDesignTool;
@@ -98,14 +98,14 @@ public class StagePanel extends JPanel {
 	
 	private boolean ctrDown = false;
 	
+	private static BufferedImage bufferedImage;
+	
 	
 	public StagePanel() {
 		// Init the dimensions
 		w = ProjectFrame.width; 
 		h = ProjectFrame.height-20;
 		setBounds(0, 0, w, h);
-		// setVisible(true);
-		cBackGround = new Color(28, 26, 36);
 		
 		// create camera and timers
 		camera = new Camera();
@@ -130,12 +130,8 @@ public class StagePanel extends JPanel {
 		addMouseMotionListener(new MML());
 	}
 	
-	public static void resetMatch(String mapName) {
-		initGameMap(mapName);
-	}
-	
 	// initializes a map depending on the name (mapName can be null in that case it will load empty map to edit)
-	private static void initGameMap(String mapName) {
+	public static void initGameMap(String mapName) {
 		boardRectangles.clear();
 		gamePieces.clear();
 		destructibleObjects.clear();
@@ -281,8 +277,8 @@ public class StagePanel extends JPanel {
 		gamePieces.add(new RapidElectroPiece(true, boardRectangles.get(490)));
 		gamePieces.add(new RapidElectroPiece(false, boardRectangles.get(61)));
 		
+		
 		for(GamePiece curGP : gamePieces) {
-			curGP.initPathFinder();
 			curGP.restoreMovesAndAttacks();
 		}
 	}
@@ -302,87 +298,97 @@ public class StagePanel extends JPanel {
 	// graphics methode does all the drawing of objects (renders everything)
 	public void paintComponent(Graphics g) {
 
-		Graphics2D g2d = (Graphics2D) g;
-		
-		// Draw the background
-		g2d.setColor(cBackGround);
-		g2d.fillRect(0, 0, w, h);
-		
-		g2d.translate(camera.getPos().x, camera.getPos().y);
-		
-		drawEveryBoardRectangle(g2d);
-//		drawEveryBoardRectangleIndex(g2d);
-		BoardRectangle.drawGravelParticles(g2d);
-		drawGoldMines(g2d);
-		
-		if(redBase != null) { redBase.tryDrawRecruitableBoardRectangles(g2d); }
-		if(blueBase != null) { blueBase.tryDrawRecruitableBoardRectangles(g2d); }
-		
-		drawAllDestructionParticles(g2d);
-		drawAllEmptyShells(g2d);
-		drawFortresses(g2d);
-		drawEveryBoardRectangleState(g2d);
-		drawEveryWall(g2d);
-		drawEveryDestructibleObject(g2d);
-		
-		drawAllGamePiecePointers(g2d);
-		
-		// Draw the game pieces/actors, particles
-		drawAllGamePieces(g2d);
-		if(curHoverBR != null && (levelDesignTool != null || !redBase.containsBR(curHoverBR) && !blueBase.containsBR(curHoverBR))) {
-			curHoverBR.drawHover(g2d);
-		}
-		
-		drawAllGamePieceHealth(g2d);
-		drawAllGamePieceAttacks(g2d);
-		drawParticles(g2d);
-		
-		
-		
-		g2d.setStroke(new BasicStroke(80));
-		g2d.setColor(cBackGround);
-		g2d.draw(mapRectangle);
-		
-		if(curHoverBR != null && !curHoverBR.isPossibleAttack && !curHoverBR.isPossibleMove) {
-			curHoverBR.drawLabel(g2d,ctrDown);
-		}
-		drawValueLabels(g2d);
-		
-		if(levelDesignTool != null) {
-			levelDesignTool.drawEquippedBuildObject(g2d);
-		} else {
+		if(createBufferAsBufferedImage()) {
+			Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
+			// Graphics2D g2d = (Graphics2D)g;
 			
-			
-			g2d.translate(-camera.getPos().x, -camera.getPos().y);
-			turnInfoPanel.drawTurnInfo(g2d);
-			endTurnButton.drawAmountOfAttacksLeft(g2d);
-			endTurnButton.drawButton(g2d);
-			endTurnButton.drawParticles(g2d);
-			drawMovesPanel(g2d);
-			surrenderButton.drawButton(g2d);
-			
-			if(levelDesignTool == null) {
-				if(redBase.isSelected()) { redBase.drawFortressMenu(g2d); }
-				if(blueBase.isSelected()) { blueBase.drawFortressMenu(g2d); }
-			}
-			
-			if(winScreen != null) {
-				winScreen.drawWinScreen(g2d);
-			}
-			if(winScreen != null) { winScreen.drawButtons(g2d); }
+			// Draw the background
+			g2d.setColor(new Color(28, 26, 36));
+			g2d.fillRect(0, 0, w, h);
+							
 			g2d.translate(camera.getPos().x, camera.getPos().y);
+							
+			drawEveryBoardRectangle(g2d);
+			// drawEveryBoardRectangleIndex(g2d);
+			BoardRectangle.drawGravelParticles(g2d);
+			drawGoldMines(g2d);
+							
+			if(redBase != null) { redBase.tryDrawRecruitableBoardRectangles(g2d); }
+			if(blueBase != null) { blueBase.tryDrawRecruitableBoardRectangles(g2d); }
+							
+			drawAllDestructionParticles(g2d);
+			drawAllEmptyShells(g2d);
+			drawFortresses(g2d);
+			drawEveryBoardRectangleState(g2d);
+			drawEveryWall(g2d);
+			drawEveryDestructibleObject(g2d);
+			drawAllGamePiecePointers(g2d);
+							
+			// Draw the game pieces/actors, particles
+			drawAllGamePieces(g2d);
+			if(curHoverBR != null && (levelDesignTool != null || !redBase.containsBR(curHoverBR) && !blueBase.containsBR(curHoverBR))) {
+				curHoverBR.drawHover(g2d);
+			}
+							
+			drawAllGamePieceHealth(g2d);
+			drawAllGamePieceAttacks(g2d);
+			drawParticles(g2d);
+				
+							
+			g2d.setStroke(new BasicStroke(80));
+			g2d.setColor(new Color(28, 26, 36));
+							
+			g2d.draw(mapRectangle);
+							
+			if(curHoverBR != null && !curHoverBR.isPossibleAttack && !curHoverBR.isPossibleMove) {
+				curHoverBR.drawLabel(g2d,ctrDown);
+			}
+			drawValueLabels(g2d);
+							
+			if(levelDesignTool != null) {
+				levelDesignTool.drawEquippedBuildObject(g2d);
+			} else {			
+				g2d.translate(-camera.getPos().x, -camera.getPos().y);
+				turnInfoPanel.drawTurnInfo(g2d);
+				endTurnButton.drawAmountOfAttacksLeft(g2d);
+				endTurnButton.drawButton(g2d);
+				endTurnButton.drawParticles(g2d);
+				drawMovesPanel(g2d);
+				surrenderButton.drawButton(g2d);
+									
+				if(levelDesignTool == null) {
+					if(redBase.isSelected()) { redBase.drawFortressMenu(g2d); }
+					if(blueBase.isSelected()) { blueBase.drawFortressMenu(g2d); }
+				}
+				if(winScreen != null) {
+					winScreen.drawWinScreen(g2d);
+				}
+				if(winScreen != null) { winScreen.drawButtons(g2d); }
+				g2d.translate(camera.getPos().x, camera.getPos().y);
+			}
+			// g2d.setStroke(new BasicStroke(3));
+			// g2d.setColor(Color.WHITE);
+			// g2d.draw(GameMap.mapRectangle);
+			// g2d.fillOval((int)camera.getCenterOfScreen().x-5, (int)camera.getCenterOfScreen().y-5, 10, 10);
+			// camera.drawRectOfView(g2d);
+							
+			drawCursor(g2d);
+							
+			g2d.translate(-camera.getPos().x, -camera.getPos().y);	
+			g.drawImage(bufferedImage, 0, 0, this);
+			g.dispose();
+			g2d.dispose();
 		}
-		// g2d.setStroke(new BasicStroke(3));
-		// g2d.setColor(Color.WHITE);
-		// g2d.draw(GameMap.mapRectangle);
-		// g2d.fillOval((int)camera.getCenterOfScreen().x-5, (int)camera.getCenterOfScreen().y-5, 10, 10);
-		// camera.drawRectOfView(g2d);
-		
-		drawCursor(g2d);
-		
-		g2d.translate(-camera.getPos().x, -camera.getPos().y);
-		
-		g2d.dispose();
+
+	}
+	
+	private boolean createBufferAsBufferedImage() {
+		if(bufferedImage != null) {
+			 return true;
+		 }else {
+		    bufferedImage = new BufferedImage(w, h,  Transparency.OPAQUE);
+		 }
+		 return true;
 	}
 	
 	// draws all GamePieces
@@ -535,8 +541,8 @@ public class StagePanel extends JPanel {
 	
 	@SuppressWarnings("unused")
 	private void drawEveryBoardRectangleIndex(Graphics2D g2d) {
-		for(BoardRectangle curBR : boardRectangles) {
-			curBR.drawIndex(g2d);
+		for(int i = 0;i<boardRectangles.size();i++) {
+			boardRectangles.get(i).drawIndex(g2d,i);
 		}
 	}
 	

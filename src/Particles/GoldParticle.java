@@ -13,12 +13,11 @@ import PlayerStructures.PlayerFortress;
 import Stage.StagePanel;
 
 public class GoldParticle extends Particle{
-	private float friction;
-	
+	private static float friction = 0.1f;
+	private static float vRotation = (float) ((Math.random()-0.5)*10);
 	private Timer tAutoCollectCountdown;
 	private PlayerFortress playerFortress;
 	private Rectangle targetRectangle;
-	private float vRotation = (float) ((Math.random()-0.5)*10);
 	private float vY,capVY;
 	
 	private byte spawnTrailParticleCounter = 0,spawnTrailParticleIntervall = 2;
@@ -27,7 +26,6 @@ public class GoldParticle extends Particle{
 		super(x, y,angle,rotation,new Color(204+(int)((Math.random()-0.5)*50),164+(int)((Math.random()-0.5)*50),61),v,0);
 		int size = (int) (Math.random() * 15+15);
 		rectHitbox = new Rectangle((int)x-size/2,(int)y-size/2,size,size);
-		friction = 0.1f;
 		
 		tAutoCollectCountdown = new Timer(1000, new ActionListener() {
 			

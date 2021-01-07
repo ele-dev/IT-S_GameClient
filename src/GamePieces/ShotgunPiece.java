@@ -51,9 +51,10 @@ public class ShotgunPiece extends GamePiece {
 		return rect1.contains(new Point(selectedColumn,selectedRow)) || rect2.contains(new Point(selectedColumn,selectedRow));
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void updateAttack() {
-		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+		Arc2D aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		for(int i = 0;i<bullets.size();i++) {
 			Bullet curB = bullets.get(i);
@@ -76,7 +77,7 @@ public class ShotgunPiece extends GamePiece {
 	}
 	
 	public void shootOnce() {
-		aimArc = new Arc2D.Double(getCenterX()-StagePanel.boardRectSize/2, getCenterY()-StagePanel.boardRectSize/2,
+		Arc2D aimArc = new Arc2D.Double(boardRect.getCenterX()-StagePanel.boardRectSize/2, boardRect.getCenterY()-StagePanel.boardRectSize/2,
 				StagePanel.boardRectSize, StagePanel.boardRectSize, 0, -angle-90, Arc2D.PIE);
 		Shape shape = targetGamePiece != null?targetGamePiece.getRectHitbox():targetDestructibleObject.getRectHitbox();
 		Rectangle targetRect = (Rectangle) shape;
