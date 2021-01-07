@@ -14,7 +14,6 @@ import javax.swing.Timer;
 import Projectiles.Rocket;
 import Stage.BoardRectangle;
 import Stage.Commons;
-import Stage.Sprite;
 import Stage.StagePanel;
 
 
