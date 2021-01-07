@@ -48,9 +48,9 @@ public class GunnerPiece extends GamePiece {
 		});
 		burstTimer.setRepeats(false);
 		
-		ArrayList<String> spriteLinks = new ArrayList<String>();
-		spriteLinks.add(Commons.directoryToSprites+"Turrets/Minigun.png");
-		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize, StagePanel.boardRectSize, 0);
+//		ArrayList<String> spriteLinks = new ArrayList<String>();
+//		spriteLinks.add(Commons.directoryToSprites+"Turrets/Minigun.png");
+//		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize, StagePanel.boardRectSize, 0);
 	}
 	
 	@Override

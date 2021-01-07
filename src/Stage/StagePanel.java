@@ -158,7 +158,7 @@ public class StagePanel extends JPanel {
 		}
 		
 		initFortresses();
-		initGamePieces();
+//		initGamePieces();
 		BoardRectangle.initExtendedInfoStrings();
 		if(redBase != null && blueBase != null) {
 			if(GameState.myTeamIsRed) {

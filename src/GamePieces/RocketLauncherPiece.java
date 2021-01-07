@@ -47,9 +47,9 @@ public class RocketLauncherPiece extends GamePiece{
 		});
 		burstTimer.setRepeats(false);
 		
-		ArrayList<String> spriteLinks = new ArrayList<String>();
-		spriteLinks.add(Commons.directoryToSprites+"Turrets/RocketLauncher.png");
-		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize,StagePanel.boardRectSize, 0);
+//		ArrayList<String> spriteLinks = new ArrayList<String>();
+//		spriteLinks.add(Commons.directoryToSprites+"Turrets/RocketLauncher.png");
+//		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize,StagePanel.boardRectSize, 0);
 	}
 	
 	@Override
