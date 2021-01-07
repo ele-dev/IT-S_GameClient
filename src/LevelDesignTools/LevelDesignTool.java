@@ -9,7 +9,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import Environment.DestructibleObject;
-import PlayerStructures.GoldMine;
+import Environment.GoldMine;
 import PlayerStructures.PlayerFortress;
 import Stage.BoardRectangle;
 import Stage.StagePanel;

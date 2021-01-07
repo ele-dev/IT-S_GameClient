@@ -16,8 +16,7 @@ public class SoundEffect {
 	public static float decibelValueRaiser;
 	
 	public static void play(String fileName) {
-		URL url = SoundEffect.class.getResource("Hover.wav");
-		System.out.println(url);
+		URL url = SoundEffect.class.getClassLoader().getResource(fileName);
 		try {
 			AudioInputStream soundStream = AudioSystem.getAudioInputStream(url);
 			clip = AudioSystem.getClip();

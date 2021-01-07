@@ -14,10 +14,10 @@ import javax.swing.Timer;
 
 import Buttons.ActionSelectionPanel;
 import Environment.DestructibleObject;
+import Environment.GoldMine;
 import Particles.Explosion;
 import PathFinder.AStarPathFinder;
 import PathFinder.PathCell;
-import PlayerStructures.GoldMine;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;

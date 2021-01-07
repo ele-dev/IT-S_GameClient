@@ -1,17 +1,22 @@
 package LevelDesignTools;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import Environment.DestructibleObject;
-import PlayerStructures.GoldMine;
+import Environment.GoldMine;
 import Stage.BoardRectangle;
 import Stage.Commons;
+import Stage.ProjectFrame;
+import Stage.Sprite;
 import Stage.StagePanel;
 
 public class LevelInitializer {
@@ -66,13 +71,17 @@ public class LevelInitializer {
 	}
 	
 	public void readMapFromImage(String mapName) {
-		File inputFile = new File(Commons.directoryToMaps+mapName+".png");
-		BufferedImage mapImage; 
-		try {
-			mapImage = ImageIO.read(inputFile);
-			mapRows = mapImage.getHeight();
-			mapColumns = mapImage.getWidth();
-			
+		ImageIcon imageIcon = new ImageIcon(getClass().getClassLoader().getResource("Maps/"+mapName+".png"));
+		Image image = imageIcon.getImage();
+		BufferedImage mapImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+		
+		Graphics2D bG2d = mapImage.createGraphics();
+	    bG2d.drawImage(image, 0, 0, null);
+		mapRows = mapImage.getHeight();
+		mapColumns = mapImage.getWidth();
+		
+		StagePanel.boardRectangles.clear();
 			int index = 0;
 			for(int i = 0; i < mapRows; i++) {
 				for(int j = 0; j < mapColumns; j++) {
@@ -84,7 +93,9 @@ public class LevelInitializer {
 					index++;
 				}
 			}
+			
 			index = 0;
+			
 			for(int i = 0; i < mapRows; i++) {
 				for(int j = 0; j < mapColumns; j++) {
 					if(redBaseIndex < 0 && mapImage.getRGB(j, i) == Commons.cRed.getRGB()) {
@@ -113,15 +124,11 @@ public class LevelInitializer {
 					curBR.initWallSprites();
 				}
 			}
-		} catch (IOException e1) {
-			JOptionPane.showMessageDialog(null, "Given map does not exist!");
-			e1.printStackTrace();
-		}
 	}
 	
 	public void saveMapAsImage(String mapName,ArrayList<BoardRectangle> boardRectangles) {
 		try {
-			File outputFile = new File(Commons.directoryToMaps+mapName+".png");
+			File outputFile = new File("sprites/Maps/"+mapName+".png");
 			if(mapColumns == 0 || mapRows == 0) {
 				mapColumns = StagePanel.mapColumns;
 				mapRows = StagePanel.mapRows;

@@ -10,11 +10,11 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import Environment.DestructibleObject;
+import Environment.GoldMine;
 import GamePieces.GamePiece;
 import Particles.Particle;
 import Particles.TrailParticle;
 import Particles.WaveParticle;
-import PlayerStructures.GoldMine;
 
 public class BoardRectangle {
 	public int row,column;
