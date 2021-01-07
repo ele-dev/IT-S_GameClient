@@ -16,7 +16,6 @@ import Projectiles.Bullet;
 import Sound.SoundEffect;
 import Stage.BoardRectangle;
 import Stage.Commons;
-import Stage.Sprite;
 import Stage.StagePanel;
 
 
