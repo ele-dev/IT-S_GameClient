@@ -150,7 +150,7 @@ public class RapidElectroPiece extends GamePiece {
 			targetGamePiece.gamePieceBase.getDamaged(getDmg());
 		}
 		StagePanel.applyScreenShake(5, 10);
-		SoundEffect.play(Commons.soundEffectDirectory+"Electro.wav");
+		SoundEffect.play("Electro.wav");
 		StagePanel.particles.add(new TazerBolt(points));
 	}
 }

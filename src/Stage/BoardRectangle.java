@@ -207,79 +207,79 @@ public class BoardRectangle {
 		int size = getSize();
 		if(rightConnected) {
 			ArrayList<String> spriteLinks = new ArrayList<String>();
-			spriteLinks.add(Commons.directoryToSprites+"Tiles/DarkWall_R.png");
+			spriteLinks.add("Tiles/DarkWall_R.png");
 			wallSprite = new Sprite(spriteLinks, size,size, 0);
 			if(leftConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
-				spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_LR.png");
+				spriteLinks1.add("Tiles/DarkWall_LR.png");
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 				if(downConnected) {
 					ArrayList<String> spriteLinks2 = new ArrayList<String>();
-					spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_LRD.png");
+					spriteLinks2.add("Tiles/DarkWall_LRD.png");
 					wallSprite = new Sprite(spriteLinks2, size,size, 0);
 					if(upConnected) {
 						ArrayList<String> spriteLinks3 = new ArrayList<String>();
-						spriteLinks3.add(Commons.directoryToSprites+"Tiles/DarkWall_LRUD.png");
+						spriteLinks3.add("Tiles/DarkWall_LRUD.png");
 						wallSprite = new Sprite(spriteLinks3, size,size, 0);
 					}
 				} else if (upConnected) {
 					ArrayList<String> spriteLinks2 = new ArrayList<String>();
-					spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_LRU.png");
+					spriteLinks2.add("Tiles/DarkWall_LRU.png");
 					wallSprite = new Sprite(spriteLinks2, size,size, 0);
 				}
 			} else
 			if(upConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
-				spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_RU.png");
+				spriteLinks1.add("Tiles/DarkWall_RU.png");
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 				if(downConnected) {
 					ArrayList<String> spriteLinks2 = new ArrayList<String>();
-					spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_RUD.png");
+					spriteLinks2.add("Tiles/DarkWall_RUD.png");
 					wallSprite = new Sprite(spriteLinks2, size,size, 0);
 				}
 			}else 
 			if(downConnected) {
 				ArrayList<String> spriteLinks2 = new ArrayList<String>();
-				spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_RD.png");
+				spriteLinks2.add("Tiles/DarkWall_RD.png");
 				wallSprite = new Sprite(spriteLinks2, size,size, 0);
 			}
 		}else 
 		if(leftConnected) {
 			ArrayList<String> spriteLinks3 = new ArrayList<String>();
-			spriteLinks3.add(Commons.directoryToSprites+"Tiles/DarkWall_L.png");
+			spriteLinks3.add("Tiles/DarkWall_L.png");
 			wallSprite = new Sprite(spriteLinks3, size,size, 0);
 			if(upConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
-				spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_LU.png");
+				spriteLinks1.add("Tiles/DarkWall_LU.png");
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 				if(downConnected) {
 					ArrayList<String> spriteLinks2= new ArrayList<String>();
-					spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_LUD.png");
+					spriteLinks2.add("Tiles/DarkWall_LUD.png");
 					wallSprite = new Sprite(spriteLinks2, size,size, 0);
 				}
 			}else if(downConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
-				spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_LD.png");
+				spriteLinks1.add("Tiles/DarkWall_LD.png");
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 			}
 		}else 
 		if(upConnected) {
 			ArrayList<String> spriteLinks2 = new ArrayList<String>();
-			spriteLinks2.add(Commons.directoryToSprites+"Tiles/DarkWall_U.png");
+			spriteLinks2.add("Tiles/DarkWall_U.png");
 			wallSprite = new Sprite(spriteLinks2, size,size, 0);
 			if(downConnected) {
 				ArrayList<String> spriteLinks1 = new ArrayList<String>();
-				spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_UD.png");
+				spriteLinks1.add("Tiles/DarkWall_UD.png");
 				wallSprite = new Sprite(spriteLinks1, size,size, 0);
 			}
 		}else 
 		if(downConnected) {
 			ArrayList<String> spriteLinks1 = new ArrayList<String>();
-			spriteLinks1.add(Commons.directoryToSprites+"Tiles/DarkWall_D.png");
+			spriteLinks1.add("Tiles/DarkWall_D.png");
 			wallSprite = new Sprite(spriteLinks1, size,size, 0);
 		}else {
 			ArrayList<String> spriteLinks3 = new ArrayList<String>();
-			spriteLinks3.add(Commons.directoryToSprites+"Tiles/DarkWall.png");
+			spriteLinks3.add("Tiles/DarkWall.png");
 			wallSprite = new Sprite(spriteLinks3, size,size, 0);
 		}
 	}

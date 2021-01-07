@@ -31,7 +31,7 @@ public class Sprite {
 	
 	// returns the resized image
 	private Image resizeImage(String imageString) {
-		ImageIcon imageIcon = new ImageIcon(imageString);
+		ImageIcon imageIcon = new ImageIcon(Sprite.class.getClassLoader().getResource(imageString));
 		Image image = imageIcon.getImage();
 		Image modImage = image.getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
 		imageIcon = new ImageIcon(modImage);

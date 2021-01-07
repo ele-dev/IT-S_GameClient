@@ -148,10 +148,10 @@ public class Button extends GuiElement implements Focusable, Hoverable {
 	}
 	
 	static void playSelectSound() {
-		SoundEffect.play(Commons.soundEffectDirectory+"Select.wav");
+		SoundEffect.play("Select.wav");
 	}
 	
 	static void playHoverSound() {
-		SoundEffect.play(Commons.soundEffectDirectory+"Hover.wav");
+		SoundEffect.play("Hover.wav");
 	}
 }

@@ -22,7 +22,7 @@ public class Explosion extends Particle{
 			explosionFragments.add(new ExplosionFragment(x, y,(int)(Math.random() * 6 * size) + (int)(4 * size),
 					Color.RED, (float)(Math.random()+1), (float)(fragmentAngle+180) + (float)(Math.random()-0.5)*240));
 		}
-		SoundEffect.play(Commons.soundEffectDirectory+"Explosion.wav");
+		SoundEffect.play("Explosion.wav");
 	}
 	
 	public Explosion(float x, float y, float size) {
@@ -32,7 +32,7 @@ public class Explosion extends Particle{
 			explosionFragments.add(new ExplosionFragment(x, y,(int)(Math.random() * 6 * size) + (int)(4 * size),
 					Color.RED, (float)(Math.random()+1), (float)(Math.random()+360) + (float)(Math.random()-0.5)*240));
 		}
-		SoundEffect.play(Commons.soundEffectDirectory+"Explosion.wav");
+		SoundEffect.play("Explosion.wav");
 	}
 	private void initExplosion(float size) {
 		numberOfClouds = (int) (10*size);

@@ -97,7 +97,7 @@ public class SniperPiece extends GamePiece{
 		}
 		sniperBullet = null;
 		StagePanel.applyScreenShake(5, 30);
-		SoundEffect.play(Commons.soundEffectDirectory+"SniperShot.wav");
+		SoundEffect.play("SniperShot.wav");
 	}
 
 	@Override

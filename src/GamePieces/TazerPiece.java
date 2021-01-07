@@ -153,8 +153,8 @@ public class TazerPiece extends GamePiece{
 			targetDestructibleObject = null;
 		}
 		tazerBullet = null;
-		SoundEffect.play(Commons.soundEffectDirectory+"Electro.wav");
-		SoundEffect.play(Commons.soundEffectDirectory+"ShotDecay.wav");
+		SoundEffect.play("Electro.wav");
+		SoundEffect.play("ShotDecay.wav");
 	}
 
 	@Override

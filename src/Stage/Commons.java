@@ -45,10 +45,10 @@ public interface Commons {
 	public final short maxInputLength = 18;
 	
 	// File path for sprites
-	final String directoryToSprites = "sprites/";
+//	final String directoryToSprites = "sprites/";
 	final String directoryToMaps = "sprites/Maps/";
 	
-	final String soundEffectDirectory = "SoundEffects/";
+//	final String soundEffectDirectory = "SoundEffects/";
 	
 	
 	

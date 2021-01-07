@@ -59,7 +59,7 @@ public class PlayerFortress extends DestructibleObject {
 	}
 	
 	public void increaseCoinAmount(int incAmount, int x, int y) {
-		SoundEffect.play(Commons.soundEffectDirectory+"GoldCollect.wav");
+		SoundEffect.play("GoldCollect.wav");
 		goldAmount += incAmount;
 		lastCollectedGoldAmount += incAmount;
 		goldCollectLabel = new ValueLabel(x, y, "+" + lastCollectedGoldAmount, Commons.cCurrency);
