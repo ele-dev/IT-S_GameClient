@@ -151,7 +151,7 @@ public class StagePanel extends JPanel {
 				levelDesignTool = new LevelDesignTool();
 				ProjectFrame.stagePanel.addMouseWheelListener(levelDesignTool.mwl);
 			}
-		}else {
+		} else {
 			levelInitializer.readMapFromImage(mapName);
 			mapRows = levelInitializer.getMapRows();
 			mapColumns = levelInitializer.getMapColumns();
@@ -159,12 +159,12 @@ public class StagePanel extends JPanel {
 		}
 		
 		initFortresses();
-//		initGamePieces();
+		// initGamePieces();
 		BoardRectangle.initExtendedInfoStrings();
 		if(redBase != null && blueBase != null) {
 			if(GameState.myTeamIsRed) {
 				camera.setCameraToBasePos(redBase);
-			}else {
+			} else {
 				camera.setCameraToBasePos(blueBase);
 			}
 		}
@@ -172,7 +172,7 @@ public class StagePanel extends JPanel {
 		updateAmountPossibleAttacks();
 		if(GameState.myTurn) {
 			endTurnButton.restartAutoEndTurnCountDown();
-		}else {
+		} else {
 			endTurnButton.tAutoEndTurn.stop();
 		}
 	}
@@ -181,10 +181,12 @@ public class StagePanel extends JPanel {
 	public static void applyScreenShake(int screenShakeAmountOfFRames, int screenShakeMagnitude) {
 		camera.applyScreenShake(screenShakeAmountOfFRames, screenShakeMagnitude);
 	}
+	
 	// adds a dmgLabel (shows the dmg that was taken)
 	public static void addValueLabel(GamePiece targetGP,float value, Color c) {
 		StagePanel.valueLabels.add(new ValueLabel((float)(targetGP.getCenterX()+((Math.random()-0.5)*60)),(float)(targetGP.getCenterY()+((Math.random()-0.5)*60)),"-"+Math.round(value), c));	
 	}
+	
 	// adds a dmgLabel (shows the dmg that was taken)
 	public static void addValueLabel(int x, int y,float value,Color c) {
 		StagePanel.valueLabels.add(new ValueLabel((float)(x+((Math.random()-0.5)*60)),(float)(y+((Math.random()-0.5)*60)),"-"+Math.round(value),c));
@@ -199,7 +201,7 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void surrender() {
-		// Destroy the own fortress to trigger the winnin screen
+		// Destroy the own fortress to trigger the winning screen
 		if(GameState.myTeamIsRed) {
 			redBase.getDamaged(redBase.getHealth(), 0, true);
 		} else {
@@ -219,7 +221,7 @@ public class StagePanel extends JPanel {
 			GameState.isIngame = false;
 			GameState.isSearching = false;
 			
-			// Navigate back to the homescreen panel 
+			// Navigate back to the home screen panel 
 			ProjectFrame.stagePanel.setVisible(false);
 			ProjectFrame.homePanel.setVisible(true);
 			
@@ -295,7 +297,7 @@ public class StagePanel extends JPanel {
 	//°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°	
 	//----------------------------------------- Main Rendering Method --------------------------------------
 	//______________________________________________________________________________________________________
-	// graphics methode does all the drawing of objects (renders everything)
+	// graphics method does all the drawing of objects (renders everything)
 	public void paintComponent(Graphics g) {
 
 		if(createBufferAsBufferedImage()) {
@@ -408,6 +410,7 @@ public class StagePanel extends JPanel {
 		if(blueBase != null)
 			blueBase.drawDestructibleObject(g2d);
 	}
+	
 	private void drawGoldMines(Graphics2D g2d) {
 		for(GoldMine curGM : goldMines) 
 			curGM.drawNeighborBRs(g2d);
@@ -425,7 +428,7 @@ public class StagePanel extends JPanel {
 				}
 			}
 		}
-//		System.out.println(particles.size());
+		// System.out.println(particles.size());
 	}
 		
 	private void drawAllDestructionParticles(Graphics2D g2d) {
@@ -461,7 +464,6 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void drawCursor(Graphics2D g2d) {
-
 		if(mousePos != null) {
 			g2d.setColor(Color.WHITE);
 			g2d.setStroke(new BasicStroke(5));
@@ -514,6 +516,7 @@ public class StagePanel extends JPanel {
 			} 	
 		}
 	}
+	
 	private void drawEveryBoardRectangleState(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			if(camera.isInView(curBR.getPos())) {
@@ -629,7 +632,7 @@ public class StagePanel extends JPanel {
 				gamePieces.remove(i);
 			}
 		}
-		if(curSelectedGP != null){
+		if(curSelectedGP != null) {
 			curSelectedGP.updateActionSelectionPanelHover();
 		}
 		
@@ -660,7 +663,7 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
-	// updates destructible objects (removes them if they are flagged as destroyed)
+	// updates destructable objects (removes them if they are flagged as destroyed)
 	private void updateDestructibleObject() {
 		for(int i = 0; i < destructibleObjects.size(); i++) {
 			if(destructibleObjects.get(i).isDestroyed()) {
@@ -702,7 +705,7 @@ public class StagePanel extends JPanel {
 		updateAmountPossibleAttacks();
 		if(GameState.myTurn) {
 			endTurnButton.restartAutoEndTurnCountDown();
-		}else {
+		} else {
 			endTurnButton.tAutoEndTurn.stop();
 		}
 		
@@ -743,6 +746,7 @@ public class StagePanel extends JPanel {
 		resetShowPossibleActivities();
 		return curSelectedGP != null && (curSelectedGP.actionSelectionPanel.tryPressButton() || curSelectedGP.actionSelectionPanel.containsMousePos(StagePanel.mousePosUntranslated));
 	}
+	
 	public static boolean noFortressSelected() {
 		boolean status = true;
 		if(StagePanel.redBase != null && StagePanel.blueBase != null) {
@@ -757,7 +761,6 @@ public class StagePanel extends JPanel {
 		if(StagePanel.redBase != null && StagePanel.blueBase != null) {
 			status = !redBase.isRecruitingMode() && !blueBase.isRecruitingMode();
 		}
-		
 		return status;
 	}
 	
@@ -840,7 +843,7 @@ public class StagePanel extends JPanel {
 			if(curSelectedGP.actionSelectionPanel.getMoveButtonIsActive()) {
 				curSelectedGP.resetPathFinder(curSelectedGP.getBoardRect(), curHoverBR, false);
 				curSelectedGP.showPathBRs();
-			}else if(curSelectedGP.actionSelectionPanel.getAttackButtonIsActive()) {
+			} else if(curSelectedGP.actionSelectionPanel.getAttackButtonIsActive()) {
 				if(curHoverBR.isShowPossibleAttack) {
 					curHoverBR.isPossibleAttack = true;
 				}
@@ -928,7 +931,7 @@ public class StagePanel extends JPanel {
 								redBase.tryPresssButton();
 								return;
 							}
-						}else {
+						} else {
 							if(!blueBase.isSelected()) {
 								blueBase.setSelected(blueBase.isHover());	
 								curSelectedGP = null;
@@ -953,7 +956,6 @@ public class StagePanel extends JPanel {
 				ingameOptionPanel.soundVolumeSlider.setGrabbed(false);
 			}
 		}
-		
 	}
 	
 	private class MML implements MouseMotionListener {
@@ -965,13 +967,14 @@ public class StagePanel extends JPanel {
 				if(curHoverBR != null) {
 					if(SwingUtilities.isLeftMouseButton(e)) {
 						levelDesignTool.tryPlaceObject();
-					} else if(SwingUtilities.isRightMouseButton(e)){
+					} else if(SwingUtilities.isRightMouseButton(e)) {
 						levelDesignTool.tryRemoveObject();
 					}
 				}
 				return;
 			}
 		}
+		
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			mousePosUntranslated = e.getPoint();
@@ -998,7 +1001,6 @@ public class StagePanel extends JPanel {
 				}
 				return;
 			}
-			
 			if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
 				ctrDown = true;
 			}
@@ -1011,6 +1013,7 @@ public class StagePanel extends JPanel {
 				ctrDown = false;
 			}
 		}
+		
 		@Override
 		public void keyTyped(KeyEvent e) {}
 	}
