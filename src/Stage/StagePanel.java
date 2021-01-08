@@ -306,6 +306,7 @@ public class StagePanel extends JPanel {
 			g2d.setColor(new Color(28, 26, 36));
 			g2d.fillRect(0, 0, w, h);
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);				
+      
 			g2d.translate(camera.getPos().x, camera.getPos().y);
 							
 			drawEveryBoardRectangle(g2d);
@@ -329,7 +330,7 @@ public class StagePanel extends JPanel {
 			if(curHoverBR != null && (levelDesignTool != null || !redBase.containsBR(curHoverBR) && !blueBase.containsBR(curHoverBR))) {
 				curHoverBR.drawHover(g2d);
 			}
-							
+      
 			drawAllGamePieceHealth(g2d);
 			drawAllGamePieceAttacks(g2d);
 			drawParticles(g2d);
@@ -355,7 +356,7 @@ public class StagePanel extends JPanel {
 				endTurnButton.drawParticles(g2d);
 				drawMovesPanel(g2d);
 				ingameOptionPanel.tryDrawIngameOptionPanel(g2d);
-								
+
 				if(levelDesignTool == null) {
 					if(redBase.isSelected()) { redBase.drawFortressMenu(g2d); }
 					if(blueBase.isSelected()) { blueBase.drawFortressMenu(g2d); }

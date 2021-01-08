@@ -2,7 +2,7 @@ package Stage;
 
 /*
  * This is the base class that contains the application the entry point
- * and the Window realted code
+ * and the Window related code
  * 
  */
 
@@ -64,7 +64,7 @@ public final class ProjectFrame extends JFrame {
 	    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	    setVisible(true);
 		
-		// Create the timers that make up the global realtime game loop
+		// Create the timers that make up the global real time game loop
 		tFrameRate = new Timer(Commons.frametime + 4, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -91,7 +91,7 @@ public final class ProjectFrame extends JFrame {
 		homePanel = new HomePanel();
 		stagePanel.setVisible(Commons.editMap);
 		homePanel.setVisible(false);
-		loginPanel.setVisible(!Commons.editMap);			// Display the login screen first
+		loginPanel.setVisible(!Commons.editMap);		// Display the login screen first
 		registerPanel.setVisible(false);
 		Container cp = getContentPane();		
 		cp.add(loginPanel);
@@ -137,7 +137,7 @@ public final class ProjectFrame extends JFrame {
 			if(conn.isConnected() == true) {
 				// ...
 			} else {
-				// If theres no connection to the game server the exit
+				// If there is no connection to the game server the exit
 				System.out.println("\nApplication close up");
 				System.exit(0);
 			}
@@ -155,14 +155,14 @@ public final class ProjectFrame extends JFrame {
 				// Allow access to the traversal key events (TAB, ENTER, etc)
 				f.setFocusTraversalKeysEnabled(false);
 				
-				// Add a window listener to the frame to trigger closeup routine on window close
+				// Add a window listener to the frame to trigger close up routine on window close
 				f.addWindowListener(new WindowAdapter() {
 					
 					// Define window close event
 					@Override
 					public void windowClosing(WindowEvent windowEvent) {
 						
-						// Check if the player is currently ingame
+						// Check if the player is currently in-game
 						if(GameState.isIngame) {
 							int option = JOptionPane.showConfirmDialog(f, "Are you sure that you want to surrender?",
 															"Quit game?", JOptionPane.YES_NO_OPTION);
