@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import Sound.SoundEffect;
-import Stage.Commons;
 import Stage.StagePanel;
 
 public class Explosion extends Particle{

@@ -9,14 +9,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
 import Environment.DestructibleObject;
 import Environment.GoldMine;
 import Stage.BoardRectangle;
 import Stage.Commons;
-import Stage.ProjectFrame;
-import Stage.Sprite;
 import Stage.StagePanel;
 
 public class LevelInitializer {

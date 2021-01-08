@@ -9,7 +9,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 import Sound.SoundEffect;
-import Stage.Commons;
 import Stage.StagePanel;
 
 public class GenericButton {
