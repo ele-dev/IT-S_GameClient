@@ -35,7 +35,7 @@ public final class RegisterPanel extends GuiPanel {
 		// set the desired background color 
 		this.bgColor = Commons.loginScreenBackground;
 		
-		// init the gui elements
+		// init the GUI elements
 		initGuiElements();
 	}
 	
@@ -47,7 +47,7 @@ public final class RegisterPanel extends GuiPanel {
 		this.statusLabel.setRelativePosition(40, 62);
 		this.noteLabel.setRelativePosition(50, 30);
 		
-		// init the list of textfields and give them relative positions
+		// init the list of text-fields and give them relative positions
 		this.fields[0] = new TextInputField("Username", Commons.textFieldWidth + 100, Commons.textFieldHeight);
 		this.fields[0].setRelativePosition(50, 37);
 		this.fields[1] = new TextInputField("Email address", Commons.textFieldWidth + 100, Commons.textFieldHeight);
@@ -68,7 +68,7 @@ public final class RegisterPanel extends GuiPanel {
 		this.goToLoginButton.setRelativePosition(5, 92);
 		this.registerAccountButton.setRelativePosition(62, 62);
 		
-		// add the gui elements to the list
+		// add the GUI elements to the list
 		super.guiElements.add(this.fields[0]);
 		super.guiElements.add(this.fields[1]);
 		super.guiElements.add(this.fields[2]);
@@ -129,7 +129,7 @@ public final class RegisterPanel extends GuiPanel {
 		}
 	}
 	
-	// method for handling key pressed events (e.g. typing in textfields)
+	// method for handling key pressed events (e.g. typing in text-fields)
 	protected void tryTypeIn(KeyEvent e) {
 		
 		// Make sure not to handle events for other panels
@@ -219,7 +219,7 @@ public final class RegisterPanel extends GuiPanel {
 			return;
 		}
 		
-		// Try to enter a character of the key event into a textfield
+		// Try to enter a character of the key event into a text-field
 		for(TextInputField curTIF: this.fields) {
 			curTIF.typeInText(e);
 		}

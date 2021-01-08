@@ -3,7 +3,7 @@ package menueGui;
 /*
  * written by Elias Geiger
  * 
- * Interface for focusable gui elements
+ * Interface for focusable GUI elements
  */
 
 public interface Focusable {

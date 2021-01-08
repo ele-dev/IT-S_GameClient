@@ -26,7 +26,7 @@ public class MsgSpawnGamepiece extends GenericMessage {
 		// call the super class constructor
 		super();
 		this.msgID = GenericMessage.MSG_SPAWN_GAMEPIECE;
-		this.fieldCoordinates = new Point(1, 1);		// default field coords
+		this.fieldCoordinates = new Point(1, 1);		// default field coordinates
 		this.teamColor = Color.BLUE;					// default team color
 		this.gamePieceClass = "undefined";				// default GP class 
 	}

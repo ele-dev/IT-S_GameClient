@@ -17,7 +17,7 @@ public class TextLabel extends GuiElement {
 	private static final int defaultTextSize = 16;
 	private static final int defaultRenderingTextSize = (int) Math.round(Math.sqrt((double)ProjectFrame.height) / 2.0) - 1;
 	
-	// Constructor for Label with default specs
+	// Constructor for Label with default specifications
 	public TextLabel() {
 		// call constructor from super class
 		super(30, 15);
@@ -84,7 +84,7 @@ public class TextLabel extends GuiElement {
 		return this.textSize;
 	}
 	
-	// Helper function to calculate actual text size for rendering from realtive size
+	// Helper function to calculate actual text size for rendering from relative size
 	private int  getRenderingTextSize(int relativeTextSize) {
 		
 		int size = defaultRenderingTextSize + (relativeTextSize - defaultTextSize);

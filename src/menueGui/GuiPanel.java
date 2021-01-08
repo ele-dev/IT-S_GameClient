@@ -3,10 +3,10 @@ package menueGui;
 /*
  * written by Elias Geiger
  * 
- * This abstract class extends JPanel abend implements multiple listener interfaces
+ * This abstract class extends JPanel and implements multiple listener interfaces
  * to serve as superclass for all panel classes that make up the game menue.
  * This class holds timers for processing & drawing, listeners for event based input handling 
- * and a few basic graphical attributes that all panels posses: width, height, background color
+ * and a few basic graphical attributes that all panels possess: width, height, background color
  * 
  * This class intends to simplify the implementation of Panel classes by hiding most of the mechanics
  * and aspects of panels that don't have to be customizable during panel design and would only overload
@@ -56,7 +56,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	// default constructor
 	public GuiPanel() {
 		
-		// Set the gui configs
+		// Set the GUI configs
 		this.width = ProjectFrame.width;
 		this.height = ProjectFrame.height;
 		setBounds(0, 0, width, height);
@@ -79,7 +79,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	@SuppressWarnings("unused")
 	private final void setRelativePosition(int x, int y) {
 		
-		// calculate the abosolute coordinates in the frame
+		// calculate the absolute coordinates in the frame
 		float xFactor = 0.01f * x;
 		float yFactor = 0.01f * y;
 		int posX = Math.round(xFactor * ProjectFrame.width);
@@ -89,7 +89,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		posX -= this.width / 2;
 		posY -= this.height / 2;
 		
-		// Dont exit the frame 
+		// Don't exit the frame 
 		if(posX < 0)
 			posX = 0;
 		if(posY < 0)
@@ -134,7 +134,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 		Cursor updatedCursor = defaultCursor;
 		for(GuiElement e: guiElements)
 		{
-			// Search for a hovered gui element
+			// Search for a hovered GUI element
 			if(e instanceof Hoverable && ((Hoverable) e).isHovered()) {
 				
 				// Distinguish between a hovered button and a hovered text field
@@ -160,7 +160,7 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	
 	protected void drawPanelContent(Graphics2D g2d) {
 		
-		// Just draw the gui elements in the list
+		// Just draw the GUI elements in the list
 		for(GuiElement element: guiElements) 
 		{
 			element.draw(g2d);
@@ -184,13 +184,13 @@ public abstract class GuiPanel extends JPanel implements MouseListener, MouseMot
 	// Event method that is called on Panel close up (can be overwritten)
 	protected void onClose() {
 		
-		// remove remaining focus on gui elements
+		// remove remaining focus on GUI elements
 		for(GuiElement e: this.guiElements)
 		{
 			if(e instanceof Focusable) {
 				((Focusable) e).focusNow(false);
 			}
-			// reset the hovered status of gui elements
+			// reset the hovered status of GUI elements
 			if(e instanceof Hoverable) {
 				((Hoverable) e).resetHover();
 			}

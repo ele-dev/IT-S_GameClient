@@ -1,7 +1,7 @@
 package menueGui;
 
 /*
- * written by Ben Brandes
+ * written by Ben Brandes and Elias Geiger
  * 
  */
 
@@ -41,7 +41,7 @@ public final class LoginPanel extends GuiPanel {
 		// Set the desired background color
 		this.bgColor = Commons.loginScreenBackground;
 		
-		// init the gui elements
+		// init the GUI elements
 		initGuiElements();
 	}
 	
@@ -67,7 +67,7 @@ public final class LoginPanel extends GuiPanel {
 		// Set the text in the password field to hidden
 		fields[1].hideText(true);
 		
-		// Now add the gui elements to the list of the panel
+		// Now add the GUI elements to the list of the panel
 		super.guiElements.add(fields[0]);
 		super.guiElements.add(fields[1]);
 		super.guiElements.add(loginButton);
@@ -124,7 +124,7 @@ public final class LoginPanel extends GuiPanel {
 		}
 	}
 	
-	// method for handling key pressed events (e.g. typing in textfields)
+	// method for handling key pressed events (e.g. typing in text-fields)
 	protected void tryTypeIn(KeyEvent e) {
 		
 		// Make sure not to handle events for other panels
@@ -201,7 +201,7 @@ public final class LoginPanel extends GuiPanel {
 			return;
 		}
 		
-		// Try to enter a character of the key event into a textfield
+		// Try to enter a character of the key event into a text-field
 		for(TextInputField curTIF : this.fields) { 
 			curTIF.typeInText(e);
 		}	
@@ -213,7 +213,7 @@ public final class LoginPanel extends GuiPanel {
 		// play as guest button click event
 		if(!ProjectFrame.conn.isLoggedIn()) {
 			
-			// create and execute a swing worker for login processesing in the background
+			// create and execute a swing worker for login processing in the background
 			SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
 				@Override protected Boolean doInBackground() throws Exception {
 					
