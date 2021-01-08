@@ -279,7 +279,7 @@ public final class RegisterPanel extends GuiPanel {
 			
 			@Override protected void done() {
 				
-				// Retrieve success status of the backgroud task
+				// Retrieve success status of the background task
 				boolean status = false;
 				try {
 					status = get();

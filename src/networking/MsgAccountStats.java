@@ -4,7 +4,7 @@ package networking;
  * written by Elias Geiger
  * 
  * This class extends the abstract super class Generic Message
- * It defines the Account Stats message that is used by the server to
+ * It defines the Account statistics message that is used by the server to
  * send player related information to clients
  * 
  */
@@ -16,7 +16,7 @@ public class MsgAccountStats extends GenericMessage {
 	private int matchesPlayed;
 	private int accountBalance;
 	
-	// Default constructor that initializes stats with standard values
+	// Default constructor that initializes statistics with standard values
 	public MsgAccountStats() 
 	{
 		super();
@@ -25,7 +25,7 @@ public class MsgAccountStats extends GenericMessage {
 		this.accountBalance = 0;
 	}
 	
-	// Additional Constructor for passing stats directly
+	// Additional Constructor for passing statistics directly
 	public MsgAccountStats(int matches, int balance) 
 	{
 		this();

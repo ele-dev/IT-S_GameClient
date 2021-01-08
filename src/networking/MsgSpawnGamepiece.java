@@ -23,7 +23,7 @@ public class MsgSpawnGamepiece extends GenericMessage {
 	// Constructor
 	public MsgSpawnGamepiece()
 	{
-		// call the super class constuctor
+		// call the super class constructor
 		super();
 		this.msgID = GenericMessage.MSG_SPAWN_GAMEPIECE;
 		this.fieldCoordinates = new Point(1, 1);		// default field coords

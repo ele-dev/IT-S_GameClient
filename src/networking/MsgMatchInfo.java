@@ -7,7 +7,7 @@ package networking;
  * 
  * It defines the Match info message that is sent from the server to clients
  * directly after they have found and joined a match.
- * It is supposed to feed clients with neccessary data about the match
+ * It is supposed to feed clients with necessary data about the match
  * e.g. the enemy players name and account stats, the initial game board, etc
  * 
  */
