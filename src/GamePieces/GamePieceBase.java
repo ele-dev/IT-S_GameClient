@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import javax.swing.Timer;
 
+import Sound.SoundEffect;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
@@ -82,11 +83,11 @@ public class GamePieceBase {
 	private void initSprites() {
 		ArrayList<String> spriteLinks = new ArrayList<String>();
 		if(parentGP.isRed()) {
-			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseE0.png");
-			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseE1.png");
+			spriteLinks.add("GamePieces/GamePieceBaseE0.png");
+			spriteLinks.add("GamePieces/GamePieceBaseE1.png");
 		}else {
-			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseNE0.png");
-			spriteLinks.add(Commons.directoryToSprites+"GamePieces/GamePieceBaseNE1.png");
+			spriteLinks.add("GamePieces/GamePieceBaseNE0.png");
+			spriteLinks.add("GamePieces/GamePieceBaseNE1.png");
 		}
 		spriteBase = new Sprite(spriteLinks, StagePanel.boardRectSize,StagePanel.boardRectSize, 10);
 	}
@@ -221,6 +222,7 @@ public class GamePieceBase {
 		}else {
 			health = 0;
 		}
+		SoundEffect.play("Hurt.wav");
 	}
 	
 	public void regenShield() {

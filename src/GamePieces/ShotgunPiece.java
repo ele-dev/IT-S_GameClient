@@ -13,6 +13,7 @@ import javax.swing.Timer;
 
 import Particles.EmptyShell;
 import Projectiles.Bullet;
+import Sound.SoundEffect;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
@@ -86,6 +87,7 @@ public class ShotgunPiece extends GamePiece {
 			float angleDesiredProjectile = calculateAngle((int)(targetRect.getCenterX()+(Math.random()-0.5)*targetRect.width), (int)(targetRect.getCenterY()+(Math.random()-0.5)*targetRect.height));
 			bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/10, StagePanel.boardRectSize/5, isRed(),16, 
 					angleDesiredProjectile, shape,targetDestructibleObject));	
+			SoundEffect.play("Shoot.wav");
 		}
 		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(),StagePanel.boardRectSize/7, StagePanel.boardRectSize/4, (float)angle -90, c,(float)(Math.random()*3+2)));
 		StagePanel.applyScreenShake(5, 10);

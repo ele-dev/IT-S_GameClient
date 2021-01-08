@@ -134,6 +134,7 @@ public final class LoginPanel extends GuiPanel {
 		
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
+			Button.playHoverSound();
 			if(this.fields[0].isFocused()) {
 				// set focus on field[1] now
 				this.fields[0].focusNow(false);
@@ -188,11 +189,11 @@ public final class LoginPanel extends GuiPanel {
 		
 		// Trigger a click event on the selected button when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if(this.playAsGuestButton.isFocused()) {
+			if(this.playAsGuestButton.tryPress()) {
 				this.playAsGuest();
-			} else if(this.goToRegisterButton.isFocused()) {
+			} else if(this.goToRegisterButton.tryPress()) {
 				this.redirectToRegister();
-			} else if(this.loginButton.isFocused()) {
+			} else if(this.loginButton.tryPress()) {
 				System.out.println("login attempt because enter pressed");
 				this.tryLogin();
 			}
@@ -338,8 +339,8 @@ public final class LoginPanel extends GuiPanel {
 	// Mouse Listener events for detecting clicks on GUI elements
 	@Override 
 	public void mouseClicked(MouseEvent e) {
-		if(this.loginButton.isHovered()) { tryLogin(); }
-		if(this.playAsGuestButton.isHovered()) { playAsGuest(); }
-		if(this.goToRegisterButton.isHovered()) { redirectToRegister(); }
+		if(this.loginButton.tryPress()) { tryLogin(); }
+		if(this.playAsGuestButton.tryPress()) { playAsGuest(); }
+		if(this.goToRegisterButton.tryPress()) { redirectToRegister(); }
 	}
 }

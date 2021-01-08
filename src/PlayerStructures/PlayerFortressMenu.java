@@ -73,7 +73,7 @@ public class PlayerFortressMenu {
 	}
 	
 	public void tryPresssButton() {
-		if(exitButton.isHover()) {
+		if(exitButton.tryPress()) {
 			playerFortress.setSelected(false);
 		}
 		for(RecruitGPInfoPanel curRGPIP : activeRecruitGPSectorButton.getRecruitGamePieceInfoPanels()) {
@@ -83,7 +83,7 @@ public class PlayerFortressMenu {
 			}
 		}
 		for(RecruitGPSectorButton curRGPSB : recruitGPSectorButtons) {
-			if(curRGPSB.isHover()) {
+			if(curRGPSB.tryPress()) {
 				for(RecruitGPSectorButton curRGPSB1 : recruitGPSectorButtons) {
 					curRGPSB1.setActive(false);
 				}
