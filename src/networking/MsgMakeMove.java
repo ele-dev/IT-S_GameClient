@@ -6,7 +6,7 @@ package networking;
  * This message holds the information to describe a player move action on the game field
  * The moving Piece attribute indicates what character/figure is moving
  * The moveVector describes the position delta (points from origin/current position to the destination field)
- * This message is send to the server and forwarded to the enemy client everytime you click on the move button
+ * This message is send to the server and forwarded to the enemy client every time you click on the move button
  * 
  */
 

@@ -1,10 +1,10 @@
 package clientPackage;
 
 /*
- * writte by Elias Geiger
+ * written by Elias Geiger
  * 
  * This interface doesn't contain any real functionality
- * It simply stores all network related configuraiton variables for the application 
+ * It simply stores all network related configuration variables for the application 
  * so that they can be accessed from anywhere in the code but never be changed
  * 
  */

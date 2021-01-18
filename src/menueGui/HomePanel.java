@@ -3,10 +3,10 @@ package menueGui;
 /*
  * written by Elias Geiger
  * 
- * This is the homescreen that appears after successfull login
+ * This is the home-screen that appears after successful login
  * It contains GUI elements for different purposes:
- * e.g. player stats display, interaction buttons for joining a match, logging out,
- * searching online players, configuring personal loadout, etc.
+ * e.g. player statistics display, interaction buttons for joining a match, logging out,
+ * searching online players, configuring personal load out, etc.
  * 
  */
 
@@ -26,7 +26,7 @@ import networking.SignalMessage;
 @SuppressWarnings("serial")
 public final class HomePanel extends GuiPanel {
 	
-	// Gui elements inside this panel (buttons, text fields, etc.)
+	// GUI elements inside this panel (buttons, text fields, etc.)
 	private Button logoutButton = new Button(60, 40, "Logout");
 	private Button quickMatchButton = new Button(130, 50, "Quickmatch");
 	private Button abortMatchSearchButton = new Button(130, 50, "Abort Search");
@@ -48,11 +48,11 @@ public final class HomePanel extends GuiPanel {
 		// Set the desired background color for the panel
 		this.bgColor = Commons.homeScreenBackground;
 		
-		// init the gui elements 
+		// init the GUI elements 
 		initGuiElements();
 	}
 	
-	// Method for creating/initializing all the gui elements on this panel
+	// Method for creating/initializing all the GUI elements on this panel
 	@Override
 	protected void initGuiElements() {
 		
@@ -72,7 +72,7 @@ public final class HomePanel extends GuiPanel {
 		this.quickMatchButton.setRelativePosition(75, 40);
 		this.abortMatchSearchButton.setRelativePosition(75, 55);
 		
-		// add the gui elements to the list
+		// add the GUI elements to the list
 		super.guiElements.add(this.quickMatchButton);
 		super.guiElements.add(this.abortMatchSearchButton);
 		super.guiElements.add(this.logoutButton);
@@ -139,17 +139,17 @@ public final class HomePanel extends GuiPanel {
 		this.playedMatchesDisplay.setText("Played matches: " + GameState.playedMatches);
 		
 		// Update the matchmaking buttons and labels for the 3 different possible cases
-		// case 1: Currently searching but not ingame
+		// case 1: Currently searching but not in-game
 		if(GameState.isSearching) {
 			this.gameSearchMessage.setText("Waiting for an opponent ...");	
 		} 
-		// case 2: match found means ingame now and not searching anymore
+		// case 2: match found means in-game now and not searching anymore
 		else if (GameState.isIngame) {
 			this.gameSearchMessage.setText("Match found. Joining ...");
 			this.abortMatchSearchButton.setEnabled(false);
 			this.quickMatchButton.setEnabled(false);
 		} 
-		// case 3: Not ingame at the moment and also not searching
+		// case 3: Not in-game at the moment and also not searching
 		else {
 			this.quickMatchButton.setEnabled(true);
 			this.abortMatchSearchButton.setEnabled(false);
@@ -177,7 +177,7 @@ public final class HomePanel extends GuiPanel {
 		this.abortMatchSearchButton.focusNow(false);
 	}
 	
-	// method for handling key pressed events (e.g. typing in textfields)
+	// method for handling key pressed events (e.g. typing in text-fields)
 	protected void tryTypeIn(KeyEvent e) {
 		
 		// Make sure not to handle events for other panels
@@ -187,6 +187,7 @@ public final class HomePanel extends GuiPanel {
 		
 		// Switch focus to next GUI element when TAB was pressed
 		if(e.getKeyCode() == KeyEvent.VK_TAB) {
+			Button.playHoverSound();
 			// Only works for the logout button to focus it using TAB
 			if(this.logoutButton.isFocused()) {
 				// remove focus from the button 
@@ -201,7 +202,7 @@ public final class HomePanel extends GuiPanel {
 		
 		// Trigger a click event on the selected button when enter was pressed
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if(this.logoutButton.isFocused()) {
+			if(this.logoutButton.tryPress()) {
 				this.tryLogout();
 			}
 			
@@ -249,10 +250,10 @@ public final class HomePanel extends GuiPanel {
 		}
 	}
 	
-	// Method for processing a click on the join quickmatch button
+	// Method for processing a click on the join quick match button
 	private void tryQuickmatchJoin() {
 		
-		// Quickmatch join button click event
+		// Quick match join button click event
 		if(ProjectFrame.conn.isLoggedIn()) {
 			System.out.println("--> Join quickmatch (waiting queue)");
 			
@@ -260,7 +261,7 @@ public final class HomePanel extends GuiPanel {
 
 				@Override protected Void doInBackground() throws Exception {
 					
-					// send the join quickmatch message to the server
+					// send the join quick match message to the server
 					SignalMessage joinQuickMatchMessage = new SignalMessage(GenericMessage.MSG_JOIN_QUICKMATCH);
 					ProjectFrame.conn.sendMessageToServer(joinQuickMatchMessage);
 					
@@ -324,8 +325,8 @@ public final class HomePanel extends GuiPanel {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// React on the mouse click
-		if(this.quickMatchButton.isHovered()) { tryQuickmatchJoin(); }
-		if(this.abortMatchSearchButton.isHovered()) { tryAbortMatchSearch(); }
-		if(this.logoutButton.isHovered()) { tryLogout(); }
+		if(this.quickMatchButton.tryPress()) { tryQuickmatchJoin(); }
+		if(this.abortMatchSearchButton.tryPress()) { tryAbortMatchSearch(); }
+		if(this.logoutButton.tryPress()) { tryLogout(); }
 	}
 }

@@ -214,11 +214,14 @@ public class RecruitGPInfoPanel {
 	}
 	
 	public boolean tryPressButton(){
-		if(rectruitButton.isHover() && rectruitButton.isActive()) {
-			playerFortress.refreshRecruitableBoardRectangles();
-			playerFortress.setRecruitingMode(true);
-			playerFortress.setSelected(false);
-			return true;
+		if(rectruitButton.isActive()) {
+			if(rectruitButton.tryPress()) {
+				playerFortress.refreshRecruitableBoardRectangles();
+				playerFortress.setRecruitingMode(true);
+				playerFortress.setSelected(false);
+				return true;
+			}
+			
 		}
 		return false;
 	}

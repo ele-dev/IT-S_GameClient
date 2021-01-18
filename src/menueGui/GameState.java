@@ -24,11 +24,11 @@ public class GameState {
 	public static int onlinePlayers = 0;
 	public static int globalRunningMatches = 0;
 	
-	// User account stats //
+	// User account statistics //
 	public static int playedMatches = 0;
 	public static int money = 0;
 	
-	// Ingame related variables //
+	// In-game related variables //
 	public static String enemyName = "";
 	public static boolean enemySurrender = false;
 	// public static byte teamColor = 1;		// 1 -> blue  2 -> red

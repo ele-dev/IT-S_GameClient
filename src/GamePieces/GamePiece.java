@@ -14,10 +14,10 @@ import javax.swing.Timer;
 
 import Buttons.ActionSelectionPanel;
 import Environment.DestructibleObject;
+import Environment.GoldMine;
 import Particles.Explosion;
 import PathFinder.AStarPathFinder;
 import PathFinder.PathCell;
-import PlayerStructures.GoldMine;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.Sprite;
@@ -48,8 +48,6 @@ public abstract class GamePiece {
 	private static int rotationDelay = 4;
 	
 	private static AStarPathFinder pathFinder;
-	
-	
 	
 	public GamePiece(boolean isRed, String name, BoardRectangle boardRect, float dmg, int baseTypeIndex,boolean lineOfSightNeeded) {
 		if(isRed) {
@@ -114,6 +112,7 @@ public abstract class GamePiece {
 	public boolean isPerformingAction() {
 		return isAttacking() || isMoving;
 	}
+	
 	// initializes the Pathfinding Grid (!!Does not start the Pathfinder!!)
 	public static void initPathFinder(BoardRectangle startBR) {
 		ArrayList<PathCell> pathCells = new ArrayList<PathCell>();

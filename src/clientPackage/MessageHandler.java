@@ -3,13 +3,13 @@ package clientPackage;
 /*
  * written by Elias Geiger
  * 
- * This class is intented do message handling and is only used in a static context
+ * This class is intended do message handling and is only used in a static context
  * Every time the listener thread receives a new message the method inside this class 
  * is called to identify the message type and to decide how to react or what to do with
- * the data insided the newly received message.
+ * the data inside the newly received message.
  * 
  * This class was mainly introduced to outsource the message handling and not to overload other classes
- * since the handleMessage() Method is relatively long and was freqently extended during development
+ * since the handleMessage() Method is relatively long and was frequently extended during development
  * 
  */
 
@@ -60,10 +60,10 @@ public final class MessageHandler {
 				break;
 			}
 			
-			// Message that contains global multiplayer information (no ingame info)
+			// Message that contains global multiplayer information (no in-game info)
 			case GenericMessage.MSG_GAME_DATA:
 			{
-				// Ignore this mesage if the player isnt't logged in yet
+				// Ignore this message if the player isnt't logged in yet
 				if(!ProjectFrame.conn.isLoggedIn()) {
 					System.err.println("Received invalid game data message from the server!");
 				}
@@ -105,7 +105,7 @@ public final class MessageHandler {
 				break;
 			}
 			
-			// Message provides player with neccessary data before the match begins
+			// Message provides player with necessary data before the match begins
 			case GenericMessage.MSG_MATCH_INFO:
 			{
 				// Ignore this message if the player isn't in game at the moment
@@ -163,16 +163,16 @@ public final class MessageHandler {
 			}
 			
 			// This message notifies the player that the match is over because the enemy has 
-			// left the game volunterally
+			// left the game voluntarily
 			case GenericMessage.MSG_ENEMY_SURRENDER:
 			{
-				// Ignore this message if the player isn't ingame at the moment
+				// Ignore this message if the player isn't in-game at the moment
 				if(!GameState.isIngame) {
 					System.err.println("Received invalid enemy surrender message from the server!");
 					break;
 				}
 				
-				// show popup message informing that the match is over because the enemy left the game
+				// show pop-up message informing that the match is over because the enemy left the game
 				System.out.println("The enemy surrendered --> leaving match");
 				
 				// Update the player states
@@ -195,7 +195,7 @@ public final class MessageHandler {
 			// When this message is received then our own turn begins 
 			case GenericMessage.MSG_BEGIN_TURN:
 			{
-				// Ignore this message if the player isn't ingame at the moment
+				// Ignore this message if the player isn't in-game at the moment
 				if(!GameState.isIngame) {
 					System.err.println("Received invalid begin turn message from the server!");
 					break;
@@ -214,7 +214,7 @@ public final class MessageHandler {
 			// to a new position on the game board
 			case GenericMessage.MSG_MAKE_MOVE:
 			{
-				// Ignore message when we aren't ingame or if it's our turn at the moment
+				// Ignore message when we aren't in-game or if it's our turn at the moment
 				if(!GameState.isIngame || GameState.myTurn) {
 					System.err.println("Received invalid make move message from the server!");
 					break;
@@ -229,7 +229,7 @@ public final class MessageHandler {
 					break;
 				}
 				
-				// Find the moving GamePiece and it's destination Field on the local game map 
+				// Find the moving GamePiece and it's destination field on the local game map 
 				GamePiece movingGP = GamePiece.getGamePieceFromCoords(moveMsg.getMovingPlayerPos());
 				BoardRectangle destinationBR = BoardRectangle.getBoardRectFromCoords(moveMsg.getTargetField());
 				
@@ -252,7 +252,7 @@ public final class MessageHandler {
 			// with one of his 
 			case GenericMessage.MSG_ATTACK:
 			{
-				// Ignore message when we aren't ingame or if it's our turn at the moment
+				// Ignore message when we aren't in-game or if it's our turn at the moment
 				if(!GameState.isIngame || GameState.myTurn) {
 					System.err.println("Received invalid make move message from the server!");
 					break;
@@ -300,7 +300,7 @@ public final class MessageHandler {
 			// This message is received when a new game piece was has spawned on the game map
 			case GenericMessage.MSG_SPAWN_GAMEPIECE:
 			{
-				// Ignore message when we aren't ingame 
+				// Ignore message when we aren't in-game 
 				if(!GameState.isIngame) {
 					System.err.println("Received invalid spawn gamepiece message from the server!");
 					break;
@@ -323,7 +323,7 @@ public final class MessageHandler {
 					break;
 				}
 				
-				// create and add the gamepiece to the global list
+				// create and add the game piece to the global list
 				GamePiece spawnedGP = null;
 				switch(gpClass) 
 				{

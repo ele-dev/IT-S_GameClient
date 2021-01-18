@@ -29,7 +29,7 @@ public class MsgRegisterStatus extends GenericMessage {
 		this.description = "";
 	}
 	
-	// Constructor for creating a message with all neccessary payload (status, description)
+	// Constructor for creating a message with all necessary payload (status, description)
 	public MsgRegisterStatus(boolean success, String desc) 
 	{
 		this();

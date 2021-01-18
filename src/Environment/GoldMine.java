@@ -1,4 +1,4 @@
-package PlayerStructures;
+package Environment;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -6,11 +6,11 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
-import Environment.DestructibleObject;
 import GamePieces.GamePiece;
 import Particles.GoldParticle;
 import Particles.Particle;
 import Particles.TrailParticle;
+import Sound.SoundEffect;
 import Stage.BoardRectangle;
 import Stage.Commons;
 import Stage.StagePanel;
@@ -113,6 +113,7 @@ public class GoldMine extends DestructibleObject {
 		captureState = (byte) (isRed ? 1 : 2);
 		health = maxHealth;
 		StagePanel.valueLabels.add(new ValueLabel(occupiedBRs[0].getCenterX(), occupiedBRs[0].getCenterY(), "Captured", isRed ? Commons.cRed : Commons.cBlue));
+		SoundEffect.play("CaptureGoldMine.wav");
 	}
 	
 	public void tryGainGold() {

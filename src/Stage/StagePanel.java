@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.event.KeyEvent;
@@ -20,10 +21,12 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
 import Buttons.ButtonEndTurn;
-import Buttons.GenericButton;
+import Buttons.IngameOptionPanel;
 import Buttons.WinScreen;
 import Environment.DestructibleObject;
+import Environment.GoldMine;
 import GamePieces.DetonatorPiece;
 import GamePieces.EMPPiece;
 import GamePieces.FlamethrowerPiece;
@@ -41,7 +44,6 @@ import Particles.DestructionParticle;
 import Particles.EmptyShell;
 import Particles.GoldParticle;
 import Particles.Particle;
-import PlayerStructures.GoldMine;
 import PlayerStructures.PlayerFortress;
 import menueGui.GameState;
 import networking.GenericMessage;
@@ -71,18 +73,16 @@ public class StagePanel extends JPanel {
 	public static PlayerFortress blueBase, redBase;
 	// GamePieces
 	public static ArrayList<GamePiece> gamePieces = new ArrayList<GamePiece>();
-	
 	public static ArrayList<ValueLabel> valueLabels = new ArrayList<ValueLabel>();
-	
 	public static ArrayList<Particle> particles = new ArrayList<Particle>();
 	
 	// game Info
-	private static GenericButton surrenderButton;
 	private static ButtonEndTurn endTurnButton;
 	private static TurnInfo turnInfoPanel;
+	private static IngameOptionPanel ingameOptionPanel;
 	
 	public static Camera camera;
-	public static Point mousePos = new Point(0,0);
+	public static Point mousePos = new Point(0, 0);
 	public static Point mousePosUntranslated = mousePos;
 	
 	public static BoardRectangle curHoverBR;
@@ -90,13 +90,15 @@ public class StagePanel extends JPanel {
 	
 	private static LevelInitializer levelInitializer;
 	public static GameMap gameMap;
-	private static LevelDesignTool levelDesignTool;
+	public static LevelDesignTool levelDesignTool;
 	
-	private static WinScreen winScreen;
+	public static WinScreen winScreen;
 	
 	public static int amountOfActionsLeft = 0;
 	
 	private boolean ctrDown = false;
+	@SuppressWarnings("unused")
+	private boolean leftMouseDown = false;
 	
 	private static BufferedImage bufferedImage;
 	
@@ -113,12 +115,10 @@ public class StagePanel extends JPanel {
 		
 		// create and init the buttons 
 		endTurnButton = new ButtonEndTurn();
-		int border = StagePanel.w/100;
-		surrenderButton = new GenericButton(StagePanel.w-(border+StagePanel.w/6),border,StagePanel.w/6,StagePanel.w/16,
-				"Surrender", new Color(20,20,20), new Color(255,0,50), StagePanel.w/16/3);
 		
 		// create and init the TurnInfo display
 		turnInfoPanel = new TurnInfo();
+		ingameOptionPanel = new IngameOptionPanel();
 		
 		// makes Cursor invisible 
 		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
@@ -151,7 +151,7 @@ public class StagePanel extends JPanel {
 				levelDesignTool = new LevelDesignTool();
 				ProjectFrame.stagePanel.addMouseWheelListener(levelDesignTool.mwl);
 			}
-		}else {
+		} else {
 			levelInitializer.readMapFromImage(mapName);
 			mapRows = levelInitializer.getMapRows();
 			mapColumns = levelInitializer.getMapColumns();
@@ -159,12 +159,12 @@ public class StagePanel extends JPanel {
 		}
 		
 		initFortresses();
-//		initGamePieces();
+		// initGamePieces();
 		BoardRectangle.initExtendedInfoStrings();
 		if(redBase != null && blueBase != null) {
 			if(GameState.myTeamIsRed) {
 				camera.setCameraToBasePos(redBase);
-			}else {
+			} else {
 				camera.setCameraToBasePos(blueBase);
 			}
 		}
@@ -172,7 +172,7 @@ public class StagePanel extends JPanel {
 		updateAmountPossibleAttacks();
 		if(GameState.myTurn) {
 			endTurnButton.restartAutoEndTurnCountDown();
-		}else {
+		} else {
 			endTurnButton.tAutoEndTurn.stop();
 		}
 	}
@@ -181,10 +181,12 @@ public class StagePanel extends JPanel {
 	public static void applyScreenShake(int screenShakeAmountOfFRames, int screenShakeMagnitude) {
 		camera.applyScreenShake(screenShakeAmountOfFRames, screenShakeMagnitude);
 	}
+	
 	// adds a dmgLabel (shows the dmg that was taken)
 	public static void addValueLabel(GamePiece targetGP,float value, Color c) {
 		StagePanel.valueLabels.add(new ValueLabel((float)(targetGP.getCenterX()+((Math.random()-0.5)*60)),(float)(targetGP.getCenterY()+((Math.random()-0.5)*60)),"-"+Math.round(value), c));	
 	}
+	
 	// adds a dmgLabel (shows the dmg that was taken)
 	public static void addValueLabel(int x, int y,float value,Color c) {
 		StagePanel.valueLabels.add(new ValueLabel((float)(x+((Math.random()-0.5)*60)),(float)(y+((Math.random()-0.5)*60)),"-"+Math.round(value),c));
@@ -199,7 +201,7 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void surrender() {
-		// Destroy the own fortress to trigger the winnin screen
+		// Destroy the own fortress to trigger the winning screen
 		if(GameState.myTeamIsRed) {
 			redBase.getDamaged(redBase.getHealth(), 0, true);
 		} else {
@@ -213,13 +215,13 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void tryLeaveGame() {
-		if (winScreen.getLeaveButton().isHover()) {
+		if (winScreen.getLeaveButton().tryPress()) {
 			
 			// Reset game states for the next match
 			GameState.isIngame = false;
 			GameState.isSearching = false;
 			
-			// Navigate back to the homescreen panel 
+			// Navigate back to the home screen panel 
 			ProjectFrame.stagePanel.setVisible(false);
 			ProjectFrame.homePanel.setVisible(true);
 			
@@ -295,17 +297,18 @@ public class StagePanel extends JPanel {
 	//°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°	
 	//----------------------------------------- Main Rendering Method --------------------------------------
 	//______________________________________________________________________________________________________
-	// graphics methode does all the drawing of objects (renders everything)
+	// graphics method does all the drawing of objects (renders everything)
 	public void paintComponent(Graphics g) {
 
 		if(createBufferAsBufferedImage()) {
 			Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
 			// Graphics2D g2d = (Graphics2D)g;
-			
+		
 			// Draw the background
 			g2d.setColor(new Color(28, 26, 36));
 			g2d.fillRect(0, 0, w, h);
-							
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);				
+      
 			g2d.translate(camera.getPos().x, camera.getPos().y);
 							
 			drawEveryBoardRectangle(g2d);
@@ -329,11 +332,11 @@ public class StagePanel extends JPanel {
 			if(curHoverBR != null && (levelDesignTool != null || !redBase.containsBR(curHoverBR) && !blueBase.containsBR(curHoverBR))) {
 				curHoverBR.drawHover(g2d);
 			}
-							
+      
 			drawAllGamePieceHealth(g2d);
 			drawAllGamePieceAttacks(g2d);
 			drawParticles(g2d);
-				
+			
 							
 			g2d.setStroke(new BasicStroke(80));
 			g2d.setColor(new Color(28, 26, 36));
@@ -354,8 +357,8 @@ public class StagePanel extends JPanel {
 				endTurnButton.drawButton(g2d);
 				endTurnButton.drawParticles(g2d);
 				drawMovesPanel(g2d);
-				surrenderButton.drawButton(g2d);
-									
+				ingameOptionPanel.tryDrawIngameOptionPanel(g2d);
+
 				if(levelDesignTool == null) {
 					if(redBase.isSelected()) { redBase.drawFortressMenu(g2d); }
 					if(blueBase.isSelected()) { blueBase.drawFortressMenu(g2d); }
@@ -379,13 +382,12 @@ public class StagePanel extends JPanel {
 			g.dispose();
 			g2d.dispose();
 		}
-
 	}
 	
 	private boolean createBufferAsBufferedImage() {
 		if(bufferedImage != null) {
 			 return true;
-		 }else {
+		 } else {
 		    bufferedImage = new BufferedImage(w, h,  Transparency.OPAQUE);
 		 }
 		 return true;
@@ -408,6 +410,7 @@ public class StagePanel extends JPanel {
 		if(blueBase != null)
 			blueBase.drawDestructibleObject(g2d);
 	}
+	
 	private void drawGoldMines(Graphics2D g2d) {
 		for(GoldMine curGM : goldMines) 
 			curGM.drawNeighborBRs(g2d);
@@ -425,7 +428,7 @@ public class StagePanel extends JPanel {
 				}
 			}
 		}
-//		System.out.println(particles.size());
+		// System.out.println(particles.size());
 	}
 		
 	private void drawAllDestructionParticles(Graphics2D g2d) {
@@ -461,7 +464,6 @@ public class StagePanel extends JPanel {
 	}
 	
 	private void drawCursor(Graphics2D g2d) {
-
 		if(mousePos != null) {
 			g2d.setColor(Color.WHITE);
 			g2d.setStroke(new BasicStroke(5));
@@ -514,6 +516,7 @@ public class StagePanel extends JPanel {
 			} 	
 		}
 	}
+	
 	private void drawEveryBoardRectangleState(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			if(camera.isInView(curBR.getPos())) {
@@ -528,7 +531,7 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
-	// draws all the Walls including destructible walls
+	// draws all the Walls including destructable walls
 	private void drawEveryWall(Graphics2D g2d) {
 		for(BoardRectangle curBR : boardRectangles) {
 			if(curBR.isWall) {
@@ -573,9 +576,7 @@ public class StagePanel extends JPanel {
 		endTurnButton.updateParticles();
 		endTurnButton.setActive(curActionPerformingGP == null && levelDesignTool == null && GameState.myTurn
 				&& noFortressSelected() && !goldUncollected());
-		
-		surrenderButton.updateHover(mousePosUntranslated);
-		surrenderButton.setActive(curActionPerformingGP == null && levelDesignTool == null && noFortressSelected() && !goldUncollected());
+		ingameOptionPanel.update();
 		
 		if(levelDesignTool == null) { updateFortresses(); }
 		if(winScreen != null) { winScreen.update(); }
@@ -627,11 +628,14 @@ public class StagePanel extends JPanel {
 			curGP.update();
 			curGP.updateLinesOfSight();
 			curGP.tryDie();
-			curGP.updateActionSelectionPanelHover();
 			if(curGP.isDead()) {
 				gamePieces.remove(i);
 			}
 		}
+		if(curSelectedGP != null) {
+			curSelectedGP.updateActionSelectionPanelHover();
+		}
+		
 		
 	}
 	
@@ -659,7 +663,7 @@ public class StagePanel extends JPanel {
 		}
 	}
 	
-	// updates destructible objects (removes them if they are flagged as destroyed)
+	// updates destructable objects (removes them if they are flagged as destroyed)
 	private void updateDestructibleObject() {
 		for(int i = 0; i < destructibleObjects.size(); i++) {
 			if(destructibleObjects.get(i).isDestroyed()) {
@@ -701,7 +705,7 @@ public class StagePanel extends JPanel {
 		updateAmountPossibleAttacks();
 		if(GameState.myTurn) {
 			endTurnButton.restartAutoEndTurnCountDown();
-		}else {
+		} else {
 			endTurnButton.tAutoEndTurn.stop();
 		}
 		
@@ -742,7 +746,8 @@ public class StagePanel extends JPanel {
 		resetShowPossibleActivities();
 		return curSelectedGP != null && (curSelectedGP.actionSelectionPanel.tryPressButton() || curSelectedGP.actionSelectionPanel.containsMousePos(StagePanel.mousePosUntranslated));
 	}
-	private boolean noFortressSelected() {
+	
+	public static boolean noFortressSelected() {
 		boolean status = true;
 		if(StagePanel.redBase != null && StagePanel.blueBase != null) {
 			status = !redBase.isSelected() && !blueBase.isSelected();
@@ -756,11 +761,10 @@ public class StagePanel extends JPanel {
 		if(StagePanel.redBase != null && StagePanel.blueBase != null) {
 			status = !redBase.isRecruitingMode() && !blueBase.isRecruitingMode();
 		}
-		
 		return status;
 	}
 	
-	private boolean goldUncollected() {
+	public static boolean goldUncollected() {
 		for(int i = 0; i < particles.size(); i++) {
 			if(particles.get(i) instanceof GoldParticle) {
 				return true;
@@ -773,10 +777,8 @@ public class StagePanel extends JPanel {
 		
 		// First checked if the the move is possible and allowed at the moment
 		if(curSelectedGP != null && curHoverBR != null && GameState.myTurn) {
-			
 			// check additional preconditions for performing any action
 			if(curHoverBR.isPossibleMove || curHoverBR.isPossibleAttack) {
-				
 				// Make a move
 				if(curHoverBR.isPossibleMove) {
 						
@@ -817,9 +819,7 @@ public class StagePanel extends JPanel {
 					if(curSelectedGP.getHasExecutedAttack())endTurnButton.restartAutoEndTurnCountDown();
 					
 					updateAmountPossibleAttacks();
-				} 
-
-				
+				}
 				curSelectedGP = null;
 				resetShowPossibleActivities();
 			}
@@ -843,7 +843,7 @@ public class StagePanel extends JPanel {
 			if(curSelectedGP.actionSelectionPanel.getMoveButtonIsActive()) {
 				curSelectedGP.resetPathFinder(curSelectedGP.getBoardRect(), curHoverBR, false);
 				curSelectedGP.showPathBRs();
-			}else if(curSelectedGP.actionSelectionPanel.getAttackButtonIsActive()) {
+			} else if(curSelectedGP.actionSelectionPanel.getAttackButtonIsActive()) {
 				if(curHoverBR.isShowPossibleAttack) {
 					curHoverBR.isPossibleAttack = true;
 				}
@@ -873,8 +873,10 @@ public class StagePanel extends JPanel {
 			
 			if(winScreen == null) {
 				if(SwingUtilities.isLeftMouseButton(e)) {
+					leftMouseDown = true;
+					ingameOptionPanel.soundVolumeSlider.tryGrab();
 					
-					if(levelDesignTool != null || (noFortressSelected() && noFortressRecruiting())) {
+					if((levelDesignTool != null || (noFortressSelected() && noFortressRecruiting())) && !ingameOptionPanel.isOpened()) {
 						
 						tryPerformActionOnPressedPos();
 						for(GamePiece curGP : gamePieces) {
@@ -893,7 +895,7 @@ public class StagePanel extends JPanel {
 						}
 						
 						// End Turn Button click event
-						if(endTurnButton.isActive() && endTurnButton.isHover()) {
+						if(endTurnButton.isActive() && endTurnButton.tryPress()) {
 			
 							// Update the global state variable
 							GameState.myTurn = false;
@@ -907,19 +909,20 @@ public class StagePanel extends JPanel {
 							
 							return;
 						}
-						
-						// Surrender button click event
-						if(surrenderButton.isActive() && surrenderButton.isHover()) {
+					}
+					// Surrender button click event
+					if(ingameOptionPanel.surrenderButton.isActive() && ingameOptionPanel.isOpened()) {
+						if(ingameOptionPanel.surrenderButton.tryPress()) {
 							surrender();
+							ingameOptionPanel.tryToggleOpened();
 							return;
 						}
-						
 					}
 					redBase.tryPlaceRecruitedGP(curHoverBR);
 					blueBase.tryPlaceRecruitedGP(curHoverBR);
 				
 					
-					if(levelDesignTool == null && noFortressRecruiting() && GameState.myTurn) {
+					if(levelDesignTool == null && noFortressRecruiting() && GameState.myTurn && !ingameOptionPanel.isOpened()) {
 						if(GameState.myTeamIsRed) {
 							if(!redBase.isSelected()) {
 								redBase.setSelected(redBase.isHover());
@@ -928,7 +931,7 @@ public class StagePanel extends JPanel {
 								redBase.tryPresssButton();
 								return;
 							}
-						}else {
+						} else {
 							if(!blueBase.isSelected()) {
 								blueBase.setSelected(blueBase.isHover());	
 								curSelectedGP = null;
@@ -947,8 +950,12 @@ public class StagePanel extends JPanel {
 		}
 
 		@Override
-		public void mouseReleased(MouseEvent e) {}
-		
+		public void mouseReleased(MouseEvent e) {
+			if(SwingUtilities.isLeftMouseButton(e)) {
+				leftMouseDown = false;
+				ingameOptionPanel.soundVolumeSlider.setGrabbed(false);
+			}
+		}
 	}
 	
 	private class MML implements MouseMotionListener {
@@ -960,13 +967,14 @@ public class StagePanel extends JPanel {
 				if(curHoverBR != null) {
 					if(SwingUtilities.isLeftMouseButton(e)) {
 						levelDesignTool.tryPlaceObject();
-					} else if(SwingUtilities.isRightMouseButton(e)){
+					} else if(SwingUtilities.isRightMouseButton(e)) {
 						levelDesignTool.tryRemoveObject();
 					}
 				}
 				return;
 			}
 		}
+		
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			mousePosUntranslated = e.getPoint();
@@ -977,11 +985,12 @@ public class StagePanel extends JPanel {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if(winScreen == null && noFortressSelected()) {
+			if(winScreen == null && noFortressSelected() && !ingameOptionPanel.isOpened()) {
 				camera.updateMovementPressedKey(e);
 			}
 			
 			if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				ingameOptionPanel.tryToggleOpened();
 				redBase.tryGetBackToFortressMenu();
 				blueBase.tryGetBackToFortressMenu();
 			}
@@ -992,7 +1001,6 @@ public class StagePanel extends JPanel {
 				}
 				return;
 			}
-			
 			if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
 				ctrDown = true;
 			}
@@ -1005,6 +1013,7 @@ public class StagePanel extends JPanel {
 				ctrDown = false;
 			}
 		}
+		
 		@Override
 		public void keyTyped(KeyEvent e) {}
 	}

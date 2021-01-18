@@ -32,9 +32,9 @@ public class TextInputField extends GuiElement implements Focusable, Hoverable {
 	private String validChars = "abcdefghijklmnopqrstuvwxyz1234567890!?_";
 	private short maxLength = Commons.maxInputLength;
 	
-	// Constructor for text input field with default specs
+	// Constructor for text input field with default specifications
 	public TextInputField(int width, int height) {
-		// call consructor from super class
+		// call constructor from super class
 		super(width, height);
 		
 		// set default values
@@ -61,7 +61,7 @@ public class TextInputField extends GuiElement implements Focusable, Hoverable {
 	// Method that adds typed in text to the field
 	public void typeInText(KeyEvent e) {
 		
-		// Ignore if this field isnt selected at the moment
+		// Ignore if this field isn't selected at the moment
 		if(!this.isFocused || !this.isEnabled) {
 			return;
 		}

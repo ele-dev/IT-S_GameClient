@@ -241,7 +241,7 @@ public final class Connection extends Thread {
 	// Method that handles the login procedure for accounts
 	public boolean loginWithAccount(String user, String pwd) {
 		
-		// Start communication by sending login reuqest message
+		// Start communication by sending login request message
 		MsgLogin loginMsg = new MsgLogin(user, pwd);
 		this.sendMessageToServer(loginMsg);
 		System.out.println("Sent login message to the server");
@@ -294,12 +294,12 @@ public final class Connection extends Thread {
 		if(statusMsg.success() == false) {
 			return false;
 		} else {
-			// When login was sucessfull then store the username in the class
+			// When login was successful then store the username in the class
 			this.username = user;
 			this.loggedIn = true;
 		}
 		
-		// If everything went well then launch the thread for continous message processing
+		// If everything went well then launch the thread for continuous message processing
 		// If the thread is already running then order it to exit sleep mode
 		if(!this.isAlive()) {
 			this.start();
@@ -316,7 +316,7 @@ public final class Connection extends Thread {
 	// Method that handles the login procedure for guest players
 	public boolean loginAsGuest() {
 		
-		// Start communication by sending login reuqest message
+		// Start communication by sending login request message
 		MsgLogin loginMsg = new MsgLogin();
 		this.sendMessageToServer(loginMsg);
 		System.out.println("Sent login message to the server");
@@ -370,7 +370,7 @@ public final class Connection extends Thread {
 		this.playAsGuest = true;
 		this.loggedIn = true;
 		
-		// If everything went well then launch the thread for continous message processing
+		// If everything went well then launch the thread for continuous message processing
 		// If the thread is already running then order it to exit sleep mode
 		if(!this.isAlive()) {
 			this.start();
@@ -420,7 +420,7 @@ public final class Connection extends Thread {
 		}
 	}
 	
-	// Method for sending messages anychronously to the server using SwingWorkers
+	// Method for sending messages asynchronously to the server using SwingWorkers
 	public void sendMessageAsync(GenericMessage msg) {
 		
 		// Only try if the client is connected

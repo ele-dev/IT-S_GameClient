@@ -13,9 +13,9 @@ import javax.swing.Timer;
 
 import Particles.EmptyShell;
 import Projectiles.Bullet;
+import Sound.SoundEffect;
 import Stage.BoardRectangle;
 import Stage.Commons;
-import Stage.Sprite;
 import Stage.StagePanel;
 
 
@@ -47,9 +47,9 @@ public class GunnerPiece extends GamePiece {
 		});
 		burstTimer.setRepeats(false);
 		
-		ArrayList<String> spriteLinks = new ArrayList<String>();
-		spriteLinks.add(Commons.directoryToSprites+"Turrets/Minigun.png");
-		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize, StagePanel.boardRectSize, 0);
+//		ArrayList<String> spriteLinks = new ArrayList<String>();
+//		spriteLinks.add(Commons.directoryToSprites+"Turrets/Minigun.png");
+//		spriteTurret = new Sprite(spriteLinks, StagePanel.boardRectSize, StagePanel.boardRectSize, 0);
 	}
 	
 	@Override
@@ -118,6 +118,7 @@ public class GunnerPiece extends GamePiece {
 		bullets.add(new Bullet((int)aimArc.getEndPoint().getX(), (int)aimArc.getEndPoint().getY(), StagePanel.boardRectSize/10, StagePanel.boardRectSize/5, isRed(), 12, 
 				angleDesiredProjectile, shape,targetDestructibleObject));	
 		StagePanel.particles.add(new EmptyShell((float)getCenterX(), (float)getCenterY(), StagePanel.boardRectSize/8, StagePanel.boardRectSize/4, (float)angle -90, c, (float)(Math.random()*2+3)));
+		SoundEffect.play("Shoot.wav");
 	}
 	
 }

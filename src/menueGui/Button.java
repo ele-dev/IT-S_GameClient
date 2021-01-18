@@ -4,8 +4,8 @@ package menueGui;
  * written by Elias Geiger and Ben Brandes
  * 
  * This class defines a basic Button in the GUI panels
- * It's attributes are dimension (size and position), textlabel, and the hover status
- * This Buttons can't be strongly individualized (e.g color, text color, frame aren't changable) and are 
+ * It's attributes are dimension (size and position), text label, and the hover status
+ * This Buttons can't be strongly individualized (e.g color, text color, frame aren't changeable) and are 
  * supposed for simple use cases as buttons for logout, login or match join
  * 
  */
@@ -17,6 +17,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
+import Sound.SoundEffect;
 import Stage.Commons;
 import Stage.ProjectFrame;
 
@@ -29,7 +30,7 @@ public class Button extends GuiElement implements Focusable, Hoverable {
 	
 	private static int defaultTextSize = (int) Math.round(Math.sqrt((double)ProjectFrame.height) / 2.0);
 	
-	// Constructor for Button with default specs
+	// Constructor for Button with default specifications
 	public Button(int width, int height) {
 		// call constructor from super class
 		super(width, height);
@@ -41,7 +42,7 @@ public class Button extends GuiElement implements Focusable, Hoverable {
 		this.textSize = defaultTextSize;
 	}
 	
-	// Constructor for creating button with desired dimensions and textlabel
+	// Constructor for creating button with desired dimensions and text-label
 	public Button(int width, int height, String label) {
 		
 		// call default constructor
@@ -91,7 +92,11 @@ public class Button extends GuiElement implements Focusable, Hoverable {
 	@Override
 	public void updateHover(MouseEvent e) {
 		// Only enabled buttons can be hovered
+		boolean prevHover = isHovered;
 		this.isHovered = this.rect.contains(e.getPoint()) && this.isEnabled;
+		if(prevHover == false && isHovered == true) {
+			playHoverSound();
+		}
 	}
 	
 	@Override
@@ -121,6 +126,13 @@ public class Button extends GuiElement implements Focusable, Hoverable {
 		return this.isHovered && this.isEnabled;
 	}
 	
+	public boolean tryPress() {
+		if((this.isHovered || this.isFocused) && this.isEnabled) {
+			playSelectSound();
+		}
+		return (this.isHovered || this.isFocused) && this.isEnabled;
+	}
+	
 	@Override
 	public boolean isFocused() {
 		// Only enabled buttons can be selected/focused
@@ -133,5 +145,13 @@ public class Button extends GuiElement implements Focusable, Hoverable {
 	
 	public Rectangle getDimension() {
 		return this.rect;
+	}
+	
+	static void playSelectSound() {
+		SoundEffect.play("Select.wav");
+	}
+	
+	static void playHoverSound() {
+		SoundEffect.play("Hover.wav");
 	}
 }
