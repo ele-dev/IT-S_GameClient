@@ -130,5 +130,4 @@ public interface Commons {
 		
 		return (float) Math.toDegrees(Math.atan2(ak3*-1, gk3));
 	}
-	
 }
