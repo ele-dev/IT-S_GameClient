@@ -34,6 +34,5 @@ public class SoundEffect {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
-		
 	}
 }
